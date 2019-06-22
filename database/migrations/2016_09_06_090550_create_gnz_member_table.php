@@ -18,7 +18,7 @@ class CreateGnzMemberTable extends Migration {
 			return true;
 		}
 
-		Schema::connection('gnz')->create('gnz_member', function(Blueprint $table)
+		Schema::create('gnz_member', function(Blueprint $table)
 		{
 			$table->integer('id', true);
 			$table->integer('nzga_number')->nullable()->unique('nzga_id');
@@ -98,7 +98,7 @@ class CreateGnzMemberTable extends Migration {
 			return true;
 		}
 		
-		Schema::connection('gnz')->drop('gnz_member');
+		Schema::drop('gnz_member');
 	}
 
 }

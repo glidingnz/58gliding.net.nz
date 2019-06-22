@@ -63,6 +63,22 @@ return [
             ]) : [],
         ],
 
+
+
+        'ogn' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('OGN_DATABASE', 'ogn'),
+            'username' => env('OGN_USERNAME', 'root'),
+            'password' => env('OGN_PASSWORD', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+            'engine' => null,
+        ],
+        
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),

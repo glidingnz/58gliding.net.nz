@@ -15,7 +15,7 @@ class InsertAwardRoles extends Migration
     public function up()
     {
         // Coaches are defined in the GNZ database. Each GNZ member can be a coach. This means we can easily list all coaches.
-        Schema::connection('gnz')->table('gnz_member', function(Blueprint $table)
+        Schema::table('gnz_member', function(Blueprint $table)
         {
             $table->boolean('coach');
             $table->boolean('privacy');
@@ -38,7 +38,7 @@ class InsertAwardRoles extends Migration
      */
     public function down()
     {
-        Schema::connection('gnz')->table('gnz_member', function(Blueprint $table)
+        Schema::table('gnz_member', function(Blueprint $table)
         {
             $table->dropColumn('coach');
             $table->dropColumn('privacy');

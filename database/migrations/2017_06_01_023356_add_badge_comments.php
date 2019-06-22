@@ -25,7 +25,7 @@ class AddBadgeComments extends Migration
         $item->save();
 
         // add extra column for contest pilots
-        Schema::connection('gnz')->table('gnz_member', function(Blueprint $table)
+        Schema::table('gnz_member', function(Blueprint $table)
         {
             $table->boolean('contest_pilot')->default(0)->nullable();
         });
@@ -50,7 +50,7 @@ class AddBadgeComments extends Migration
 
 
         // remove extra column for contest pilots
-        Schema::connection('gnz')->table('gnz_member', function(Blueprint $table)
+        Schema::table('gnz_member', function(Blueprint $table)
         {
             $table->dropColumn('contest_pilot');
         });

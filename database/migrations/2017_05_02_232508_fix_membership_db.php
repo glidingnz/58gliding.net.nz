@@ -19,8 +19,8 @@ class FixMembershipDb extends Migration
         //     $table->boolean('coach')->default(0)->change();
         //     $table->boolean('privacy')->default(0)->change();
         // });
-        DB::connection('gnz')->select("ALTER TABLE gnz_member MODIFY COLUMN coach BOOL DEFAULT 0");
-        DB::connection('gnz')->select("ALTER TABLE gnz_member MODIFY COLUMN privacy BOOL DEFAULT 0");
+        DB::select("ALTER TABLE gnz_member MODIFY COLUMN coach BOOL DEFAULT 0");
+        DB::select("ALTER TABLE gnz_member MODIFY COLUMN privacy BOOL DEFAULT 0");
     }
 
     /**

@@ -15,6 +15,6 @@ class GNZMemberSeeder extends Seeder
 	public function run()
 	{
 		factory(Member::Class, 100)->create();
-		DB::connection('gnz')->select("UPDATE gnz_member SET login_name=nzga_number");
+		DB::select("UPDATE gnz_member SET login_name=nzga_number");
 	}
 }
