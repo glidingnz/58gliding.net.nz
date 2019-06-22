@@ -1,0 +1,145 @@
+<?php
+
+namespace App\Http\Controllers\Apps;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Gate;
+use File;
+use App\Models\Member;
+use App\Models\Org;
+
+class MembersController extends Controller
+{
+	public function index()
+	{
+		return view('members/members-list');
+	}
+
+
+	public function email()
+	{
+		return view('members/send-email');
+	}
+
+	public function view($id)
+	{
+		$data = Array('member_id'=>$id);
+		$data['allows_edit']=false;
+
+		$member = Member::findOrFail($id);
+		if (Gate::allows('edit-member', $member)) {
+			$data['allows_edit']=true;
+		}
+
+		return view('members/member-view', $data);
+	}
+
+	public function edit($id)
+	{
+		$member = Member::findOrFail($id);
+
+		if (Gate::denies('edit-member', $member)) {
+			abort(403);
+		}
+
+		return view('members/member-edit', Array('member_id'=>$id, 'member'=>$member));
+	}
+
+	public function achievements($id)
+	{
+		$data['member_id']=$id;
+		$data['allows_edit']=false;
+
+		$data['member'] = Member::findOrFail($id);
+
+		if (Gate::allows('edit-achievements', $data['member'])) {
+			$data['allows_edit']=true;
+		}
+
+		return view('members/achievements-view', $data);
+	}
+
+
+	public function ratings($id)
+	{
+		$data['member_id']=$id;
+		$data['allows_edit']=false;
+
+		// get the club this member is a member of
+		$data['member'] = Member::findOrFail($id);
+		if (!$members_org = Org::where('gnz_code', $data['member']->club)->first())
+		{
+			abort(403);
+		}
+
+		// check if the current logged in user is an admin of the club
+		if (Gate::allows('club-admin', $members_org)) {
+			$data['allows_edit']=true;
+		}
+
+		return view('members/ratings', $data);
+	}
+
+	public function ratingsReport(Request $request)
+	{
+		$data['allows_edit']=false;
+
+		// check if the current logged in user is a club admin of the current club
+		if (Gate::allows('club-admin')) {
+
+			$data['allows_edit']=true;
+		}
+
+		return view('members/ratings-report', $data);
+	}
+
+
+
+	public function edit_achievements($id)
+	{
+		$member = Member::findOrFail($id);
+
+		if (Gate::denies('edit-achievements', $member)) { // and awards? TBC
+			abort(403);
+		}
+
+		return view('members/achievements-edit', Array('member_id'=>$id, 'member'=>$member));
+	}
+
+
+	// Download, then delete the temporary exported file
+	public function download($filename)
+	{
+		// simple_string() ensures the string only has letters and numbers and dots
+		$file_path = storage_path('exports/') . safe_filename($filename, ".");
+		if (file_exists($file_path))
+		{
+			$file_extension = File::extension($file_path);
+
+			switch ($file_extension)
+			{
+				case 'csv':
+					header("Content-type: text/csv");
+					break;
+				case 'xls':
+					header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
+					break;
+			}
+			header("Content-Disposition: attachment; filename={$filename}");
+			header("Pragma: no-cache");
+			header("Expires: 0");
+
+			readfile($file_path);
+
+			// delete the file after outputting it
+			unlink($file_path);
+		}
+	}
+
+
+
+
+
+
+}

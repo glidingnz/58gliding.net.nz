@@ -19,15 +19,10 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index()
     {
         return view('home');
-    }
-
-    public function api_controller()
-    {
-        return view('api-controller');
     }
 }
