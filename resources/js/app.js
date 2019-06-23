@@ -36,7 +36,7 @@ Vue.component('tracking', require('./components/Tracking.vue').default);
 Vue.component('trackd', require('./components/Trackd.vue').default);
 Vue.component('altitude-chart', require('./components/AltitudeChart.vue').default);
 Vue.component('users-list', require('./components/admin/UsersList.vue').default);
-// Vue.component('user-roles', require('./components/admin/UserRoles.vue').default);
+Vue.component('user-roles', require('./components/admin/UserRoles.vue').default);
 // Vue.component('achievements', require('./components/Achievements.vue').default);
 // Vue.component('edit-achievements', require('./components/EditAchievements.vue').default);
 // Vue.component('Spots', require('./components/Spots.vue').default);
