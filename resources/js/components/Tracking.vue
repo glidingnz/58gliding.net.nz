@@ -1,5 +1,4 @@
 
-<template>
 
 <style>
 	tr.selected td {
@@ -52,6 +51,7 @@
 
 </style>
 
+<template>
 <div>
 
 	<div class="form-inline">
@@ -104,7 +104,7 @@
 
 				Day:
 				<div class="btn-group" role="group" style="margin-bottom: 0;">
-					<a v-bind:href="'/tracking/' + day.day_date"  v-for="(index, day) in firstDays" type="button" class="btn btn-default" v-bind:class="[ day.day_date==flyingDay ? 'btn-primary' : '']">{{day.day_date}}
+					<a v-bind:href="'/tracking/' + day.day_date"  v-for="(day, index) in firstDays" type="button" class="btn btn-default" v-bind:class="[ day.day_date==flyingDay ? 'btn-primary' : '']">{{day.day_date}}
 					</a>
 				</div>
 			</div>
@@ -169,10 +169,10 @@
 				<tr>
 					<td>Links</td>
 					<td>
-						<a href="https://www.google.com/maps/place/{{selectedPoint.lat}}+{{selectedPoint.lng}}/">Google</a>
-						&nbsp; <a href="http://maps.apple.com/?q={{selectedPoint.lat}},{{selectedPoint.lng}}">Apple</a> &nbsp; 
-						<a v-if="selectedAircraft.rego" href="/tracking/{{this.flyingDay + '/' + selectedAircraft.rego}}">Analyse</a>
-						<a v-if="!selectedAircraft.rego" href="/tracking/{{this.flyingDay + '/' + selectedAircraft.hex}}">Analyse</a>
+						<a v-bind:href="'https://www.google.com/maps/place/' + selectedPoint.lat + '+' + selectedPoint.lng + '/'">Google</a>
+						&nbsp; <a v-bind:href="'http://maps.apple.com/?q=' + selectedPoint.lat + ',' + selectedPoint.lng">Apple</a> &nbsp; 
+						<a v-if="selectedAircraft.rego" v-bind:href="'/tracking/' + this.flyingDay + '/' + selectedAircraft.rego">Analyse</a>
+						<a v-if="!selectedAircraft.rego" v-bind:href="'/tracking/' + this.flyingDay + '/' + selectedAircraft.hex">Analyse</a>
 					</td>
 				</tr>
 			</table>
@@ -200,7 +200,7 @@
 						</th>
 						<th><a v-on:click="sortLegendBy('nzdate')">Last Seen</a></th>
 					</tr>
-					<tr  v-on:click="clickAircraftInLegend(aircraft.hex)" v-for="aircraft in aircrafts | orderBy sortBy sortOrder | filterBy legendFilter" v-bind:class="[ Date.now()-aircraft.nzdate>=1800000 ? 'old' : '', selectedAircraft && aircraft.hex==selectedAircraft.hex ? 'selected' : '' ]"  >
+					<tr  v-on:click="clickAircraftInLegend(aircraft.hex)" v-for="aircraft in aircrafts" v-bind:class="[ Date.now()-aircraft.nzdate>=1800000 ? 'old' : '', selectedAircraft && aircraft.hex==selectedAircraft.hex ? 'selected' : '' ]" v-if="legendFilter(aircraft)">
 						<td style="width: 20px;">
 							<div v-bind:style="{backgroundColor: '#' + aircraft.colour}" style="width: 20px; height: 20px;"></div>
 						</td>
@@ -216,7 +216,7 @@
 							<div v-if="aircraft.alt==null">n/a</div>
 						</td>
 						<td>
-							<div v-if="aircraft.nzdate!=0" alt="{{aircraft.nzdate}}">
+							<div v-if="aircraft.nzdate!=0" v-bind:alt="aircraft.nzdate">
 								{{aircraft.timeago}}
 							</div>
 							<div v-if="aircraft.nzdate==0">n/a</div>
@@ -240,7 +240,8 @@
 
 <script>
 	import common from '../mixins.js';
-	import timeago from 'timeago.js';
+	import moment from 'moment';
+	Vue.prototype.$moment = moment;
 
 	export default {
 		props: ['year','month','day'],
@@ -305,14 +306,13 @@
 	methods: {
 		legendFilter: function(item) {
 			if (this.filterIsland=='north') {
-				if (item.$value.lng<172.5270994) return false;
+				if (item.lng<172.5270994) return false;
 			}
 			if (this.filterIsland=='south') {
-				if (item.$value.lng>174.8282816) return false;
+				if (item.lng>174.8282816) return false;
 			}
 			if (this.filterUnknown) {
-				console.log(item.$value);
-				if (item.$value.rego=='') return false;
+				if (item.rego=='') return false;
 			}
 			return true;
 		},
@@ -377,43 +377,41 @@
 			});
 		},
 		loadDays: function() {
-			this.$http.get('/api/v1/tracking/days').then(function (response) {
-				var responseJson = response.json();
-				this.days = responseJson.data;
-				if (this.year==null || this.month==null || this.day==null) {
+			var that = this;
+			window.axios.get('/api/v1/tracking/days').then(function (response) {
+				that.days = response.data.data;
+				if (that.year==null || that.month==null || that.day==null) {
 					// get the first day
-					this.flyingDay = this.days[0].day_date;
+					that.flyingDay = that.days[0].day_date;
 				} else {
 					// use the given date
-					this.flyingDay = this.year + '-' + this.month + '-' + this.day;
+					that.flyingDay = that.year + '-' + that.month + '-' + that.day;
 				}
-				this.dateToJumpTo=this.flyingDay;
+				that.dateToJumpTo=that.flyingDay;
 
-				this.loadTracks();
+				that.loadTracks();
 			});
 		},
 
 		loadAircraftDetails: function() {
 			var that = this;
-			this.$http.post('/api/v1/aircraft/hexes', {'hexes': this.hexes}).then(function (response) {
+			window.axios.post('/api/v1/aircraft/hexes', {'hexes': this.hexes}).then(function (response) {
 				
-				var responseJson = response.json();
-
-				for (var i in responseJson.data) {
-					var aircraft = responseJson.data[i];
+				for (var i in response.data.data) {
+					var aircraft = response.data.data[i];
 
 					// check if we are dealing with a glider rego or flarm hex code
 					var regoname = aircraft.rego.replace(/ZK-/g, '');
 
-					if (typeof(this.aircrafts[regoname])!=='undefined') {
+					if (typeof(that.aircrafts[regoname])!=='undefined') {
 						// it's a glider rego, merge with that
-						Object.assign(this.aircrafts[regoname], aircraft);
-						this.annotations[regoname].glyphText = aircraft.contest_id;
+						Object.assign(that.aircrafts[regoname], aircraft);
+						that.annotations[regoname].glyphText = aircraft.contest_id;
 					} else {
 						// it's a hex code, merge with that
-						Object.assign(this.aircrafts[aircraft.flarm], aircraft);
+						Object.assign(that.aircrafts[aircraft.flarm], aircraft);
 						// update annotations on the map
-						this.annotations[aircraft.flarm].glyphText = aircraft.contest_id;
+						that.annotations[aircraft.flarm].glyphText = aircraft.contest_id;
 					}
 
  				}
@@ -506,7 +504,7 @@
 			this.aircrafts[track[0].hex].gl = glfeet;
 			this.aircrafts[track[0].hex].agl = aglfeet;
 			this.aircrafts[track[0].hex].nzdate = nzdate;
-			this.aircrafts[track[0].hex].timeago = timeago().format(nzdate);
+			this.aircrafts[track[0].hex].timeago = moment(nzdate).fromNow();
 
 			var title = '';
 			if (track[0].alt!=null)  title = altfeet + ' ft, ';
@@ -587,29 +585,29 @@
 		loadTracks: function() {
 			var pings = 25;
 			if (this.showTrails==false) pings=2;
+			var that = this;
 
-			this.$http.get('/api/v1/tracking/' + this.flyingDay + '/pings/' + pings).then(function (response) {
-				var responseJson = response.json();
+			window.axios.get('/api/v1/tracking/' + that.flyingDay + '/pings/' + pings).then(function (response) {
 
 				// Process the track data to split up by aircraft
-				var aircraftTracks = this.splitTracksByAircraft(responseJson.data);
+				var aircraftTracks = that.splitTracksByAircraft(response.data.data);
 
 				// set up the annotations
-				aircraftTracks.map(this.createAnnotation);
+				aircraftTracks.map(that.createAnnotation);
 
 				// zoom to the extents, only if not 'live'
-				if (!this.liveLoading) this.map.showItems(this.annotationsArray);
+				if (!that.liveLoading) that.map.showItems(that.annotationsArray);
 
 				// follow if an item is selected and the option is set
-				if (this.liveLoading && this.followSelected && this.selectedPoint) {
-					this.centerOn(this.selectedPoint.lat, this.selectedPoint.lng)
+				if (that.liveLoading && that.followSelected && that.selectedPoint) {
+					that.centerOn(that.selectedPoint.lat, that.selectedPoint.lng)
 				} 
 
 				// draw the track lines
-				aircraftTracks.map(this.createPolyline);
+				aircraftTracks.map(that.createPolyline);
 
 				// load the aircraft details from the hex codes that have been collected
-				this.loadAircraftDetails();
+				that.loadAircraftDetails();
 
 			});
 		},
@@ -631,38 +629,37 @@
 			this.annotations[hex].selected=true;
 		},
 		selectAircraft: function(hex, zoom) {
-
+			var that=this;
 			// load aircraft track
-			this.$http.get('/api/v1/tracking/' + this.flyingDay + '/' + hex + '/pings').then(function (response) {
-				var responseJson = response.json();
+			window.axios.get('/api/v1/tracking/' + that.flyingDay + '/' + hex + '/pings').then(function (response) {
 
-				var coords = responseJson.data.map(function(point) {
+				var coords = response.data.data.map(function(point) {
 					return new mapkit.Coordinate(point.lat, point.lng);
 				});
 
 				var style = new mapkit.Style({
 					lineWidth: 4,
 					lineJoin: "round",
-					strokeColor: "#" + this.aircrafts[hex].colour,
+					strokeColor: "#" + that.aircrafts[hex].colour,
 					lineDash: [2, 5]
 				});
 
 				var polyline = new mapkit.PolylineOverlay(coords, { style: style });
 
 				// add this overlay if it doesn't exist already
-				if (this.activeAircraftTrackOverlay!=null)
+				if (that.activeAircraftTrackOverlay!=null)
 				{
 					// delete existing overlay
-					this.map.removeOverlay(this.activeAircraftTrackOverlay);
+					that.map.removeOverlay(that.activeAircraftTrackOverlay);
 				}
 				// ...and add it
-				this.activeAircraftTrackOverlay = this.map.addOverlay(polyline);
+				that.activeAircraftTrackOverlay = that.map.addOverlay(polyline);
 
 				// zoom to it's extents
-				if (zoom && this.zoomSelected) this.map.showItems(this.activeAircraftTrackOverlay, {animate: true});
+				if (zoom && that.zoomSelected) that.map.showItems(that.activeAircraftTrackOverlay, {animate: true});
 
 				// if following an aircraft, center on it when selected
-				if (this.followSelected) this.centerOn(responseJson.data[0].lat, responseJson.data[0].lng);
+				if (that.followSelected) that.centerOn(response.data.data[0].lat, response.data.data[0].lng);
 			});
 		}
 	}

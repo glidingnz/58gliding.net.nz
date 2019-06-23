@@ -1,8 +1,8 @@
 <template>
-
-	<a class="btn btn-primary" v-if="showEdit" style="float:right; margin-left: 10px;" href="/members/{{results.id}}/edit">Edit {{results.first_name}}</a>
-	<a class="btn btn-default" v-if="showEdit" style="float:right; margin-left: 10px;" href="http://members.gliding.co.nz/index.php?r=member/update&id={{results.id}}">Old Edit</a>
-	<a class="btn btn-default" style="float:right;" href="/members/{{results.id}}/achievements">Achievements</a>
+<div>
+	<a class="btn btn-primary" v-if="showEdit" style="float:right; margin-left: 10px;" v-bind:href="'/members/' + results.id + '/edit'">Edit {{results.first_name}}</a>
+	<a class="btn btn-default" v-if="showEdit" style="float:right; margin-left: 10px;" v-bind:href="'http://members.gliding.co.nz/index.php?r=member/update&id=' + results.id">Old Edit</a>
+	<a class="btn btn-default" style="float:right;" v-bind:href="'/members/' + results.id + '/achievements'">Achievements</a>
 
 	<h1 class="results-title"><a href="/members">Members</a> &raquo; {{results.first_name}} {{results.last_name}}</h1>
 
@@ -54,7 +54,7 @@
 				</tr>
 				<tr>
 					<td class="table-label col-xs-6">Email</td>
-					<td><a href="mailto:{{ results.email }}">{{results.email}}</a></td>
+					<td><a v-bind:href="'mailto:' + results.email">{{results.email}}</a></td>
 				</tr>
 				<tr>
 					<td class="table-label col-xs-6">Home Phone</td>
@@ -159,8 +159,9 @@
 		</div>
 	</div>
 
-</div>
+	</div>
 
+</div>
 </template>
 
 
@@ -178,16 +179,15 @@
 				showEdit: false
 			}
 		},
-		ready() {
+		mounted() {
 			this.loadMember();
 			if (window.Laravel.allowsEdit==true) this.showEdit=true;
 		},
 		methods: {
 			loadMember: function() {
-				this.$http.get('/api/v1/members/' + this.memberId, {params: this.state}).then(function (response) {
-					
-					var responseJson = response.json();
-					this.results = responseJson.data;
+				var that=this;
+				window.axios.get('/api/v1/members/' + this.memberId, {params: this.state}).then(function (response) {
+					that.results = response.data.data;
 				});
 			}
 		}

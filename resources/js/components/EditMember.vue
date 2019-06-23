@@ -1,5 +1,5 @@
 <template>
-
+<div>
 	<h1 class="results-title"><a href="/members">Members</a> &raquo; {{member.first_name}} {{member.last_name}}</h1>
 
 	<div class="row">
@@ -52,15 +52,15 @@
 				<tr>
 					<td class="table-label col-xs-6">Date of Birth</td>
 					<td>
-						<input v-if="admin" type="text" v-model="member.date_of_birth" class="form-control">
-						<span v-if="!admin">{{member.date_of_birth}}</span>
+						<input v-if="showAdmin" type="text" v-model="member.date_of_birth" class="form-control">
+						<span v-if="showAdmin">{{member.date_of_birth}}</span>
 					</td>
 				</tr>
 				<tr>
 					<td class="table-label col-xs-6">OO Number</td>
 					<td>
-						<input type="text" v-model="member.observer_number" class="form-control" v-if="admin">
-						<span v-if="!admin">{{member.observer_number}}</span>
+						<input type="text" v-model="member.observer_number" class="form-control" v-if="showAdmin">
+						<span v-if="showAdmin">{{member.observer_number}}</span>
 					</td>
 				</tr>
 				<tr>
@@ -127,19 +127,19 @@
 				<tr>
 					<td class="table-label col-xs-6">GNZ Number</td>
 					<td>
-						<input type="text" v-model="member.nzga_number" class="form-control" v-if="admin">
-						<span v-if="!admin">{{member.nzga_number}}</span>
+						<input type="text" v-model="member.nzga_number" class="form-control" v-if="showAdmin">
+						<span v-if="showAdmin">{{member.nzga_number}}</span>
 					</td>
 				</tr>
-				<tr v-if="admin">
+				<tr v-if="showAdmin">
 					<td class="table-label col-xs-6">Access Level (old system)</td>
 					<td>{{member.access_level}}</td>
 				</tr>
-				<tr v-if="admin">
+				<tr v-if="showAdmin">
 					<td class="table-label col-xs-6">Created</td>
 					<td>{{member.created}}</td>
 				</tr>
-				<tr v-if="admin">
+				<tr v-if="showAdmin">
 					<td class="table-label col-xs-6">Modified</td>
 					<td>{{member.modified}}</td>
 				</tr>
@@ -158,7 +158,7 @@
 					<td class="table-label col-xs-6">Membership Type</td>
 					<td>
 
-						<select v-model="member.membership_type" class="form-control" v-if="admin">
+						<select v-model="member.membership_type" class="form-control" v-if="showAdmin">
 							<option value="Resigned">Resigned</option>
 							<option value="Flying">Flying</option>
 							<option value="Mag Only">Mag Only</option>
@@ -171,50 +171,50 @@
 							<option value="">None</option>
 						</select>
 
-						<span v-if="!admin">{{member.membership_type}}</span>
+						<span v-if="showAdmin">{{member.membership_type}}</span>
 
 					</td>
 				</tr>
 				<tr>
 					<td class="table-label col-xs-6">Club</td>
 					<td>
-						<select  v-if="admin" class="form-control input-sm" name="club" v-model="member.club">
+						<select  v-if="showAdmin" class="form-control input-sm" name="club" v-model="member.club">
 							<option v-bind:value="null">None</option>
 							<option v-for="org in orgs" v-bind:value="org.gnz_code">{{org.name}}</option>
 						</select>
 
 
-						<span v-if="!admin">{{member.club}}</span>
+						<span v-if="showAdmin">{{member.club}}</span>
 					</td>
 				</tr>
-				<tr  v-if="admin" >
+				<tr  v-if="showAdmin" >
 					<td class="table-label col-xs-6">Date Joined / Rejoined Club</td>
 					<td><input type="text" v-model="member.date_joined" class="form-control"></td>
 				</tr>
-				<tr  v-if="admin" >
+				<tr  v-if="showAdmin" >
 					<td class="table-label col-xs-6">Previous Clubs</td>
 					<td><input type="text" v-model="member.previous_clubs" class="form-control"></td>
 				</tr>
-				<tr  v-if="admin" >
+				<tr  v-if="showAdmin" >
 					<td class="table-label col-xs-6">GNZ number of Family Member</td>
 					<td><input type="text" v-model="member.gnz_family_member_number" class="form-control"></td>
 				</tr>
-				<tr  v-if="admin" >
+				<tr  v-if="showAdmin" >
 					<td class="table-label col-xs-6">Resigned</td>
 					<td><input type="text" v-model="member.resigned" class="form-control"></td>
 				</tr>
-				<tr  v-if="admin" >
+				<tr  v-if="showAdmin" >
 					<td class="table-label col-xs-6">Resigned Comments</td>
 					<td><input type="text" v-model="member.resigned_comment" class="form-control"></td>
 				</tr>
 
-				<tr  v-if="admin" >
+				<tr  v-if="showAdmin" >
 					<td></td>
 					<td><button class="btn btn-primary btn-sm" v-on:click="saveMember()">Save Changes</button></td>
 				</tr>
 			</table>
 
-			<table class="table table-striped" v-if="admin" >
+			<table class="table table-striped" v-if="showAdmin" >
 				<tr>
 					<th colspan="2">Comments</th>
 				</tr>
@@ -229,6 +229,7 @@
 
 			
 
+			</div>
 		</div>
 	</div>
 
@@ -251,27 +252,26 @@
 				showAdmin: false
 			}
 		},
-		ready() {
+		mounted() {
 			this.loadOrgs();
 			this.loadMember();
 			if (window.Laravel.admin==true) this.showAdmin=true;
 		},
 		methods: {
 			loadMember: function() {
-				this.$http.get('/api/v1/members/' + this.memberId, {params: this.state}).then(function (response) {
-					var responseJson = response.json();
-
-					this.member = responseJson.data;
+				var that = this;
+				window.axios.get('/api/v1/members/' + this.memberId, {params: this.state}).then(function (response) {
+					that.member = response.data.data;
 				});
 			},
 			loadOrgs: function() {
-				this.$http.get('/api/v1/orgs/').then(function (response) {
-					var responseJson = response.json();
-					this.orgs = responseJson.data;
+				var that = this;
+				window.axios.get('/api/v1/orgs/').then(function (response) {
+					that.orgs = response.data.data;
 				});
 			},
 			saveMember: function() {
-				this.$http.put('/api/v1/members/' + this.memberId, this.member).then(function (response) {
+				window.axios.put('/api/v1/members/' + this.memberId, this.member).then(function (response) {
 					messages.$emit('success', 'Member Updated');
 				});
 			}

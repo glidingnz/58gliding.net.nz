@@ -675,7 +675,7 @@ class TrackingApiController extends ApiController
 
 	protected function _get_table_name($dayDate)
 	{
-		if ($dayDate==null || $dayDate=='') return false;
+		if ($dayDate==null || $dayDate=='' || $dayDate=='null') return false;
 		$date = new \DateTime($dayDate);
 		$table_name = 'data' . $date->format('Ymd');
 

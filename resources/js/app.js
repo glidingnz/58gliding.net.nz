@@ -8,6 +8,7 @@ require('./vendor/native.history.js');
 require('./bootstrap');
 
 window.Vue = require('vue');
+window.messages = new Vue();
 
 /**
  * The following block of code may be used to automatically register your
@@ -28,9 +29,9 @@ Vue.component('orgs-component', require('./components/Orgs.vue').default);
 Vue.component('aircraft', require('./components/Aircraft.vue').default);
 Vue.component('edit-aircraft', require('./components/EditAircraft.vue').default);
 Vue.component('members', require('./components/Members.vue').default);
-// Vue.component('member', require('./components/Member.vue').default);
-// Vue.component('edit-member', require('./components/EditMember.vue').default);
-// Vue.component('tracking', require('./components/Tracking.vue').default);
+Vue.component('member', require('./components/Member.vue').default);
+Vue.component('edit-member', require('./components/EditMember.vue').default);
+Vue.component('tracking', require('./components/Tracking.vue').default);
 // Vue.component('tracking2', require('./components/Tracking2.vue').default);
 // Vue.component('track', require('./components/Track.vue').default);
 // Vue.component('altitude-chart', require('./components/AltitudeChart.vue').default);
