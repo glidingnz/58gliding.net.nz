@@ -59,9 +59,7 @@ div.chart {
 		},
 		methods: {
 		},
-		created() {
-		},
-	compiled() {
+	mounted() {
 		Highcharts.setOptions({
 			time: {
 				useUTC: false

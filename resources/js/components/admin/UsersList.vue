@@ -1,16 +1,7 @@
 <template>
-	<!-- <div class="form-inline">
-		<div class="form-group">
-			<label for="select-org">Filter to organisation</label>
-			<select v-model="selectedOrg" id="select-org" class="form-control">
-				<option value="all">All Users</option>
-				<option v-for="org in orgs" value="{{org.id}}">{{ org.name }}</option>
-			</select>
-		</div>
-	</div> -->
-
+<div>
 	<div class="btn-group pull-right " role="group">
-		<input type="text" class="form-control" v-model="q" v-on:keyup="search() | debounce 300" size="30" placeholder="Search">
+		<input type="text" class="form-control" v-model="q" v-on:keyup="search()" size="30" placeholder="Search">
 	</div>
 
 	<div class="btn-group" role="group">
@@ -43,7 +34,7 @@
 				<i v-show="!result.gnz_active" class="fa fa-times error"></i>
 			</td>
 			<td class="center">{{ result.gnz_id }}</td>
-			<td class="center" v-if="showEdit"><a href="/admin/users/{{ result.id }}/roles" class="btn btn-primary btn-xs">Roles</a></td>
+			<td class="center" v-if="showEdit"><a v-bind:href="'/admin/users/' + result.id + '/roles'" class="btn btn-primary btn-xs">Roles</a></td>
 		</tr>
 	</table>
 
@@ -52,7 +43,7 @@
 		<button type="button" class="btn btn-default btn-sm disabled">Page {{ page }} of {{ last_page }}</button>
 		<button type="button" class="btn btn-default btn-sm" v-on:click="next()">Next &gt;</button>
 	</div>
-
+</div>
 </template>
 
 <script>
@@ -91,15 +82,16 @@ export default {
 			// this.$http.get('/api/v1/orgs').then(function (response) {
 			// 	this.orgs = response.data.data;
 			// });
+			var that = this;
 			var data = {sort: this.sort, direction: this.direction, page: this.page, q: this.q};
-			this.$http.get('/api/v1/users', {params: data}).then(function (response) {
-				var responseJson = response.json();
+			window.axios.get('/api/v1/users', {params: data}).then(function (response) {
+				var responseJson = response.data;
 
-				this.results = responseJson.data;
-				this.last_page = responseJson.data.last_page;
-				this.total = responseJson.data.total;
-				if (this.page > this.last_page && this.last_page>0) {
-					this.page = 1;
+				that.results = responseJson.data;
+				that.last_page = responseJson.data.last_page;
+				that.total = responseJson.data.total;
+				if (that.page > that.last_page && that.last_page>0) {
+					that.page = 1;
 				}
 			});
 		},

@@ -1,6 +1,3 @@
-
-<template>
-
 <style>
 	.map {
 		width: 100%; 
@@ -15,6 +12,7 @@
 	}
 </style>
 
+<template>
 <div>
 	<div v-show="mapStatus=='loader'">
 		Loading...
@@ -23,11 +21,7 @@
 	<div class="row" style="margin-top: 20px;">
 		<div class="col-md-9">
 
-			<div id="map" class="map"  v-bind:class="[  fullScreen ? 'fullscreen' : '']">
-<!-- 				<button class="exitFullScreen btn btn-default" v-on:click="toggleFullScreen">Full Screen</button>
- -->
-<!-- 				<button v-show="fullScreen || collapseLegend" class="toggleLegend fa btn btn-sm btn-default" v-on:click="collapseLegend=!collapseLegend" v-bind:class="[  collapseLegend ? 'fa-angle-down' : 'fa-angle-up']" style="pointer-events: auto;">&nbsp;<span v-show="!collapseLegend">Hide</span><span v-show="collapseLegend">Show</span> Legend</button>
- -->			</div>
+			<div id="map" class="map"  v-bind:class="[  fullScreen ? 'fullscreen' : '']"></div>
 
 		</div>
 		<div class="col-md-3">
@@ -84,8 +78,8 @@
 				<tr>
 					<td>Links</td>
 					<td>
-						<a href="https://www.google.com/maps/place/{{highlightedPoint.lat}}+{{highlightedPoint.lng}}/">Google Maps</a>
-						&nbsp; <a href="http://maps.apple.com/?q={{highlightedPoint.lat}},{{highlightedPoint.lng}}">Apple Maps</a>
+						<a v-bind:href="'https://www.google.com/maps/place/' + highlightedPoint.lat + '+' + highlightedPoint.lng + '/'">Google Maps</a>
+						&nbsp; <a v-bind:href="'http://maps.apple.com/?q=' + highlightedPoint.lat + ',' + highlightedPoint.lng">Apple Maps</a>
 					</td>
 				</tr>
 			</table>
@@ -101,7 +95,6 @@
 <script>
 
 	import common from '../mixins.js';
-	import timeago from 'timeago.js';
 
 	export default {
 		props: ['year','month','day','rego', 'hex'],
@@ -120,7 +113,8 @@
 				coordinate: null,
 				highlightedPoint: null,
 				selectedPoint: null,
-				noAltBands: []
+				noAltBands: [],
+				fullScreen: false
 			}
 		},
 	created: function() {
@@ -136,14 +130,6 @@
 		script.src = "https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js";
 		document.body.appendChild(script);
 		script.onload = () => {
-
-			// var script2 = document.createElement('script');
-			// script2.type = 'text/javascript';
-			// script2.src = "/js/mapkitzoom.js";
-			// document.body.appendChild(script2);
-			// script.onload = () => {
-			// 	this.mapkit.enableCompatibilityZoom(false);
-			// }
 
 			this.mapkit = window.mapkit;
 			this.loadMap();
@@ -189,15 +175,14 @@
 		},
 		loadTrack: function() {
 
+			var that = this;
 
 			// load aircraft track
-			this.$http.get('/api/v1/tracking/' + this.flyingDay + '/' + this.hex + '/pings?order=asc').then(function (response) {
-				var responseJson = response.json();
-				var that = this;
-
+			window.axios.get('/api/v1/tracking/' + this.flyingDay + '/' + this.hex + '/pings?order=asc').then(function (response) {
+				var responseJson = response.data;
 
 				// add in the unix time to the object for searching later
-				this.track = responseJson.data.map(function(point) {
+				that.track = responseJson.data.map(function(point) {
 					point.unixtime = that.createDateFromMysql(point.thetime).getTime();
 					point.nzdate = that.createDateFromMysql(point.thetime);
 
@@ -211,8 +196,10 @@
 					return point;
 				});
 
+				that.selectedPoint = that.track[0];
+
 				// create an array suitable for highcharts
-				this.altitudes = this.track.map(function(point) {
+				that.altitudes = that.track.map(function(point) {
 					var alt = Math.round(point.alt * 3.28084);
 					if (point.alt==null) alt=null;
 					var newPoint = [point.unixtime, alt];
@@ -221,12 +208,12 @@
 
 				// ensure NULL values are previous
 				var previous=0;
-				for (var i=0; i<this.altitudes.length; i++) {
-					if (this.altitudes[i][1]==null) {
-						this.altitudes[i][1]=previous;
-						this.noAltBands.push(this.altitudes[i][0]);
+				for (var i=0; i<that.altitudes.length; i++) {
+					if (that.altitudes[i][1]==null) {
+						that.altitudes[i][1]=previous;
+						that.noAltBands.push(that.altitudes[i][0]);
 					} else {
-						previous=this.altitudes[i][1];
+						previous=that.altitudes[i][1];
 					}
 				}
 
@@ -244,41 +231,26 @@
 				var polyline = new mapkit.PolylineOverlay(coords, { style: style });
 
 				// create a point for the last point
-				this.coordinate = new mapkit.Coordinate(this.track[this.track.length-1].lat, 
-				                                       this.track[this.track.length-1].lng);
-				this.annotation = new mapkit.MarkerAnnotation(this.coordinate);
-				this.map.showItems(this.annotation);
+				that.coordinate = new mapkit.Coordinate(that.track[that.track.length-1].lat, 
+				                                       that.track[that.track.length-1].lng);
+				that.annotation = new mapkit.MarkerAnnotation(that.coordinate);
+				that.map.showItems(that.annotation);
 
-				this.highlightedPoint = this.track[this.track.length-1];
+				that.highlightedPoint = that.track[that.track.length-1];
 
 
-
-				// add points for each point
-
-				// var annotations = responseJson.data.map(function(point) {
-				// 	var coordinate = new mapkit.Coordinate(point.lat, point.lng);
-				// 	var annotation = new mapkit.MarkerAnnotation(coordinate, {
-				// 		clusteringIdentifier: "points"
-				// 	});
-				// 	return annotation;
-				// });
-
-				//this.map.showItems(annotations);
-
-				// add this overlay if it doesn't exist already
-				if (this.activeAircraftTrackOverlay!=null)
+				// add that overlay if it doesn't exist already
+				if (that.activeAircraftTrackOverlay!=null)
 				{
 					// delete existing overlay
-					this.map.removeOverlay(this.activeAircraftTrackOverlay);
+					that.map.removeOverlay(that.activeAircraftTrackOverlay);
 				}
 				// ...and add it
-				this.activeAircraftTrackOverlay = this.map.addOverlay(polyline);
+				that.activeAircraftTrackOverlay = that.map.addOverlay(polyline);
 
 				// zoom to it's extents
-				this.map.showItems(this.activeAircraftTrackOverlay, {animate: true});
+				that.map.showItems(that.activeAircraftTrackOverlay, {animate: true});
 
-				// if following an aircraft, center on it when selected
-				//if (this.followSelected) this.centerOn(responseJson.data[0].lat, responseJson.data[0].lng);
 			});
 		},
 		loadMap: function () {
@@ -293,20 +265,6 @@
 				showsMapTypeControl: true
 			});
 			this.mapStatus = 'map';
-			// this.map.addEventListener("select", function(e) {
-			// 	var hex = e.annotation.data.hex;
-			// 	that.selectedAircraft = that.aircrafts[e.annotation.data.hex];
-			// 	that.selectedPoint = e.annotation.data;
-			// 	that.selectAircraft(hex, true);
-			// });
-			// this.map.addEventListener("deselect", function(e) {
-			// 	that.selectedAircraft = null;
-			// 	that.selectedPoint = null;
-
-			// 	if (that.activeAircraftTrackOverlay!=null) {
-			// 		that.map.removeOverlay(that.activeAircraftTrackOverlay);
-			// 	}
-			// });
 			this.mapkit.addEventListener("configuration-change", function(event) {
 				switch (event.status) {
 					case "Initialized":

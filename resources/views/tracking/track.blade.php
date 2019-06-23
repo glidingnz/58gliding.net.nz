@@ -5,7 +5,7 @@
 <div class="container-fluid">
 
 	<?php if (isset($year) && isset($month) && isset($day) && isset($rego) && isset($hex)) { ?>
-		<track year="{{$year}}" month="{{$month}}" day="{{$day}}" rego="{{$rego}}" hex="{{$hex}}"></track>
+		<trackd year="{{$year}}" month="{{$month}}" day="{{$day}}" rego="{{$rego}}" hex="{{$hex}}"></trackd>
 	<?php } else { ?>
 		Aircraft on that day not found
 	<?php } ?>
