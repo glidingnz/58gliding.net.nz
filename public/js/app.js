@@ -79801,15 +79801,13 @@ Vue.component('edit-aircraft', __webpack_require__(/*! ./components/EditAircraft
 Vue.component('members', __webpack_require__(/*! ./components/Members.vue */ "./resources/js/components/Members.vue")["default"]);
 Vue.component('member', __webpack_require__(/*! ./components/Member.vue */ "./resources/js/components/Member.vue")["default"]);
 Vue.component('edit-member', __webpack_require__(/*! ./components/EditMember.vue */ "./resources/js/components/EditMember.vue")["default"]);
-Vue.component('tracking', __webpack_require__(/*! ./components/Tracking.vue */ "./resources/js/components/Tracking.vue")["default"]); // Vue.component('tracking2', require('./components/Tracking2.vue').default);
-
+Vue.component('tracking', __webpack_require__(/*! ./components/Tracking.vue */ "./resources/js/components/Tracking.vue")["default"]);
 Vue.component('trackd', __webpack_require__(/*! ./components/Trackd.vue */ "./resources/js/components/Trackd.vue")["default"]);
 Vue.component('altitude-chart', __webpack_require__(/*! ./components/AltitudeChart.vue */ "./resources/js/components/AltitudeChart.vue")["default"]);
 Vue.component('users-list', __webpack_require__(/*! ./components/admin/UsersList.vue */ "./resources/js/components/admin/UsersList.vue")["default"]);
 Vue.component('user-roles', __webpack_require__(/*! ./components/admin/UserRoles.vue */ "./resources/js/components/admin/UserRoles.vue")["default"]);
 Vue.component('achievements', __webpack_require__(/*! ./components/Achievements.vue */ "./resources/js/components/Achievements.vue")["default"]);
-Vue.component('edit-achievements', __webpack_require__(/*! ./components/EditAchievements.vue */ "./resources/js/components/EditAchievements.vue")["default"]); // Vue.component('Spots', require('./components/Spots.vue').default);
-
+Vue.component('edit-achievements', __webpack_require__(/*! ./components/EditAchievements.vue */ "./resources/js/components/EditAchievements.vue")["default"]);
 Vue.component('ratings', __webpack_require__(/*! ./components/Ratings.vue */ "./resources/js/components/Ratings.vue")["default"]);
 Vue.component('ratings-report', __webpack_require__(/*! ./components/RatingsReport.vue */ "./resources/js/components/RatingsReport.vue")["default"]);
 /**
