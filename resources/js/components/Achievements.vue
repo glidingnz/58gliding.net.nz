@@ -17,7 +17,7 @@
 
 		<div class="badges">
 			<div v-for="result in results" class="badge-panel">
-				<img v-bind:src="'/images/badges_256/' + result.badge.slug + '.png'" alt="{{result.badge.name}}" width="128" height="128"><br>
+				<img v-bind:src="'/images/badges_256/' + result.badge.slug + '.png'" v-bind:alt="result.badge.name" width="128" height="128"><br>
 				{{result.badge.name}}<br>
 				<span v-if="result.badge_number">#</span>{{result.badge_number}} {{result.awarded_date}}
 			</div>
@@ -44,15 +44,14 @@
 				showEdit: false
 			}
 		},
-		ready() {
+		mounted() {
 			this.load();
 		},
 		methods: {
 			load: function() {
-				this.$http.get('/api/v1/achievements?member_id=' + this.memberId).then(function (response) {
-					
-					var responseJson = response.json();
-					this.results = responseJson.data;
+				var that = this;
+				window.axios.get('/api/v1/achievements?member_id=' + this.memberId).then(function (response) {
+					that.results = response.data.data;
 				});
 			}
 		}

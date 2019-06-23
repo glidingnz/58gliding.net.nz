@@ -1,10 +1,13 @@
 @extends('layouts.app')
 
+@section('scripts')
+	<script>
+		window.Laravel.allowsEdit = <?php echo json_encode(isset($allows_edit) && $allows_edit==true ? true : false); ?>;
+	</script>
+@endsection
+
 @section('content')
 
-<script>
-	window.Laravel.allowsEdit = <?php echo json_encode(isset($allows_edit) && $allows_edit==true ? true : false); ?>;
-</script>
 
 <div class="container" id="members">
 

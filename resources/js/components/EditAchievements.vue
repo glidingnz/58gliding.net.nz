@@ -65,34 +65,34 @@
 				}
 			}
 		},
-		ready() {
+		mounted() {
 			this.load();
 			this.loadBadges();
 		},
 		methods: {
 			load: function() {
-				this.$http.get('/api/v1/achievements?member_id=' + this.memberId).then(function (response) {
-					var responseJson = response.json();
-					this.results = responseJson.data;
+				var that = this;
+				window.axios.get('/api/v1/achievements?member_id=' + this.memberId).then(function (response) {
+					that.results = response.data.data;
 				});
 			},
 			loadBadges: function() {
-				this.$http.get('/api/v1/badges?exclude=fai').then(function (response) {
-					var responseJson = response.json();
-					this.badges = responseJson.data;
+				var that = this;
+				window.axios.get('/api/v1/badges?exclude=fai').then(function (response) {
+					that.badges = response.data.data;
 				});
 			},
 			addAchievement: function() {
-				this.$http.post('/api/v1/achievements', this.newBadge).then(function (response) {
-					this.load();
+				var that = this;
+				window.axios.post('/api/v1/achievements', this.newBadge).then(function (response) {
+					that.load();
 				});
 			},
 			deleteAchievement: function(achievement_id) {
+				var that = this;
 				var data = {};
-				//data._method = 'DELETE';
-
-				this.$http.delete('/api/v1/achievements/' + achievement_id, data).then(function (response) {
-					this.load();
+				window.axios.delete('/api/v1/achievements/' + achievement_id, data).then(function (response) {
+					that.load();
 				});
 			}
 		}

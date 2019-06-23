@@ -63,6 +63,7 @@ class AchievementsApiController extends ApiController
 		$item = new BadgeMember;
 		$item->member_id=$request->input('member_id');
 		$item->badge_id=$request->input('badge_id');
+		$item->comments='';
 		if ($request->input('awarded_date')) $item->awarded_date=$request->input('awarded_date');
 		if ($request->input('badge_number')) $item->badge_number=$request->input('badge_number');
 		if ($item->save())
