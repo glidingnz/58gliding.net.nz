@@ -28,7 +28,7 @@
 			</tr>
 			<template v-for="rating in ratings">
 				<tr>
-					<td><span class="name"><a href="/members/{{rating.id}}/ratings?from=ratings">{{rating.first_name}} {{rating.last_name}}</a></span> <a href="/members/{{rating.id}}/ratings?from=ratings" class="btn btn-xs btn-primary hidden-sm hidden-md hidden-lg" v-if="allowsEdit">Edit</a></td>
+					<td><span class="name"><a v-bind:href="'/members/' + rating.id + '/ratings?from=ratings'">{{rating.first_name}} {{rating.last_name}}</a></span> <a v-bind:href="'/members/' + rating.id + '/ratings?from=ratings'" class="btn btn-xs btn-primary hidden-sm hidden-md hidden-lg" v-if="allowsEdit">Edit</a></td>
 					<td class="hidden-xs">{{rating.nzga_number}}</td>
 					<td>
 						<span class=" hidden-sm hidden-md hidden-lg">Instructor: </span><span class="fa fa-check" v-if="rating.instructor"></span><span class="fa fa-times hidden-sm hidden-md hidden-lg" v-if="!rating.instructor"></span>
@@ -77,7 +77,7 @@
 						<span v-if="passengersGood(rating)=='success'">Medical expires {{rating.medical_passenger_expires_togo}}</span>
 					</td>
 					<td class="hidden-xs" v-if="allowsEdit">
-						<a href="/members/{{rating.id}}/ratings?from=ratings" class="btn btn-xs btn-primary">Edit</a>
+						<a v-bind:href="'/members/' + rating.id + '/ratings?from=ratings'" class="btn btn-xs btn-primary">Edit</a>
 					</td>
 				</tr>
 				<tr>
@@ -91,7 +91,8 @@
 
 <script>
 import common from '../mixins.js';
-import timeago from 'timeago.js';
+	import moment from 'moment';
+	Vue.prototype.$moment = moment;
 
 export default {
 	mixins: [common],
@@ -109,16 +110,20 @@ export default {
 			return window.Laravel.APP_DOMAIN;
 		},
 		loadRatings: function() {
-			this.$http.get('/api/v1/ratings/report', {params: {org: this.org}}).then(function (response) {
+			var that = this;
+			window.axios.get('/api/v1/ratings/report', {params: {org: this.org}}).then(function (response) {
 				// success callback
-				var responseJson = response.json();
-				this.ratings = responseJson.data;
+				that.ratings = response.data.data;
 
-				var timeagoInstance = timeago();
-				for (var i=0; i<this.ratings.length; i++) {
-					this.ratings[i].bfr_expires_togo = timeagoInstance.format(this.ratings[i].bfr_expires);
-					this.ratings[i].medical_expires_togo = timeagoInstance.format(this.ratings[i].medical_expires);
-					this.ratings[i].medical_passenger_expires_togo = timeagoInstance.format(this.ratings[i].medical_passenger_expires);
+				//var timeagoInstance = timeago();
+				for (var i=0; i<that.ratings.length; i++) {
+					// that.ratings[i].bfr_expires_togo = timeagoInstance.format(that.ratings[i].bfr_expires);
+					// that.ratings[i].medical_expires_togo = timeagoInstance.format(that.ratings[i].medical_expires);
+					// that.ratings[i].medical_passenger_expires_togo = timeagoInstance.format(that.ratings[i].medical_passenger_expires);
+					that.ratings[i].bfr_expires_togo = moment(that.ratings[i].bfr_expires).fromNow();
+					that.ratings[i].medical_expires_togo = moment(that.ratings[i].medical_expires).fromNow();
+					that.ratings[i].medical_passenger_expires_togo = moment(that.ratings[i].medical_passenger_expires).fromNow();
+
 				}
 			});
 		},

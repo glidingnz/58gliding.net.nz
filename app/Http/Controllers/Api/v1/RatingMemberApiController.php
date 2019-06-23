@@ -89,6 +89,7 @@ class RatingMemberApiController extends ApiController
 
 		$item = new RatingMember;
 		$item->expires = null;
+		$item->revoked_by = null;
 
 		// calculate expires date from months given if given
 		if ($request->input('expires')) {
@@ -155,56 +156,12 @@ class RatingMemberApiController extends ApiController
 
 	public function ratingsReport(Request $request)
 	{
-		// $ratingQuery = DB::table('rating_member')
-		// 	->leftJoin('gnz_member AS authorising_member', 'authorising_member_id', '=', 'authorising_member.id')
-		// 	->leftJoin('ratings', 'rating_id', '=', 'ratings.id')
-		// 	->leftJoin('users', 'granted_by_user_id', '=', 'users.id')
-		// 	->select(
-		// 		'authorising_member.first_name AS auth_firstname', 
-		// 		'authorising_member.last_name AS auth_lastname',
-		// 		'authorising_member.nzga_number',
-		// 		'users.first_name',
-		// 		'users.last_name',
-		// 		'ratings.*',
-		// 		'rating_member.*'
-		// 	);
-
-
-		// $query = DB::table('gnz_member');
-		// $query->where('club','=',$request->input('org'));
-		// $query->leftJoin('rating_member as bfr', function($join){
-		// 	$join->on('bfr.member_id', '=', 'gnz_member.id');
-		// 	$join->on('bfr.rating_id', '=',  DB::raw("2"));
-		// });
-		// $query->leftJoin('rating_member as gnz_medical', function($join){
-		// 	$join->on('gnz_medical.member_id', '=', 'gnz_member.id');
-		// 	$join->on('gnz_medical.rating_id', '=', DB::raw("3"));
-		// });
-
-		// $query->select(
-		// 	'first_name',
-		// 	'middle_name',
-		// 	'last_name',
-		// 	'nzga_number',
-		// 	'bfr.expires AS bfr_expire',
-		// 	'gnz_medical.expires AS gnz_medical_expire'
-		// );
-
-		// $ratings = DB::select('SELECT 
-		// 	first_name, middle_name, last_name, nzga_number, 
-		// 	bfr.expires AS bfr_expire, 
-		// 	gnz_medical.expires AS gnz_medical_expire
-		// 	FROM gnz_member
-		// 	LEFT JOIN rating_member AS gnz_medical ON gnz_medical.member_id=gnz_member.id AND gnz_medical.rating_id=3
-		// 	LEFT JOIN rating_member AS bfr ON bfr.member_id=gnz_member.id AND bfr.rating_id=2
-		// 	WHERE club=:org', ['org' => $request->input('org')]);
-
 		$ratings = DB::select('SELECT 
 			id, first_name, middle_name, last_name, nzga_number, instructor, date_of_birth, bfr.bfr_expires, medical.medical_expires, bfr.bfr_awarded, medical.medical_awarded, qgp.qgp_awarded,
 				IF(DATE_SUB(medical.medical_awarded, INTERVAL 40 YEAR) < date_of_birth, medical.five_year_medical_expire, medical.two_year_medical_expire) AS medical_passenger_expires
 			FROM gnz_member
-			LEFT JOIN (SELECT MAX(expires) AS bfr_expires, member_id, awarded AS bfr_awarded FROM rating_member AS bfr WHERE rating_id=2 AND expires IS NOT NULL GROUP BY member_id) AS bfr ON bfr.member_id=gnz_member.id
-			LEFT JOIN (SELECT MAX(awarded) AS medical_awarded, member_id, expires AS medical_expires, DATE_ADD(MAX(awarded), INTERVAL 2 YEAR) AS two_year_medical_expire, DATE_ADD(MAX(awarded), INTERVAL 5 YEAR) AS five_year_medical_expire  FROM rating_member AS medical WHERE rating_id>=3 AND rating_id<=7  GROUP BY member_id) AS medical ON medical.member_id=gnz_member.id
+			LEFT JOIN (SELECT MAX(expires) AS bfr_expires, member_id, MAX(awarded) AS bfr_awarded FROM rating_member AS bfr WHERE rating_id=2 AND expires IS NOT NULL GROUP BY member_id) AS bfr ON bfr.member_id=gnz_member.id
+			LEFT JOIN (SELECT MAX(awarded) AS medical_awarded, member_id, MAX(expires) AS medical_expires, DATE_ADD(MAX(awarded), INTERVAL 2 YEAR) AS two_year_medical_expire, DATE_ADD(MAX(awarded), INTERVAL 5 YEAR) AS five_year_medical_expire  FROM rating_member AS medical WHERE rating_id>=3 AND rating_id<=7  GROUP BY member_id) AS medical ON medical.member_id=gnz_member.id
 			LEFT JOIN (SELECT MAX(awarded) AS qgp_awarded, member_id FROM rating_member AS qgp WHERE rating_id=1 GROUP BY member_id) AS qgp ON qgp.member_id=gnz_member.id
 			WHERE club=:org ORDER BY last_name', ['org' => $request->input('org')]);
 

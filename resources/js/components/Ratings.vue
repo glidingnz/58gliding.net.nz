@@ -44,7 +44,7 @@
 				<span v-show="peopleSearchResults.length==0">No members found</span>
 
 
-				<a class="btn btn-default" v-on:click="insert()" class="pull-right">Add Rating</a>
+				<a class="btn btn-default pull-right" v-on:click="insert()">Add Rating</a>
 			</div>
 
 
@@ -77,7 +77,7 @@
 							{{result.timeToExpire}} ({{result.expires}})
 						</span>
 					</td>
-					<td><a href="/members/{{result.authorising_member_id}}/">{{result.auth_firstname}} {{result.auth_lastname}} {{result.nzga_number}}</a></td>
+					<td><a v-bind:href="'/members/' + result.authorising_member_id + '/'">{{result.auth_firstname}} {{result.auth_lastname}} {{result.nzga_number}}</a></td>
 					<td>{{result.first_name}} {{result.last_name}}</td>
 					<td>{{result.notes}}</td>
 				</tr>
@@ -102,7 +102,8 @@
 
 <script>
 	import common from '../mixins.js';
-	import timeago from 'timeago.js';
+	import moment from 'moment';
+	Vue.prototype.$moment = moment;
 
 	export default {
 		mixins: [common],
@@ -112,6 +113,7 @@
 				ratings: [],
 				memberRatings: [],
 				loaded: false,
+				loading: false,
 				presetExpires: 'never',
 				test: '',
 				newRating: {}, // the object to store the new rating details
@@ -120,22 +122,22 @@
 				authorising_member_id: 0
 			}
 		},
-		ready() {
+		mounted() {
 			this.newRating.awarded = new Date().toJSON().slice(0, 10);
 			this.load();
 		},
 		methods: {
 			load: function() {
-
-				this.$http.get('/api/v1/ratings').then(function (response) {
-					this.loaded = true;
-					var responseJson = response.json();
-					this.ratings = responseJson.data;
+				var that = this;
+				window.axios.get('/api/v1/ratings').then(function (response) {
+					that.loaded = true;
+					that.ratings = response.data.data;
 				});
 
 				this.getMemberRatings();
 			},
 			insert: function() {
+				var that = this;
 
 				this.newRating.member_id = this.memberId;
 				this.newRating.expires = this.presetExpires;
@@ -151,9 +153,8 @@
 				}
 
 				// create the new rating
-				this.$http.post('/api/v1/members/' + this.memberId + '/ratings', this.newRating).then(function (response) {
-					var responseJson = response.json();
-					this.getMemberRatings();
+				window.axios.post('/api/v1/members/' + this.memberId + '/ratings', this.newRating).then(function (response) {
+					that.getMemberRatings();
 				});
 			},
 			selectRating: function(ratingKey)
@@ -184,9 +185,8 @@
 				this.getPeople(search, this);
 			},
 			getPeople: _.debounce((search, vm) => {
-				vm.$http.get('/api/v1/members', {params: {"search":search}}).then(function (response) {
-					var responseJson = response.json();
-					vm.peopleSearchResults = responseJson.data;
+				window.axios.get('/api/v1/members', {params: {"search":search}}).then(function (response) {
+					vm.peopleSearchResults = response.data.data;
 					if (responseJson.data.length==0) {
 						vm.authorising_member_id = null;
 					} else {
@@ -197,13 +197,14 @@
 			getMemberRatings()
 			{
 				var that = this;
-				this.$http.get('/api/v1/members/' + this.memberId + '/ratings').then(function (response) {
-					var responseJson = response.json();
-					that.memberRatings = responseJson.data;
+				window.axios.get('/api/v1/members/' + this.memberId + '/ratings').then(function (response) {
+					that.memberRatings = response.data.data;
 
-					var timeagoInstance = timeago();
+					//var timeagoInstance = timeago();
 					for (var i=0; i<that.memberRatings.length; i++) {
-						that.memberRatings[i].timeToExpire = timeagoInstance.format(that.memberRatings[i].expires);
+						//that.memberRatings[i].timeToExpire = timeagoInstance.format(that.memberRatings[i].expires);
+						that.memberRatings[i].timeToExpire = moment(that.memberRatings[i].expires).fromNow();
+						
 					}
 				});
 			}
