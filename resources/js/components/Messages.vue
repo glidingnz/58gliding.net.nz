@@ -26,13 +26,13 @@ a.old-messages { color: #444; }
 		<div class="messages-panel" v-show="panelOpen">
 
 			<i class="fa fa-times" style="float:right;" v-on:click="togglePanel()"></i>
-			<div v-for="message in newMessages" class="message message-{{message.type}}">
+			<div v-for="message in newMessages" v-bind:class="'message message-' + message.type">
 				<i class="fa" v-bind:class="{'fa-minus-circle':message.type=='error', 'fa-exclamation-triangle':message.type=='warning', 'fa-check-circle':message.type=='success', 'fa-info-circle':message.type=='note'}"></i> {{message.text}}
 			</div>
 
 			<div v-show="newMessages.length==0">
 				<span class="small">Last 10 Notifications</span>
-				<div v-for="message in messagesArchive" class="message message-{{message.type}}">
+				<div v-for="message in messagesArchive" v-bind:class="'message message-' + message.type">
 					<i class="fa" v-bind:class="{'fa-minus-circle':message.type=='error', 'fa-exclamation-triangle':message.type=='warning', 'fa-check-circle':message.type=='success', 'fa-info-circle':message.type=='note'}"></i> {{message.text}}
 				</div>
 
@@ -66,7 +66,7 @@ a.old-messages { color: #444; }
 				return this.newMessages.length > 0;
 			}
 		},
-		ready() {
+		mounted() {
 			// copy messages from PHP into the arrays
 			this.newMessages = window.Laravel.messages.slice(0);
 			this.messagesArchive = window.Laravel.messages.slice(0);

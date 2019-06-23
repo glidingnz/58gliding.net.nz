@@ -32,7 +32,6 @@
 	$messages = Messages::fetch();
 	?>
 
-
 	<!-- Scripts -->
 	<script>
 		window.Laravel = <?php echo json_encode([
@@ -64,7 +63,7 @@
 					<li><a href="/aircraft">Aircraft</a></li>
 					<li><a href="/tracking">Tracking</a></li>
 					<li><a href="/members">Members</a></li>
-					<li class="nav-messages"><messages></messages></li>
+					<li class="nav-messages">{{-- <messages></messages> --}}</li>
 				</ul>
 
 				<!-- Right Side Of Navbar -->

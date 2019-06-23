@@ -21,7 +21,7 @@
 			<div class="col-md-6">
 
 				<orgs-component></orgs-component>
-
+				{{-- <example-component></example-component> --}}
 			</div>
 		<?php } ?>
 

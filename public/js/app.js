@@ -1710,6 +1710,208 @@ module.exports = function isBuffer (obj) {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Aircraft.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Aircraft.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins.js */ "./resources/js/mixins.js");
+/* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
+  data: function data() {
+    return {
+      state: {
+        type: 'glider',
+        page: 1,
+        search: ''
+      },
+      last_page: 1,
+      total: 0,
+      results: [],
+      dont_reload: false
+    };
+  },
+  watch: {
+    'state': {
+      handler: 'stateChanged',
+      deep: true
+    }
+  },
+  mounted: function mounted() {
+    // check for URL params
+    var State = History.getState(); // load existing GET params
+
+    if (this.get_url_param('search')) this.state.search = this.get_url_param('search');
+    if (this.get_url_param('page')) this.state.page = this.get_url_param('page');
+    if (this.get_url_param('type')) this.state.type = this.get_url_param('type');
+    var that = this;
+    History.Adapter.bind(window, 'statechange', function () {
+      //console.log('statechange triggered');
+      var state = History.getState();
+      that.state = state.data;
+
+      if (!that.dont_reload) {
+        //console.log('reloading after statechange');
+        that.loadSelected();
+      }
+
+      that.dont_reload = false;
+    });
+    this.dont_reload = true; // make sure we dont do a double load on page launch
+
+    History.replaceState(this.state, null, "?search=" + this.state.search + "&type=" + this.state.type + "&page=" + this.state.page);
+    that.loadSelected();
+  },
+  methods: {
+    filterTo: function filterTo(type) {
+      this.state.type = type;
+      this.state.page = 1;
+    },
+    stateChanged: function stateChanged() {
+      History.pushState(this.state, null, "?search=" + this.state.search + "&type=" + this.state.type + "&page=" + this.state.page);
+    },
+    loadSelected: function loadSelected() {
+      var that = this;
+      window.axios.get('/api/v1/aircraft', {
+        params: this.state
+      }).then(function (response) {
+        that.results = response.data.data;
+        that.last_page = response.data.last_page;
+        that.total = response.data.total;
+
+        if (that.state.page > that.last_page && that.last_page > 0) {
+          that.state.page = 1;
+        }
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js&":
 /*!***************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js& ***!
@@ -1738,6 +1940,207 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     console.log('Component mounted.');
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Messages.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Messages.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      panelOpen: false,
+      newMessages: [],
+      messagesArchive: []
+    };
+  },
+  computed: {
+    areNoMessages: function areNoMessages() {
+      return this.newMessages.length == 0 && this.messagesArchive.length == 0;
+    },
+    areOldMessages: function areOldMessages() {
+      return this.newMessages.length == 0 && this.messagesArchive.length > 0;
+    },
+    areNewMessages: function areNewMessages() {
+      return this.newMessages.length > 0;
+    }
+  },
+  mounted: function mounted() {
+    // copy messages from PHP into the arrays
+    this.newMessages = window.Laravel.messages.slice(0);
+    this.messagesArchive = window.Laravel.messages.slice(0); // initiate global JS message bus functions
+
+    messages.$on('error', function (str) {
+      this.error(str);
+    }.bind(this));
+    messages.$on('warning', function (str) {
+      this.warning(str);
+    }.bind(this));
+    messages.$on('note', function (str) {
+      this.note(str);
+    }.bind(this));
+    messages.$on('success', function (str) {
+      this.success(str);
+    }.bind(this));
+  },
+  methods: {
+    togglePanel: function togglePanel() {
+      // discard >10 oldest items
+      this.messagesArchive = this.messagesArchive.slice(0, 10); // on closing of the panel, empty the new messages array
+
+      if (this.panelOpen) {
+        this.newMessages = [];
+      } // toggle the panel open/closed state
+
+
+      this.panelOpen = !this.panelOpen;
+    },
+    openPanel: function openPanel() {
+      this.panelOpen = true;
+    },
+    error: function error(text) {
+      this.messagesArchive.unshift({
+        type: 'error',
+        text: text
+      });
+      this.newMessages.unshift({
+        type: 'error',
+        text: text
+      });
+      this.openPanel();
+    },
+    success: function success(text) {
+      this.messagesArchive.unshift({
+        type: 'success',
+        text: text
+      });
+      this.newMessages.unshift({
+        type: 'success',
+        text: text
+      });
+      this.openPanel();
+    },
+    warning: function warning(text) {
+      this.messagesArchive.unshift({
+        type: 'warning',
+        text: text
+      });
+      this.newMessages.unshift({
+        type: 'warning',
+        text: text
+      });
+      this.openPanel();
+    },
+    note: function note(text) {
+      this.messagesArchive.unshift({
+        type: 'note',
+        text: text
+      });
+      this.newMessages.unshift({
+        type: 'note',
+        text: text
+      });
+      this.openPanel();
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Orgs.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Orgs.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      orgs: []
+    };
+  },
+  created: function created() {
+    this.loadClubs();
+  },
+  methods: {
+    getDomain: function getDomain() {
+      return window.Laravel.APP_DOMAIN;
+    },
+    loadClubs: function loadClubs() {
+      var that = this;
+      window.axios.get('/api/v1/orgs').then(function (response) {
+        console.log(response); // success callback
+        //ar responseJson = response;
+
+        that.orgs = response.data.data;
+      });
+    }
   }
 });
 
@@ -6184,6 +6587,131 @@ __webpack_require__.r(__webpack_exports__);
 
 }));
 //# sourceMappingURL=bootstrap.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Aircraft.vue?vue&type=style&index=0&lang=css&":
+/*!**************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Aircraft.vue?vue&type=style&index=0&lang=css& ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.results-title {\n\tmargin-top: 0;\n\tmargin-bottom: 20px;\n}\n.btn-group {\n\tmargin-bottom: 20px;\n}\n.filter-buttons {\n\tmargin-bottom: 15px;\n}\n.filter-buttons .btn {\n\tmargin-bottom: 5px;\n}\n.filter-buttons .btn-group {\n\tmargin-bottom: 0;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Messages.vue?vue&type=style&index=0&lang=css&":
+/*!**************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Messages.vue?vue&type=style&index=0&lang=css& ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.messages-panel {\n\tposition: fixed;\n\twidth: 30em;\n\tmin-height: 50px;\n\tbackground-color: #FFF;\n\tborder: 1px solid #EEE;\n\tpadding: 10px;\n\tmargin-left: -20px;\n\tmargin-top: 6px;\n\tz-index: 9999;\n\ttop: 0px;\n}\n.message-error { color: #A00;\n}\n.message-warning { color: #DC9200;\n}\n.message-success { color: #0A0;\n}\n.message-note { color: #3C8DBC;\n}\na.no-messages { color: #CCC;\n}\na.new-messages { color: #A00;\n}\na.old-messages { color: #444;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/lib/css-base.js":
+/*!*************************************************!*\
+  !*** ./node_modules/css-loader/lib/css-base.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
 
 
 /***/ }),
@@ -36920,6 +37448,575 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Aircraft.vue?vue&type=style&index=0&lang=css&":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Aircraft.vue?vue&type=style&index=0&lang=css& ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./Aircraft.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Aircraft.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Messages.vue?vue&type=style&index=0&lang=css&":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Messages.vue?vue&type=style&index=0&lang=css& ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./Messages.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Messages.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/lib/addStyles.js":
+/*!****************************************************!*\
+  !*** ./node_modules/style-loader/lib/addStyles.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+
+var stylesInDom = {};
+
+var	memoize = function (fn) {
+	var memo;
+
+	return function () {
+		if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+		return memo;
+	};
+};
+
+var isOldIE = memoize(function () {
+	// Test for IE <= 9 as proposed by Browserhacks
+	// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
+	// Tests for existence of standard globals is to allow style-loader
+	// to operate correctly into non-standard environments
+	// @see https://github.com/webpack-contrib/style-loader/issues/177
+	return window && document && document.all && !window.atob;
+});
+
+var getTarget = function (target, parent) {
+  if (parent){
+    return parent.querySelector(target);
+  }
+  return document.querySelector(target);
+};
+
+var getElement = (function (fn) {
+	var memo = {};
+
+	return function(target, parent) {
+                // If passing function in options, then use it for resolve "head" element.
+                // Useful for Shadow Root style i.e
+                // {
+                //   insertInto: function () { return document.querySelector("#foo").shadowRoot }
+                // }
+                if (typeof target === 'function') {
+                        return target();
+                }
+                if (typeof memo[target] === "undefined") {
+			var styleTarget = getTarget.call(this, target, parent);
+			// Special case to return head of iframe instead of iframe itself
+			if (window.HTMLIFrameElement && styleTarget instanceof window.HTMLIFrameElement) {
+				try {
+					// This will throw an exception if access to iframe is blocked
+					// due to cross-origin restrictions
+					styleTarget = styleTarget.contentDocument.head;
+				} catch(e) {
+					styleTarget = null;
+				}
+			}
+			memo[target] = styleTarget;
+		}
+		return memo[target]
+	};
+})();
+
+var singleton = null;
+var	singletonCounter = 0;
+var	stylesInsertedAtTop = [];
+
+var	fixUrls = __webpack_require__(/*! ./urls */ "./node_modules/style-loader/lib/urls.js");
+
+module.exports = function(list, options) {
+	if (typeof DEBUG !== "undefined" && DEBUG) {
+		if (typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+	}
+
+	options = options || {};
+
+	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
+
+	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+	// tags it will allow on a page
+	if (!options.singleton && typeof options.singleton !== "boolean") options.singleton = isOldIE();
+
+	// By default, add <style> tags to the <head> element
+        if (!options.insertInto) options.insertInto = "head";
+
+	// By default, add <style> tags to the bottom of the target
+	if (!options.insertAt) options.insertAt = "bottom";
+
+	var styles = listToStyles(list, options);
+
+	addStylesToDom(styles, options);
+
+	return function update (newList) {
+		var mayRemove = [];
+
+		for (var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+
+			domStyle.refs--;
+			mayRemove.push(domStyle);
+		}
+
+		if(newList) {
+			var newStyles = listToStyles(newList, options);
+			addStylesToDom(newStyles, options);
+		}
+
+		for (var i = 0; i < mayRemove.length; i++) {
+			var domStyle = mayRemove[i];
+
+			if(domStyle.refs === 0) {
+				for (var j = 0; j < domStyle.parts.length; j++) domStyle.parts[j]();
+
+				delete stylesInDom[domStyle.id];
+			}
+		}
+	};
+};
+
+function addStylesToDom (styles, options) {
+	for (var i = 0; i < styles.length; i++) {
+		var item = styles[i];
+		var domStyle = stylesInDom[item.id];
+
+		if(domStyle) {
+			domStyle.refs++;
+
+			for(var j = 0; j < domStyle.parts.length; j++) {
+				domStyle.parts[j](item.parts[j]);
+			}
+
+			for(; j < item.parts.length; j++) {
+				domStyle.parts.push(addStyle(item.parts[j], options));
+			}
+		} else {
+			var parts = [];
+
+			for(var j = 0; j < item.parts.length; j++) {
+				parts.push(addStyle(item.parts[j], options));
+			}
+
+			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+		}
+	}
+}
+
+function listToStyles (list, options) {
+	var styles = [];
+	var newStyles = {};
+
+	for (var i = 0; i < list.length; i++) {
+		var item = list[i];
+		var id = options.base ? item[0] + options.base : item[0];
+		var css = item[1];
+		var media = item[2];
+		var sourceMap = item[3];
+		var part = {css: css, media: media, sourceMap: sourceMap};
+
+		if(!newStyles[id]) styles.push(newStyles[id] = {id: id, parts: [part]});
+		else newStyles[id].parts.push(part);
+	}
+
+	return styles;
+}
+
+function insertStyleElement (options, style) {
+	var target = getElement(options.insertInto)
+
+	if (!target) {
+		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
+	}
+
+	var lastStyleElementInsertedAtTop = stylesInsertedAtTop[stylesInsertedAtTop.length - 1];
+
+	if (options.insertAt === "top") {
+		if (!lastStyleElementInsertedAtTop) {
+			target.insertBefore(style, target.firstChild);
+		} else if (lastStyleElementInsertedAtTop.nextSibling) {
+			target.insertBefore(style, lastStyleElementInsertedAtTop.nextSibling);
+		} else {
+			target.appendChild(style);
+		}
+		stylesInsertedAtTop.push(style);
+	} else if (options.insertAt === "bottom") {
+		target.appendChild(style);
+	} else if (typeof options.insertAt === "object" && options.insertAt.before) {
+		var nextSibling = getElement(options.insertAt.before, target);
+		target.insertBefore(style, nextSibling);
+	} else {
+		throw new Error("[Style Loader]\n\n Invalid value for parameter 'insertAt' ('options.insertAt') found.\n Must be 'top', 'bottom', or Object.\n (https://github.com/webpack-contrib/style-loader#insertat)\n");
+	}
+}
+
+function removeStyleElement (style) {
+	if (style.parentNode === null) return false;
+	style.parentNode.removeChild(style);
+
+	var idx = stylesInsertedAtTop.indexOf(style);
+	if(idx >= 0) {
+		stylesInsertedAtTop.splice(idx, 1);
+	}
+}
+
+function createStyleElement (options) {
+	var style = document.createElement("style");
+
+	if(options.attrs.type === undefined) {
+		options.attrs.type = "text/css";
+	}
+
+	if(options.attrs.nonce === undefined) {
+		var nonce = getNonce();
+		if (nonce) {
+			options.attrs.nonce = nonce;
+		}
+	}
+
+	addAttrs(style, options.attrs);
+	insertStyleElement(options, style);
+
+	return style;
+}
+
+function createLinkElement (options) {
+	var link = document.createElement("link");
+
+	if(options.attrs.type === undefined) {
+		options.attrs.type = "text/css";
+	}
+	options.attrs.rel = "stylesheet";
+
+	addAttrs(link, options.attrs);
+	insertStyleElement(options, link);
+
+	return link;
+}
+
+function addAttrs (el, attrs) {
+	Object.keys(attrs).forEach(function (key) {
+		el.setAttribute(key, attrs[key]);
+	});
+}
+
+function getNonce() {
+	if (false) {}
+
+	return __webpack_require__.nc;
+}
+
+function addStyle (obj, options) {
+	var style, update, remove, result;
+
+	// If a transform function was defined, run it on the css
+	if (options.transform && obj.css) {
+	    result = typeof options.transform === 'function'
+		 ? options.transform(obj.css) 
+		 : options.transform.default(obj.css);
+
+	    if (result) {
+	    	// If transform returns a value, use that instead of the original css.
+	    	// This allows running runtime transformations on the css.
+	    	obj.css = result;
+	    } else {
+	    	// If the transform function returns a falsy value, don't add this css.
+	    	// This allows conditional loading of css
+	    	return function() {
+	    		// noop
+	    	};
+	    }
+	}
+
+	if (options.singleton) {
+		var styleIndex = singletonCounter++;
+
+		style = singleton || (singleton = createStyleElement(options));
+
+		update = applyToSingletonTag.bind(null, style, styleIndex, false);
+		remove = applyToSingletonTag.bind(null, style, styleIndex, true);
+
+	} else if (
+		obj.sourceMap &&
+		typeof URL === "function" &&
+		typeof URL.createObjectURL === "function" &&
+		typeof URL.revokeObjectURL === "function" &&
+		typeof Blob === "function" &&
+		typeof btoa === "function"
+	) {
+		style = createLinkElement(options);
+		update = updateLink.bind(null, style, options);
+		remove = function () {
+			removeStyleElement(style);
+
+			if(style.href) URL.revokeObjectURL(style.href);
+		};
+	} else {
+		style = createStyleElement(options);
+		update = applyToTag.bind(null, style);
+		remove = function () {
+			removeStyleElement(style);
+		};
+	}
+
+	update(obj);
+
+	return function updateStyle (newObj) {
+		if (newObj) {
+			if (
+				newObj.css === obj.css &&
+				newObj.media === obj.media &&
+				newObj.sourceMap === obj.sourceMap
+			) {
+				return;
+			}
+
+			update(obj = newObj);
+		} else {
+			remove();
+		}
+	};
+}
+
+var replaceText = (function () {
+	var textStore = [];
+
+	return function (index, replacement) {
+		textStore[index] = replacement;
+
+		return textStore.filter(Boolean).join('\n');
+	};
+})();
+
+function applyToSingletonTag (style, index, remove, obj) {
+	var css = remove ? "" : obj.css;
+
+	if (style.styleSheet) {
+		style.styleSheet.cssText = replaceText(index, css);
+	} else {
+		var cssNode = document.createTextNode(css);
+		var childNodes = style.childNodes;
+
+		if (childNodes[index]) style.removeChild(childNodes[index]);
+
+		if (childNodes.length) {
+			style.insertBefore(cssNode, childNodes[index]);
+		} else {
+			style.appendChild(cssNode);
+		}
+	}
+}
+
+function applyToTag (style, obj) {
+	var css = obj.css;
+	var media = obj.media;
+
+	if(media) {
+		style.setAttribute("media", media)
+	}
+
+	if(style.styleSheet) {
+		style.styleSheet.cssText = css;
+	} else {
+		while(style.firstChild) {
+			style.removeChild(style.firstChild);
+		}
+
+		style.appendChild(document.createTextNode(css));
+	}
+}
+
+function updateLink (link, options, obj) {
+	var css = obj.css;
+	var sourceMap = obj.sourceMap;
+
+	/*
+		If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
+		and there is no publicPath defined then lets turn convertToAbsoluteUrls
+		on by default.  Otherwise default to the convertToAbsoluteUrls option
+		directly
+	*/
+	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
+
+	if (options.convertToAbsoluteUrls || autoFixUrls) {
+		css = fixUrls(css);
+	}
+
+	if (sourceMap) {
+		// http://stackoverflow.com/a/26603875
+		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+	}
+
+	var blob = new Blob([css], { type: "text/css" });
+
+	var oldSrc = link.href;
+
+	link.href = URL.createObjectURL(blob);
+
+	if(oldSrc) URL.revokeObjectURL(oldSrc);
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/lib/urls.js":
+/*!***********************************************!*\
+  !*** ./node_modules/style-loader/lib/urls.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+
+/**
+ * When source maps are enabled, `style-loader` uses a link element with a data-uri to
+ * embed the css on the page. This breaks all relative urls because now they are relative to a
+ * bundle instead of the current page.
+ *
+ * One solution is to only use full urls, but that may be impossible.
+ *
+ * Instead, this function "fixes" the relative urls to be absolute according to the current page location.
+ *
+ * A rudimentary test suite is located at `test/fixUrls.js` and can be run via the `npm test` command.
+ *
+ */
+
+module.exports = function (css) {
+  // get current location
+  var location = typeof window !== "undefined" && window.location;
+
+  if (!location) {
+    throw new Error("fixUrls requires window.location");
+  }
+
+	// blank or null?
+	if (!css || typeof css !== "string") {
+	  return css;
+  }
+
+  var baseUrl = location.protocol + "//" + location.host;
+  var currentDir = baseUrl + location.pathname.replace(/\/[^\/]*$/, "/");
+
+	// convert each url(...)
+	/*
+	This regular expression is just a way to recursively match brackets within
+	a string.
+
+	 /url\s*\(  = Match on the word "url" with any whitespace after it and then a parens
+	   (  = Start a capturing group
+	     (?:  = Start a non-capturing group
+	         [^)(]  = Match anything that isn't a parentheses
+	         |  = OR
+	         \(  = Match a start parentheses
+	             (?:  = Start another non-capturing groups
+	                 [^)(]+  = Match anything that isn't a parentheses
+	                 |  = OR
+	                 \(  = Match a start parentheses
+	                     [^)(]*  = Match anything that isn't a parentheses
+	                 \)  = Match a end parentheses
+	             )  = End Group
+              *\) = Match anything and then a close parens
+          )  = Close non-capturing group
+          *  = Match anything
+       )  = Close capturing group
+	 \)  = Match a close parens
+
+	 /gi  = Get all matches, not the first.  Be case insensitive.
+	 */
+	var fixedCss = css.replace(/url\s*\(((?:[^)(]|\((?:[^)(]+|\([^)(]*\))*\))*)\)/gi, function(fullMatch, origUrl) {
+		// strip quotes (if they exist)
+		var unquotedOrigUrl = origUrl
+			.trim()
+			.replace(/^"(.*)"$/, function(o, $1){ return $1; })
+			.replace(/^'(.*)'$/, function(o, $1){ return $1; });
+
+		// already a full url? no change
+		if (/^(#|data:|http:\/\/|https:\/\/|file:\/\/\/|\s*$)/i.test(unquotedOrigUrl)) {
+		  return fullMatch;
+		}
+
+		// convert the url to a full url
+		var newUrl;
+
+		if (unquotedOrigUrl.indexOf("//") === 0) {
+		  	//TODO: should we add protocol?
+			newUrl = unquotedOrigUrl;
+		} else if (unquotedOrigUrl.indexOf("/") === 0) {
+			// path should be relative to the base url
+			newUrl = baseUrl + unquotedOrigUrl; // already starts with '/'
+		} else {
+			// path should be relative to current directory
+			newUrl = currentDir + unquotedOrigUrl.replace(/^\.\//, ""); // Strip leading './'
+		}
+
+		// send back the fixed url(...)
+		return "url(" + JSON.stringify(newUrl) + ")";
+	});
+
+	// send back the fixed css
+	return fixedCss;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/timers-browserify/main.js":
 /*!************************************************!*\
   !*** ./node_modules/timers-browserify/main.js ***!
@@ -36995,6 +38092,447 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Aircraft.vue?vue&type=template&id=3792c181&":
+/*!***********************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Aircraft.vue?vue&type=template&id=3792c181& ***!
+  \***********************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("div", [
+      _c("h1", { staticClass: "col-xs-6 results-title" }, [_vm._v("Aircraft")]),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "btn-group col-md-4 col-xs-6 pull-right",
+          attrs: { role: "group" }
+        },
+        [
+          _c("div", { staticClass: "input-group" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.state.search,
+                  expression: "state.search"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: {
+                type: "text",
+                placeholder: "Search",
+                name: "srch-term",
+                id: "srch-term"
+              },
+              domProps: { value: _vm.state.search },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.state, "search", $event.target.value)
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("div", { staticClass: "input-group-btn" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-default",
+                  attrs: { type: "submit" },
+                  on: {
+                    click: function($event) {
+                      _vm.state.search = ""
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fa fa-times" })]
+              )
+            ])
+          ])
+        ]
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "filter-buttons nav nav-pills col-xs-12",
+        attrs: { role: "group" }
+      },
+      [
+        _c("div", { staticClass: "btn-group", attrs: { role: "group" } }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-default btn-sm",
+              class: { "btn-primary": _vm.state.type == "glider" },
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.filterTo("glider")
+                }
+              }
+            },
+            [_vm._v("All Gliders")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-default btn-sm",
+              class: { "btn-primary": _vm.state.type == "self-launch" },
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.filterTo("self-launch")
+                }
+              }
+            },
+            [_vm._v("Self Launch")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-default btn-sm",
+              class: { "btn-primary": _vm.state.type == "sustainer" },
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.filterTo("sustainer")
+                }
+              }
+            },
+            [_vm._v("Turbo")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-default btn-sm",
+              class: { "btn-primary": _vm.state.type == "vintage" },
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.filterTo("vintage")
+                }
+              }
+            },
+            [_vm._v("Vintage")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-default btn-sm",
+              class: { "btn-primary": _vm.state.type == "singles" },
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.filterTo("singles")
+                }
+              }
+            },
+            [_vm._v("Singles")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-default btn-sm",
+              class: { "btn-primary": _vm.state.type == "twins" },
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.filterTo("twins")
+                }
+              }
+            },
+            [_vm._v("Twins")]
+          )
+        ]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-default btn-sm",
+            class: { "btn-primary": _vm.state.type == "tug" },
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                return _vm.filterTo("tug")
+              }
+            }
+          },
+          [_vm._v("Tugs")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-default btn-sm",
+            class: { "btn-primary": _vm.state.type == "gyrocopter" },
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                return _vm.filterTo("gyrocopter")
+              }
+            }
+          },
+          [_vm._v("Gyros")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-default btn-sm",
+            class: { "btn-primary": _vm.state.type == "helicopter" },
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                return _vm.filterTo("helicopter")
+              }
+            }
+          },
+          [_vm._v("Heli")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-default btn-sm",
+            class: { "btn-primary": _vm.state.type == "balloon" },
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                return _vm.filterTo("balloon")
+              }
+            }
+          },
+          [_vm._v("Balloons")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-default btn-sm",
+            class: { "btn-primary": _vm.state.type == "plane" },
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                return _vm.filterTo("plane")
+              }
+            }
+          },
+          [_vm._v("Planes")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-default btn-sm",
+            class: { "btn-primary": _vm.state.type == "microlight" },
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                return _vm.filterTo("microlight")
+              }
+            }
+          },
+          [_vm._v("Microlights")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-default btn-sm",
+            class: { "btn-primary": _vm.state.type == "all" },
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                return _vm.filterTo("all")
+              }
+            }
+          },
+          [_vm._v("All")]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-xs-12 col-sm-4 hidden-xs" }, [
+        _c("h2", { staticClass: "results-title" }, [
+          _vm._v(_vm._s(_vm.total) + " Results")
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-xs-12 col-sm-8" }, [
+        _c(
+          "div",
+          { staticClass: "btn-group pull-right", attrs: { role: "group" } },
+          [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-default btn-sm",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    return _vm.previous()
+                  }
+                }
+              },
+              [_vm._v("<")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-default btn-sm disabled",
+                attrs: { type: "button" }
+              },
+              [
+                _vm._v(
+                  "Page " +
+                    _vm._s(_vm.state.page) +
+                    " of " +
+                    _vm._s(_vm.last_page)
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-default btn-sm",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    return _vm.next()
+                  }
+                }
+              },
+              [_vm._v("Next >")]
+            )
+          ]
+        )
+      ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "table",
+      { staticClass: "table results-table " },
+      [
+        _vm._m(0),
+        _vm._v(" "),
+        _vm._l(_vm.results, function(result) {
+          return _c("tbody", [
+            _c("tr", [
+              _c("td", { staticClass: "hidden-xs hidden-sm nowrap" }, [
+                _vm._v(_vm._s(result.rego))
+              ]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(result.contest_id))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(result.manufacturer))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(result.model))]),
+              _vm._v(" "),
+              _c("td", { staticClass: "hidden-xs" }, [
+                _vm._v(_vm._s(result.class))
+              ]),
+              _vm._v(" "),
+              _c("td", { staticClass: "hidden-xs" }, [
+                _vm._v(_vm._s(result.owner))
+              ]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "a",
+                  {
+                    staticClass: "btn btn-primary btn-xs",
+                    attrs: { href: "/aircraft/" + result.rego }
+                  },
+                  [_vm._v("View")]
+                )
+              ]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "a",
+                  {
+                    staticClass: "btn btn-primary btn-xs",
+                    attrs: { href: "/aircraft/" + result.rego + "/edit" }
+                  },
+                  [_vm._v("Edit")]
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("tr", { staticClass: "visible-xs" }, [
+              _c(
+                "td",
+                {
+                  staticStyle: { "border-top": "none", "padding-top": "0" },
+                  attrs: { colspan: "5" }
+                },
+                [
+                  _c("span", { staticStyle: { color: "#888" } }, [
+                    _vm._v(_vm._s(result.owner))
+                  ])
+                ]
+              )
+            ])
+          ])
+        })
+      ],
+      2
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("th", { staticClass: "hidden-xs hidden-sm" }, [_vm._v("Rego")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Comp")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Manufacturer")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Model")]),
+      _vm._v(" "),
+      _c("th", { staticClass: "hidden-xs" }, [_vm._v("Class")]),
+      _vm._v(" "),
+      _c("th", { staticClass: "hidden-xs" }, [_vm._v("Owner")]),
+      _vm._v(" "),
+      _c("th"),
+      _vm._v(" "),
+      _c("th", { staticClass: "hidden-xs" })
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&":
 /*!*******************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e& ***!
@@ -37036,6 +38574,175 @@ var staticRenderFns = [
     ])
   }
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Messages.vue?vue&type=template&id=62dade92&":
+/*!***********************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Messages.vue?vue&type=template&id=62dade92& ***!
+  \***********************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("a", {
+      staticClass: "fa fa-bell-o no-messages",
+      class: {
+        "no-messages": _vm.areNoMessages,
+        "new-messages": _vm.areNewMessages,
+        "old-messages": _vm.areOldMessages
+      },
+      attrs: { href: "javascript:void(null)" },
+      on: {
+        click: function($event) {
+          return _vm.togglePanel()
+        }
+      }
+    }),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: _vm.panelOpen,
+            expression: "panelOpen"
+          }
+        ],
+        staticClass: "messages-panel"
+      },
+      [
+        _c("i", {
+          staticClass: "fa fa-times",
+          staticStyle: { float: "right" },
+          on: {
+            click: function($event) {
+              return _vm.togglePanel()
+            }
+          }
+        }),
+        _vm._v(" "),
+        _vm._l(_vm.newMessages, function(message) {
+          return _c("div", { class: "message message-" + message.type }, [
+            _c("i", {
+              staticClass: "fa",
+              class: {
+                "fa-minus-circle": message.type == "error",
+                "fa-exclamation-triangle": message.type == "warning",
+                "fa-check-circle": message.type == "success",
+                "fa-info-circle": message.type == "note"
+              }
+            }),
+            _vm._v(" " + _vm._s(message.text) + "\n\t\t")
+          ])
+        }),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.newMessages.length == 0,
+                expression: "newMessages.length==0"
+              }
+            ]
+          },
+          [
+            _c("span", { staticClass: "small" }, [
+              _vm._v("Last 10 Notifications")
+            ]),
+            _vm._v(" "),
+            _vm._l(_vm.messagesArchive, function(message) {
+              return _c("div", { class: "message message-" + message.type }, [
+                _c("i", {
+                  staticClass: "fa",
+                  class: {
+                    "fa-minus-circle": message.type == "error",
+                    "fa-exclamation-triangle": message.type == "warning",
+                    "fa-check-circle": message.type == "success",
+                    "fa-info-circle": message.type == "note"
+                  }
+                }),
+                _vm._v(" " + _vm._s(message.text) + "\n\t\t\t")
+              ])
+            }),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.messagesArchive.length == 0,
+                    expression: "messagesArchive.length==0"
+                  }
+                ]
+              },
+              [_c("span", { staticClass: "grey small" }, [_vm._v("None")])]
+            )
+          ],
+          2
+        )
+      ],
+      2
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Orgs.vue?vue&type=template&id=19eff50c&":
+/*!*******************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Orgs.vue?vue&type=template&id=19eff50c& ***!
+  \*******************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "list-group" },
+    _vm._l(_vm.orgs, function(org) {
+      return _c(
+        "a",
+        {
+          staticClass: "list-group-item",
+          attrs: { href: "http://" + org.slug + "." + _vm.getDomain() + "/" }
+        },
+        [_vm._v(_vm._s(org.name))]
+      )
+    }),
+    0
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -49190,6 +50897,8 @@ module.exports = function(module) {
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
+__webpack_require__(/*! ./vendor/native.history.js */ "./resources/js/vendor/native.history.js");
+
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
@@ -49204,6 +50913,24 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
 Vue.component('example-component', __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]);
+Vue.component('messages', __webpack_require__(/*! ./components/Messages.vue */ "./resources/js/components/Messages.vue")["default"]);
+Vue.component('orgs-component', __webpack_require__(/*! ./components/Orgs.vue */ "./resources/js/components/Orgs.vue")["default"]);
+Vue.component('aircraft', __webpack_require__(/*! ./components/Aircraft.vue */ "./resources/js/components/Aircraft.vue")["default"]); // Vue.component('edit-aircraft', require('./components/EditAircraft.vue').default);
+// Vue.component('members', require('./components/Members.vue').default);
+// Vue.component('member', require('./components/Member.vue').default);
+// Vue.component('edit-member', require('./components/EditMember.vue').default);
+// Vue.component('tracking', require('./components/Tracking.vue').default);
+// Vue.component('tracking2', require('./components/Tracking2.vue').default);
+// Vue.component('track', require('./components/Track.vue').default);
+// Vue.component('altitude-chart', require('./components/AltitudeChart.vue').default);
+// Vue.component('users-list', require('./components/admin/UsersList.vue').default);
+// Vue.component('user-roles', require('./components/admin/UserRoles.vue').default);
+// Vue.component('achievements', require('./components/Achievements.vue').default);
+// Vue.component('edit-achievements', require('./components/EditAchievements.vue').default);
+// Vue.component('Spots', require('./components/Spots.vue').default);
+// Vue.component('ratings', require('./components/Ratings.vue').default);
+// Vue.component('ratings-report', require('./components/RatingsReport.vue').default);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -49274,6 +51001,93 @@ if (token) {
 
 /***/ }),
 
+/***/ "./resources/js/components/Aircraft.vue":
+/*!**********************************************!*\
+  !*** ./resources/js/components/Aircraft.vue ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Aircraft_vue_vue_type_template_id_3792c181___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Aircraft.vue?vue&type=template&id=3792c181& */ "./resources/js/components/Aircraft.vue?vue&type=template&id=3792c181&");
+/* harmony import */ var _Aircraft_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Aircraft.vue?vue&type=script&lang=js& */ "./resources/js/components/Aircraft.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _Aircraft_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Aircraft.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/Aircraft.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _Aircraft_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Aircraft_vue_vue_type_template_id_3792c181___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Aircraft_vue_vue_type_template_id_3792c181___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Aircraft.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Aircraft.vue?vue&type=script&lang=js&":
+/*!***********************************************************************!*\
+  !*** ./resources/js/components/Aircraft.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Aircraft_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./Aircraft.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Aircraft.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Aircraft_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Aircraft.vue?vue&type=style&index=0&lang=css&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/Aircraft.vue?vue&type=style&index=0&lang=css& ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Aircraft_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./Aircraft.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Aircraft.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Aircraft_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Aircraft_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Aircraft_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Aircraft_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Aircraft_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Aircraft.vue?vue&type=template&id=3792c181&":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/components/Aircraft.vue?vue&type=template&id=3792c181& ***!
+  \*****************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Aircraft_vue_vue_type_template_id_3792c181___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./Aircraft.vue?vue&type=template&id=3792c181& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Aircraft.vue?vue&type=template&id=3792c181&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Aircraft_vue_vue_type_template_id_3792c181___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Aircraft_vue_vue_type_template_id_3792c181___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/ExampleComponent.vue":
 /*!******************************************************!*\
   !*** ./resources/js/components/ExampleComponent.vue ***!
@@ -49340,6 +51154,2293 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
+
+/***/ }),
+
+/***/ "./resources/js/components/Messages.vue":
+/*!**********************************************!*\
+  !*** ./resources/js/components/Messages.vue ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Messages_vue_vue_type_template_id_62dade92___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Messages.vue?vue&type=template&id=62dade92& */ "./resources/js/components/Messages.vue?vue&type=template&id=62dade92&");
+/* harmony import */ var _Messages_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Messages.vue?vue&type=script&lang=js& */ "./resources/js/components/Messages.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _Messages_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Messages.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/Messages.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _Messages_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Messages_vue_vue_type_template_id_62dade92___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Messages_vue_vue_type_template_id_62dade92___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Messages.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Messages.vue?vue&type=script&lang=js&":
+/*!***********************************************************************!*\
+  !*** ./resources/js/components/Messages.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Messages_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./Messages.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Messages.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Messages_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Messages.vue?vue&type=style&index=0&lang=css&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/Messages.vue?vue&type=style&index=0&lang=css& ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Messages_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./Messages.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Messages.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Messages_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Messages_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Messages_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Messages_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Messages_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Messages.vue?vue&type=template&id=62dade92&":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/components/Messages.vue?vue&type=template&id=62dade92& ***!
+  \*****************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Messages_vue_vue_type_template_id_62dade92___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./Messages.vue?vue&type=template&id=62dade92& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Messages.vue?vue&type=template&id=62dade92&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Messages_vue_vue_type_template_id_62dade92___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Messages_vue_vue_type_template_id_62dade92___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Orgs.vue":
+/*!******************************************!*\
+  !*** ./resources/js/components/Orgs.vue ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Orgs_vue_vue_type_template_id_19eff50c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Orgs.vue?vue&type=template&id=19eff50c& */ "./resources/js/components/Orgs.vue?vue&type=template&id=19eff50c&");
+/* harmony import */ var _Orgs_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Orgs.vue?vue&type=script&lang=js& */ "./resources/js/components/Orgs.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Orgs_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Orgs_vue_vue_type_template_id_19eff50c___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Orgs_vue_vue_type_template_id_19eff50c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Orgs.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Orgs.vue?vue&type=script&lang=js&":
+/*!*******************************************************************!*\
+  !*** ./resources/js/components/Orgs.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Orgs_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./Orgs.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Orgs.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Orgs_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Orgs.vue?vue&type=template&id=19eff50c&":
+/*!*************************************************************************!*\
+  !*** ./resources/js/components/Orgs.vue?vue&type=template&id=19eff50c& ***!
+  \*************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Orgs_vue_vue_type_template_id_19eff50c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./Orgs.vue?vue&type=template&id=19eff50c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Orgs.vue?vue&type=template&id=19eff50c&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Orgs_vue_vue_type_template_id_19eff50c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Orgs_vue_vue_type_template_id_19eff50c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/mixins.js":
+/*!********************************!*\
+  !*** ./resources/js/mixins.js ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = {
+  methods: {
+    get_url_param: function get_url_param(val) {
+      var result = "",
+          tmp = [];
+      location.search.substr(1).split("&").forEach(function (item) {
+        tmp = item.split("=");
+        if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
+      });
+      return result;
+    },
+    next: function next() {
+      if (this.state.page < this.last_page) this.state.page = +this.state.page + 1;
+    },
+    previous: function previous() {
+      if (this.state.page > 1) this.state.page = +this.state.page - 1;
+    },
+    createDateFromMysql: function createDateFromMysql(mysql_string) {
+      var t,
+          result = null;
+
+      if (typeof mysql_string === 'string') {
+        t = mysql_string.split(/[- :]/);
+        result = new Date(Date.UTC(t[0], t[1] - 1, t[2], t[3] || 0, t[4] || 0, t[5] || 0));
+      }
+
+      return result;
+    },
+    ratingExpired: function ratingExpired(expires) {
+      if (expires == null) return false;
+      return this.dateDifference(null, expires) < 0;
+    },
+    ratingNearlyExpired: function ratingNearlyExpired(expires) {
+      return this.dateDifference(null, expires) < 50 && this.dateDifference(null, expires) > 0;
+    },
+    dateDifference: function dateDifference() {
+      var dateString1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var dateString2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+      if (dateString1 == null) {
+        var date1 = new Date();
+      } else {
+        var date1 = this.createDateFromMysql(dateString1);
+      }
+
+      if (dateString2 == null) {
+        var date2 = new Date();
+      } else {
+        var date2 = this.createDateFromMysql(dateString2);
+      }
+
+      return (date2 - date1) / (1000 * 60 * 60 * 24);
+    }
+  }
+};
+
+/***/ }),
+
+/***/ "./resources/js/vendor/native.history.js":
+/*!***********************************************!*\
+  !*** ./resources/js/vendor/native.history.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+/**
+ * History.js Native Adapter
+ * @author Benjamin Arthur Lupton <contact@balupton.com>
+ * @copyright 2010-2011 Benjamin Arthur Lupton <contact@balupton.com>
+ * @license New BSD License <http://creativecommons.org/licenses/BSD/>
+ */
+// Closure
+(function (window, undefined) {
+  "use strict"; // Localise Globals
+
+  var History = window.History = window.History || {}; // Check Existence
+
+  if (typeof History.Adapter !== 'undefined') {
+    throw new Error('History.js Adapter has already been loaded...');
+  } // Add the Adapter
+
+
+  History.Adapter = {
+    /**
+     * History.Adapter.handlers[uid][eventName] = Array
+     */
+    handlers: {},
+
+    /**
+     * History.Adapter._uid
+     * The current element unique identifier
+     */
+    _uid: 1,
+
+    /**
+     * History.Adapter.uid(element)
+     * @param {Element} element
+     * @return {String} uid
+     */
+    uid: function uid(element) {
+      return element._uid || (element._uid = History.Adapter._uid++);
+    },
+
+    /**
+     * History.Adapter.bind(el,event,callback)
+     * @param {Element} element
+     * @param {String} eventName - custom and standard events
+     * @param {Function} callback
+     * @return
+     */
+    bind: function bind(element, eventName, callback) {
+      // Prepare
+      var uid = History.Adapter.uid(element); // Apply Listener
+
+      History.Adapter.handlers[uid] = History.Adapter.handlers[uid] || {};
+      History.Adapter.handlers[uid][eventName] = History.Adapter.handlers[uid][eventName] || [];
+      History.Adapter.handlers[uid][eventName].push(callback); // Bind Global Listener
+
+      element['on' + eventName] = function (element, eventName) {
+        return function (event) {
+          History.Adapter.trigger(element, eventName, event);
+        };
+      }(element, eventName);
+    },
+
+    /**
+     * History.Adapter.trigger(el,event)
+     * @param {Element} element
+     * @param {String} eventName - custom and standard events
+     * @param {Object} event - a object of event data
+     * @return
+     */
+    trigger: function trigger(element, eventName, event) {
+      // Prepare
+      event = event || {};
+      var uid = History.Adapter.uid(element),
+          i,
+          n; // Apply Listener
+
+      History.Adapter.handlers[uid] = History.Adapter.handlers[uid] || {};
+      History.Adapter.handlers[uid][eventName] = History.Adapter.handlers[uid][eventName] || []; // Fire Listeners
+
+      for (i = 0, n = History.Adapter.handlers[uid][eventName].length; i < n; ++i) {
+        History.Adapter.handlers[uid][eventName][i].apply(this, [event]);
+      }
+    },
+
+    /**
+     * History.Adapter.extractEventData(key,event,extra)
+     * @param {String} key - key for the event data to extract
+     * @param {String} event - custom and standard events
+     * @return {mixed}
+     */
+    extractEventData: function extractEventData(key, event) {
+      var result = event && event[key] || undefined;
+      return result;
+    },
+
+    /**
+     * History.Adapter.onDomLoad(callback)
+     * @param {Function} callback
+     * @return
+     */
+    onDomLoad: function onDomLoad(callback) {
+      var timeout = window.setTimeout(function () {
+        callback();
+      }, 2000);
+
+      window.onload = function () {
+        clearTimeout(timeout);
+        callback();
+      };
+    }
+  }; // Try to Initialise History
+
+  if (typeof History.init !== 'undefined') {
+    History.init();
+  }
+})(window);
+/**
+ * History.js Core
+ * @author Benjamin Arthur Lupton <contact@balupton.com>
+ * @copyright 2010-2011 Benjamin Arthur Lupton <contact@balupton.com>
+ * @license New BSD License <http://creativecommons.org/licenses/BSD/>
+ */
+
+
+(function (window, undefined) {
+  "use strict"; // ========================================================================
+  // Initialise
+  // Localise Globals
+
+  var console = window.console || undefined,
+      // Prevent a JSLint complain
+  document = window.document,
+      // Make sure we are using the correct document
+  navigator = window.navigator,
+      // Make sure we are using the correct navigator
+  sessionStorage = false,
+      // sessionStorage
+  setTimeout = window.setTimeout,
+      clearTimeout = window.clearTimeout,
+      setInterval = window.setInterval,
+      clearInterval = window.clearInterval,
+      JSON = window.JSON,
+      alert = window.alert,
+      History = window.History = window.History || {},
+      // Public History Object
+  history = window.history; // Old History Object
+
+  try {
+    sessionStorage = window.sessionStorage; // This will throw an exception in some browsers when cookies/localStorage are explicitly disabled (i.e. Chrome)
+
+    sessionStorage.setItem('TEST', '1');
+    sessionStorage.removeItem('TEST');
+  } catch (e) {
+    sessionStorage = false;
+  } // MooTools Compatibility
+
+
+  JSON.stringify = JSON.stringify || JSON.encode;
+  JSON.parse = JSON.parse || JSON.decode; // Check Existence
+
+  if (typeof History.init !== 'undefined') {
+    throw new Error('History.js Core has already been loaded...');
+  } // Initialise History
+
+
+  History.init = function (options) {
+    // Check Load Status of Adapter
+    if (typeof History.Adapter === 'undefined') {
+      return false;
+    } // Check Load Status of Core
+
+
+    if (typeof History.initCore !== 'undefined') {
+      History.initCore();
+    } // Check Load Status of HTML4 Support
+
+
+    if (typeof History.initHtml4 !== 'undefined') {
+      History.initHtml4();
+    } // Return true
+
+
+    return true;
+  }; // ========================================================================
+  // Initialise Core
+  // Initialise Core
+
+
+  History.initCore = function (options) {
+    // Initialise
+    if (typeof History.initCore.initialized !== 'undefined') {
+      // Already Loaded
+      return false;
+    } else {
+      History.initCore.initialized = true;
+    } // ====================================================================
+    // Options
+
+    /**
+     * History.options
+     * Configurable options
+     */
+
+
+    History.options = History.options || {};
+    /**
+     * History.options.hashChangeInterval
+     * How long should the interval be before hashchange checks
+     */
+
+    History.options.hashChangeInterval = History.options.hashChangeInterval || 100;
+    /**
+     * History.options.safariPollInterval
+     * How long should the interval be before safari poll checks
+     */
+
+    History.options.safariPollInterval = History.options.safariPollInterval || 500;
+    /**
+     * History.options.doubleCheckInterval
+     * How long should the interval be before we perform a double check
+     */
+
+    History.options.doubleCheckInterval = History.options.doubleCheckInterval || 500;
+    /**
+     * History.options.disableSuid
+     * Force History not to append suid
+     */
+
+    History.options.disableSuid = History.options.disableSuid || false;
+    /**
+     * History.options.storeInterval
+     * How long should we wait between store calls
+     */
+
+    History.options.storeInterval = History.options.storeInterval || 1000;
+    /**
+     * History.options.busyDelay
+     * How long should we wait between busy events
+     */
+
+    History.options.busyDelay = History.options.busyDelay || 250;
+    /**
+     * History.options.debug
+     * If true will enable debug messages to be logged
+     */
+
+    History.options.debug = History.options.debug || false;
+    /**
+     * History.options.initialTitle
+     * What is the title of the initial state
+     */
+
+    History.options.initialTitle = History.options.initialTitle || document.title;
+    /**
+     * History.options.html4Mode
+     * If true, will force HTMl4 mode (hashtags)
+     */
+
+    History.options.html4Mode = History.options.html4Mode || false;
+    /**
+     * History.options.delayInit
+     * Want to override default options and call init manually.
+     */
+
+    History.options.delayInit = History.options.delayInit || false; // ====================================================================
+    // Interval record
+
+    /**
+     * History.intervalList
+     * List of intervals set, to be cleared when document is unloaded.
+     */
+
+    History.intervalList = [];
+    /**
+     * History.clearAllIntervals
+     * Clears all setInterval instances.
+     */
+
+    History.clearAllIntervals = function () {
+      var i,
+          il = History.intervalList;
+
+      if (typeof il !== "undefined" && il !== null) {
+        for (i = 0; i < il.length; i++) {
+          clearInterval(il[i]);
+        }
+
+        History.intervalList = null;
+      }
+    }; // ====================================================================
+    // Debug
+
+    /**
+     * History.debug(message,...)
+     * Logs the passed arguments if debug enabled
+     */
+
+
+    History.debug = function () {
+      if (History.options.debug || false) {
+        History.log.apply(History, arguments);
+      }
+    };
+    /**
+     * History.log(message,...)
+     * Logs the passed arguments
+     */
+
+
+    History.log = function () {
+      // Prepare
+      var consoleExists = !(typeof console === 'undefined' || typeof console.log === 'undefined' || typeof console.log.apply === 'undefined'),
+          textarea = document.getElementById('log'),
+          message,
+          i,
+          n,
+          args,
+          arg; // Write to Console
+
+      if (consoleExists) {
+        args = Array.prototype.slice.call(arguments);
+        message = args.shift();
+
+        if (typeof console.debug !== 'undefined') {
+          console.debug.apply(console, [message, args]);
+        } else {
+          console.log.apply(console, [message, args]);
+        }
+      } else {
+        message = "\n" + arguments[0] + "\n";
+      } // Write to log
+
+
+      for (i = 1, n = arguments.length; i < n; ++i) {
+        arg = arguments[i];
+
+        if (_typeof(arg) === 'object' && typeof JSON !== 'undefined') {
+          try {
+            arg = JSON.stringify(arg);
+          } catch (Exception) {// Recursive Object
+          }
+        }
+
+        message += "\n" + arg + "\n";
+      } // Textarea
+
+
+      if (textarea) {
+        textarea.value += message + "\n-----\n";
+        textarea.scrollTop = textarea.scrollHeight - textarea.clientHeight;
+      } // No Textarea, No Console
+      else if (!consoleExists) {
+          alert(message);
+        } // Return true
+
+
+      return true;
+    }; // ====================================================================
+    // Emulated Status
+
+    /**
+     * History.getInternetExplorerMajorVersion()
+     * Get's the major version of Internet Explorer
+     * @return {integer}
+     * @license Public Domain
+     * @author Benjamin Arthur Lupton <contact@balupton.com>
+     * @author James Padolsey <https://gist.github.com/527683>
+     */
+
+
+    History.getInternetExplorerMajorVersion = function () {
+      var result = History.getInternetExplorerMajorVersion.cached = typeof History.getInternetExplorerMajorVersion.cached !== 'undefined' ? History.getInternetExplorerMajorVersion.cached : function () {
+        var v = 3,
+            div = document.createElement('div'),
+            all = div.getElementsByTagName('i');
+
+        while ((div.innerHTML = '<!--[if gt IE ' + ++v + ']><i></i><![endif]-->') && all[0]) {}
+
+        return v > 4 ? v : false;
+      }();
+      return result;
+    };
+    /**
+     * History.isInternetExplorer()
+     * Are we using Internet Explorer?
+     * @return {boolean}
+     * @license Public Domain
+     * @author Benjamin Arthur Lupton <contact@balupton.com>
+     */
+
+
+    History.isInternetExplorer = function () {
+      var result = History.isInternetExplorer.cached = typeof History.isInternetExplorer.cached !== 'undefined' ? History.isInternetExplorer.cached : Boolean(History.getInternetExplorerMajorVersion());
+      return result;
+    };
+    /**
+     * History.emulated
+     * Which features require emulating?
+     */
+
+
+    if (History.options.html4Mode) {
+      History.emulated = {
+        pushState: true,
+        hashChange: true
+      };
+    } else {
+      History.emulated = {
+        pushState: !Boolean(window.history && window.history.pushState && window.history.replaceState && !(/ Mobile\/([1-7][a-z]|(8([abcde]|f(1[0-8]))))/i.test(navigator.userAgent)
+        /* disable for versions of iOS before version 4.3 (8F190) */
+        || /AppleWebKit\/5([0-2]|3[0-2])/i.test(navigator.userAgent)
+        /* disable for the mercury iOS browser, or at least older versions of the webkit engine */
+        )),
+        hashChange: Boolean(!('onhashchange' in window || 'onhashchange' in document) || History.isInternetExplorer() && History.getInternetExplorerMajorVersion() < 8)
+      };
+    }
+    /**
+     * History.enabled
+     * Is History enabled?
+     */
+
+
+    History.enabled = !History.emulated.pushState;
+    /**
+     * History.bugs
+     * Which bugs are present
+     */
+
+    History.bugs = {
+      /**
+       * Safari 5 and Safari iOS 4 fail to return to the correct state once a hash is replaced by a `replaceState` call
+       * https://bugs.webkit.org/show_bug.cgi?id=56249
+       */
+      setHash: Boolean(!History.emulated.pushState && navigator.vendor === 'Apple Computer, Inc.' && /AppleWebKit\/5([0-2]|3[0-3])/.test(navigator.userAgent)),
+
+      /**
+       * Safari 5 and Safari iOS 4 sometimes fail to apply the state change under busy conditions
+       * https://bugs.webkit.org/show_bug.cgi?id=42940
+       */
+      safariPoll: Boolean(!History.emulated.pushState && navigator.vendor === 'Apple Computer, Inc.' && /AppleWebKit\/5([0-2]|3[0-3])/.test(navigator.userAgent)),
+
+      /**
+       * MSIE 6 and 7 sometimes do not apply a hash even it was told to (requiring a second call to the apply function)
+       */
+      ieDoubleCheck: Boolean(History.isInternetExplorer() && History.getInternetExplorerMajorVersion() < 8),
+
+      /**
+       * MSIE 6 requires the entire hash to be encoded for the hashes to trigger the onHashChange event
+       */
+      hashEscape: Boolean(History.isInternetExplorer() && History.getInternetExplorerMajorVersion() < 7)
+    };
+    /**
+     * History.isEmptyObject(obj)
+     * Checks to see if the Object is Empty
+     * @param {Object} obj
+     * @return {boolean}
+     */
+
+    History.isEmptyObject = function (obj) {
+      for (var name in obj) {
+        if (obj.hasOwnProperty(name)) {
+          return false;
+        }
+      }
+
+      return true;
+    };
+    /**
+     * History.cloneObject(obj)
+     * Clones a object and eliminate all references to the original contexts
+     * @param {Object} obj
+     * @return {Object}
+     */
+
+
+    History.cloneObject = function (obj) {
+      var hash, newObj;
+
+      if (obj) {
+        hash = JSON.stringify(obj);
+        newObj = JSON.parse(hash);
+      } else {
+        newObj = {};
+      }
+
+      return newObj;
+    }; // ====================================================================
+    // URL Helpers
+
+    /**
+     * History.getRootUrl()
+     * Turns "http://mysite.com/dir/page.html?asd" into "http://mysite.com"
+     * @return {String} rootUrl
+     */
+
+
+    History.getRootUrl = function () {
+      // Create
+      var rootUrl = document.location.protocol + '//' + (document.location.hostname || document.location.host);
+
+      if (document.location.port || false) {
+        rootUrl += ':' + document.location.port;
+      }
+
+      rootUrl += '/'; // Return
+
+      return rootUrl;
+    };
+    /**
+     * History.getBaseHref()
+     * Fetches the `href` attribute of the `<base href="...">` element if it exists
+     * @return {String} baseHref
+     */
+
+
+    History.getBaseHref = function () {
+      // Create
+      var baseElements = document.getElementsByTagName('base'),
+          baseElement = null,
+          baseHref = ''; // Test for Base Element
+
+      if (baseElements.length === 1) {
+        // Prepare for Base Element
+        baseElement = baseElements[0];
+        baseHref = baseElement.href.replace(/[^\/]+$/, '');
+      } // Adjust trailing slash
+
+
+      baseHref = baseHref.replace(/\/+$/, '');
+      if (baseHref) baseHref += '/'; // Return
+
+      return baseHref;
+    };
+    /**
+     * History.getBaseUrl()
+     * Fetches the baseHref or basePageUrl or rootUrl (whichever one exists first)
+     * @return {String} baseUrl
+     */
+
+
+    History.getBaseUrl = function () {
+      // Create
+      var baseUrl = History.getBaseHref() || History.getBasePageUrl() || History.getRootUrl(); // Return
+
+      return baseUrl;
+    };
+    /**
+     * History.getPageUrl()
+     * Fetches the URL of the current page
+     * @return {String} pageUrl
+     */
+
+
+    History.getPageUrl = function () {
+      // Fetch
+      var State = History.getState(false, false),
+          stateUrl = (State || {}).url || History.getLocationHref(),
+          pageUrl; // Create
+
+      pageUrl = stateUrl.replace(/\/+$/, '').replace(/[^\/]+$/, function (part, index, string) {
+        return /\./.test(part) ? part : part + '/';
+      }); // Return
+
+      return pageUrl;
+    };
+    /**
+     * History.getBasePageUrl()
+     * Fetches the Url of the directory of the current page
+     * @return {String} basePageUrl
+     */
+
+
+    History.getBasePageUrl = function () {
+      // Create
+      var basePageUrl = History.getLocationHref().replace(/[#\?].*/, '').replace(/[^\/]+$/, function (part, index, string) {
+        return /[^\/]$/.test(part) ? '' : part;
+      }).replace(/\/+$/, '') + '/'; // Return
+
+      return basePageUrl;
+    };
+    /**
+     * History.getFullUrl(url)
+     * Ensures that we have an absolute URL and not a relative URL
+     * @param {string} url
+     * @param {Boolean} allowBaseHref
+     * @return {string} fullUrl
+     */
+
+
+    History.getFullUrl = function (url, allowBaseHref) {
+      // Prepare
+      var fullUrl = url,
+          firstChar = url.substring(0, 1);
+      allowBaseHref = typeof allowBaseHref === 'undefined' ? true : allowBaseHref; // Check
+
+      if (/[a-z]+\:\/\//.test(url)) {// Full URL
+      } else if (firstChar === '/') {
+        // Root URL
+        fullUrl = History.getRootUrl() + url.replace(/^\/+/, '');
+      } else if (firstChar === '#') {
+        // Anchor URL
+        fullUrl = History.getPageUrl().replace(/#.*/, '') + url;
+      } else if (firstChar === '?') {
+        // Query URL
+        fullUrl = History.getPageUrl().replace(/[\?#].*/, '') + url;
+      } else {
+        // Relative URL
+        if (allowBaseHref) {
+          fullUrl = History.getBaseUrl() + url.replace(/^(\.\/)+/, '');
+        } else {
+          fullUrl = History.getBasePageUrl() + url.replace(/^(\.\/)+/, '');
+        } // We have an if condition above as we do not want hashes
+        // which are relative to the baseHref in our URLs
+        // as if the baseHref changes, then all our bookmarks
+        // would now point to different locations
+        // whereas the basePageUrl will always stay the same
+
+      } // Return
+
+
+      return fullUrl.replace(/\#$/, '');
+    };
+    /**
+     * History.getShortUrl(url)
+     * Ensures that we have a relative URL and not a absolute URL
+     * @param {string} url
+     * @return {string} url
+     */
+
+
+    History.getShortUrl = function (url) {
+      // Prepare
+      var shortUrl = url,
+          baseUrl = History.getBaseUrl(),
+          rootUrl = History.getRootUrl(); // Trim baseUrl
+
+      if (History.emulated.pushState) {
+        // We are in a if statement as when pushState is not emulated
+        // The actual url these short urls are relative to can change
+        // So within the same session, we the url may end up somewhere different
+        shortUrl = shortUrl.replace(baseUrl, '');
+      } // Trim rootUrl
+
+
+      shortUrl = shortUrl.replace(rootUrl, '/'); // Ensure we can still detect it as a state
+
+      if (History.isTraditionalAnchor(shortUrl)) {
+        shortUrl = './' + shortUrl;
+      } // Clean It
+
+
+      shortUrl = shortUrl.replace(/^(\.\/)+/g, './').replace(/\#$/, ''); // Return
+
+      return shortUrl;
+    };
+    /**
+     * History.getLocationHref(document)
+     * Returns a normalized version of document.location.href
+     * accounting for browser inconsistencies, etc.
+     *
+     * This URL will be URI-encoded and will include the hash
+     *
+     * @param {object} document
+     * @return {string} url
+     */
+
+
+    History.getLocationHref = function (doc) {
+      doc = doc || document; // most of the time, this will be true
+
+      if (doc.URL === doc.location.href) return doc.location.href; // some versions of webkit URI-decode document.location.href
+      // but they leave document.URL in an encoded state
+
+      if (doc.location.href === decodeURIComponent(doc.URL)) return doc.URL; // FF 3.6 only updates document.URL when a page is reloaded
+      // document.location.href is updated correctly
+
+      if (doc.location.hash && decodeURIComponent(doc.location.href.replace(/^[^#]+/, "")) === doc.location.hash) return doc.location.href;
+      if (doc.URL.indexOf('#') == -1 && doc.location.href.indexOf('#') != -1) return doc.location.href;
+      return doc.URL || doc.location.href;
+    }; // ====================================================================
+    // State Storage
+
+    /**
+     * History.store
+     * The store for all session specific data
+     */
+
+
+    History.store = {};
+    /**
+     * History.idToState
+     * 1-1: State ID to State Object
+     */
+
+    History.idToState = History.idToState || {};
+    /**
+     * History.stateToId
+     * 1-1: State String to State ID
+     */
+
+    History.stateToId = History.stateToId || {};
+    /**
+     * History.urlToId
+     * 1-1: State URL to State ID
+     */
+
+    History.urlToId = History.urlToId || {};
+    /**
+     * History.storedStates
+     * Store the states in an array
+     */
+
+    History.storedStates = History.storedStates || [];
+    /**
+     * History.savedStates
+     * Saved the states in an array
+     */
+
+    History.savedStates = History.savedStates || [];
+    /**
+     * History.noramlizeStore()
+     * Noramlize the store by adding necessary values
+     */
+
+    History.normalizeStore = function () {
+      History.store.idToState = History.store.idToState || {};
+      History.store.urlToId = History.store.urlToId || {};
+      History.store.stateToId = History.store.stateToId || {};
+    };
+    /**
+     * History.getState()
+     * Get an object containing the data, title and url of the current state
+     * @param {Boolean} friendly
+     * @param {Boolean} create
+     * @return {Object} State
+     */
+
+
+    History.getState = function (friendly, create) {
+      // Prepare
+      if (typeof friendly === 'undefined') {
+        friendly = true;
+      }
+
+      if (typeof create === 'undefined') {
+        create = true;
+      } // Fetch
+
+
+      var State = History.getLastSavedState(); // Create
+
+      if (!State && create) {
+        State = History.createStateObject();
+      } // Adjust
+
+
+      if (friendly) {
+        State = History.cloneObject(State);
+        State.url = State.cleanUrl || State.url;
+      } // Return
+
+
+      return State;
+    };
+    /**
+     * History.getIdByState(State)
+     * Gets a ID for a State
+     * @param {State} newState
+     * @return {String} id
+     */
+
+
+    History.getIdByState = function (newState) {
+      // Fetch ID
+      var id = History.extractId(newState.url),
+          str;
+
+      if (!id) {
+        // Find ID via State String
+        str = History.getStateString(newState);
+
+        if (typeof History.stateToId[str] !== 'undefined') {
+          id = History.stateToId[str];
+        } else if (typeof History.store.stateToId[str] !== 'undefined') {
+          id = History.store.stateToId[str];
+        } else {
+          // Generate a new ID
+          while (true) {
+            id = new Date().getTime() + String(Math.random()).replace(/\D/g, '');
+
+            if (typeof History.idToState[id] === 'undefined' && typeof History.store.idToState[id] === 'undefined') {
+              break;
+            }
+          } // Apply the new State to the ID
+
+
+          History.stateToId[str] = id;
+          History.idToState[id] = newState;
+        }
+      } // Return ID
+
+
+      return id;
+    };
+    /**
+     * History.normalizeState(State)
+     * Expands a State Object
+     * @param {object} State
+     * @return {object}
+     */
+
+
+    History.normalizeState = function (oldState) {
+      // Variables
+      var newState, dataNotEmpty; // Prepare
+
+      if (!oldState || _typeof(oldState) !== 'object') {
+        oldState = {};
+      } // Check
+
+
+      if (typeof oldState.normalized !== 'undefined') {
+        return oldState;
+      } // Adjust
+
+
+      if (!oldState.data || _typeof(oldState.data) !== 'object') {
+        oldState.data = {};
+      } // ----------------------------------------------------------------
+      // Create
+
+
+      newState = {};
+      newState.normalized = true;
+      newState.title = oldState.title || '';
+      newState.url = History.getFullUrl(oldState.url ? oldState.url : History.getLocationHref());
+      newState.hash = History.getShortUrl(newState.url);
+      newState.data = History.cloneObject(oldState.data); // Fetch ID
+
+      newState.id = History.getIdByState(newState); // ----------------------------------------------------------------
+      // Clean the URL
+
+      newState.cleanUrl = newState.url.replace(/\??\&_suid.*/, '');
+      newState.url = newState.cleanUrl; // Check to see if we have more than just a url
+
+      dataNotEmpty = !History.isEmptyObject(newState.data); // Apply
+
+      if ((newState.title || dataNotEmpty) && History.options.disableSuid !== true) {
+        // Add ID to Hash
+        newState.hash = History.getShortUrl(newState.url).replace(/\??\&_suid.*/, '');
+
+        if (!/\?/.test(newState.hash)) {
+          newState.hash += '?';
+        }
+
+        newState.hash += '&_suid=' + newState.id;
+      } // Create the Hashed URL
+
+
+      newState.hashedUrl = History.getFullUrl(newState.hash); // ----------------------------------------------------------------
+      // Update the URL if we have a duplicate
+
+      if ((History.emulated.pushState || History.bugs.safariPoll) && History.hasUrlDuplicate(newState)) {
+        newState.url = newState.hashedUrl;
+      } // ----------------------------------------------------------------
+      // Return
+
+
+      return newState;
+    };
+    /**
+     * History.createStateObject(data,title,url)
+     * Creates a object based on the data, title and url state params
+     * @param {object} data
+     * @param {string} title
+     * @param {string} url
+     * @return {object}
+     */
+
+
+    History.createStateObject = function (data, title, url) {
+      // Hashify
+      var State = {
+        'data': data,
+        'title': title,
+        'url': url
+      }; // Expand the State
+
+      State = History.normalizeState(State); // Return object
+
+      return State;
+    };
+    /**
+     * History.getStateById(id)
+     * Get a state by it's UID
+     * @param {String} id
+     */
+
+
+    History.getStateById = function (id) {
+      // Prepare
+      id = String(id); // Retrieve
+
+      var State = History.idToState[id] || History.store.idToState[id] || undefined; // Return State
+
+      return State;
+    };
+    /**
+     * Get a State's String
+     * @param {State} passedState
+     */
+
+
+    History.getStateString = function (passedState) {
+      // Prepare
+      var State, cleanedState, str; // Fetch
+
+      State = History.normalizeState(passedState); // Clean
+
+      cleanedState = {
+        data: State.data,
+        title: passedState.title,
+        url: passedState.url
+      }; // Fetch
+
+      str = JSON.stringify(cleanedState); // Return
+
+      return str;
+    };
+    /**
+     * Get a State's ID
+     * @param {State} passedState
+     * @return {String} id
+     */
+
+
+    History.getStateId = function (passedState) {
+      // Prepare
+      var State, id; // Fetch
+
+      State = History.normalizeState(passedState); // Fetch
+
+      id = State.id; // Return
+
+      return id;
+    };
+    /**
+     * History.getHashByState(State)
+     * Creates a Hash for the State Object
+     * @param {State} passedState
+     * @return {String} hash
+     */
+
+
+    History.getHashByState = function (passedState) {
+      // Prepare
+      var State, hash; // Fetch
+
+      State = History.normalizeState(passedState); // Hash
+
+      hash = State.hash; // Return
+
+      return hash;
+    };
+    /**
+     * History.extractId(url_or_hash)
+     * Get a State ID by it's URL or Hash
+     * @param {string} url_or_hash
+     * @return {string} id
+     */
+
+
+    History.extractId = function (url_or_hash) {
+      // Prepare
+      var id, parts, url, tmp; // Extract
+      // If the URL has a #, use the id from before the #
+
+      if (url_or_hash.indexOf('#') != -1) {
+        tmp = url_or_hash.split("#")[0];
+      } else {
+        tmp = url_or_hash;
+      }
+
+      parts = /(.*)\&_suid=([0-9]+)$/.exec(tmp);
+      url = parts ? parts[1] || url_or_hash : url_or_hash;
+      id = parts ? String(parts[2] || '') : ''; // Return
+
+      return id || false;
+    };
+    /**
+     * History.isTraditionalAnchor
+     * Checks to see if the url is a traditional anchor or not
+     * @param {String} url_or_hash
+     * @return {Boolean}
+     */
+
+
+    History.isTraditionalAnchor = function (url_or_hash) {
+      // Check
+      var isTraditional = !/[\/\?\.]/.test(url_or_hash); // Return
+
+      return isTraditional;
+    };
+    /**
+     * History.extractState
+     * Get a State by it's URL or Hash
+     * @param {String} url_or_hash
+     * @return {State|null}
+     */
+
+
+    History.extractState = function (url_or_hash, create) {
+      // Prepare
+      var State = null,
+          id,
+          url;
+      create = create || false; // Fetch SUID
+
+      id = History.extractId(url_or_hash);
+
+      if (id) {
+        State = History.getStateById(id);
+      } // Fetch SUID returned no State
+
+
+      if (!State) {
+        // Fetch URL
+        url = History.getFullUrl(url_or_hash); // Check URL
+
+        id = History.getIdByUrl(url) || false;
+
+        if (id) {
+          State = History.getStateById(id);
+        } // Create State
+
+
+        if (!State && create && !History.isTraditionalAnchor(url_or_hash)) {
+          State = History.createStateObject(null, null, url);
+        }
+      } // Return
+
+
+      return State;
+    };
+    /**
+     * History.getIdByUrl()
+     * Get a State ID by a State URL
+     */
+
+
+    History.getIdByUrl = function (url) {
+      // Fetch
+      var id = History.urlToId[url] || History.store.urlToId[url] || undefined; // Return
+
+      return id;
+    };
+    /**
+     * History.getLastSavedState()
+     * Get an object containing the data, title and url of the current state
+     * @return {Object} State
+     */
+
+
+    History.getLastSavedState = function () {
+      return History.savedStates[History.savedStates.length - 1] || undefined;
+    };
+    /**
+     * History.getLastStoredState()
+     * Get an object containing the data, title and url of the current state
+     * @return {Object} State
+     */
+
+
+    History.getLastStoredState = function () {
+      return History.storedStates[History.storedStates.length - 1] || undefined;
+    };
+    /**
+     * History.hasUrlDuplicate
+     * Checks if a Url will have a url conflict
+     * @param {Object} newState
+     * @return {Boolean} hasDuplicate
+     */
+
+
+    History.hasUrlDuplicate = function (newState) {
+      // Prepare
+      var hasDuplicate = false,
+          oldState; // Fetch
+
+      oldState = History.extractState(newState.url); // Check
+
+      hasDuplicate = oldState && oldState.id !== newState.id; // Return
+
+      return hasDuplicate;
+    };
+    /**
+     * History.storeState
+     * Store a State
+     * @param {Object} newState
+     * @return {Object} newState
+     */
+
+
+    History.storeState = function (newState) {
+      // Store the State
+      History.urlToId[newState.url] = newState.id; // Push the State
+
+      History.storedStates.push(History.cloneObject(newState)); // Return newState
+
+      return newState;
+    };
+    /**
+     * History.isLastSavedState(newState)
+     * Tests to see if the state is the last state
+     * @param {Object} newState
+     * @return {boolean} isLast
+     */
+
+
+    History.isLastSavedState = function (newState) {
+      // Prepare
+      var isLast = false,
+          newId,
+          oldState,
+          oldId; // Check
+
+      if (History.savedStates.length) {
+        newId = newState.id;
+        oldState = History.getLastSavedState();
+        oldId = oldState.id; // Check
+
+        isLast = newId === oldId;
+      } // Return
+
+
+      return isLast;
+    };
+    /**
+     * History.saveState
+     * Push a State
+     * @param {Object} newState
+     * @return {boolean} changed
+     */
+
+
+    History.saveState = function (newState) {
+      // Check Hash
+      if (History.isLastSavedState(newState)) {
+        return false;
+      } // Push the State
+
+
+      History.savedStates.push(History.cloneObject(newState)); // Return true
+
+      return true;
+    };
+    /**
+     * History.getStateByIndex()
+     * Gets a state by the index
+     * @param {integer} index
+     * @return {Object}
+     */
+
+
+    History.getStateByIndex = function (index) {
+      // Prepare
+      var State = null; // Handle
+
+      if (typeof index === 'undefined') {
+        // Get the last inserted
+        State = History.savedStates[History.savedStates.length - 1];
+      } else if (index < 0) {
+        // Get from the end
+        State = History.savedStates[History.savedStates.length + index];
+      } else {
+        // Get from the beginning
+        State = History.savedStates[index];
+      } // Return State
+
+
+      return State;
+    };
+    /**
+     * History.getCurrentIndex()
+     * Gets the current index
+     * @return (integer)
+    */
+
+
+    History.getCurrentIndex = function () {
+      // Prepare
+      var index = null; // No states saved
+
+      if (History.savedStates.length < 1) {
+        index = 0;
+      } else {
+        index = History.savedStates.length - 1;
+      }
+
+      return index;
+    }; // ====================================================================
+    // Hash Helpers
+
+    /**
+     * History.getHash()
+     * @param {Location=} location
+     * Gets the current document hash
+     * Note: unlike location.hash, this is guaranteed to return the escaped hash in all browsers
+     * @return {string}
+     */
+
+
+    History.getHash = function (doc) {
+      var url = History.getLocationHref(doc),
+          hash;
+      hash = History.getHashByUrl(url);
+      return hash;
+    };
+    /**
+     * History.unescapeHash()
+     * normalize and Unescape a Hash
+     * @param {String} hash
+     * @return {string}
+     */
+
+
+    History.unescapeHash = function (hash) {
+      // Prepare
+      var result = History.normalizeHash(hash); // Unescape hash
+
+      result = decodeURIComponent(result); // Return result
+
+      return result;
+    };
+    /**
+     * History.normalizeHash()
+     * normalize a hash across browsers
+     * @return {string}
+     */
+
+
+    History.normalizeHash = function (hash) {
+      // Prepare
+      var result = hash.replace(/[^#]*#/, '').replace(/#.*/, ''); // Return result
+
+      return result;
+    };
+    /**
+     * History.setHash(hash)
+     * Sets the document hash
+     * @param {string} hash
+     * @return {History}
+     */
+
+
+    History.setHash = function (hash, queue) {
+      // Prepare
+      var State, pageUrl; // Handle Queueing
+
+      if (queue !== false && History.busy()) {
+        // Wait + Push to Queue
+        //History.debug('History.setHash: we must wait', arguments);
+        History.pushQueue({
+          scope: History,
+          callback: History.setHash,
+          args: arguments,
+          queue: queue
+        });
+        return false;
+      } // Log
+      //History.debug('History.setHash: called',hash);
+      // Make Busy + Continue
+
+
+      History.busy(true); // Check if hash is a state
+
+      State = History.extractState(hash, true);
+
+      if (State && !History.emulated.pushState) {
+        // Hash is a state so skip the setHash
+        //History.debug('History.setHash: Hash is a state so skipping the hash set with a direct pushState call',arguments);
+        // PushState
+        History.pushState(State.data, State.title, State.url, false);
+      } else if (History.getHash() !== hash) {
+        // Hash is a proper hash, so apply it
+        // Handle browser bugs
+        if (History.bugs.setHash) {
+          // Fix Safari Bug https://bugs.webkit.org/show_bug.cgi?id=56249
+          // Fetch the base page
+          pageUrl = History.getPageUrl(); // Safari hash apply
+
+          History.pushState(null, null, pageUrl + '#' + hash, false);
+        } else {
+          // Normal hash apply
+          document.location.hash = hash;
+        }
+      } // Chain
+
+
+      return History;
+    };
+    /**
+     * History.escape()
+     * normalize and Escape a Hash
+     * @return {string}
+     */
+
+
+    History.escapeHash = function (hash) {
+      // Prepare
+      var result = History.normalizeHash(hash); // Escape hash
+
+      result = window.encodeURIComponent(result); // IE6 Escape Bug
+
+      if (!History.bugs.hashEscape) {
+        // Restore common parts
+        result = result.replace(/\%21/g, '!').replace(/\%26/g, '&').replace(/\%3D/g, '=').replace(/\%3F/g, '?');
+      } // Return result
+
+
+      return result;
+    };
+    /**
+     * History.getHashByUrl(url)
+     * Extracts the Hash from a URL
+     * @param {string} url
+     * @return {string} url
+     */
+
+
+    History.getHashByUrl = function (url) {
+      // Extract the hash
+      var hash = String(url).replace(/([^#]*)#?([^#]*)#?(.*)/, '$2'); // Unescape hash
+
+      hash = History.unescapeHash(hash); // Return hash
+
+      return hash;
+    };
+    /**
+     * History.setTitle(title)
+     * Applies the title to the document
+     * @param {State} newState
+     * @return {Boolean}
+     */
+
+
+    History.setTitle = function (newState) {
+      // Prepare
+      var title = newState.title,
+          firstState; // Initial
+
+      if (!title) {
+        firstState = History.getStateByIndex(0);
+
+        if (firstState && firstState.url === newState.url) {
+          title = firstState.title || History.options.initialTitle;
+        }
+      } // Apply
+
+
+      try {
+        document.getElementsByTagName('title')[0].innerHTML = title.replace('<', '&lt;').replace('>', '&gt;').replace(' & ', ' &amp; ');
+      } catch (Exception) {}
+
+      document.title = title; // Chain
+
+      return History;
+    }; // ====================================================================
+    // Queueing
+
+    /**
+     * History.queues
+     * The list of queues to use
+     * First In, First Out
+     */
+
+
+    History.queues = [];
+    /**
+     * History.busy(value)
+     * @param {boolean} value [optional]
+     * @return {boolean} busy
+     */
+
+    History.busy = function (value) {
+      // Apply
+      if (typeof value !== 'undefined') {
+        //History.debug('History.busy: changing ['+(History.busy.flag||false)+'] to ['+(value||false)+']', History.queues.length);
+        History.busy.flag = value;
+      } // Default
+      else if (typeof History.busy.flag === 'undefined') {
+          History.busy.flag = false;
+        } // Queue
+
+
+      if (!History.busy.flag) {
+        // Execute the next item in the queue
+        clearTimeout(History.busy.timeout);
+
+        var fireNext = function fireNext() {
+          var i, queue, item;
+          if (History.busy.flag) return;
+
+          for (i = History.queues.length - 1; i >= 0; --i) {
+            queue = History.queues[i];
+            if (queue.length === 0) continue;
+            item = queue.shift();
+            History.fireQueueItem(item);
+            History.busy.timeout = setTimeout(fireNext, History.options.busyDelay);
+          }
+        };
+
+        History.busy.timeout = setTimeout(fireNext, History.options.busyDelay);
+      } // Return
+
+
+      return History.busy.flag;
+    };
+    /**
+     * History.busy.flag
+     */
+
+
+    History.busy.flag = false;
+    /**
+     * History.fireQueueItem(item)
+     * Fire a Queue Item
+     * @param {Object} item
+     * @return {Mixed} result
+     */
+
+    History.fireQueueItem = function (item) {
+      return item.callback.apply(item.scope || History, item.args || []);
+    };
+    /**
+     * History.pushQueue(callback,args)
+     * Add an item to the queue
+     * @param {Object} item [scope,callback,args,queue]
+     */
+
+
+    History.pushQueue = function (item) {
+      // Prepare the queue
+      History.queues[item.queue || 0] = History.queues[item.queue || 0] || []; // Add to the queue
+
+      History.queues[item.queue || 0].push(item); // Chain
+
+      return History;
+    };
+    /**
+     * History.queue (item,queue), (func,queue), (func), (item)
+     * Either firs the item now if not busy, or adds it to the queue
+     */
+
+
+    History.queue = function (item, queue) {
+      // Prepare
+      if (typeof item === 'function') {
+        item = {
+          callback: item
+        };
+      }
+
+      if (typeof queue !== 'undefined') {
+        item.queue = queue;
+      } // Handle
+
+
+      if (History.busy()) {
+        History.pushQueue(item);
+      } else {
+        History.fireQueueItem(item);
+      } // Chain
+
+
+      return History;
+    };
+    /**
+     * History.clearQueue()
+     * Clears the Queue
+     */
+
+
+    History.clearQueue = function () {
+      History.busy.flag = false;
+      History.queues = [];
+      return History;
+    }; // ====================================================================
+    // IE Bug Fix
+
+    /**
+     * History.stateChanged
+     * States whether or not the state has changed since the last double check was initialised
+     */
+
+
+    History.stateChanged = false;
+    /**
+     * History.doubleChecker
+     * Contains the timeout used for the double checks
+     */
+
+    History.doubleChecker = false;
+    /**
+     * History.doubleCheckComplete()
+     * Complete a double check
+     * @return {History}
+     */
+
+    History.doubleCheckComplete = function () {
+      // Update
+      History.stateChanged = true; // Clear
+
+      History.doubleCheckClear(); // Chain
+
+      return History;
+    };
+    /**
+     * History.doubleCheckClear()
+     * Clear a double check
+     * @return {History}
+     */
+
+
+    History.doubleCheckClear = function () {
+      // Clear
+      if (History.doubleChecker) {
+        clearTimeout(History.doubleChecker);
+        History.doubleChecker = false;
+      } // Chain
+
+
+      return History;
+    };
+    /**
+     * History.doubleCheck()
+     * Create a double check
+     * @return {History}
+     */
+
+
+    History.doubleCheck = function (tryAgain) {
+      // Reset
+      History.stateChanged = false;
+      History.doubleCheckClear(); // Fix IE6,IE7 bug where calling history.back or history.forward does not actually change the hash (whereas doing it manually does)
+      // Fix Safari 5 bug where sometimes the state does not change: https://bugs.webkit.org/show_bug.cgi?id=42940
+
+      if (History.bugs.ieDoubleCheck) {
+        // Apply Check
+        History.doubleChecker = setTimeout(function () {
+          History.doubleCheckClear();
+
+          if (!History.stateChanged) {
+            //History.debug('History.doubleCheck: State has not yet changed, trying again', arguments);
+            // Re-Attempt
+            tryAgain();
+          }
+
+          return true;
+        }, History.options.doubleCheckInterval);
+      } // Chain
+
+
+      return History;
+    }; // ====================================================================
+    // Safari Bug Fix
+
+    /**
+     * History.safariStatePoll()
+     * Poll the current state
+     * @return {History}
+     */
+
+
+    History.safariStatePoll = function () {
+      // Poll the URL
+      // Get the Last State which has the new URL
+      var urlState = History.extractState(History.getLocationHref()),
+          newState; // Check for a difference
+
+      if (!History.isLastSavedState(urlState)) {
+        newState = urlState;
+      } else {
+        return;
+      } // Check if we have a state with that url
+      // If not create it
+
+
+      if (!newState) {
+        //History.debug('History.safariStatePoll: new');
+        newState = History.createStateObject();
+      } // Apply the New State
+      //History.debug('History.safariStatePoll: trigger');
+
+
+      History.Adapter.trigger(window, 'popstate'); // Chain
+
+      return History;
+    }; // ====================================================================
+    // State Aliases
+
+    /**
+     * History.back(queue)
+     * Send the browser history back one item
+     * @param {Integer} queue [optional]
+     */
+
+
+    History.back = function (queue) {
+      //History.debug('History.back: called', arguments);
+      // Handle Queueing
+      if (queue !== false && History.busy()) {
+        // Wait + Push to Queue
+        //History.debug('History.back: we must wait', arguments);
+        History.pushQueue({
+          scope: History,
+          callback: History.back,
+          args: arguments,
+          queue: queue
+        });
+        return false;
+      } // Make Busy + Continue
+
+
+      History.busy(true); // Fix certain browser bugs that prevent the state from changing
+
+      History.doubleCheck(function () {
+        History.back(false);
+      }); // Go back
+
+      history.go(-1); // End back closure
+
+      return true;
+    };
+    /**
+     * History.forward(queue)
+     * Send the browser history forward one item
+     * @param {Integer} queue [optional]
+     */
+
+
+    History.forward = function (queue) {
+      //History.debug('History.forward: called', arguments);
+      // Handle Queueing
+      if (queue !== false && History.busy()) {
+        // Wait + Push to Queue
+        //History.debug('History.forward: we must wait', arguments);
+        History.pushQueue({
+          scope: History,
+          callback: History.forward,
+          args: arguments,
+          queue: queue
+        });
+        return false;
+      } // Make Busy + Continue
+
+
+      History.busy(true); // Fix certain browser bugs that prevent the state from changing
+
+      History.doubleCheck(function () {
+        History.forward(false);
+      }); // Go forward
+
+      history.go(1); // End forward closure
+
+      return true;
+    };
+    /**
+     * History.go(index,queue)
+     * Send the browser history back or forward index times
+     * @param {Integer} queue [optional]
+     */
+
+
+    History.go = function (index, queue) {
+      //History.debug('History.go: called', arguments);
+      // Prepare
+      var i; // Handle
+
+      if (index > 0) {
+        // Forward
+        for (i = 1; i <= index; ++i) {
+          History.forward(queue);
+        }
+      } else if (index < 0) {
+        // Backward
+        for (i = -1; i >= index; --i) {
+          History.back(queue);
+        }
+      } else {
+        throw new Error('History.go: History.go requires a positive or negative integer passed.');
+      } // Chain
+
+
+      return History;
+    }; // ====================================================================
+    // HTML5 State Support
+    // Non-Native pushState Implementation
+
+
+    if (History.emulated.pushState) {
+      /*
+       * Provide Skeleton for HTML4 Browsers
+       */
+      // Prepare
+      var emptyFunction = function emptyFunction() {};
+
+      History.pushState = History.pushState || emptyFunction;
+      History.replaceState = History.replaceState || emptyFunction;
+    } // History.emulated.pushState
+    // Native pushState Implementation
+    else {
+        /*
+         * Use native HTML5 History API Implementation
+         */
+
+        /**
+         * History.onPopState(event,extra)
+         * Refresh the Current State
+         */
+        History.onPopState = function (event, extra) {
+          // Prepare
+          var stateId = false,
+              newState = false,
+              currentHash,
+              currentState; // Reset the double check
+
+          History.doubleCheckComplete(); // Check for a Hash, and handle apporiatly
+
+          currentHash = History.getHash();
+
+          if (currentHash) {
+            // Expand Hash
+            currentState = History.extractState(currentHash || History.getLocationHref(), true);
+
+            if (currentState) {
+              // We were able to parse it, it must be a State!
+              // Let's forward to replaceState
+              //History.debug('History.onPopState: state anchor', currentHash, currentState);
+              History.replaceState(currentState.data, currentState.title, currentState.url, false);
+            } else {
+              // Traditional Anchor
+              //History.debug('History.onPopState: traditional anchor', currentHash);
+              History.Adapter.trigger(window, 'anchorchange');
+              History.busy(false);
+            } // We don't care for hashes
+
+
+            History.expectedStateId = false;
+            return false;
+          } // Ensure
+
+
+          stateId = History.Adapter.extractEventData('state', event, extra) || false; // Fetch State
+
+          if (stateId) {
+            // Vanilla: Back/forward button was used
+            newState = History.getStateById(stateId);
+          } else if (History.expectedStateId) {
+            // Vanilla: A new state was pushed, and popstate was called manually
+            newState = History.getStateById(History.expectedStateId);
+          } else {
+            // Initial State
+            newState = History.extractState(History.getLocationHref());
+          } // The State did not exist in our store
+
+
+          if (!newState) {
+            // Regenerate the State
+            newState = History.createStateObject(null, null, History.getLocationHref());
+          } // Clean
+
+
+          History.expectedStateId = false; // Check if we are the same state
+
+          if (History.isLastSavedState(newState)) {
+            // There has been no change (just the page's hash has finally propagated)
+            //History.debug('History.onPopState: no change', newState, History.savedStates);
+            History.busy(false);
+            return false;
+          } // Store the State
+
+
+          History.storeState(newState);
+          History.saveState(newState); // Force update of the title
+
+          History.setTitle(newState); // Fire Our Event
+
+          History.Adapter.trigger(window, 'statechange');
+          History.busy(false); // Return true
+
+          return true;
+        };
+
+        History.Adapter.bind(window, 'popstate', History.onPopState);
+        /**
+         * History.pushState(data,title,url)
+         * Add a new State to the history object, become it, and trigger onpopstate
+         * We have to trigger for HTML4 compatibility
+         * @param {object} data
+         * @param {string} title
+         * @param {string} url
+         * @return {true}
+         */
+
+        History.pushState = function (data, title, url, queue) {
+          //History.debug('History.pushState: called', arguments);
+          // Check the State
+          if (History.getHashByUrl(url) && History.emulated.pushState) {
+            throw new Error('History.js does not support states with fragement-identifiers (hashes/anchors).');
+          } // Handle Queueing
+
+
+          if (queue !== false && History.busy()) {
+            // Wait + Push to Queue
+            //History.debug('History.pushState: we must wait', arguments);
+            History.pushQueue({
+              scope: History,
+              callback: History.pushState,
+              args: arguments,
+              queue: queue
+            });
+            return false;
+          } // Make Busy + Continue
+
+
+          History.busy(true); // Create the newState
+
+          var newState = History.createStateObject(data, title, url); // Check it
+
+          if (History.isLastSavedState(newState)) {
+            // Won't be a change
+            History.busy(false);
+          } else {
+            // Store the newState
+            History.storeState(newState);
+            History.expectedStateId = newState.id; // Push the newState
+
+            history.pushState(newState.id, newState.title, newState.url); // Fire HTML5 Event
+
+            History.Adapter.trigger(window, 'popstate');
+          } // End pushState closure
+
+
+          return true;
+        };
+        /**
+         * History.replaceState(data,title,url)
+         * Replace the State and trigger onpopstate
+         * We have to trigger for HTML4 compatibility
+         * @param {object} data
+         * @param {string} title
+         * @param {string} url
+         * @return {true}
+         */
+
+
+        History.replaceState = function (data, title, url, queue) {
+          //History.debug('History.replaceState: called', arguments);
+          // Check the State
+          if (History.getHashByUrl(url) && History.emulated.pushState) {
+            throw new Error('History.js does not support states with fragement-identifiers (hashes/anchors).');
+          } // Handle Queueing
+
+
+          if (queue !== false && History.busy()) {
+            // Wait + Push to Queue
+            //History.debug('History.replaceState: we must wait', arguments);
+            History.pushQueue({
+              scope: History,
+              callback: History.replaceState,
+              args: arguments,
+              queue: queue
+            });
+            return false;
+          } // Make Busy + Continue
+
+
+          History.busy(true); // Create the newState
+
+          var newState = History.createStateObject(data, title, url); // Check it
+
+          if (History.isLastSavedState(newState)) {
+            // Won't be a change
+            History.busy(false);
+          } else {
+            // Store the newState
+            History.storeState(newState);
+            History.expectedStateId = newState.id; // Push the newState
+
+            history.replaceState(newState.id, newState.title, newState.url); // Fire HTML5 Event
+
+            History.Adapter.trigger(window, 'popstate');
+          } // End replaceState closure
+
+
+          return true;
+        };
+      } // !History.emulated.pushState
+    // ====================================================================
+    // Initialise
+
+    /**
+     * Load the Store
+     */
+
+
+    if (sessionStorage) {
+      // Fetch
+      try {
+        History.store = JSON.parse(sessionStorage.getItem('History.store')) || {};
+      } catch (err) {
+        History.store = {};
+      } // Normalize
+
+
+      History.normalizeStore();
+    } else {
+      // Default Load
+      History.store = {};
+      History.normalizeStore();
+    }
+    /**
+     * Clear Intervals on exit to prevent memory leaks
+     */
+
+
+    History.Adapter.bind(window, "unload", History.clearAllIntervals);
+    /**
+     * Create the initial State
+     */
+
+    History.saveState(History.storeState(History.extractState(History.getLocationHref(), true)));
+    /**
+     * Bind for Saving Store
+     */
+
+    if (sessionStorage) {
+      // When the page is closed
+      History.onUnload = function () {
+        // Prepare
+        var currentStore, item, currentStoreString; // Fetch
+
+        try {
+          currentStore = JSON.parse(sessionStorage.getItem('History.store')) || {};
+        } catch (err) {
+          currentStore = {};
+        } // Ensure
+
+
+        currentStore.idToState = currentStore.idToState || {};
+        currentStore.urlToId = currentStore.urlToId || {};
+        currentStore.stateToId = currentStore.stateToId || {}; // Sync
+
+        for (item in History.idToState) {
+          if (!History.idToState.hasOwnProperty(item)) {
+            continue;
+          }
+
+          currentStore.idToState[item] = History.idToState[item];
+        }
+
+        for (item in History.urlToId) {
+          if (!History.urlToId.hasOwnProperty(item)) {
+            continue;
+          }
+
+          currentStore.urlToId[item] = History.urlToId[item];
+        }
+
+        for (item in History.stateToId) {
+          if (!History.stateToId.hasOwnProperty(item)) {
+            continue;
+          }
+
+          currentStore.stateToId[item] = History.stateToId[item];
+        } // Update
+
+
+        History.store = currentStore;
+        History.normalizeStore(); // In Safari, going into Private Browsing mode causes the
+        // Session Storage object to still exist but if you try and use
+        // or set any property/function of it it throws the exception
+        // "QUOTA_EXCEEDED_ERR: DOM Exception 22: An attempt was made to
+        // add something to storage that exceeded the quota." infinitely
+        // every second.
+
+        currentStoreString = JSON.stringify(currentStore);
+
+        try {
+          // Store
+          sessionStorage.setItem('History.store', currentStoreString);
+        } catch (e) {
+          if (e.code === DOMException.QUOTA_EXCEEDED_ERR) {
+            if (sessionStorage.length) {
+              // Workaround for a bug seen on iPads. Sometimes the quota exceeded error comes up and simply
+              // removing/resetting the storage can work.
+              sessionStorage.removeItem('History.store');
+              sessionStorage.setItem('History.store', currentStoreString);
+            } else {// Otherwise, we're probably private browsing in Safari, so we'll ignore the exception.
+            }
+          } else {
+            throw e;
+          }
+        }
+      }; // For Internet Explorer
+
+
+      History.intervalList.push(setInterval(History.onUnload, History.options.storeInterval)); // For Other Browsers
+
+      History.Adapter.bind(window, 'beforeunload', History.onUnload);
+      History.Adapter.bind(window, 'unload', History.onUnload); // Both are enabled for consistency
+    } // Non-Native pushState Implementation
+
+
+    if (!History.emulated.pushState) {
+      // Be aware, the following is only for native pushState implementations
+      // If you are wanting to include something for all browsers
+      // Then include it above this if block
+
+      /**
+       * Setup Safari Fix
+       */
+      if (History.bugs.safariPoll) {
+        History.intervalList.push(setInterval(History.safariStatePoll, History.options.safariPollInterval));
+      }
+      /**
+       * Ensure Cross Browser Compatibility
+       */
+
+
+      if (navigator.vendor === 'Apple Computer, Inc.' || (navigator.appCodeName || '') === 'Mozilla') {
+        /**
+         * Fix Safari HashChange Issue
+         */
+        // Setup Alias
+        History.Adapter.bind(window, 'hashchange', function () {
+          History.Adapter.trigger(window, 'popstate');
+        }); // Initialise Alias
+
+        if (History.getHash()) {
+          History.Adapter.onDomLoad(function () {
+            History.Adapter.trigger(window, 'hashchange');
+          });
+        }
+      }
+    } // !History.emulated.pushState
+
+  }; // History.initCore
+  // Try to Initialise History
+
+
+  if (!History.options || !History.options.delayInit) {
+    History.init();
+  }
+})(window);
 
 /***/ }),
 
