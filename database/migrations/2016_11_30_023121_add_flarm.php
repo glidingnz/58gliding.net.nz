@@ -14,7 +14,7 @@ class AddFlarm extends Migration
 	public function up()
 	{
 		Schema::table('aircraft', function ($table) {
-			$table->char('flarm', 6);
+			$table->char('flarm', 6)->nullable();
 		});
 	}
 

@@ -97,8 +97,8 @@
 			<textarea type="text" class="form-control" rows="5" v-model="emailMessage"></textarea>
 
 			<br>
-			<input type="submit" value="Send Email to {{total}} members" class=" btn btn-primary" v-on:click="sendEmail()"  v-show="!emailSending">
-			<input type="submit" value="Send Email to {{total}} members" class=" btn btn-disabled" v-show="emailSending"> 
+			<input type="submit" v-bind:value="'Send Email to ' + total + 'members'" class=" btn btn-primary" v-on:click="sendEmail()"  v-show="!emailSending">
+			<input type="submit" v-bind:value="'Send Email to ' + total + 'members'" class=" btn btn-disabled" v-show="emailSending">
 			<span v-show="emailSending"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i> Sending</span>
 		</div>
 		<div class="col-xs-12 col-sm-6 ">
@@ -126,7 +126,7 @@
 			<b>Preview</b><br>
 			<div class="panel panel-default">
 				<div class="panel-heading">{{emailSubject}} <span v-if="!emailSubject" class="text-muted">(No Subject)</span></div>
-				<div  class="panel-body" v-html="emailMessage | marked"></div>
+				<div  class="panel-body" v-html="compiledMarkdown"></div>
 			</div>
 		</div>
 
@@ -147,19 +147,19 @@
 			<th v-if="showEdit" colspan=3></th>
 		</tr>
 		<tr v-for="result in results">
-			<td class="hidden-xs hidden-sm nowrap"><a href="/members/{{result.id}}">{{ result.nzga_number }}</a></td>
-			<td><a href="/members/{{result.id}}">{{ result.first_name }}</a></td>
-			<td><a href="/members/{{result.id}}">{{ result.last_name }}</a></td>
+			<td class="hidden-xs hidden-sm nowrap"><a v-bind:href="'/members/' + result.id">{{ result.nzga_number }}</a></td>
+			<td><a v-bind:href="'/members/' + result.id">{{ result.first_name }}</a></td>
+			<td><a v-bind:href="'/members/' + result.id">{{ result.last_name }}</a></td>
 			<td>{{ result.club }}</td>
 			<td>{{ result.membership_type }}</td>
 			<td>{{ result.city }}</td>
 			<td>{{ result.mobile_phone }}</td>
-			<td><a href="mailto:{{result.email}}">{{ result.email }}</a></td>
+			<td><a v-bind:href="'mailto:' + result.email">{{ result.email }}</a></td>
 			<td>{{ result.observer_number }}</td>
-			<td><a href="/members/{{result.id}}/achievements/" class="btn btn-primary btn-xs"><i class="fa fa-trophy"></i></a></td>
-			<td class="center" v-if="showEdit"><a href="http://members.gliding.co.nz/index.php?r=member/update&id={{ result.id }}" class="btn btn-default btn-xs">Old Edit</a></td>
-			<td class="center" v-if="showEdit"><a href="/members/{{result.id}}/edit" class="btn btn-primary btn-xs">Edit</a></td>
-			<td class="center" v-if="showEdit"><a href="/members/{{result.id}}/ratings" class="btn btn-primary btn-xs">Ratings</a></td>
+			<td><a v-bind:href="'/members/' + result.id + '/achievements/'" class="btn btn-primary btn-xs"><i class="fa fa-trophy"></i></a></td>
+			<td class="center" v-if="showEdit"><a v-bind:href="'http://members.gliding.co.nz/index.php?r=member/update&id=' + result.id" class="btn btn-default btn-xs">Old Edit</a></td>
+			<td class="center" v-if="showEdit"><a v-bind:href="'/members/' + result.id + '/edit'" class="btn btn-primary btn-xs">Edit</a></td>
+			<td class="center" v-if="showEdit"><a v-bind:href="'/members/' + result.id + '/ratings'" class="btn btn-primary btn-xs">Ratings</a></td>
 
 		</tr>
 	</table>
@@ -205,10 +205,12 @@
 				deep: true
 			}
 		},
-		filters: {
-			marked: marked
+		computed: {
+			compiledMarkdown: function () {
+				return marked(this.emailMessage, { sanitize: true })
+			}
 		},
-		ready() {
+		mounted() {
 			if (this.orgCode) {
 				this.state.org=this.orgCode;
 			}
@@ -241,12 +243,10 @@
 			},
 			exportData: function(format) {
 
-				this.$http.get('/api/v1/members?' + this.createExportUrl(format)).then(function (response) {
+				window.axios.get('/api/v1/members?' + this.createExportUrl(format)).then(function (response) {
 
-					var responseJson = response.json();
-
-					if (typeof responseJson.data.url!='undefined') {
-						window.location.href = responseJson.data.url;
+					if (typeof response.data.data.url!='undefined') {
+						window.location.href = response.data.data.url;
 					}
 				});
 			},
@@ -272,22 +272,22 @@
 				History.pushState(this.state, null, "?search=" + this.state.search + "&type=" + this.state.type + "&page=" + this.state.page);
 			},
 			loadSelected: function() {
-				this.$http.get('/api/v1/members', {params: this.state}).then(function (response) {
+				var that = this;
+				window.axios.get('/api/v1/members', {params: this.state}).then(function (response) {
 					
-					var responseJson = response.json();
-					this.results = responseJson.data;
-					this.last_page = responseJson.last_page;
-					this.total = responseJson.total;
+					that.results = response.data.data;
+					that.last_page = response.data.last_page;
+					that.total = response.data.total;
 
-					if (this.state.page > this.last_page && this.last_page>0) {
-						this.state.page = 1;
+					if (that.state.page > that.last_page && that.last_page>0) {
+						that.state.page = 1;
 					}
 				});
 			},
 			loadOrgs: function() {
-				this.$http.get('/api/v1/orgs/').then(function (response) {
-					var responseJson = response.json();
-					this.orgs = responseJson.data;
+				var that = this;
+				window.axios.get('/api/v1/orgs/').then(function (response) {
+					that.orgs = response.data.data;
 				});
 			},
 			toggleEmail: function() {
@@ -318,7 +318,7 @@
 
 				this.emailSending = true;
 
-				this.$http.post('/api/v1/members/email', data).then(function (response) {
+				window.axios.post('/api/v1/members/email', data).then(function (response) {
 					this.emailSending=false;
 					var responseJson = response.json();
 

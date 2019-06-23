@@ -15,10 +15,10 @@ class AddSpotTracking extends Migration
     {
         //
         Schema::table('aircraft', function ($table) {
-            $table->char('spot_feed_id', 34);
-            $table->char('spot_esn', 18);
+            $table->char('spot_feed_id', 34)->nullable();
+            $table->char('spot_esn', 18)->nullable();
             $table->dateTime('spot_active', null)->nullable();
-            $table->char('particle_id', 24);
+            $table->char('particle_id', 24)->nullable();
         });
     }
 

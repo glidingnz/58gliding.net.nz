@@ -43,6 +43,7 @@ Route::GET('/btraced/{rego}', 'Api\v1\TrackingApiController@btraced'); // specia
 
 Route::get('/api-control', 'HomeController@api_controller');
 
+Route::get('/members', 'Apps\MembersController@index');
 Route::group(['middleware' => ['auth']], function () {
 	Route::get('/user/account', 'UserController@view_account');
 	Route::post('/update-account', 'UserController@update_account');
@@ -58,7 +59,6 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('/admin/email-address-changes', 'AdminController@email_address_changes');
 
 
-	Route::get('/members', 'Apps\MembersController@index');
 	Route::get('/members/{id}', 'Apps\MembersController@view');
 	Route::get('/members/{id}/achievements', 'Apps\MembersController@achievements');
 	Route::get('/members/{id}/achievements/edit', 'Apps\MembersController@edit_achievements');

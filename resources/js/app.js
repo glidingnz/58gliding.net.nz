@@ -26,8 +26,8 @@ Vue.component('messages', require('./components/Messages.vue').default);
 
 Vue.component('orgs-component', require('./components/Orgs.vue').default);
 Vue.component('aircraft', require('./components/Aircraft.vue').default);
-// Vue.component('edit-aircraft', require('./components/EditAircraft.vue').default);
-// Vue.component('members', require('./components/Members.vue').default);
+Vue.component('edit-aircraft', require('./components/EditAircraft.vue').default);
+Vue.component('members', require('./components/Members.vue').default);
 // Vue.component('member', require('./components/Member.vue').default);
 // Vue.component('edit-member', require('./components/EditMember.vue').default);
 // Vue.component('tracking', require('./components/Tracking.vue').default);

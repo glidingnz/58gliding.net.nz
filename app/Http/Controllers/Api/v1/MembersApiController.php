@@ -360,9 +360,9 @@ class MembersApiController extends ApiController
 	 */
 	public function index(Request $request)
 	{
-		if (Gate::denies('gnz-member')) {
-			return $this->denied();
-		}
+		// if (Gate::denies('gnz-member')) {
+		// 	return $this->denied();
+		// }
 
 		$query = $this->_get_filtered_members($request);
 
