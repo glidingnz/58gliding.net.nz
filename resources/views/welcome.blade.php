@@ -7,7 +7,7 @@
 		<div class="row">
 			<div class="col-md-12">
 				
-				<?php if (!$org) { ?><h1>Clubs</h1><?php } ?>
+				<?php if (!$org) { ?><h1>Welcome to gliding.net.nz</h1><?php } ?>
 				<?php if ($org) { ?>
 					<h1>{{$org->name}}</h1>
 				<?php } ?>
@@ -19,10 +19,13 @@
 
 		<?php if (!$org) { ?>
 			<div class="col-md-6">
-
+				<h2>New Zealand Clubs</h2>
 				<orgs-component></orgs-component>
 				{{-- <example-component></example-component> --}}
 			</div>
+		<?php } else { ?>
+	
+
 		<?php } ?>
 
 

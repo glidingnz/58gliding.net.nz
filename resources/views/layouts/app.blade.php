@@ -13,8 +13,8 @@
 	<!-- Styles -->
 	<link href="/css/app.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
-
+{{-- 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+ --}}
 	<?php
 	// get messages defined by flash data
 	if (Session::has('error')) Messages::error(Session::get('error'));
@@ -47,48 +47,45 @@
 </head>
 <body>
 	<div id="app">
-	<nav class="navbar navbar-default navbar-static-top ">
-		<div class="container">
+	<nav class="navbar navbar-dark bg-dark navbar-expand">
+		<a class="navbar-brand" href="{{ url('/') }}">
+			<?php if (isset($org) && $org) { ?>
+				{{$org->name}}
+			<?php } else { ?>
+				Gliding.net.nz
+			<?php } ?>
+		</a>
 
-			<div>
-				<!-- Left Side Of Navbar -->
-				<ul class="nav navbar-nav">
-					<a class="navbar-brand" href="{{ url('/') }}">
-						<?php if (isset($org) && $org) { ?>
-							{{$org->name}}
-						<?php } else { ?>
-							Gliding.net.nz
-						<?php } ?>
+		<!-- Left Side Of Navbar -->
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item"><a class="nav-link" href="/aircraft">Aircraft</a></li>
+			<li class="nav-item"><a class="nav-link" href="/tracking">Tracking</a></li>
+			<li class="nav-item"><a class="nav-link" href="/members">Members</a></li>
+			<li class="nav-messages"></li>
+		</ul>
+
+		<!-- Right Side Of Navbar -->
+		<ul class="navbar-nav ml-auto">
+			<!-- Authentication Links -->
+			@if (Auth::guest())
+				<li class="nav-item"><a class="nav-link " href="{{ url('/login') }}">Login</a></li>
+				<li class="nav-item"><a class="nav-link " href="{{ url('/register') }}">Register</a></li>
+			@else
+				@can('admin') <li class="nav-item"><a class="nav-link" href="{{ url('/admin') }}">Admin</a></li> @endcan
+				<li class="nav-item"><a class="nav-link" href="{{ url('/user/account') }}"><span class="fa fa-user"></span> {{ Auth::user()->first_name }} </a></li>
+				<li class="nav-item">
+					<a class="nav-link" href="{{ url('/logout') }}"
+						onclick="event.preventDefault();
+								 document.getElementById('logout-form').submit();">
+						Logout
 					</a>
-					<li><a href="/aircraft">Aircraft</a></li>
-					<li><a href="/tracking">Tracking</a></li>
-					<li><a href="/members">Members</a></li>
-					<li class="nav-messages"><messages></messages></li>
-				</ul>
-
-				<!-- Right Side Of Navbar -->
-				<ul class="nav navbar-nav navbar-right">
-					<!-- Authentication Links -->
-					@if (Auth::guest())
-						<li><a href="{{ url('/login') }}">Login</a></li>
-						<li><a href="{{ url('/register') }}">Register</a></li>
-					@else
-						@can('admin') <li><a href="{{ url('/admin') }}">Admin</a></li> @endcan
-						<li><a href="{{ url('/user/account') }}"><span class="fa fa-user"></span> {{ Auth::user()->first_name }} </a></li>
-						<li>
-							<a href="{{ url('/logout') }}"
-								onclick="event.preventDefault();
-										 document.getElementById('logout-form').submit();">
-								Logout
-							</a>
-							<form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
-								{{ csrf_field() }}
-							</form>
-						</li>
-					@endif
-				</ul>
-			</div>
-		</div>
+					<form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+						{{ csrf_field() }}
+					</form>
+				</li>
+			@endif
+		</ul>
+		<messages></messages>
 	</nav>
 
 	@yield('content')

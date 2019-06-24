@@ -35,7 +35,7 @@
 						<span class="success"><i class="fa fa-check-square-o"></i> Email Validated</span>
 					<?php } else { ?>
 						<span class="error"><i class="fa fa-exclamation-circle"></i> Email Not Validated</span>
-						<input value="Re-send Validation Email" name="resend-validation" type="submit" class="btn btn-default btn-sm">
+						<input value="Re-send Validation Email" name="resend-validation" type="submit" class="btn btn-outline-dark btn-sm">
 					<?php }  ?>
 				</div>
 		</div>
@@ -54,7 +54,7 @@
 						<span class="success"><i class="fa fa-check-square-o"></i> GNZ Number Validated</span>
 					<?php } else { ?>
 						<span class="warning"><i class="fa fa-exclamation-circle"></i> GNZ Number Not Validated
-						<input value="Check Again" name="check-gnz" type="submit" class="btn btn-default btn-sm"></span>
+						<input value="Check Again" name="check-gnz" type="submit" class="btn btn-outline-dark btn-sm"></span>
 					<?php } ?>
 				<?php } else { ?>
 					<span class="error"><i class="fa fa-exclamation-circle"></i> Validating your GNZ number requires a valid email address
