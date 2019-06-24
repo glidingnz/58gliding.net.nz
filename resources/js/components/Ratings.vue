@@ -44,7 +44,7 @@
 				<span v-show="peopleSearchResults.length==0">No members found</span>
 
 
-				<a class="btn btn-default pull-right" v-on:click="insert()">Add Rating</a>
+				<a class="btn btn-outline-dark pull-right" v-on:click="insert()">Add Rating</a>
 			</div>
 
 

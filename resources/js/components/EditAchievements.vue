@@ -34,7 +34,7 @@
 				<td>{{result.badge_number}}</td>
 				<td>{{result.awarded_date}}</td>
 				<td>{{result.badge.type}}</td>
-				<td><button v-on:click="deleteAchievement(result.id)" class="btn btn-default btn-sm"><i class="fa fa-times"></i></button></td>
+				<td><button v-on:click="deleteAchievement(result.id)" class="btn btn-outline-dark btn-sm"><i class="fa fa-times"></i></button></td>
 			</tr>
 		</table>
 

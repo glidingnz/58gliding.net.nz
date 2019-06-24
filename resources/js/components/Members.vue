@@ -22,7 +22,7 @@
 			<div class="input-group">
 				<input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term" v-model="state.search" debounce="300">
 				<div class="input-group-btn">
-					<button class="btn btn-default" type="submit" v-on:click="state.search=''"><i class="fa fa-times"></i></button>
+					<button class="btn btn-outline-dark" type="submit" v-on:click="state.search=''"><i class="fa fa-times"></i></button>
 				</div>
 			</div>
 
@@ -34,15 +34,15 @@
 		<div class="filter-buttons nav nav-pills col-xs-12 col-sm-8" role="group">
 
 			<div class="btn-group" role="group">
-				<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='all' }" v-on:click="filterTo('all')">All</button>
-				<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='instructors' }" v-on:click="filterTo('instructors')">Instructors</button>
-				<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='tow-pilots' }" v-on:click="filterTo('tow-pilots')">Tow Pilots</button>
-				<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='youth' }" v-on:click="filterTo('youth')" title="">Youth</button>
-				<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='non-qgp' }" v-on:click="filterTo('non-qgp')" title="Non QGP who are flying members">Non QGP</button>
-				<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='qgp' }" v-on:click="filterTo('qgp')">QGP</button>
-				<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='oo' }" v-on:click="filterTo('oo')">OOs</button>
-				<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='coaches' }" v-on:click="filterTo('coaches')">Coaches</button>
-				<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='contest_pilots' }" v-on:click="filterTo('contest_pilots')">Contest Pilots</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='all' }" v-on:click="filterTo('all')">All</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='instructors' }" v-on:click="filterTo('instructors')">Instructors</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='tow-pilots' }" v-on:click="filterTo('tow-pilots')">Tow Pilots</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='youth' }" v-on:click="filterTo('youth')" title="">Youth</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='non-qgp' }" v-on:click="filterTo('non-qgp')" title="Non QGP who are flying members">Non QGP</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='qgp' }" v-on:click="filterTo('qgp')">QGP</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='oo' }" v-on:click="filterTo('oo')">OOs</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='coaches' }" v-on:click="filterTo('coaches')">Coaches</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='contest_pilots' }" v-on:click="filterTo('contest_pilots')">Contest Pilots</button>
 			</div>
 		</div>
 
@@ -64,19 +64,19 @@
 
 
 			<div class="btn-group pull-right" role="group">
-				<button type="button" class="btn btn-default btn-sm" v-on:click="previous()">&lt;</button>
-				<button type="button" class="btn btn-default btn-sm disabled">Page {{ state.page }} of {{ last_page }}</button>
-				<button type="button" class="btn btn-default btn-sm" v-on:click="next()">Next &gt;</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="previous()">&lt;</button>
+				<button type="button" class="btn btn-outline-dark btn-sm disabled">Page {{ state.page }} of {{ last_page }}</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="next()">Next &gt;</button>
 			</div>
 
 			<div class="btn-group pull-right" role="group" style="margin-right: 20px;">
-				<button type="button" class="btn btn-default btn-sm disabled">Export</button>
-				<button class="btn btn-default btn-sm" v-on:click="exportData('xls')">XLS</button>
-				<button class="btn btn-default btn-sm" v-on:click="exportData('csv')">CSV</button>
+				<button type="button" class="btn btn-outline-dark btn-sm disabled">Export</button>
+				<button class="btn btn-outline-dark btn-sm" v-on:click="exportData('xls')">XLS</button>
+				<button class="btn btn-outline-dark btn-sm" v-on:click="exportData('csv')">CSV</button>
 			</div>
 
 			<div class="btn-group pull-right" style="margin-right: 20px;">
-				<button class="btn btn-default btn-sm" v-on:click="toggleEmail()">Email</button>
+				<button class="btn btn-outline-dark btn-sm" v-on:click="toggleEmail()">Email</button>
 			</div>
 
 		</div>
@@ -157,7 +157,7 @@
 			<td><a v-bind:href="'mailto:' + result.email">{{ result.email }}</a></td>
 			<td>{{ result.observer_number }}</td>
 			<td><a v-bind:href="'/members/' + result.id + '/achievements/'" class="btn btn-primary btn-xs"><i class="fa fa-trophy"></i></a></td>
-			<td class="center" v-if="showEdit"><a v-bind:href="'http://members.gliding.co.nz/index.php?r=member/update&id=' + result.id" class="btn btn-default btn-xs">Old Edit</a></td>
+			<td class="center" v-if="showEdit"><a v-bind:href="'http://members.gliding.co.nz/index.php?r=member/update&id=' + result.id" class="btn btn-outline-dark btn-xs">Old Edit</a></td>
 			<td class="center" v-if="showEdit"><a v-bind:href="'/members/' + result.id + '/edit'" class="btn btn-primary btn-xs">Edit</a></td>
 			<td class="center" v-if="showEdit"><a v-bind:href="'/members/' + result.id + '/ratings'" class="btn btn-primary btn-xs">Ratings</a></td>
 

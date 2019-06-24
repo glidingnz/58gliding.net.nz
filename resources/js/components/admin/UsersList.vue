@@ -5,9 +5,9 @@
 	</div>
 
 	<div class="btn-group" role="group">
-		<button type="button" class="btn btn-default btn-sm" v-on:click="previous()">&lt;</button>
-		<button type="button" class="btn btn-default btn-sm disabled">Page {{ page }} of {{ last_page }}</button>
-		<button type="button" class="btn btn-default btn-sm" v-on:click="next()">Next &gt;</button>
+		<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="previous()">&lt;</button>
+		<button type="button" class="btn btn-outline-dark btn-sm disabled">Page {{ page }} of {{ last_page }}</button>
+		<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="next()">Next &gt;</button>
 	</div>
 
 
@@ -39,9 +39,9 @@
 	</table>
 
 	<div class="btn-group" role="group">
-		<button type="button" class="btn btn-default btn-sm" v-on:click="previous()">&lt;</button>
-		<button type="button" class="btn btn-default btn-sm disabled">Page {{ page }} of {{ last_page }}</button>
-		<button type="button" class="btn btn-default btn-sm" v-on:click="next()">Next &gt;</button>
+		<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="previous()">&lt;</button>
+		<button type="button" class="btn btn-outline-dark btn-sm disabled">Page {{ page }} of {{ last_page }}</button>
+		<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="next()">Next &gt;</button>
 	</div>
 </div>
 </template>

@@ -11,7 +11,7 @@
 					
 				</div>
 			</td>
-			<td><button v-on:click="addUserRole()" type="submit" class="btn btn-default">Add Role</button></td>
+			<td><button v-on:click="addUserRole()" type="submit" class="btn btn-outline-dark">Add Role</button></td>
 			<td></td>
 		</tr>
 		<tr>
@@ -28,7 +28,7 @@
 				</select>
 				<span v-show="!userRole.club">All Clubs</span>
 			</td>
-			<td><button v-on:click="deleteUserRole(userRole.pivot.id)" class="btn btn-default btn-sm">Delete</button></td>
+			<td><button v-on:click="deleteUserRole(userRole.pivot.id)" class="btn btn-outline-dark btn-sm">Delete</button></td>
 		</tr>
 	</table>
 

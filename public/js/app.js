@@ -4490,7 +4490,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
@@ -9780,7 +9779,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\ntr.selected td {\n\tbackground-color: #CCC;\n}\n.fullscreen {\n\twidth: 100%;\n\theight: 100% !important;\n\tposition: fixed;\n\ttop: 0; left: 0;\n\tz-index: 998;\n}\n.fullScreenTable {\n\tposition: fixed;\n\tz-index: 999;\n\ttop: 50px; right: 10px;\n\twidth: 20em;\n\tmax-height: 80%;\n\toverflow: auto;\n}\n.fullScreenTableCollapsed {\n\twidth: 3em;\n\theight: 2em;\n}\n.fullScreenTable table {\n\tbackground-color: #FFF;\n\tborder: 1px solid #CCC;\n\tmargin-bottom: 0;\n}\n.toggleLegend {\n\tposition: absolute;\n\ttop: 12px; right: 110px;\n\tz-index: 999;\n}\n.exitFullScreen {\n\tposition: absolute;\n\tz-index: 999;\n\ttop: 10px; left: 20px;\n}\n.map {\n\twidth: 100%; \n\theight: 600px;\n\theight: calc(100vh - 220px);\n\tmin-height: 400px;\n}\ntr.old td {\n\tcolor: #999;\n}\n\n", ""]);
+exports.push([module.i, "\ntr.selected td {\n\tbackground-color: #CCC;\n}\n.fullscreen {\n\twidth: 100%;\n\theight: 100% !important;\n\tposition: fixed;\n\ttop: 0; left: 0;\n\tz-index: 998;\n}\n.fullScreenTable {\n\tposition: fixed;\n\tz-index: 999;\n\ttop: 50px; right: 10px;\n\twidth: 20em;\n\tmax-height: 80%;\n\toverflow: auto;\n}\n.fullScreenTableCollapsed {\n\twidth: 3em;\n\theight: 2em;\n}\n.fullScreenTable table {\n\tbackground-color: #FFF;\n\tborder: 1px solid #CCC;\n\tmargin-bottom: 0;\n}\n.toggleLegend {\n\tposition: absolute;\n\ttop: 12px; right: 110px;\n\tz-index: 999;\n}\n.exitFullScreen {\n\tposition: absolute;\n\tz-index: 999;\n\ttop: 10px; left: 20px;\n}\n.maps {\n\twidth: 100%; \n\theight: 600px;\n\tmin-height: 400px;\n\theight: calc(100vh - 220px);\n}\ntr.old td {\n\tcolor: #999;\n}\n\n", ""]);
 
 // exports
 
@@ -61103,7 +61102,7 @@ var render = function() {
               _c(
                 "button",
                 {
-                  staticClass: "btn btn-default",
+                  staticClass: "btn btn-outline-dark",
                   attrs: { type: "submit" },
                   on: {
                     click: function($event) {
@@ -61130,7 +61129,7 @@ var render = function() {
           _c(
             "button",
             {
-              staticClass: "btn btn-default btn-sm",
+              staticClass: "btn btn-outline-dark btn-sm",
               class: { "btn-primary": _vm.state.type == "glider" },
               attrs: { type: "button" },
               on: {
@@ -61145,7 +61144,7 @@ var render = function() {
           _c(
             "button",
             {
-              staticClass: "btn btn-default btn-sm",
+              staticClass: "btn btn-outline-dark btn-sm",
               class: { "btn-primary": _vm.state.type == "self-launch" },
               attrs: { type: "button" },
               on: {
@@ -61160,7 +61159,7 @@ var render = function() {
           _c(
             "button",
             {
-              staticClass: "btn btn-default btn-sm",
+              staticClass: "btn btn-outline-dark btn-sm",
               class: { "btn-primary": _vm.state.type == "sustainer" },
               attrs: { type: "button" },
               on: {
@@ -61175,7 +61174,7 @@ var render = function() {
           _c(
             "button",
             {
-              staticClass: "btn btn-default btn-sm",
+              staticClass: "btn btn-outline-dark btn-sm",
               class: { "btn-primary": _vm.state.type == "vintage" },
               attrs: { type: "button" },
               on: {
@@ -61190,7 +61189,7 @@ var render = function() {
           _c(
             "button",
             {
-              staticClass: "btn btn-default btn-sm",
+              staticClass: "btn btn-outline-dark btn-sm",
               class: { "btn-primary": _vm.state.type == "singles" },
               attrs: { type: "button" },
               on: {
@@ -61205,7 +61204,7 @@ var render = function() {
           _c(
             "button",
             {
-              staticClass: "btn btn-default btn-sm",
+              staticClass: "btn btn-outline-dark btn-sm",
               class: { "btn-primary": _vm.state.type == "twins" },
               attrs: { type: "button" },
               on: {
@@ -61221,7 +61220,7 @@ var render = function() {
         _c(
           "button",
           {
-            staticClass: "btn btn-default btn-sm",
+            staticClass: "btn btn-outline-dark btn-sm",
             class: { "btn-primary": _vm.state.type == "tug" },
             attrs: { type: "button" },
             on: {
@@ -61236,7 +61235,7 @@ var render = function() {
         _c(
           "button",
           {
-            staticClass: "btn btn-default btn-sm",
+            staticClass: "btn btn-outline-dark btn-sm",
             class: { "btn-primary": _vm.state.type == "gyrocopter" },
             attrs: { type: "button" },
             on: {
@@ -61251,7 +61250,7 @@ var render = function() {
         _c(
           "button",
           {
-            staticClass: "btn btn-default btn-sm",
+            staticClass: "btn btn-outline-dark btn-sm",
             class: { "btn-primary": _vm.state.type == "helicopter" },
             attrs: { type: "button" },
             on: {
@@ -61266,7 +61265,7 @@ var render = function() {
         _c(
           "button",
           {
-            staticClass: "btn btn-default btn-sm",
+            staticClass: "btn btn-outline-dark btn-sm",
             class: { "btn-primary": _vm.state.type == "balloon" },
             attrs: { type: "button" },
             on: {
@@ -61281,7 +61280,7 @@ var render = function() {
         _c(
           "button",
           {
-            staticClass: "btn btn-default btn-sm",
+            staticClass: "btn btn-outline-dark btn-sm",
             class: { "btn-primary": _vm.state.type == "plane" },
             attrs: { type: "button" },
             on: {
@@ -61296,7 +61295,7 @@ var render = function() {
         _c(
           "button",
           {
-            staticClass: "btn btn-default btn-sm",
+            staticClass: "btn btn-outline-dark btn-sm",
             class: { "btn-primary": _vm.state.type == "microlight" },
             attrs: { type: "button" },
             on: {
@@ -61311,7 +61310,7 @@ var render = function() {
         _c(
           "button",
           {
-            staticClass: "btn btn-default btn-sm",
+            staticClass: "btn btn-outline-dark btn-sm",
             class: { "btn-primary": _vm.state.type == "all" },
             attrs: { type: "button" },
             on: {
@@ -61340,7 +61339,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm",
+                staticClass: "btn btn-outline-dark btn-sm",
                 attrs: { type: "button" },
                 on: {
                   click: function($event) {
@@ -61354,7 +61353,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm disabled",
+                staticClass: "btn btn-outline-dark btn-sm disabled",
                 attrs: { type: "button" }
               },
               [
@@ -61370,7 +61369,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm",
+                staticClass: "btn btn-outline-dark btn-sm",
                 attrs: { type: "button" },
                 on: {
                   click: function($event) {
@@ -61673,7 +61672,7 @@ var render = function() {
               _c(
                 "button",
                 {
-                  staticClass: "btn btn-default btn-sm",
+                  staticClass: "btn btn-outline-dark btn-sm",
                   on: {
                     click: function($event) {
                       return _vm.deleteAchievement(result.id)
@@ -63540,7 +63539,7 @@ var render = function() {
       ? _c(
           "a",
           {
-            staticClass: "btn btn-default",
+            staticClass: "btn btn-outline-dark",
             staticStyle: { float: "right", "margin-left": "10px" },
             attrs: {
               href:
@@ -63555,7 +63554,7 @@ var render = function() {
     _c(
       "a",
       {
-        staticClass: "btn btn-default",
+        staticClass: "btn btn-outline-dark",
         staticStyle: { float: "right" },
         attrs: { href: "/members/" + _vm.results.id + "/achievements" }
       },
@@ -63934,7 +63933,7 @@ var render = function() {
               _c(
                 "button",
                 {
-                  staticClass: "btn btn-default",
+                  staticClass: "btn btn-outline-dark",
                   attrs: { type: "submit" },
                   on: {
                     click: function($event) {
@@ -63962,7 +63961,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm",
+                staticClass: "btn btn-outline-dark btn-sm",
                 class: { "btn-primary": _vm.state.type == "all" },
                 attrs: { type: "button" },
                 on: {
@@ -63977,7 +63976,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm",
+                staticClass: "btn btn-outline-dark btn-sm",
                 class: { "btn-primary": _vm.state.type == "instructors" },
                 attrs: { type: "button" },
                 on: {
@@ -63992,7 +63991,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm",
+                staticClass: "btn btn-outline-dark btn-sm",
                 class: { "btn-primary": _vm.state.type == "tow-pilots" },
                 attrs: { type: "button" },
                 on: {
@@ -64007,7 +64006,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm",
+                staticClass: "btn btn-outline-dark btn-sm",
                 class: { "btn-primary": _vm.state.type == "youth" },
                 attrs: { type: "button", title: "" },
                 on: {
@@ -64022,7 +64021,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm",
+                staticClass: "btn btn-outline-dark btn-sm",
                 class: { "btn-primary": _vm.state.type == "non-qgp" },
                 attrs: {
                   type: "button",
@@ -64040,7 +64039,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm",
+                staticClass: "btn btn-outline-dark btn-sm",
                 class: { "btn-primary": _vm.state.type == "qgp" },
                 attrs: { type: "button" },
                 on: {
@@ -64055,7 +64054,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm",
+                staticClass: "btn btn-outline-dark btn-sm",
                 class: { "btn-primary": _vm.state.type == "oo" },
                 attrs: { type: "button" },
                 on: {
@@ -64070,7 +64069,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm",
+                staticClass: "btn btn-outline-dark btn-sm",
                 class: { "btn-primary": _vm.state.type == "coaches" },
                 attrs: { type: "button" },
                 on: {
@@ -64085,7 +64084,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm",
+                staticClass: "btn btn-outline-dark btn-sm",
                 class: { "btn-primary": _vm.state.type == "contest_pilots" },
                 attrs: { type: "button" },
                 on: {
@@ -64160,7 +64159,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm",
+                staticClass: "btn btn-outline-dark btn-sm",
                 attrs: { type: "button" },
                 on: {
                   click: function($event) {
@@ -64174,7 +64173,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm disabled",
+                staticClass: "btn btn-outline-dark btn-sm disabled",
                 attrs: { type: "button" }
               },
               [
@@ -64190,7 +64189,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm",
+                staticClass: "btn btn-outline-dark btn-sm",
                 attrs: { type: "button" },
                 on: {
                   click: function($event) {
@@ -64214,7 +64213,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm disabled",
+                staticClass: "btn btn-outline-dark btn-sm disabled",
                 attrs: { type: "button" }
               },
               [_vm._v("Export")]
@@ -64223,7 +64222,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm",
+                staticClass: "btn btn-outline-dark btn-sm",
                 on: {
                   click: function($event) {
                     return _vm.exportData("xls")
@@ -64236,7 +64235,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm",
+                staticClass: "btn btn-outline-dark btn-sm",
                 on: {
                   click: function($event) {
                     return _vm.exportData("csv")
@@ -64258,7 +64257,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default btn-sm",
+                staticClass: "btn btn-outline-dark btn-sm",
                 on: {
                   click: function($event) {
                     return _vm.toggleEmail()
@@ -64570,7 +64569,7 @@ var render = function() {
                   _c(
                     "a",
                     {
-                      staticClass: "btn btn-default btn-xs",
+                      staticClass: "btn btn-outline-dark btn-xs",
                       attrs: {
                         href:
                           "http://members.gliding.co.nz/index.php?r=member/update&id=" +
@@ -65149,7 +65148,7 @@ var render = function() {
             _c(
               "a",
               {
-                staticClass: "btn btn-default pull-right",
+                staticClass: "btn btn-outline-dark pull-right",
                 on: {
                   click: function($event) {
                     return _vm.insert()
@@ -65667,188 +65666,182 @@ var render = function() {
           ]),
           _vm._v(" "),
           _vm.highlightedPoint
-            ? _c(
-                "table",
-                { staticClass: "table table-striped table-condensed" },
-                [
-                  _c("tr", [
-                    _c("td", [_vm._v("Altitude")]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _vm.highlightedPoint.altfeet != null
-                        ? _c("div", [
-                            _vm._v(
-                              "\n\t\t\t\t\t\t\t" +
-                                _vm._s(_vm.highlightedPoint.altfeet) +
-                                " ft / " +
-                                _vm._s(_vm.highlightedPoint.alt) +
-                                " m / " +
-                                _vm._s(_vm.highlightedPoint.aglfeet) +
-                                " ft AGL\n\t\t\t\t\t\t"
-                            )
-                          ])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.highlightedPoint.altfeet == null
-                        ? _c("div", [_vm._v("n/a")])
-                        : _vm._e()
-                    ])
-                  ]),
+            ? _c("table", { staticClass: "table table-striped table-sm" }, [
+                _c("tr", [
+                  _c("td", [_vm._v("Altitude")]),
                   _vm._v(" "),
-                  _c("tr", [
-                    _c("td", [_vm._v("Speed")]),
+                  _c("td", [
+                    _vm.highlightedPoint.altfeet != null
+                      ? _c("div", [
+                          _vm._v(
+                            "\n\t\t\t\t\t\t\t" +
+                              _vm._s(_vm.highlightedPoint.altfeet) +
+                              " ft / " +
+                              _vm._s(_vm.highlightedPoint.alt) +
+                              " m / " +
+                              _vm._s(_vm.highlightedPoint.aglfeet) +
+                              " ft AGL\n\t\t\t\t\t\t"
+                          )
+                        ])
+                      : _vm._e(),
                     _vm._v(" "),
-                    _c("td", [
-                      _c("div", [
-                        _vm.highlightedPoint.speed != null
-                          ? _c("span", [
-                              _vm._v(
-                                _vm._s(
-                                  Math.round(_vm.highlightedPoint.speed / 1.852)
-                                ) +
-                                  " knots / " +
-                                  _vm._s(_vm.highlightedPoint.speed) +
-                                  " km/h"
-                              )
-                            ])
-                          : _vm._e(),
-                        _vm.selectedPoint.course != null
-                          ? _c("span", [
-                              _vm._v(
-                                " @ " + _vm._s(_vm.selectedPoint.course) + "°"
-                              )
-                            ])
-                          : _vm._e()
-                      ]),
-                      _vm._v(" "),
-                      _vm.highlightedPoint.speed == null
-                        ? _c("div", [_vm._v("n/a")])
-                        : _vm._e()
-                    ])
-                  ]),
+                    _vm.highlightedPoint.altfeet == null
+                      ? _c("div", [_vm._v("n/a")])
+                      : _vm._e()
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("Speed")]),
                   _vm._v(" "),
-                  _c("tr", [
-                    _c("td", [_vm._v("Vertical Speed")]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _vm.highlightedPoint.vspeed != null
-                        ? _c("div", [
+                  _c("td", [
+                    _c("div", [
+                      _vm.highlightedPoint.speed != null
+                        ? _c("span", [
                             _vm._v(
                               _vm._s(
-                                Math.round(_vm.highlightedPoint.vspeed * 1.944)
+                                Math.round(_vm.highlightedPoint.speed / 1.852)
                               ) +
                                 " knots / " +
-                                _vm._s(_vm.highlightedPoint.vspeed) +
-                                " m/s"
+                                _vm._s(_vm.highlightedPoint.speed) +
+                                " km/h"
                             )
                           ])
                         : _vm._e(),
-                      _vm._v(" "),
-                      _vm.highlightedPoint.vspeed == null
-                        ? _c("div", [_vm._v("n/a")])
+                      _vm.selectedPoint.course != null
+                        ? _c("span", [
+                            _vm._v(
+                              " @ " + _vm._s(_vm.selectedPoint.course) + "°"
+                            )
+                          ])
                         : _vm._e()
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("tr", [
-                    _c("td", [_vm._v("Flarm")]),
+                    ]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(_vm.highlightedPoint.hex))])
-                  ]),
-                  _vm._v(" "),
-                  _c("tr", [
-                    _c("td", [_vm._v("Seen")]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _vm._v(
-                        "\n\t\t\t\t\t\t" +
-                          _vm._s(
-                            _vm.lastSeenTime(_vm.highlightedPoint.nzdate)
-                          ) +
-                          "\n\t\t\t\t\t\t"
-                      ),
-                      _vm.highlightedPoint.type == 1
-                        ? _c("span", [_vm._v("FLARM")])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.highlightedPoint.type == 2
-                        ? _c("span", [_vm._v("SPOT (US)")])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.highlightedPoint.type == 3
-                        ? _c("span", [_vm._v("CELL (Particle.io)")])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.highlightedPoint.type == 4
-                        ? _c("span", [_vm._v("CELL (Overland)")])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.highlightedPoint.type == 5
-                        ? _c("span", [_vm._v("SPOT (NZ)")])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.highlightedPoint.type == 6
-                        ? _c("span", [_vm._v("InReach (NZ)")])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.highlightedPoint.type == 7
-                        ? _c("span", [_vm._v("CELL (Btraced)")])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.highlightedPoint.type == 8
-                        ? _c("span", [_vm._v("Gliding Ops")])
-                        : _vm._e()
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("tr", [
-                    _c("td", [_vm._v("Lat/Long")]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _vm._v(
-                        _vm._s(_vm.highlightedPoint.lat.toFixed(5)) +
-                          "   " +
-                          _vm._s(_vm.highlightedPoint.lng.toFixed(5))
-                      )
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("tr", [
-                    _c("td", [_vm._v("Links")]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _c(
-                        "a",
-                        {
-                          attrs: {
-                            href:
-                              "https://www.google.com/maps/place/" +
-                              _vm.highlightedPoint.lat +
-                              "+" +
-                              _vm.highlightedPoint.lng +
-                              "/"
-                          }
-                        },
-                        [_vm._v("Google Maps")]
-                      ),
-                      _vm._v("\n\t\t\t\t\t\t  "),
-                      _c(
-                        "a",
-                        {
-                          attrs: {
-                            href:
-                              "http://maps.apple.com/?q=" +
-                              _vm.highlightedPoint.lat +
-                              "," +
-                              _vm.highlightedPoint.lng
-                          }
-                        },
-                        [_vm._v("Apple Maps")]
-                      )
-                    ])
+                    _vm.highlightedPoint.speed == null
+                      ? _c("div", [_vm._v("n/a")])
+                      : _vm._e()
                   ])
-                ]
-              )
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("Vertical Speed")]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _vm.highlightedPoint.vspeed != null
+                      ? _c("div", [
+                          _vm._v(
+                            _vm._s(
+                              Math.round(_vm.highlightedPoint.vspeed * 1.944)
+                            ) +
+                              " knots / " +
+                              _vm._s(_vm.highlightedPoint.vspeed) +
+                              " m/s"
+                          )
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.highlightedPoint.vspeed == null
+                      ? _c("div", [_vm._v("n/a")])
+                      : _vm._e()
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("Flarm")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(_vm.highlightedPoint.hex))])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("Seen")]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _vm._v(
+                      "\n\t\t\t\t\t\t" +
+                        _vm._s(_vm.lastSeenTime(_vm.highlightedPoint.nzdate)) +
+                        "\n\t\t\t\t\t\t"
+                    ),
+                    _vm.highlightedPoint.type == 1
+                      ? _c("span", [_vm._v("FLARM")])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.highlightedPoint.type == 2
+                      ? _c("span", [_vm._v("SPOT (US)")])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.highlightedPoint.type == 3
+                      ? _c("span", [_vm._v("CELL (Particle.io)")])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.highlightedPoint.type == 4
+                      ? _c("span", [_vm._v("CELL (Overland)")])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.highlightedPoint.type == 5
+                      ? _c("span", [_vm._v("SPOT (NZ)")])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.highlightedPoint.type == 6
+                      ? _c("span", [_vm._v("InReach (NZ)")])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.highlightedPoint.type == 7
+                      ? _c("span", [_vm._v("CELL (Btraced)")])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.highlightedPoint.type == 8
+                      ? _c("span", [_vm._v("Gliding Ops")])
+                      : _vm._e()
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("Lat/Long")]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _vm._v(
+                      _vm._s(_vm.highlightedPoint.lat.toFixed(5)) +
+                        "   " +
+                        _vm._s(_vm.highlightedPoint.lng.toFixed(5))
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("Links")]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c(
+                      "a",
+                      {
+                        attrs: {
+                          href:
+                            "https://www.google.com/maps/place/" +
+                            _vm.highlightedPoint.lat +
+                            "+" +
+                            _vm.highlightedPoint.lng +
+                            "/"
+                        }
+                      },
+                      [_vm._v("Google Maps")]
+                    ),
+                    _vm._v("\n\t\t\t\t\t\t  "),
+                    _c(
+                      "a",
+                      {
+                        attrs: {
+                          href:
+                            "http://maps.apple.com/?q=" +
+                            _vm.highlightedPoint.lat +
+                            "," +
+                            _vm.highlightedPoint.lng
+                        }
+                      },
+                      [_vm._v("Apple Maps")]
+                    )
+                  ])
+                ])
+              ])
             : _vm._e()
         ])
       ]),
@@ -65892,10 +65885,10 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
-              return _vm.zoomTo(-41.18301, 170.442, 6)
+              return _vm.zoomTo(-41.18301, 174.0, 8)
             }
           }
         },
@@ -65905,7 +65898,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
               return _vm.zoomTo(-38.688, 176.138, 4)
@@ -65918,7 +65911,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
               return _vm.zoomTo(-37.1117, 174.937, 0.1)
@@ -65931,7 +65924,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
               return _vm.zoomTo(-37.298, 174.925, 0.4)
@@ -65944,7 +65937,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
               return _vm.zoomTo(-37.48444, 175.511, 0.5)
@@ -65957,7 +65950,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
               return _vm.zoomTo(-37.73593, 175.733, 0.1)
@@ -65970,7 +65963,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
               return _vm.zoomTo(-38.2773, 175.863, 0.5)
@@ -65983,7 +65976,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
               return _vm.zoomTo(-38.688, 176.138, 0.1)
@@ -65996,7 +65989,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
               return _vm.zoomTo(-38.688, 176.138, 0.5)
@@ -66009,7 +66002,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
               return _vm.zoomTo(-39.30991, 174.1413, 0.3)
@@ -66022,7 +66015,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
               return _vm.zoomTo(-40.9724, 175.632, 0.1)
@@ -66035,7 +66028,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
               return _vm.zoomTo(-40.97435, 175.409, 0.6)
@@ -66048,7 +66041,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
               return _vm.zoomTo(-41.09532, 175.49, 0.1)
@@ -66061,7 +66054,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
               return _vm.zoomTo(-43.5547114, 171.024, 4)
@@ -66074,7 +66067,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
               return _vm.zoomTo(-43.38478, 171.9054, 0.1)
@@ -66087,7 +66080,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
               return _vm.zoomTo(-44.48489, 169.9809, 0.1)
@@ -66100,7 +66093,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-sm btn-default",
+          staticClass: "btn btn-sm btn-outline-dark mr-1 mb-1",
           on: {
             click: function($event) {
               return _vm.zoomTo(-44.51185, 169.3208, 1)
@@ -66145,7 +66138,7 @@ var render = function() {
           _c(
             "div",
             {
-              staticClass: "map",
+              staticClass: "maps",
               class: [_vm.fullScreen ? "fullscreen" : ""],
               attrs: { id: "map" }
             },
@@ -66153,7 +66146,7 @@ var render = function() {
               _c(
                 "button",
                 {
-                  staticClass: "exitFullScreen btn btn-default",
+                  staticClass: "exitFullScreen btn btn-secondary btn-sm",
                   on: { click: _vm.toggleFullScreen }
                 },
                 [_vm._v("Full Screen")]
@@ -66170,7 +66163,7 @@ var render = function() {
                       expression: "fullScreen || collapseLegend"
                     }
                   ],
-                  staticClass: "toggleLegend fa btn btn-sm btn-default",
+                  staticClass: "toggleLegend fa btn btn-sm btn-secondary",
                   class: [_vm.collapseLegend ? "fa-angle-down" : "fa-angle-up"],
                   staticStyle: { "pointer-events": "auto" },
                   on: {
@@ -66450,14 +66443,13 @@ var render = function() {
                   return _c(
                     "a",
                     {
-                      staticClass: "btn btn-default",
+                      staticClass: "btn",
                       class: [
-                        day.day_date == _vm.flyingDay ? "btn-primary" : ""
+                        day.day_date == _vm.flyingDay
+                          ? "btn-secondary"
+                          : "btn-outline-dark"
                       ],
-                      attrs: {
-                        href: "/tracking/" + day.day_date,
-                        type: "button"
-                      }
+                      attrs: { href: "/tracking/" + day.day_date }
                     },
                     [_vm._v(_vm._s(day.day_date) + "\n\t\t\t\t\t")]
                   )
@@ -66470,242 +66462,238 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "col-md-3" }, [
           _vm.selectedAircraft
-            ? _c(
-                "table",
-                { staticClass: "table table-striped table-condensed" },
-                [
-                  _c("tr", [
-                    _c("th", [_vm._v("Aircraft")]),
-                    _vm._v(" "),
-                    _c("th", [
-                      _vm.selectedAircraft.rego
-                        ? _c("div", [
-                            _vm._v(
-                              _vm._s(
-                                _vm.selectedAircraft.rego +
-                                  " / " +
-                                  _vm.selectedAircraft.contest_id
-                              ) +
+            ? _c("table", { staticClass: "table table-striped table-sm" }, [
+                _c("tr", [
+                  _c("th", [_vm._v("Aircraft")]),
+                  _vm._v(" "),
+                  _c("th", [
+                    _vm.selectedAircraft.rego
+                      ? _c("div", [
+                          _vm._v(
+                            _vm._s(
+                              _vm.selectedAircraft.rego +
                                 " / " +
-                                _vm._s(_vm.selectedAircraft.model)
-                            )
-                          ])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      !_vm.selectedAircraft.rego
-                        ? _c("div", [_vm._v("Unkown")])
-                        : _vm._e()
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("tr", [
-                    _c("td", [_vm._v("Altitude")]),
+                                _vm.selectedAircraft.contest_id
+                            ) +
+                              " / " +
+                              _vm._s(_vm.selectedAircraft.model)
+                          )
+                        ])
+                      : _vm._e(),
                     _vm._v(" "),
-                    _c("td", [
-                      _vm.selectedPoint.altfeet != null
-                        ? _c("div", [
-                            _vm._v(
-                              "\n\t\t\t\t\t\t\t" +
-                                _vm._s(_vm.selectedPoint.altfeet) +
-                                " ft / " +
-                                _vm._s(_vm.selectedPoint.altmeters) +
-                                " m / " +
-                                _vm._s(_vm.selectedPoint.aglfeet) +
-                                " ft AGL\n\t\t\t\t\t\t"
-                            )
-                          ])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.selectedPoint.altfeet == null
-                        ? _c("div", [_vm._v("n/a")])
-                        : _vm._e()
-                    ])
-                  ]),
+                    !_vm.selectedAircraft.rego
+                      ? _c("div", [_vm._v("Unkown")])
+                      : _vm._e()
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("Altitude")]),
                   _vm._v(" "),
-                  _c("tr", [
-                    _c("td", [_vm._v("Speed")]),
+                  _c("td", [
+                    _vm.selectedPoint.altfeet != null
+                      ? _c("div", [
+                          _vm._v(
+                            "\n\t\t\t\t\t\t\t" +
+                              _vm._s(_vm.selectedPoint.altfeet) +
+                              " ft / " +
+                              _vm._s(_vm.selectedPoint.altmeters) +
+                              " m / " +
+                              _vm._s(_vm.selectedPoint.aglfeet) +
+                              " ft AGL\n\t\t\t\t\t\t"
+                          )
+                        ])
+                      : _vm._e(),
                     _vm._v(" "),
-                    _c("td", [
-                      _c("div", [
-                        _vm.selectedPoint.speed != null
-                          ? _c("span", [
-                              _vm._v(
-                                _vm._s(
-                                  Math.round(_vm.selectedPoint.speed / 1.852)
-                                ) +
-                                  " knots / " +
-                                  _vm._s(_vm.selectedPoint.speed) +
-                                  " km/h"
-                              )
-                            ])
-                          : _vm._e(),
-                        _vm.selectedPoint.course != null
-                          ? _c("span", [
-                              _vm._v(
-                                " @ " + _vm._s(_vm.selectedPoint.course) + "°"
-                              )
-                            ])
-                          : _vm._e()
-                      ]),
-                      _vm._v(" "),
-                      _vm.selectedPoint.speed == null
-                        ? _c("div", [_vm._v("n/a")])
-                        : _vm._e()
-                    ])
-                  ]),
+                    _vm.selectedPoint.altfeet == null
+                      ? _c("div", [_vm._v("n/a")])
+                      : _vm._e()
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("Speed")]),
                   _vm._v(" "),
-                  _c("tr", [
-                    _c("td", [_vm._v("V. Speed")]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _vm.selectedPoint.vspeed != null
-                        ? _c("div", [
+                  _c("td", [
+                    _c("div", [
+                      _vm.selectedPoint.speed != null
+                        ? _c("span", [
                             _vm._v(
                               _vm._s(
-                                Math.round(_vm.selectedPoint.vspeed * 1.944)
+                                Math.round(_vm.selectedPoint.speed / 1.852)
                               ) +
                                 " knots / " +
-                                _vm._s(_vm.selectedPoint.vspeed) +
-                                " m/s"
+                                _vm._s(_vm.selectedPoint.speed) +
+                                " km/h"
                             )
                           ])
                         : _vm._e(),
-                      _vm._v(" "),
-                      _vm.selectedPoint.vspeed == null
-                        ? _c("div", [_vm._v("n/a")])
+                      _vm.selectedPoint.course != null
+                        ? _c("span", [
+                            _vm._v(
+                              " @ " + _vm._s(_vm.selectedPoint.course) + "°"
+                            )
+                          ])
                         : _vm._e()
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("tr", [
-                    _c("td", [_vm._v("Flarm")]),
+                    ]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(_vm.selectedAircraft.flarm))])
-                  ]),
-                  _vm._v(" "),
-                  _c("tr", [
-                    _c("td", [_vm._v("Last Seen")]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _vm._v(
-                        "\n\t\t\t\t\t\t" +
-                          _vm._s(_vm.lastSeenTime(_vm.selectedPoint.thetime)) +
-                          "\n\t\t\t\t\t\t"
-                      ),
-                      _vm.selectedPoint.type == 1
-                        ? _c("span", [_vm._v("FLARM")])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.selectedPoint.type == 2
-                        ? _c("span", [_vm._v("SPOT (US)")])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.selectedPoint.type == 3
-                        ? _c("span", [_vm._v("CELL (Particle.io)")])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.selectedPoint.type == 4
-                        ? _c("span", [_vm._v("CELL (Overland)")])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.selectedPoint.type == 5
-                        ? _c("span", [_vm._v("SPOT (NZ)")])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.selectedPoint.type == 6
-                        ? _c("span", [_vm._v("InReach (NZ)")])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.selectedPoint.type == 7
-                        ? _c("span", [_vm._v("CELL (Btraced)")])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.selectedPoint.type == 8
-                        ? _c("span", [_vm._v("Gliding Ops")])
-                        : _vm._e()
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("tr", [
-                    _c("td", [_vm._v("Lat/Long")]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _vm._v(
-                        _vm._s(_vm.selectedPoint.lat.toFixed(5)) +
-                          "   " +
-                          _vm._s(_vm.selectedPoint.lng.toFixed(5))
-                      )
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("tr", [
-                    _c("td", [_vm._v("Links")]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _c(
-                        "a",
-                        {
-                          attrs: {
-                            href:
-                              "https://www.google.com/maps/place/" +
-                              _vm.selectedPoint.lat +
-                              "+" +
-                              _vm.selectedPoint.lng +
-                              "/"
-                          }
-                        },
-                        [_vm._v("Google")]
-                      ),
-                      _vm._v("\n\t\t\t\t\t\t  "),
-                      _c(
-                        "a",
-                        {
-                          attrs: {
-                            href:
-                              "http://maps.apple.com/?q=" +
-                              _vm.selectedPoint.lat +
-                              "," +
-                              _vm.selectedPoint.lng
-                          }
-                        },
-                        [_vm._v("Apple")]
-                      ),
-                      _vm._v("   \n\t\t\t\t\t\t"),
-                      _vm.selectedAircraft.rego
-                        ? _c(
-                            "a",
-                            {
-                              attrs: {
-                                href:
-                                  "/tracking/" +
-                                  this.flyingDay +
-                                  "/" +
-                                  _vm.selectedAircraft.rego
-                              }
-                            },
-                            [_vm._v("Analyse")]
-                          )
-                        : _vm._e(),
-                      _vm._v(" "),
-                      !_vm.selectedAircraft.rego
-                        ? _c(
-                            "a",
-                            {
-                              attrs: {
-                                href:
-                                  "/tracking/" +
-                                  this.flyingDay +
-                                  "/" +
-                                  _vm.selectedAircraft.hex
-                              }
-                            },
-                            [_vm._v("Analyse")]
-                          )
-                        : _vm._e()
-                    ])
+                    _vm.selectedPoint.speed == null
+                      ? _c("div", [_vm._v("n/a")])
+                      : _vm._e()
                   ])
-                ]
-              )
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("V. Speed")]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _vm.selectedPoint.vspeed != null
+                      ? _c("div", [
+                          _vm._v(
+                            _vm._s(
+                              Math.round(_vm.selectedPoint.vspeed * 1.944)
+                            ) +
+                              " knots / " +
+                              _vm._s(_vm.selectedPoint.vspeed) +
+                              " m/s"
+                          )
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.selectedPoint.vspeed == null
+                      ? _c("div", [_vm._v("n/a")])
+                      : _vm._e()
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("Flarm")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(_vm.selectedAircraft.flarm))])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("Last Seen")]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _vm._v(
+                      "\n\t\t\t\t\t\t" +
+                        _vm._s(_vm.lastSeenTime(_vm.selectedPoint.thetime)) +
+                        "\n\t\t\t\t\t\t"
+                    ),
+                    _vm.selectedPoint.type == 1
+                      ? _c("span", [_vm._v("FLARM")])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.selectedPoint.type == 2
+                      ? _c("span", [_vm._v("SPOT (US)")])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.selectedPoint.type == 3
+                      ? _c("span", [_vm._v("CELL (Particle.io)")])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.selectedPoint.type == 4
+                      ? _c("span", [_vm._v("CELL (Overland)")])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.selectedPoint.type == 5
+                      ? _c("span", [_vm._v("SPOT (NZ)")])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.selectedPoint.type == 6
+                      ? _c("span", [_vm._v("InReach (NZ)")])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.selectedPoint.type == 7
+                      ? _c("span", [_vm._v("CELL (Btraced)")])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.selectedPoint.type == 8
+                      ? _c("span", [_vm._v("Gliding Ops")])
+                      : _vm._e()
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("Lat/Long")]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _vm._v(
+                      _vm._s(_vm.selectedPoint.lat.toFixed(5)) +
+                        "   " +
+                        _vm._s(_vm.selectedPoint.lng.toFixed(5))
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("Links")]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c(
+                      "a",
+                      {
+                        attrs: {
+                          href:
+                            "https://www.google.com/maps/place/" +
+                            _vm.selectedPoint.lat +
+                            "+" +
+                            _vm.selectedPoint.lng +
+                            "/"
+                        }
+                      },
+                      [_vm._v("Google")]
+                    ),
+                    _vm._v("\n\t\t\t\t\t\t  "),
+                    _c(
+                      "a",
+                      {
+                        attrs: {
+                          href:
+                            "http://maps.apple.com/?q=" +
+                            _vm.selectedPoint.lat +
+                            "," +
+                            _vm.selectedPoint.lng
+                        }
+                      },
+                      [_vm._v("Apple")]
+                    ),
+                    _vm._v("   \n\t\t\t\t\t\t"),
+                    _vm.selectedAircraft.rego
+                      ? _c(
+                          "a",
+                          {
+                            attrs: {
+                              href:
+                                "/tracking/" +
+                                this.flyingDay +
+                                "/" +
+                                _vm.selectedAircraft.rego
+                            }
+                          },
+                          [_vm._v("Analyse")]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    !_vm.selectedAircraft.rego
+                      ? _c(
+                          "a",
+                          {
+                            attrs: {
+                              href:
+                                "/tracking/" +
+                                this.flyingDay +
+                                "/" +
+                                _vm.selectedAircraft.hex
+                            }
+                          },
+                          [_vm._v("Analyse")]
+                        )
+                      : _vm._e()
+                  ])
+                ])
+              ])
             : _vm._e(),
           _vm._v(" "),
           _c(
@@ -66728,7 +66716,7 @@ var render = function() {
                       expression: "!collapseLegend"
                     }
                   ],
-                  staticClass: "table table-striped table-condensed",
+                  staticClass: "table table-striped table-sm",
                   staticStyle: { "pointer-events": "auto" }
                 },
                 [
@@ -67185,7 +67173,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-default",
+                staticClass: "btn btn-outline-dark",
                 attrs: { type: "submit" },
                 on: {
                   click: function($event) {
@@ -67288,7 +67276,7 @@ var render = function() {
               _c(
                 "button",
                 {
-                  staticClass: "btn btn-default btn-sm",
+                  staticClass: "btn btn-outline-dark btn-sm",
                   on: {
                     click: function($event) {
                       return _vm.deleteUserRole(userRole.pivot.id)
@@ -67377,7 +67365,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-default btn-sm",
+          staticClass: "btn btn-outline-dark btn-sm",
           attrs: { type: "button" },
           on: {
             click: function($event) {
@@ -67391,7 +67379,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-default btn-sm disabled",
+          staticClass: "btn btn-outline-dark btn-sm disabled",
           attrs: { type: "button" }
         },
         [_vm._v("Page " + _vm._s(_vm.page) + " of " + _vm._s(_vm.last_page))]
@@ -67400,7 +67388,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-default btn-sm",
+          staticClass: "btn btn-outline-dark btn-sm",
           attrs: { type: "button" },
           on: {
             click: function($event) {
@@ -67586,7 +67574,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-default btn-sm",
+          staticClass: "btn btn-outline-dark btn-sm",
           attrs: { type: "button" },
           on: {
             click: function($event) {
@@ -67600,7 +67588,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-default btn-sm disabled",
+          staticClass: "btn btn-outline-dark btn-sm disabled",
           attrs: { type: "button" }
         },
         [_vm._v("Page " + _vm._s(_vm.page) + " of " + _vm._s(_vm.last_page))]
@@ -67609,7 +67597,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-default btn-sm",
+          staticClass: "btn btn-outline-dark btn-sm",
           attrs: { type: "button" },
           on: {
             click: function($event) {

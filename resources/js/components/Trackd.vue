@@ -29,7 +29,7 @@
 			<h2 style="margin:0;"><a href="/tracking">Tracking</a> &gt; {{rego}} <span v-show="!rego">{{hex}}</span></h1>
 </h2>
 
-			<table class="table table-striped table-condensed" v-if="highlightedPoint">
+			<table class="table table-striped table-sm" v-if="highlightedPoint">
 				<tr>
 					<td>Altitude</td>
 					<td>

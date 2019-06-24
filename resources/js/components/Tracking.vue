@@ -33,17 +33,16 @@
 		top: 12px; right: 110px;
 		z-index: 999;
 	}
-
 	.exitFullScreen {
 		position: absolute;
 		z-index: 999;
 		top: 10px; left: 20px;
 	}
-	.map {
+	.maps {
 		width: 100%; 
 		height: 600px;
-		height: calc(100vh - 220px);
 		min-height: 400px;
+		height: calc(100vh - 220px);
 	}
 	tr.old td {
 		color: #999;
@@ -55,23 +54,23 @@
 <div>
 
 	<div class="form-inline">
-		<button class="btn btn-sm btn-default" v-on:click="zoomTo(-41.18301,170.442, 6)">NZ</button>
-		<button class="btn btn-sm btn-default" v-on:click="zoomTo(-38.688, 176.138, 4)">NI</button>
-			<button class="btn btn-sm btn-default" v-on:click="zoomTo(-37.11170,174.937, .1)">Drury</button>
-			<button class="btn btn-sm btn-default" v-on:click="zoomTo(-37.29800,174.925, .4)">Mercer</button>
-			<button class="btn btn-sm btn-default" v-on:click="zoomTo(-37.48444,175.511, .5)">Swamp</button>
-			<button class="btn btn-sm btn-default" v-on:click="zoomTo(-37.73593,175.733, .1)">Matamata</button>
-			<button class="btn btn-sm btn-default" v-on:click="zoomTo(-38.27730,175.863, .5)">Tokoroa</button>
-			<button class="btn btn-sm btn-default" v-on:click="zoomTo(-38.688, 176.138, .1)">Centennial</button>
-			<button class="btn btn-sm btn-default" v-on:click="zoomTo(-38.688, 176.138, .5)">Taupo</button>
-			<button class="btn btn-sm btn-default" v-on:click="zoomTo(-39.30991,174.1413, .3)">Taranaki</button>
-			<button class="btn btn-sm btn-default" v-on:click="zoomTo(-40.9724,175.632, .1)">Hood</button>
-			<button class="btn btn-sm btn-default" v-on:click="zoomTo(-40.97435,175.409, .6)">Wellington</button>
-			<button class="btn btn-sm btn-default" v-on:click="zoomTo(-41.09532,175.490, .1)">Papawai</button>
-			<button class="btn btn-sm btn-default" v-on:click="zoomTo(-43.5547114,171.024, 4)">SI</button>
-			<button class="btn btn-sm btn-default" v-on:click="zoomTo(-43.38478,171.9054, .1)">Springfield</button>
-			<button class="btn btn-sm btn-default" v-on:click="zoomTo(-44.48489,169.9809, .1)">Omarama</button>
-			<button class="btn btn-sm btn-default" v-on:click="zoomTo(-44.51185,169.3208, 1)">Otago</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-41.18301,174.0, 8)">NZ</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-38.688, 176.138, 4)">NI</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-37.11170,174.937, .1)">Drury</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-37.29800,174.925, .4)">Mercer</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-37.48444,175.511, .5)">Swamp</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-37.73593,175.733, .1)">Matamata</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-38.27730,175.863, .5)">Tokoroa</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-38.688, 176.138, .1)">Centennial</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-38.688, 176.138, .5)">Taupo</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-39.30991,174.1413, .3)">Taranaki</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-40.9724,175.632, .1)">Hood</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-40.97435,175.409, .6)">Wellington</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-41.09532,175.490, .1)">Papawai</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-43.5547114,171.024, 4)">SI</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-43.38478,171.9054, .1)">Springfield</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-44.48489,169.9809, .1)">Omarama</button>
+		<button class="btn btn-sm btn-outline-dark mr-1 mb-1" v-on:click="zoomTo(-44.51185,169.3208, 1)">Otago</button>
 	</div>
 
 	<div v-show="mapStatus=='loader'">
@@ -80,10 +79,10 @@
 
 	<div class="row" style="margin-top: 20px;" v-show="mapStatus=='map'">
 		<div class="col-md-9">
-			<div id="map" class="map"  v-bind:class="[  fullScreen ? 'fullscreen' : '']">
-				<button class="exitFullScreen btn btn-default" v-on:click="toggleFullScreen">Full Screen</button>
+			<div id="map" class="maps"  v-bind:class="[  fullScreen ? 'fullscreen' : '']">
+				<button class="exitFullScreen btn btn-secondary btn-sm" v-on:click="toggleFullScreen">Full Screen</button>
 
-				<button v-show="fullScreen || collapseLegend" class="toggleLegend fa btn btn-sm btn-default" v-on:click="collapseLegend=!collapseLegend" v-bind:class="[  collapseLegend ? 'fa-angle-down' : 'fa-angle-up']" style="pointer-events: auto;">&nbsp;<span v-show="!collapseLegend">Hide</span><span v-show="collapseLegend">Show</span> Legend</button>
+				<button v-show="fullScreen || collapseLegend" class="toggleLegend fa btn btn-sm btn-secondary" v-on:click="collapseLegend=!collapseLegend" v-bind:class="[  collapseLegend ? 'fa-angle-down' : 'fa-angle-up']" style="pointer-events: auto;">&nbsp;<span v-show="!collapseLegend">Hide</span><span v-show="collapseLegend">Show</span> Legend</button>
 			</div>
 
 				
@@ -104,7 +103,7 @@
 
 				Day:
 				<div class="btn-group" role="group" style="margin-bottom: 0;">
-					<a v-bind:href="'/tracking/' + day.day_date"  v-for="(day, index) in firstDays" type="button" class="btn btn-default" v-bind:class="[ day.day_date==flyingDay ? 'btn-primary' : '']">{{day.day_date}}
+					<a v-bind:href="'/tracking/' + day.day_date"  v-for="(day, index) in firstDays" class="btn" v-bind:class="[ day.day_date==flyingDay ? 'btn-secondary' : 'btn-outline-dark']">{{day.day_date}}
 					</a>
 				</div>
 			</div>
@@ -112,7 +111,7 @@
 		</div>
 		<div class="col-md-3">
 			
-			<table class="table table-striped table-condensed" v-if="selectedAircraft">
+			<table class="table table-striped table-sm" v-if="selectedAircraft">
 				<tr>
 					<th>Aircraft</th>
 					<th>
@@ -179,7 +178,7 @@
 
 			<div v-bind:class="[  fullScreen ? 'fullScreenTable' : '', collapseLegend ? 'fullScreenTableCollapsed' : '']">
 
-				<table class="table table-striped table-condensed" v-show="!collapseLegend" style="pointer-events: auto;">
+				<table class="table table-striped table-sm" v-show="!collapseLegend" style="pointer-events: auto;">
 					<tr>
 						<td colspan="2">Filter</td>
 						<td colspan="2">

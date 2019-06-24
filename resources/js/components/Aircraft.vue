@@ -28,7 +28,7 @@
 				<div class="input-group">
 					<input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term" v-model="state.search">
 					<div class="input-group-btn">
-						<button class="btn btn-default" type="submit" v-on:click="state.search=''"><i class="fa fa-times"></i></button>
+						<button class="btn btn-outline-dark" type="submit" v-on:click="state.search=''"><i class="fa fa-times"></i></button>
 					</div>
 				</div>
 
@@ -38,20 +38,20 @@
 		<div class="filter-buttons nav nav-pills col-xs-12" role="group">
 
 			<div class="btn-group" role="group">
-				<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='glider' }" v-on:click="filterTo('glider')">All Gliders</button>
-				<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='self-launch' }" v-on:click="filterTo('self-launch')">Self Launch</button>
-				<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='sustainer' }" v-on:click="filterTo('sustainer')">Turbo</button>
-				<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='vintage' }" v-on:click="filterTo('vintage')">Vintage</button>
-				<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='singles' }" v-on:click="filterTo('singles')">Singles</button>
-				<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='twins' }" v-on:click="filterTo('twins')">Twins</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='glider' }" v-on:click="filterTo('glider')">All Gliders</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='self-launch' }" v-on:click="filterTo('self-launch')">Self Launch</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='sustainer' }" v-on:click="filterTo('sustainer')">Turbo</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='vintage' }" v-on:click="filterTo('vintage')">Vintage</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='singles' }" v-on:click="filterTo('singles')">Singles</button>
+				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='twins' }" v-on:click="filterTo('twins')">Twins</button>
 			</div>
-			<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='tug' }" v-on:click="filterTo('tug')">Tugs</button>
-			<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='gyrocopter' }" v-on:click="filterTo('gyrocopter')">Gyros</button>
-			<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='helicopter' }" v-on:click="filterTo('helicopter')">Heli</button>
-			<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='balloon' }" v-on:click="filterTo('balloon')">Balloons</button>
-			<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='plane' }" v-on:click="filterTo('plane')">Planes</button>
-			<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='microlight' }" v-on:click="filterTo('microlight')">Microlights</button>
-			<button type="button" class="btn btn-default btn-sm" v-bind:class="{ 'btn-primary': state.type=='all' }" v-on:click="filterTo('all')">All</button>
+			<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='tug' }" v-on:click="filterTo('tug')">Tugs</button>
+			<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='gyrocopter' }" v-on:click="filterTo('gyrocopter')">Gyros</button>
+			<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='helicopter' }" v-on:click="filterTo('helicopter')">Heli</button>
+			<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='balloon' }" v-on:click="filterTo('balloon')">Balloons</button>
+			<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='plane' }" v-on:click="filterTo('plane')">Planes</button>
+			<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='microlight' }" v-on:click="filterTo('microlight')">Microlights</button>
+			<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='all' }" v-on:click="filterTo('all')">All</button>
 		</div>
 
 		<div class="row">
@@ -64,9 +64,9 @@
 			<div class="col-xs-12 col-sm-8">
 
 				<div class="btn-group pull-right" role="group">
-					<button type="button" class="btn btn-default btn-sm" v-on:click="previous()">&lt;</button>
-					<button type="button" class="btn btn-default btn-sm disabled">Page {{ state.page }} of {{ last_page }}</button>
-					<button type="button" class="btn btn-default btn-sm" v-on:click="next()">Next &gt;</button>
+					<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="previous()">&lt;</button>
+					<button type="button" class="btn btn-outline-dark btn-sm disabled">Page {{ state.page }} of {{ last_page }}</button>
+					<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="next()">Next &gt;</button>
 				</div>
 
 			</div>
