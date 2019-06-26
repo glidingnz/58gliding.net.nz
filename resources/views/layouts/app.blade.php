@@ -11,8 +11,8 @@
 	<title>Gliding New Zealand</title>
 
 	<!-- Styles -->
-	<link href="/css/app.css" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
+	<link href="{{ asset('/css/app.css')}}" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="{{ asset('/css/font-awesome.min.css')}}">
 {{-- 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
  --}}
 	<?php
@@ -58,9 +58,9 @@
 
 		<!-- Left Side Of Navbar -->
 		<ul class="navbar-nav mr-auto">
-			<li class="nav-item"><a class="nav-link" href="/aircraft">Aircraft</a></li>
-			<li class="nav-item"><a class="nav-link" href="/tracking">Tracking</a></li>
-			<li class="nav-item"><a class="nav-link" href="/members">Members</a></li>
+			<li class="nav-item"><a class="nav-link" href="{{ url('/aircraft')}}">Aircraft</a></li>
+			<li class="nav-item"><a class="nav-link" href="{{ url('/tracking')}}">Tracking</a></li>
+			<li class="nav-item"><a class="nav-link" href="{{ url('/members')}}">Members</a></li>
 			<li class="nav-messages"></li>
 		</ul>
 
@@ -89,10 +89,10 @@
 	</nav>
 
 	@yield('content')
-	
+
 	</div>
 	<!-- Scripts -->
-	<script src="/js/app.js"></script>
+	<script src="{{ asset('/js/app.js')}}"></script>
 
 	<!-- load page specific scripts -->
 	@yield('scripts')

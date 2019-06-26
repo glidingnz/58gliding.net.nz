@@ -9601,7 +9601,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\ndiv.chart-container {\n\ttext-align: center;\n\twidth: 100%;\n\tpadding-left: 20px;\n\tpadding-right: 20px;\n}\ndiv.chart {\n\twidth: 100%;\n}\n", ""]);
+exports.push([module.i, "\ndiv.chart-container {\r\n\ttext-align: center;\r\n\twidth: 100%;\r\n\tpadding-left: 20px;\r\n\tpadding-right: 20px;\n}\ndiv.chart {\r\n\twidth: 100%;\n}\r\n", ""]);
 
 // exports
 
@@ -9639,7 +9639,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.btn-group {\n\tmargin-bottom: 20px;\n}\n.filter-buttons {\n\tmargin-bottom: 15px;\n}\n.filter-buttons .btn {\n\tmargin-bottom: 5px;\n}\n.filter-buttons .btn-group {\n\tmargin-bottom: 0;\n}\n", ""]);
+exports.push([module.i, "\n.btn-group {\r\n\tmargin-bottom: 20px;\n}\n.filter-buttons {\r\n\tmargin-bottom: 15px;\n}\n.filter-buttons .btn {\r\n\tmargin-bottom: 5px;\n}\n.filter-buttons .btn-group {\r\n\tmargin-bottom: 0;\n}\r\n", ""]);
 
 // exports
 
@@ -9658,7 +9658,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.messages-panel {\n\tposition: fixed;\n\twidth: 30em;\n\tmin-height: 50px;\n\tbackground-color: #FFF;\n\tborder: 1px solid #EEE;\n\tpadding: 10px;\n\tmargin-left: -20px;\n\tmargin-top: 6px;\n\tz-index: 9999;\n\ttop: 0px;\n}\n.message-error { color: #A00;\n}\n.message-warning { color: #DC9200;\n}\n.message-success { color: #0A0;\n}\n.message-note { color: #3C8DBC;\n}\na.no-messages { color: #CCC;\n}\na.new-messages { color: #A00;\n}\na.old-messages { color: #444;\n}\n", ""]);
+exports.push([module.i, "\n.messages-panel {\r\n\tposition: fixed;\r\n\twidth: 30em;\r\n\tmin-height: 50px;\r\n\tbackground-color: #FFF;\r\n\tborder: 1px solid #EEE;\r\n\tpadding: 10px;\r\n\tmargin-left: -20px;\r\n\tmargin-top: 6px;\r\n\tz-index: 9999;\r\n\ttop: 0px;\n}\n.message-error { color: #A00;\n}\n.message-warning { color: #DC9200;\n}\n.message-success { color: #0A0;\n}\n.message-note { color: #3C8DBC;\n}\na.no-messages { color: #CCC;\n}\na.new-messages { color: #A00;\n}\na.old-messages { color: #444;\n}\r\n", ""]);
 
 // exports
 
@@ -9677,7 +9677,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.fa-exclamation-circle {\n\tcolor: #A00;\n}\n", ""]);
+exports.push([module.i, "\n.fa-exclamation-circle {\r\n\tcolor: #A00;\n}\r\n", ""]);
 
 // exports
 
@@ -38055,7 +38055,7 @@ return jQuery;
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
  * marked - a markdown parser
- * Copyright (c) 2011-2014, Christopher Jeffrey. (MIT Licensed)
+ * Copyright (c) 2011-2018, Christopher Jeffrey. (MIT Licensed)
  * https://github.com/markedjs/marked
  */
 
@@ -38071,27 +38071,36 @@ var block = {
   code: /^( {4}[^\n]+\n*)+/,
   fences: noop,
   hr: /^ {0,3}((?:- *){3,}|(?:_ *){3,}|(?:\* *){3,})(?:\n+|$)/,
-  heading: /^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)/,
+  heading: /^ *(#{1,6}) *([^\n]+?) *(?:#+ *)?(?:\n+|$)/,
   nptable: noop,
   blockquote: /^( {0,3}> ?(paragraph|[^\n]*)(?:\n|$))+/,
-  list: /^( *)(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/,
-  html: /^ *(?:comment *(?:\n|\s*$)|closed *(?:\n{2,}|\s*$)|closing *(?:\n{2,}|\s*$))/,
+  list: /^( {0,3})(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/,
+  html: '^ {0,3}(?:' // optional indentation
+    + '<(script|pre|style)[\\s>][\\s\\S]*?(?:</\\1>[^\\n]*\\n+|$)' // (1)
+    + '|comment[^\\n]*(\\n+|$)' // (2)
+    + '|<\\?[\\s\\S]*?\\?>\\n*' // (3)
+    + '|<![A-Z][\\s\\S]*?>\\n*' // (4)
+    + '|<!\\[CDATA\\[[\\s\\S]*?\\]\\]>\\n*' // (5)
+    + '|</?(tag)(?: +|\\n|/?>)[\\s\\S]*?(?:\\n{2,}|$)' // (6)
+    + '|<(?!script|pre|style)([a-z][\\w-]*)(?:attribute)*? */?>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:\\n{2,}|$)' // (7) open tag
+    + '|</(?!script|pre|style)[a-z][\\w-]*\\s*>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:\\n{2,}|$)' // (7) closing tag
+    + ')',
   def: /^ {0,3}\[(label)\]: *\n? *<?([^\s>]+)>?(?:(?: +\n? *| *\n *)(title))? *(?:\n+|$)/,
   table: noop,
   lheading: /^([^\n]+)\n *(=|-){2,} *(?:\n+|$)/,
-  paragraph: /^([^\n]+(?:\n?(?!hr|heading|lheading| {0,3}>|tag)[^\n]+)+)/,
+  paragraph: /^([^\n]+(?:\n(?!hr|heading|lheading| {0,3}>|<\/?(?:tag)(?: +|\n|\/?>)|<(?:script|pre|style|!--))[^\n]+)*)/,
   text: /^[^\n]+/
 };
 
-block._label = /(?:\\[\[\]]|[^\[\]])+/;
-block._title = /(?:"(?:\\"|[^"]|"[^"\n]*")*"|'\n?(?:[^'\n]+\n?)*'|\([^()]*\))/;
+block._label = /(?!\s*\])(?:\\[\[\]]|[^\[\]])+/;
+block._title = /(?:"(?:\\"?|[^"\\])*"|'[^'\n]*(?:\n[^'\n]+)*\n?'|\([^()]*\))/;
 block.def = edit(block.def)
   .replace('label', block._label)
   .replace('title', block._title)
   .getRegex();
 
-block.bullet = /(?:[*+-]|\d+\.)/;
-block.item = /^( *)(bull) [^\n]*(?:\n(?!\1bull )[^\n]*)*/;
+block.bullet = /(?:[*+-]|\d{1,9}\.)/;
+block.item = /^( *)(bull) ?[^\n]*(?:\n(?!\1bull ?)[^\n]*)*/;
 block.item = edit(block.item, 'gm')
   .replace(/bull/g, block.bullet)
   .getRegex();
@@ -38102,23 +38111,24 @@ block.list = edit(block.list)
   .replace('def', '\\n+(?=' + block.def.source + ')')
   .getRegex();
 
-block._tag = '(?!(?:'
-  + 'a|em|strong|small|s|cite|q|dfn|abbr|data|time|code'
-  + '|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo'
-  + '|span|br|wbr|ins|del|img)\\b)\\w+(?!:|[^\\w\\s@]*@)\\b';
-
-block.html = edit(block.html)
-  .replace('comment', /<!--[\s\S]*?-->/)
-  .replace('closed', /<(tag)[\s\S]+?<\/\1>/)
-  .replace('closing', /<tag(?:"[^"]*"|'[^']*'|\s[^'"\/>\s]*)*?\/?>/)
-  .replace(/tag/g, block._tag)
+block._tag = 'address|article|aside|base|basefont|blockquote|body|caption'
+  + '|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption'
+  + '|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe'
+  + '|legend|li|link|main|menu|menuitem|meta|nav|noframes|ol|optgroup|option'
+  + '|p|param|section|source|summary|table|tbody|td|tfoot|th|thead|title|tr'
+  + '|track|ul';
+block._comment = /<!--(?!-?>)[\s\S]*?-->/;
+block.html = edit(block.html, 'i')
+  .replace('comment', block._comment)
+  .replace('tag', block._tag)
+  .replace('attribute', / +[a-zA-Z:_][\w.:-]*(?: *= *"[^"\n]*"| *= *'[^'\n]*'| *= *[^\s"'=<>`]+)?/)
   .getRegex();
 
 block.paragraph = edit(block.paragraph)
   .replace('hr', block.hr)
   .replace('heading', block.heading)
   .replace('lheading', block.lheading)
-  .replace('tag', '<' + block._tag)
+  .replace('tag', block._tag) // pars can be interrupted by type (6) html blocks
   .getRegex();
 
 block.blockquote = edit(block.blockquote)
@@ -38136,7 +38146,7 @@ block.normal = merge({}, block);
  */
 
 block.gfm = merge({}, block.normal, {
-  fences: /^ *(`{3,}|~{3,})[ \.]*(\S+)? *\n([\s\S]*?)\n? *\1 *(?:\n+|$)/,
+  fences: /^ {0,3}(`{3,}|~{3,})([^`\n]*)\n(?:|([\s\S]*?)\n)(?: {0,3}\1[~`]* *(?:\n+|$)|$)/,
   paragraph: /^/,
   heading: /^ *(#{1,6}) +([^\n]+?) *#* *(?:\n+|$)/
 });
@@ -38152,8 +38162,26 @@ block.gfm.paragraph = edit(block.paragraph)
  */
 
 block.tables = merge({}, block.gfm, {
-  nptable: /^ *(\S.*\|.*)\n *([-:]+ *\|[-| :]*)\n((?:.*\|.*(?:\n|$))*)\n*/,
-  table: /^ *\|(.+)\n *\|( *[-:]+[-| :]*)\n((?: *\|.*(?:\n|$))*)\n*/
+  nptable: /^ *([^|\n ].*\|.*)\n *([-:]+ *\|[-| :]*)(?:\n((?:.*[^>\n ].*(?:\n|$))*)\n*|$)/,
+  table: /^ *\|(.+)\n *\|?( *[-:]+[-| :]*)(?:\n((?: *[^>\n ].*(?:\n|$))*)\n*|$)/
+});
+
+/**
+ * Pedantic grammar
+ */
+
+block.pedantic = merge({}, block.normal, {
+  html: edit(
+    '^ *(?:comment *(?:\\n|\\s*$)'
+    + '|<(tag)[\\s\\S]+?</\\1> *(?:\\n{2,}|\\s*$)' // closed tag
+    + '|<tag(?:"[^"]*"|\'[^\']*\'|\\s[^\'"/>\\s]*)*?/?> *(?:\\n{2,}|\\s*$))')
+    .replace('comment', block._comment)
+    .replace(/tag/g, '(?!(?:'
+      + 'a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub'
+      + '|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)'
+      + '\\b)\\w+(?!:|[^\\w\\s@]*@)\\b')
+    .getRegex(),
+  def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +(["(][^\n]+[")]))? *(?:\n+|$)/
 });
 
 /**
@@ -38162,11 +38190,13 @@ block.tables = merge({}, block.gfm, {
 
 function Lexer(options) {
   this.tokens = [];
-  this.tokens.links = {};
+  this.tokens.links = Object.create(null);
   this.options = options || marked.defaults;
   this.rules = block.normal;
 
-  if (this.options.gfm) {
+  if (this.options.pedantic) {
+    this.rules = block.pedantic;
+  } else if (this.options.gfm) {
     if (this.options.tables) {
       this.rules = block.tables;
     } else {
@@ -38216,11 +38246,16 @@ Lexer.prototype.token = function(src, top) {
       bull,
       b,
       item,
+      listStart,
+      listItems,
+      t,
       space,
       i,
       tag,
       l,
-      isordered;
+      isordered,
+      istask,
+      ischecked;
 
   while (src) {
     // newline
@@ -38240,7 +38275,7 @@ Lexer.prototype.token = function(src, top) {
       this.tokens.push({
         type: 'code',
         text: !this.options.pedantic
-          ? cap.replace(/\n+$/, '')
+          ? rtrim(cap, '\n')
           : cap
       });
       continue;
@@ -38251,7 +38286,7 @@ Lexer.prototype.token = function(src, top) {
       src = src.substring(cap[0].length);
       this.tokens.push({
         type: 'code',
-        lang: cap[2],
+        lang: cap[2] ? cap[2].trim() : cap[2],
         text: cap[3] || ''
       });
       continue;
@@ -38269,35 +38304,37 @@ Lexer.prototype.token = function(src, top) {
     }
 
     // table no leading pipe (gfm)
-    if (top && (cap = this.rules.nptable.exec(src))) {
-      src = src.substring(cap[0].length);
-
+    if (cap = this.rules.nptable.exec(src)) {
       item = {
         type: 'table',
-        header: cap[1].replace(/^ *| *\| *$/g, '').split(/ *\| */),
+        header: splitCells(cap[1].replace(/^ *| *\| *$/g, '')),
         align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
-        cells: cap[3].replace(/\n$/, '').split('\n')
+        cells: cap[3] ? cap[3].replace(/\n$/, '').split('\n') : []
       };
 
-      for (i = 0; i < item.align.length; i++) {
-        if (/^ *-+: *$/.test(item.align[i])) {
-          item.align[i] = 'right';
-        } else if (/^ *:-+: *$/.test(item.align[i])) {
-          item.align[i] = 'center';
-        } else if (/^ *:-+ *$/.test(item.align[i])) {
-          item.align[i] = 'left';
-        } else {
-          item.align[i] = null;
+      if (item.header.length === item.align.length) {
+        src = src.substring(cap[0].length);
+
+        for (i = 0; i < item.align.length; i++) {
+          if (/^ *-+: *$/.test(item.align[i])) {
+            item.align[i] = 'right';
+          } else if (/^ *:-+: *$/.test(item.align[i])) {
+            item.align[i] = 'center';
+          } else if (/^ *:-+ *$/.test(item.align[i])) {
+            item.align[i] = 'left';
+          } else {
+            item.align[i] = null;
+          }
         }
+
+        for (i = 0; i < item.cells.length; i++) {
+          item.cells[i] = splitCells(item.cells[i], item.header.length);
+        }
+
+        this.tokens.push(item);
+
+        continue;
       }
-
-      for (i = 0; i < item.cells.length; i++) {
-        item.cells[i] = item.cells[i].split(/ *\| */);
-      }
-
-      this.tokens.push(item);
-
-      continue;
     }
 
     // hr
@@ -38337,15 +38374,19 @@ Lexer.prototype.token = function(src, top) {
       bull = cap[2];
       isordered = bull.length > 1;
 
-      this.tokens.push({
+      listStart = {
         type: 'list_start',
         ordered: isordered,
-        start: isordered ? +bull : ''
-      });
+        start: isordered ? +bull : '',
+        loose: false
+      };
+
+      this.tokens.push(listStart);
 
       // Get each top-level item.
       cap = cap[0].match(this.rules.item);
 
+      listItems = [];
       next = false;
       l = cap.length;
       i = 0;
@@ -38356,7 +38397,7 @@ Lexer.prototype.token = function(src, top) {
         // Remove the list item's bullet
         // so it is seen as the next token.
         space = item.length;
-        item = item.replace(/^ *([*+-]|\d+\.) +/, '');
+        item = item.replace(/^ *([*+-]|\d+\.) */, '');
 
         // Outdent whatever the
         // list item contains. Hacky.
@@ -38369,9 +38410,10 @@ Lexer.prototype.token = function(src, top) {
 
         // Determine whether the next list item belongs here.
         // Backpedal if it does not belong in this list.
-        if (this.options.smartLists && i !== l - 1) {
+        if (i !== l - 1) {
           b = block.bullet.exec(cap[i + 1])[0];
-          if (bull !== b && !(bull.length > 1 && b.length > 1)) {
+          if (bull.length > 1 ? b.length === 1
+            : (b.length > 1 || (this.options.smartLists && b !== bull))) {
             src = cap.slice(i + 1).join('\n') + src;
             i = l - 1;
           }
@@ -38386,11 +38428,27 @@ Lexer.prototype.token = function(src, top) {
           if (!loose) loose = next;
         }
 
-        this.tokens.push({
-          type: loose
-            ? 'loose_item_start'
-            : 'list_item_start'
-        });
+        if (loose) {
+          listStart.loose = true;
+        }
+
+        // Check for task list items
+        istask = /^\[[ xX]\] /.test(item);
+        ischecked = undefined;
+        if (istask) {
+          ischecked = item[1] !== ' ';
+          item = item.replace(/^\[[ xX]\] +/, '');
+        }
+
+        t = {
+          type: 'list_item_start',
+          task: istask,
+          checked: ischecked,
+          loose: loose
+        };
+
+        listItems.push(t);
+        this.tokens.push(t);
 
         // Recurse.
         this.token(item, false);
@@ -38398,6 +38456,14 @@ Lexer.prototype.token = function(src, top) {
         this.tokens.push({
           type: 'list_item_end'
         });
+      }
+
+      if (listStart.loose) {
+        l = listItems.length;
+        i = 0;
+        for (; i < l; i++) {
+          listItems[i].loose = true;
+        }
       }
 
       this.tokens.push({
@@ -38425,7 +38491,7 @@ Lexer.prototype.token = function(src, top) {
     if (top && (cap = this.rules.def.exec(src))) {
       src = src.substring(cap[0].length);
       if (cap[3]) cap[3] = cap[3].substring(1, cap[3].length - 1);
-      tag = cap[1].toLowerCase();
+      tag = cap[1].toLowerCase().replace(/\s+/g, ' ');
       if (!this.tokens.links[tag]) {
         this.tokens.links[tag] = {
           href: cap[2],
@@ -38436,37 +38502,39 @@ Lexer.prototype.token = function(src, top) {
     }
 
     // table (gfm)
-    if (top && (cap = this.rules.table.exec(src))) {
-      src = src.substring(cap[0].length);
-
+    if (cap = this.rules.table.exec(src)) {
       item = {
         type: 'table',
-        header: cap[1].replace(/^ *| *\| *$/g, '').split(/ *\| */),
+        header: splitCells(cap[1].replace(/^ *| *\| *$/g, '')),
         align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
-        cells: cap[3].replace(/(?: *\| *)?\n$/, '').split('\n')
+        cells: cap[3] ? cap[3].replace(/\n$/, '').split('\n') : []
       };
 
-      for (i = 0; i < item.align.length; i++) {
-        if (/^ *-+: *$/.test(item.align[i])) {
-          item.align[i] = 'right';
-        } else if (/^ *:-+: *$/.test(item.align[i])) {
-          item.align[i] = 'center';
-        } else if (/^ *:-+ *$/.test(item.align[i])) {
-          item.align[i] = 'left';
-        } else {
-          item.align[i] = null;
+      if (item.header.length === item.align.length) {
+        src = src.substring(cap[0].length);
+
+        for (i = 0; i < item.align.length; i++) {
+          if (/^ *-+: *$/.test(item.align[i])) {
+            item.align[i] = 'right';
+          } else if (/^ *:-+: *$/.test(item.align[i])) {
+            item.align[i] = 'center';
+          } else if (/^ *:-+ *$/.test(item.align[i])) {
+            item.align[i] = 'left';
+          } else {
+            item.align[i] = null;
+          }
         }
+
+        for (i = 0; i < item.cells.length; i++) {
+          item.cells[i] = splitCells(
+            item.cells[i].replace(/^ *\| *| *\| *$/g, ''),
+            item.header.length);
+        }
+
+        this.tokens.push(item);
+
+        continue;
       }
-
-      for (i = 0; i < item.cells.length; i++) {
-        item.cells[i] = item.cells[i]
-          .replace(/^ *\| *| *\| *$/g, '')
-          .split(/ *\| */);
-      }
-
-      this.tokens.push(item);
-
-      continue;
     }
 
     // lheading
@@ -38516,39 +38584,59 @@ Lexer.prototype.token = function(src, top) {
  */
 
 var inline = {
-  escape: /^\\([\\`*{}\[\]()#+\-.!_>])/,
+  escape: /^\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/,
   autolink: /^<(scheme:[^\s\x00-\x1f<>]*|email)>/,
   url: noop,
-  tag: /^<!--[\s\S]*?-->|^<\/?[a-zA-Z0-9\-]+(?:"[^"]*"|'[^']*'|\s[^<'">\/\s]*)*?\/?>/,
-  link: /^!?\[(inside)\]\(href\)/,
-  reflink: /^!?\[(inside)\]\s*\[([^\]]*)\]/,
-  nolink: /^!?\[((?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]])*)\]/,
-  strong: /^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)/,
-  em: /^_([^\s_](?:[^_]|__)+?[^\s_])_\b|^\*((?:\*\*|[^*])+?)\*(?!\*)/,
-  code: /^(`+)\s*([\s\S]*?[^`]?)\s*\1(?!`)/,
-  br: /^ {2,}\n(?!\s*$)/,
+  tag: '^comment'
+    + '|^</[a-zA-Z][\\w:-]*\\s*>' // self-closing tag
+    + '|^<[a-zA-Z][\\w-]*(?:attribute)*?\\s*/?>' // open tag
+    + '|^<\\?[\\s\\S]*?\\?>' // processing instruction, e.g. <?php ?>
+    + '|^<![a-zA-Z]+\\s[\\s\\S]*?>' // declaration, e.g. <!DOCTYPE html>
+    + '|^<!\\[CDATA\\[[\\s\\S]*?\\]\\]>', // CDATA section
+  link: /^!?\[(label)\]\(href(?:\s+(title))?\s*\)/,
+  reflink: /^!?\[(label)\]\[(?!\s*\])((?:\\[\[\]]?|[^\[\]\\])+)\]/,
+  nolink: /^!?\[(?!\s*\])((?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]])*)\](?:\[\])?/,
+  strong: /^__([^\s_])__(?!_)|^\*\*([^\s*])\*\*(?!\*)|^__([^\s][\s\S]*?[^\s])__(?!_)|^\*\*([^\s][\s\S]*?[^\s])\*\*(?!\*)/,
+  em: /^_([^\s_])_(?!_)|^\*([^\s*"<\[])\*(?!\*)|^_([^\s][\s\S]*?[^\s_])_(?!_|[^\spunctuation])|^_([^\s_][\s\S]*?[^\s])_(?!_|[^\spunctuation])|^\*([^\s"<\[][\s\S]*?[^\s*])\*(?!\*)|^\*([^\s*"<\[][\s\S]*?[^\s])\*(?!\*)/,
+  code: /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/,
+  br: /^( {2,}|\\)\n(?!\s*$)/,
   del: noop,
-  text: /^[\s\S]+?(?=[\\<!\[`*]|\b_| {2,}\n|$)/
+  text: /^(`+|[^`])(?:[\s\S]*?(?:(?=[\\<!\[`*]|\b_|$)|[^ ](?= {2,}\n))|(?= {2,}\n))/
 };
+
+// list of punctuation marks from common mark spec
+// without ` and ] to workaround Rule 17 (inline code blocks/links)
+inline._punctuation = '!"#$%&\'()*+,\\-./:;<=>?@\\[^_{|}~';
+inline.em = edit(inline.em).replace(/punctuation/g, inline._punctuation).getRegex();
+
+inline._escapes = /\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/g;
 
 inline._scheme = /[a-zA-Z][a-zA-Z0-9+.-]{1,31}/;
 inline._email = /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(@)[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+(?![-_])/;
-
 inline.autolink = edit(inline.autolink)
   .replace('scheme', inline._scheme)
   .replace('email', inline._email)
-  .getRegex()
+  .getRegex();
 
-inline._inside = /(?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]]|\](?=[^\[]*\]))*/;
-inline._href = /\s*<?([\s\S]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*/;
+inline._attribute = /\s+[a-zA-Z:_][\w.:-]*(?:\s*=\s*"[^"]*"|\s*=\s*'[^']*'|\s*=\s*[^\s"'=<>`]+)?/;
+
+inline.tag = edit(inline.tag)
+  .replace('comment', block._comment)
+  .replace('attribute', inline._attribute)
+  .getRegex();
+
+inline._label = /(?:\[[^\[\]]*\]|\\[\[\]]?|`[^`]*`|`(?!`)|[^\[\]\\`])*?/;
+inline._href = /\s*(<(?:\\[<>]?|[^\s<>\\])*>|[^\s\x00-\x1f]*)/;
+inline._title = /"(?:\\"?|[^"\\])*"|'(?:\\'?|[^'\\])*'|\((?:\\\)?|[^)\\])*\)/;
 
 inline.link = edit(inline.link)
-  .replace('inside', inline._inside)
+  .replace('label', inline._label)
   .replace('href', inline._href)
+  .replace('title', inline._title)
   .getRegex();
 
 inline.reflink = edit(inline.reflink)
-  .replace('inside', inline._inside)
+  .replace('label', inline._label)
   .getRegex();
 
 /**
@@ -38563,7 +38651,13 @@ inline.normal = merge({}, inline);
 
 inline.pedantic = merge({}, inline.normal, {
   strong: /^__(?=\S)([\s\S]*?\S)__(?!_)|^\*\*(?=\S)([\s\S]*?\S)\*\*(?!\*)/,
-  em: /^_(?=\S)([\s\S]*?\S)_(?!_)|^\*(?=\S)([\s\S]*?\S)\*(?!\*)/
+  em: /^_(?=\S)([\s\S]*?\S)_(?!_)|^\*(?=\S)([\s\S]*?\S)\*(?!\*)/,
+  link: edit(/^!?\[(label)\]\((.*?)\)/)
+    .replace('label', inline._label)
+    .getRegex(),
+  reflink: edit(/^!?\[(label)\]\s*\[([^\]]*)\]/)
+    .replace('label', inline._label)
+    .getRegex()
 });
 
 /**
@@ -38572,24 +38666,23 @@ inline.pedantic = merge({}, inline.normal, {
 
 inline.gfm = merge({}, inline.normal, {
   escape: edit(inline.escape).replace('])', '~|])').getRegex(),
-  url: edit(/^((?:ftp|https?):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*|^email/)
-    .replace('email', inline._email)
-    .getRegex(),
+  _extended_email: /[A-Za-z0-9._+-]+(@)[a-zA-Z0-9-_]+(?:\.[a-zA-Z0-9-_]*[a-zA-Z0-9])+(?![-_])/,
+  url: /^((?:ftp|https?):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*|^email/,
   _backpedal: /(?:[^?!.,:;*_~()&]+|\([^)]*\)|&(?![a-zA-Z0-9]+;$)|[?!.,:;*_~)]+(?!$))+/,
-  del: /^~~(?=\S)([\s\S]*?\S)~~/,
-  text: edit(inline.text)
-    .replace(']|', '~]|')
-    .replace('|', '|https?://|ftp://|www\\.|[a-zA-Z0-9.!#$%&\'*+/=?^_`{\\|}~-]+@|')
-    .getRegex()
+  del: /^~+(?=\S)([\s\S]*?\S)~+/,
+  text: /^(`+|[^`])(?:[\s\S]*?(?:(?=[\\<!\[`*~]|\b_|https?:\/\/|ftp:\/\/|www\.|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-](?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@))|(?= {2,}\n|[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@))/
 });
 
+inline.gfm.url = edit(inline.gfm.url, 'i')
+  .replace('email', inline.gfm._extended_email)
+  .getRegex();
 /**
  * GFM + Line Breaks Inline Grammar
  */
 
 inline.breaks = merge({}, inline.gfm, {
   br: edit(inline.br).replace('{2,}', '*').getRegex(),
-  text: edit(inline.gfm.text).replace('{2,}', '*').getRegex()
+  text: edit(inline.gfm.text).replace(/\{2,\}/g, '*').getRegex()
 });
 
 /**
@@ -38607,14 +38700,14 @@ function InlineLexer(links, options) {
     throw new Error('Tokens array requires a `links` property.');
   }
 
-  if (this.options.gfm) {
+  if (this.options.pedantic) {
+    this.rules = inline.pedantic;
+  } else if (this.options.gfm) {
     if (this.options.breaks) {
       this.rules = inline.breaks;
     } else {
       this.rules = inline.gfm;
     }
-  } else if (this.options.pedantic) {
-    this.rules = inline.pedantic;
   }
 }
 
@@ -38642,46 +38735,15 @@ InlineLexer.prototype.output = function(src) {
       link,
       text,
       href,
-      cap;
+      title,
+      cap,
+      prevCapZero;
 
   while (src) {
     // escape
     if (cap = this.rules.escape.exec(src)) {
       src = src.substring(cap[0].length);
-      out += cap[1];
-      continue;
-    }
-
-    // autolink
-    if (cap = this.rules.autolink.exec(src)) {
-      src = src.substring(cap[0].length);
-      if (cap[2] === '@') {
-        text = escape(this.mangle(cap[1]));
-        href = 'mailto:' + text;
-      } else {
-        text = escape(cap[1]);
-        href = text;
-      }
-      out += this.renderer.link(href, null, text);
-      continue;
-    }
-
-    // url (gfm)
-    if (!this.inLink && (cap = this.rules.url.exec(src))) {
-      cap[0] = this.rules._backpedal.exec(cap[0])[0];
-      src = src.substring(cap[0].length);
-      if (cap[2] === '@') {
-        text = escape(cap[0]);
-        href = 'mailto:' + text;
-      } else {
-        text = escape(cap[0]);
-        if (cap[1] === 'www.') {
-          href = 'http://' + text;
-        } else {
-          href = text;
-        }
-      }
-      out += this.renderer.link(href, null, text);
+      out += escape(cap[1]);
       continue;
     }
 
@@ -38692,22 +38754,49 @@ InlineLexer.prototype.output = function(src) {
       } else if (this.inLink && /^<\/a>/i.test(cap[0])) {
         this.inLink = false;
       }
+      if (!this.inRawBlock && /^<(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
+        this.inRawBlock = true;
+      } else if (this.inRawBlock && /^<\/(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
+        this.inRawBlock = false;
+      }
+
       src = src.substring(cap[0].length);
       out += this.options.sanitize
         ? this.options.sanitizer
           ? this.options.sanitizer(cap[0])
           : escape(cap[0])
-        : cap[0]
+        : cap[0];
       continue;
     }
 
     // link
     if (cap = this.rules.link.exec(src)) {
+      var lastParenIndex = findClosingBracket(cap[2], '()');
+      if (lastParenIndex > -1) {
+        var linkLen = cap[0].length - (cap[2].length - lastParenIndex) - (cap[3] || '').length;
+        cap[2] = cap[2].substring(0, lastParenIndex);
+        cap[0] = cap[0].substring(0, linkLen).trim();
+        cap[3] = '';
+      }
       src = src.substring(cap[0].length);
       this.inLink = true;
+      href = cap[2];
+      if (this.options.pedantic) {
+        link = /^([^'"]*[^\s])\s+(['"])(.*)\2/.exec(href);
+
+        if (link) {
+          href = link[1];
+          title = link[3];
+        } else {
+          title = '';
+        }
+      } else {
+        title = cap[3] ? cap[3].slice(1, -1) : '';
+      }
+      href = href.trim().replace(/^<([\s\S]*)>$/, '$1');
       out += this.outputLink(cap, {
-        href: cap[2],
-        title: cap[3]
+        href: InlineLexer.escapes(href),
+        title: InlineLexer.escapes(title)
       });
       this.inLink = false;
       continue;
@@ -38733,14 +38822,14 @@ InlineLexer.prototype.output = function(src) {
     // strong
     if (cap = this.rules.strong.exec(src)) {
       src = src.substring(cap[0].length);
-      out += this.renderer.strong(this.output(cap[2] || cap[1]));
+      out += this.renderer.strong(this.output(cap[4] || cap[3] || cap[2] || cap[1]));
       continue;
     }
 
     // em
     if (cap = this.rules.em.exec(src)) {
       src = src.substring(cap[0].length);
-      out += this.renderer.em(this.output(cap[2] || cap[1]));
+      out += this.renderer.em(this.output(cap[6] || cap[5] || cap[4] || cap[3] || cap[2] || cap[1]));
       continue;
     }
 
@@ -38765,10 +38854,51 @@ InlineLexer.prototype.output = function(src) {
       continue;
     }
 
+    // autolink
+    if (cap = this.rules.autolink.exec(src)) {
+      src = src.substring(cap[0].length);
+      if (cap[2] === '@') {
+        text = escape(this.mangle(cap[1]));
+        href = 'mailto:' + text;
+      } else {
+        text = escape(cap[1]);
+        href = text;
+      }
+      out += this.renderer.link(href, null, text);
+      continue;
+    }
+
+    // url (gfm)
+    if (!this.inLink && (cap = this.rules.url.exec(src))) {
+      if (cap[2] === '@') {
+        text = escape(cap[0]);
+        href = 'mailto:' + text;
+      } else {
+        // do extended autolink path validation
+        do {
+          prevCapZero = cap[0];
+          cap[0] = this.rules._backpedal.exec(cap[0])[0];
+        } while (prevCapZero !== cap[0]);
+        text = escape(cap[0]);
+        if (cap[1] === 'www.') {
+          href = 'http://' + text;
+        } else {
+          href = text;
+        }
+      }
+      src = src.substring(cap[0].length);
+      out += this.renderer.link(href, null, text);
+      continue;
+    }
+
     // text
     if (cap = this.rules.text.exec(src)) {
       src = src.substring(cap[0].length);
-      out += this.renderer.text(escape(this.smartypants(cap[0])));
+      if (this.inRawBlock) {
+        out += this.renderer.text(cap[0]);
+      } else {
+        out += this.renderer.text(escape(this.smartypants(cap[0])));
+      }
       continue;
     }
 
@@ -38780,12 +38910,16 @@ InlineLexer.prototype.output = function(src) {
   return out;
 };
 
+InlineLexer.escapes = function(text) {
+  return text ? text.replace(InlineLexer.rules._escapes, '$1') : text;
+};
+
 /**
  * Compile Link
  */
 
 InlineLexer.prototype.outputLink = function(cap, link) {
-  var href = escape(link.href),
+  var href = link.href,
       title = link.title ? escape(link.title) : null;
 
   return cap[0].charAt(0) !== '!'
@@ -38843,10 +38977,11 @@ InlineLexer.prototype.mangle = function(text) {
  */
 
 function Renderer(options) {
-  this.options = options || {};
+  this.options = options || marked.defaults;
 }
 
-Renderer.prototype.code = function(code, lang, escaped) {
+Renderer.prototype.code = function(code, infostring, escaped) {
+  var lang = (infostring || '').match(/\S*/)[0];
   if (this.options.highlight) {
     var out = this.options.highlight(code, lang);
     if (out != null && out !== code) {
@@ -38858,7 +38993,7 @@ Renderer.prototype.code = function(code, lang, escaped) {
   if (!lang) {
     return '<pre><code>'
       + (escaped ? code : escape(code, true))
-      + '\n</code></pre>';
+      + '</code></pre>';
   }
 
   return '<pre><code class="'
@@ -38866,7 +39001,7 @@ Renderer.prototype.code = function(code, lang, escaped) {
     + escape(lang, true)
     + '">'
     + (escaped ? code : escape(code, true))
-    + '\n</code></pre>\n';
+    + '</code></pre>\n';
 };
 
 Renderer.prototype.blockquote = function(quote) {
@@ -38877,17 +39012,21 @@ Renderer.prototype.html = function(html) {
   return html;
 };
 
-Renderer.prototype.heading = function(text, level, raw) {
-  return '<h'
-    + level
-    + ' id="'
-    + this.options.headerPrefix
-    + raw.toLowerCase().replace(/[^\w]+/g, '-')
-    + '">'
-    + text
-    + '</h'
-    + level
-    + '>\n';
+Renderer.prototype.heading = function(text, level, raw, slugger) {
+  if (this.options.headerIds) {
+    return '<h'
+      + level
+      + ' id="'
+      + this.options.headerPrefix
+      + slugger.slug(raw)
+      + '">'
+      + text
+      + '</h'
+      + level
+      + '>\n';
+  }
+  // ignore IDs
+  return '<h' + level + '>' + text + '</h' + level + '>\n';
 };
 
 Renderer.prototype.hr = function() {
@@ -38904,18 +39043,26 @@ Renderer.prototype.listitem = function(text) {
   return '<li>' + text + '</li>\n';
 };
 
+Renderer.prototype.checkbox = function(checked) {
+  return '<input '
+    + (checked ? 'checked="" ' : '')
+    + 'disabled="" type="checkbox"'
+    + (this.options.xhtml ? ' /' : '')
+    + '> ';
+};
+
 Renderer.prototype.paragraph = function(text) {
   return '<p>' + text + '</p>\n';
 };
 
 Renderer.prototype.table = function(header, body) {
+  if (body) body = '<tbody>' + body + '</tbody>';
+
   return '<table>\n'
     + '<thead>\n'
     + header
     + '</thead>\n'
-    + '<tbody>\n'
     + body
-    + '</tbody>\n'
     + '</table>\n';
 };
 
@@ -38926,7 +39073,7 @@ Renderer.prototype.tablerow = function(content) {
 Renderer.prototype.tablecell = function(content, flags) {
   var type = flags.header ? 'th' : 'td';
   var tag = flags.align
-    ? '<' + type + ' style="text-align:' + flags.align + '">'
+    ? '<' + type + ' align="' + flags.align + '">'
     : '<' + type + '>';
   return tag + content + '</' + type + '>\n';
 };
@@ -38953,22 +39100,11 @@ Renderer.prototype.del = function(text) {
 };
 
 Renderer.prototype.link = function(href, title, text) {
-  if (this.options.sanitize) {
-    try {
-      var prot = decodeURIComponent(unescape(href))
-        .replace(/[^\w:]/g, '')
-        .toLowerCase();
-    } catch (e) {
-      return text;
-    }
-    if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
-      return text;
-    }
+  href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+  if (href === null) {
+    return text;
   }
-  if (this.options.baseUrl && !originIndependentUrl.test(href)) {
-    href = resolveUrl(this.options.baseUrl, href);
-  }
-  var out = '<a href="' + href + '"';
+  var out = '<a href="' + escape(href) + '"';
   if (title) {
     out += ' title="' + title + '"';
   }
@@ -38977,9 +39113,11 @@ Renderer.prototype.link = function(href, title, text) {
 };
 
 Renderer.prototype.image = function(href, title, text) {
-  if (this.options.baseUrl && !originIndependentUrl.test(href)) {
-    href = resolveUrl(this.options.baseUrl, href);
+  href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+  if (href === null) {
+    return text;
   }
+
   var out = '<img src="' + href + '" alt="' + text + '"';
   if (title) {
     out += ' title="' + title + '"';
@@ -39007,16 +39145,16 @@ TextRenderer.prototype.codespan =
 TextRenderer.prototype.del =
 TextRenderer.prototype.text = function (text) {
   return text;
-}
+};
 
 TextRenderer.prototype.link =
 TextRenderer.prototype.image = function(href, title, text) {
   return '' + text;
-}
+};
 
 TextRenderer.prototype.br = function() {
   return '';
-}
+};
 
 /**
  * Parsing & Compiling
@@ -39029,6 +39167,7 @@ function Parser(options) {
   this.options.renderer = this.options.renderer || new Renderer();
   this.renderer = this.options.renderer;
   this.renderer.options = this.options;
+  this.slugger = new Slugger();
 }
 
 /**
@@ -39107,7 +39246,8 @@ Parser.prototype.tok = function() {
       return this.renderer.heading(
         this.inline.output(this.token.text),
         this.token.depth,
-        unescape(this.inlineText.output(this.token.text)));
+        unescape(this.inlineText.output(this.token.text)),
+        this.slugger);
     }
     case 'code': {
       return this.renderer.code(this.token.text,
@@ -39169,29 +39309,24 @@ Parser.prototype.tok = function() {
     }
     case 'list_item_start': {
       body = '';
+      var loose = this.token.loose;
+      var checked = this.token.checked;
+      var task = this.token.task;
+
+      if (this.token.task) {
+        body += this.renderer.checkbox(checked);
+      }
 
       while (this.next().type !== 'list_item_end') {
-        body += this.token.type === 'text'
+        body += !loose && this.token.type === 'text'
           ? this.parseText()
           : this.tok();
       }
-
-      return this.renderer.listitem(body);
-    }
-    case 'loose_item_start': {
-      body = '';
-
-      while (this.next().type !== 'list_item_end') {
-        body += this.tok();
-      }
-
-      return this.renderer.listitem(body);
+      return this.renderer.listitem(body, task, checked);
     }
     case 'html': {
-      var html = !this.token.pre && !this.options.pedantic
-        ? this.inline.output(this.token.text)
-        : this.token.text;
-      return this.renderer.html(html);
+      // TODO parse inline content if parameter markdown=1
+      return this.renderer.html(this.token.text);
     }
     case 'paragraph': {
       return this.renderer.paragraph(this.inline.output(this.token.text));
@@ -39199,7 +39334,46 @@ Parser.prototype.tok = function() {
     case 'text': {
       return this.renderer.paragraph(this.parseText());
     }
+    default: {
+      var errMsg = 'Token with "' + this.token.type + '" type was not found.';
+      if (this.options.silent) {
+        console.log(errMsg);
+      } else {
+        throw new Error(errMsg);
+      }
+    }
   }
+};
+
+/**
+ * Slugger generates header id
+ */
+
+function Slugger () {
+  this.seen = {};
+}
+
+/**
+ * Convert string to unique id
+ */
+
+Slugger.prototype.slug = function (value) {
+  var slug = value
+    .toLowerCase()
+    .trim()
+    .replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
+    .replace(/\s/g, '-');
+
+  if (this.seen.hasOwnProperty(slug)) {
+    var originalSlug = slug;
+    do {
+      this.seen[originalSlug]++;
+      slug = originalSlug + '-' + this.seen[originalSlug];
+    } while (this.seen.hasOwnProperty(slug));
+  }
+  this.seen[slug] = 0;
+
+  return slug;
 };
 
 /**
@@ -39207,13 +39381,31 @@ Parser.prototype.tok = function() {
  */
 
 function escape(html, encode) {
-  return html
-    .replace(!encode ? /&(?!#?\w+;)/g : /&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+  if (encode) {
+    if (escape.escapeTest.test(html)) {
+      return html.replace(escape.escapeReplace, function (ch) { return escape.replacements[ch]; });
+    }
+  } else {
+    if (escape.escapeTestNoEncode.test(html)) {
+      return html.replace(escape.escapeReplaceNoEncode, function (ch) { return escape.replacements[ch]; });
+    }
+  }
+
+  return html;
 }
+
+escape.escapeTest = /[&<>"']/;
+escape.escapeReplace = /[&<>"']/g;
+escape.replacements = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;'
+};
+
+escape.escapeTestNoEncode = /[<>"']|&(?!#?\w+;)/;
+escape.escapeReplaceNoEncode = /[<>"']|&(?!#?\w+;)/g;
 
 function unescape(html) {
   // explicitly match decimal, hex, and named HTML entities
@@ -39230,7 +39422,7 @@ function unescape(html) {
 }
 
 function edit(regex, opt) {
-  regex = regex.source;
+  regex = regex.source || regex;
   opt = opt || '';
   return {
     replace: function(name, val) {
@@ -39245,6 +39437,30 @@ function edit(regex, opt) {
   };
 }
 
+function cleanUrl(sanitize, base, href) {
+  if (sanitize) {
+    try {
+      var prot = decodeURIComponent(unescape(href))
+        .replace(/[^\w:]/g, '')
+        .toLowerCase();
+    } catch (e) {
+      return null;
+    }
+    if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
+      return null;
+    }
+  }
+  if (base && !originIndependentUrl.test(href)) {
+    href = resolveUrl(base, href);
+  }
+  try {
+    href = encodeURI(href).replace(/%25/g, '%');
+  } catch (e) {
+    return null;
+  }
+  return href;
+}
+
 function resolveUrl(base, href) {
   if (!baseUrls[' ' + base]) {
     // we can ignore everything in base after the last slash of its path component,
@@ -39253,7 +39469,7 @@ function resolveUrl(base, href) {
     if (/^[^:]+:\/*[^/]*$/.test(base)) {
       baseUrls[' ' + base] = base + '/';
     } else {
-      baseUrls[' ' + base] = base.replace(/[^/]*$/, '');
+      baseUrls[' ' + base] = rtrim(base, '/', true);
     }
   }
   base = baseUrls[' ' + base];
@@ -39289,6 +39505,84 @@ function merge(obj) {
   return obj;
 }
 
+function splitCells(tableRow, count) {
+  // ensure that every cell-delimiting pipe has a space
+  // before it to distinguish it from an escaped pipe
+  var row = tableRow.replace(/\|/g, function (match, offset, str) {
+        var escaped = false,
+            curr = offset;
+        while (--curr >= 0 && str[curr] === '\\') escaped = !escaped;
+        if (escaped) {
+          // odd number of slashes means | is escaped
+          // so we leave it alone
+          return '|';
+        } else {
+          // add space before unescaped |
+          return ' |';
+        }
+      }),
+      cells = row.split(/ \|/),
+      i = 0;
+
+  if (cells.length > count) {
+    cells.splice(count);
+  } else {
+    while (cells.length < count) cells.push('');
+  }
+
+  for (; i < cells.length; i++) {
+    // leading or trailing whitespace is ignored per the gfm spec
+    cells[i] = cells[i].trim().replace(/\\\|/g, '|');
+  }
+  return cells;
+}
+
+// Remove trailing 'c's. Equivalent to str.replace(/c*$/, '').
+// /c*$/ is vulnerable to REDOS.
+// invert: Remove suffix of non-c chars instead. Default falsey.
+function rtrim(str, c, invert) {
+  if (str.length === 0) {
+    return '';
+  }
+
+  // Length of suffix matching the invert condition.
+  var suffLen = 0;
+
+  // Step left until we fail to match the invert condition.
+  while (suffLen < str.length) {
+    var currChar = str.charAt(str.length - suffLen - 1);
+    if (currChar === c && !invert) {
+      suffLen++;
+    } else if (currChar !== c && invert) {
+      suffLen++;
+    } else {
+      break;
+    }
+  }
+
+  return str.substr(0, str.length - suffLen);
+}
+
+function findClosingBracket(str, b) {
+  if (str.indexOf(b[1]) === -1) {
+    return -1;
+  }
+  var level = 0;
+  for (var i = 0; i < str.length; i++) {
+    if (str[i] === '\\') {
+      i++;
+    } else if (str[i] === b[0]) {
+      level++;
+    } else if (str[i] === b[1]) {
+      level--;
+      if (level < 0) {
+        return i;
+      }
+    }
+  }
+  return -1;
+}
+
 /**
  * Marked
  */
@@ -39317,7 +39611,7 @@ function marked(src, opt, callback) {
         i = 0;
 
     try {
-      tokens = Lexer.lex(src, opt)
+      tokens = Lexer.lex(src, opt);
     } catch (e) {
       return callback(e);
     }
@@ -39396,24 +39690,29 @@ marked.setOptions = function(opt) {
   return marked;
 };
 
-marked.defaults = {
-  gfm: true,
-  tables: true,
-  breaks: false,
-  pedantic: false,
-  sanitize: false,
-  sanitizer: null,
-  mangle: true,
-  smartLists: false,
-  silent: false,
-  highlight: null,
-  langPrefix: 'lang-',
-  smartypants: false,
-  headerPrefix: '',
-  renderer: new Renderer(),
-  xhtml: false,
-  baseUrl: null
+marked.getDefaults = function () {
+  return {
+    baseUrl: null,
+    breaks: false,
+    gfm: true,
+    headerIds: true,
+    headerPrefix: '',
+    highlight: null,
+    langPrefix: 'language-',
+    mangle: true,
+    pedantic: false,
+    renderer: new Renderer(),
+    sanitize: false,
+    sanitizer: null,
+    silent: false,
+    smartLists: false,
+    smartypants: false,
+    tables: true,
+    xhtml: false
+  };
 };
+
+marked.defaults = marked.getDefaults();
 
 /**
  * Expose
@@ -39430,6 +39729,8 @@ marked.lexer = Lexer.lex;
 
 marked.InlineLexer = InlineLexer;
 marked.inlineLexer = InlineLexer.output;
+
+marked.Slugger = Slugger;
 
 marked.parse = marked;
 
@@ -63528,18 +63829,18 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("td", [
-              _vm._v("\n\t\t\t\t\t\t" + _vm._s(_vm.results.address_1)),
+              _vm._v("\r\n\t\t\t\t\t\t" + _vm._s(_vm.results.address_1)),
               _vm.results.address_1 ? _c("br") : _vm._e(),
-              _vm._v("\n\t\t\t\t\t\t" + _vm._s(_vm.results.address_2)),
+              _vm._v("\r\n\t\t\t\t\t\t" + _vm._s(_vm.results.address_2)),
               _vm.results.address_2 ? _c("br") : _vm._e(),
-              _vm._v("\n\t\t\t\t\t\t" + _vm._s(_vm.results.city)),
+              _vm._v("\r\n\t\t\t\t\t\t" + _vm._s(_vm.results.city)),
               _vm.results.city ? _c("br") : _vm._e(),
               _vm._v(
-                "\n\t\t\t\t\t\t" +
+                "\r\n\t\t\t\t\t\t" +
                   _vm._s(_vm.results.country) +
                   " " +
                   _vm._s(_vm.results.zip_post) +
-                  "\n\t\t\t\t\t"
+                  "\r\n\t\t\t\t\t"
               )
             ])
           ]),
@@ -65563,7 +65864,7 @@ var render = function() {
             }
           ]
         },
-        [_vm._v("\n\t\tLoading...\n\t")]
+        [_vm._v("\r\n\t\tLoading...\r\n\t")]
       ),
       _vm._v(" "),
       _c("div", { staticClass: "row", staticStyle: { "margin-top": "20px" } }, [
@@ -65604,13 +65905,13 @@ var render = function() {
                     _vm.highlightedPoint.altfeet != null
                       ? _c("div", [
                           _vm._v(
-                            "\n\t\t\t\t\t\t\t" +
+                            "\r\n\t\t\t\t\t\t\t" +
                               _vm._s(_vm.highlightedPoint.altfeet) +
                               " ft / " +
                               _vm._s(_vm.highlightedPoint.alt) +
                               " m / " +
                               _vm._s(_vm.highlightedPoint.aglfeet) +
-                              " ft AGL\n\t\t\t\t\t\t"
+                              " ft AGL\r\n\t\t\t\t\t\t"
                           )
                         ])
                       : _vm._e(),
@@ -65687,9 +65988,9 @@ var render = function() {
                   _vm._v(" "),
                   _c("td", [
                     _vm._v(
-                      "\n\t\t\t\t\t\t" +
+                      "\r\n\t\t\t\t\t\t" +
                         _vm._s(_vm.lastSeenTime(_vm.highlightedPoint.nzdate)) +
-                        "\n\t\t\t\t\t\t"
+                        "\r\n\t\t\t\t\t\t"
                     ),
                     _vm.highlightedPoint.type == 1
                       ? _c("span", [_vm._v("FLARM")])
@@ -65755,7 +66056,7 @@ var render = function() {
                       },
                       [_vm._v("Google Maps")]
                     ),
-                    _vm._v("\n\t\t\t\t\t\t  "),
+                    _vm._v("\r\n\t\t\t\t\t\t  "),
                     _c(
                       "a",
                       {
@@ -66046,7 +66347,7 @@ var render = function() {
           }
         ]
       },
-      [_vm._v("\n\t\tLoading...\n\t")]
+      [_vm._v("\r\n\t\tLoading...\r\n\t")]
     ),
     _vm._v(" "),
     _c(
@@ -66354,7 +66655,7 @@ var render = function() {
             ),
             _vm._v(" "),
             _c("div", { staticClass: "ml-auto" }, [
-              _vm._v("\n\t\t\t\t\tDay:\n\t\t\t\t\t"),
+              _vm._v("\r\n\t\t\t\t\tDay:\r\n\t\t\t\t\t"),
               _c(
                 "div",
                 {
@@ -66374,7 +66675,7 @@ var render = function() {
                       ],
                       attrs: { href: "/tracking/" + day.day_date }
                     },
-                    [_vm._v(_vm._s(day.day_date) + "\n\t\t\t\t\t\t")]
+                    [_vm._v(_vm._s(day.day_date) + "\r\n\t\t\t\t\t\t")]
                   )
                 }),
                 0
@@ -66417,13 +66718,13 @@ var render = function() {
                     _vm.selectedPoint.altfeet != null
                       ? _c("div", [
                           _vm._v(
-                            "\n\t\t\t\t\t\t\t" +
+                            "\r\n\t\t\t\t\t\t\t" +
                               _vm._s(_vm.selectedPoint.altfeet) +
                               " ft / " +
                               _vm._s(_vm.selectedPoint.altmeters) +
                               " m / " +
                               _vm._s(_vm.selectedPoint.aglfeet) +
-                              " ft AGL\n\t\t\t\t\t\t"
+                              " ft AGL\r\n\t\t\t\t\t\t"
                           )
                         ])
                       : _vm._e(),
@@ -66500,9 +66801,9 @@ var render = function() {
                   _vm._v(" "),
                   _c("td", [
                     _vm._v(
-                      "\n\t\t\t\t\t\t" +
+                      "\r\n\t\t\t\t\t\t" +
                         _vm._s(_vm.lastSeenTime(_vm.selectedPoint.thetime)) +
-                        "\n\t\t\t\t\t\t"
+                        "\r\n\t\t\t\t\t\t"
                     ),
                     _vm.selectedPoint.type == 1
                       ? _c("span", [_vm._v("FLARM")])
@@ -66568,7 +66869,7 @@ var render = function() {
                       },
                       [_vm._v("Google")]
                     ),
-                    _vm._v("\n\t\t\t\t\t\t  "),
+                    _vm._v("\r\n\t\t\t\t\t\t  "),
                     _c(
                       "a",
                       {
@@ -66582,7 +66883,7 @@ var render = function() {
                       },
                       [_vm._v("Apple")]
                     ),
-                    _vm._v("   \n\t\t\t\t\t\t"),
+                    _vm._v("   \r\n\t\t\t\t\t\t"),
                     _vm.selectedAircraft.rego
                       ? _c(
                           "a",
@@ -66669,7 +66970,7 @@ var render = function() {
                         }),
                         _vm._v(" All")
                       ]),
-                      _vm._v("  \n\t\t\t\t\t\t\t"),
+                      _vm._v("  \r\n\t\t\t\t\t\t\t"),
                       _c("label", { attrs: { for: "showNorth" } }, [
                         _c("input", {
                           directives: [
@@ -66696,7 +66997,7 @@ var render = function() {
                         }),
                         _vm._v(" North")
                       ]),
-                      _vm._v("  \n\t\t\t\t\t\t\t"),
+                      _vm._v("  \r\n\t\t\t\t\t\t\t"),
                       _c("label", { attrs: { for: "showSouth" } }, [
                         _c("input", {
                           directives: [
@@ -66831,7 +67132,7 @@ var render = function() {
                         },
                         [_vm._v("Alt")]
                       ),
-                      _vm._v("\n\t\t\t\t\t\t\t("),
+                      _vm._v("\r\n\t\t\t\t\t\t\t("),
                       _c(
                         "a",
                         {
@@ -66870,7 +67171,7 @@ var render = function() {
                         },
                         [_vm._v("AGL")]
                       ),
-                      _vm._v(")\n\t\t\t\t\t\t")
+                      _vm._v(")\r\n\t\t\t\t\t\t")
                     ]),
                     _vm._v(" "),
                     _c("th", [
@@ -66977,9 +67278,9 @@ var render = function() {
                                     { attrs: { alt: aircraft.nzdate } },
                                     [
                                       _vm._v(
-                                        "\n\t\t\t\t\t\t\t\t" +
+                                        "\r\n\t\t\t\t\t\t\t\t" +
                                           _vm._s(aircraft.timeago) +
-                                          "\n\t\t\t\t\t\t\t"
+                                          "\r\n\t\t\t\t\t\t\t"
                                       )
                                     ]
                                   )
@@ -67012,7 +67313,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("td", { attrs: { colspan: "4" } }, [
       _vm._v(
-        "\n\t\t\t\t\t\t\tMissing your aircraft/rego? Set up tracking in the "
+        "\r\n\t\t\t\t\t\t\tMissing your aircraft/rego? Set up tracking in the "
       ),
       _c("a", { attrs: { href: "/aircraft" } }, [_vm._v("aircraft database")])
     ])
@@ -83275,8 +83576,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/tim/Sites/58.gliding.net.nz/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/tim/Sites/58.gliding.net.nz/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\wamp64\www\58gliding.net.nz\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\wamp64\www\58gliding.net.nz\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
