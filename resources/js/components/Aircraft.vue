@@ -1,108 +1,82 @@
-<style>
-.results-title {
-	margin-top: 0;
-	margin-bottom: 20px;
-}
-.btn-group {
-	margin-bottom: 20px;
-}
-.filter-buttons {
-	margin-bottom: 15px;
-}
-.filter-buttons .btn {
-	margin-bottom: 5px;
-}
-.filter-buttons .btn-group {
-	margin-bottom: 0;
-}
-</style>
 
 
 <template>
 	<div>
-		<div>
+		<div class="">
 
-			<h1 class="col-xs-6 results-title">Aircraft</h1>
-			<div class="btn-group col-md-4 col-xs-6 pull-right" role="group">
-
-				<div class="input-group">
-					<input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term" v-model="state.search">
-					<div class="input-group-btn">
-						<button class="btn btn-outline-dark" type="submit" v-on:click="state.search=''"><i class="fa fa-times"></i></button>
-					</div>
+			<div class="input-group ml-auto col-md-4 col-6 float-right">
+				<input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term" v-model="state.search">
+				<div class="input-group-append">
+					<button class="btn btn-outline-dark" type="submit" v-on:click="state.search=''"><i class="fa fa-times"></i></button>
 				</div>
-
 			</div>
+
+			<h1 class="results-title">Aircraft</h1>
+
 		</div>
 
-		<div class="filter-buttons nav nav-pills col-xs-12" role="group">
+		<div class="filter-buttons col-xs-12" role="group">
 
-			<div class="btn-group" role="group">
-				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='glider' }" v-on:click="filterTo('glider')">All Gliders</button>
-				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='self-launch' }" v-on:click="filterTo('self-launch')">Self Launch</button>
-				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='sustainer' }" v-on:click="filterTo('sustainer')">Turbo</button>
-				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='vintage' }" v-on:click="filterTo('vintage')">Vintage</button>
-				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='singles' }" v-on:click="filterTo('singles')">Singles</button>
-				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='twins' }" v-on:click="filterTo('twins')">Twins</button>
+			<div class="btn-group mr-2" role="group">
+				<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.type=='glider' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('glider')">All Gliders</button>
+				<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.type=='self-launch' ? 'btn-secondary':  'btn-outline-dark' ] " v-on:click="filterTo('self-launch')">Self Launch</button>
+				<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.type=='sustainer' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('sustainer')">Turbo</button>
+				<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.type=='vintage' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('vintage')">Vintage</button>
+				<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.type=='singles' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('singles')">Singles</button>
+				<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.type=='twins' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('twins')">Twins</button>
 			</div>
-			<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='tug' }" v-on:click="filterTo('tug')">Tugs</button>
-			<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='gyrocopter' }" v-on:click="filterTo('gyrocopter')">Gyros</button>
-			<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='helicopter' }" v-on:click="filterTo('helicopter')">Heli</button>
-			<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='balloon' }" v-on:click="filterTo('balloon')">Balloons</button>
-			<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='plane' }" v-on:click="filterTo('plane')">Planes</button>
-			<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='microlight' }" v-on:click="filterTo('microlight')">Microlights</button>
-			<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='all' }" v-on:click="filterTo('all')">All</button>
+
+			<button type="button" class="btn btn-sm mr-2 mb-2" v-bind:class="[ state.type=='tug' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('tug')">Tugs</button>
+			<button type="button" class="btn btn-sm mr-2 mb-2" v-bind:class="[ state.type=='gyrocopter' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('gyrocopter')">Gyros</button>
+			<button type="button" class="btn btn-sm mr-2 mb-2" v-bind:class="[ state.type=='helicopter' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('helicopter')">Heli</button>
+			<button type="button" class="btn btn-sm mr-2 mb-2" v-bind:class="[ state.type=='balloon' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('balloon')">Balloons</button>
+			<button type="button" class="btn btn-sm mr-2 mb-2" v-bind:class="[ state.type=='plane' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('plane')">Planes</button>
+			<button type="button" class="btn btn-sm mr-2 mb-2" v-bind:class="[ state.type=='microlight' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('microlight')">Microlights</button>
+			<button type="button" class="btn btn-sm mr-2 mb-2" v-bind:class="[ state.type=='all' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('all')">All Aircraft</button>
 		</div>
+	
+		<div>
+			<div class="ml-auto ">
 
-		<div class="row">
-			<div class="col-xs-12 col-sm-4 hidden-xs">
-
-				<h2 class="results-title">{{ total }} Results</h2>
-
-			</div>
-
-			<div class="col-xs-12 col-sm-8">
-
-				<div class="btn-group pull-right" role="group">
+				<div class="btn-group float-right" role="group">
 					<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="previous()">&lt;</button>
 					<button type="button" class="btn btn-outline-dark btn-sm disabled">Page {{ state.page }} of {{ last_page }}</button>
 					<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="next()">Next &gt;</button>
 				</div>
 
 			</div>
+
+			<h2 class="results-title">{{ total }} Results</h2>
+
 		</div>
 
-			<table class="table results-table ">
-				<tr>
-					<th class="hidden-xs hidden-sm">Rego</th>
+			<table class="table results-table">
+				<!-- <tr>
+					<th class="d-lg-block">Rego</th>
 					<th>Comp</th>
 					<th>Manufacturer</th>
 					<th>Model</th>
-					<th class="hidden-xs">Class</th>
-					<th class="hidden-xs">Owner</th>
-					<!-- <th></th> -->
+					<th class="d-lg-block">Class</th>
+					<th class="d-lg-block">Owner</th>
 					<th></th>
-					<th class="hidden-xs"></th>
-				</tr>
+					<th class="d-lg-block"></th>
+				</tr> -->
 				<tbody v-for="result in results">
 					<tr>
-						<td class="hidden-xs hidden-sm nowrap">{{ result.rego }}</td>
+						<td class="d-none d-lg-table-cell nowrap">{{ result.rego }}</td>
 						<td>{{ result.contest_id }}</td>
 						<td>{{ result.manufacturer }}</td>
 						<td>{{ result.model }}</td>
-						<td class="hidden-xs">{{ result.class }}</td>
-						<td class="hidden-xs">{{ result.owner }}</td>
-						<!-- <td class="hidden-xs">
-							<a v-bind:href="'https://www.caa.govt.nz/Script/AirReg3.asp?Mark=' + result.rego.substring(3,6)">CAA</a>
-						</td> -->
+						<td class="d-none d-lg-table-cell">{{ result.class }}</td>
+						<td class="d-none d-lg-table-cell">{{ result.owner }}</td>
 						<td>
-							<a v-bind:href="'/aircraft/' + result.rego" class="btn btn-primary btn-xs">View</a>
+							<a v-bind:href="'/aircraft/' + result.rego" class="btn btn-primary btn-sm">View</a>
 						</td>
 						<td>
-							<a v-bind:href="'/aircraft/' + result.rego + '/edit'" class="btn btn-primary btn-xs">Edit</a>
+							<a v-bind:href="'/aircraft/' + result.rego + '/edit'" class="btn btn-primary btn-sm">Edit</a>
 						</td>
 					</tr>
-					<tr class="visible-xs" >
+					<tr class="d-md-none">
 						<td colspan="5"style="border-top: none; padding-top: 0;">
 							<span style="color: #888;">{{ result.owner }}</span>
 							<!-- <a class="visible-xs pull-right" v-bind:href="'https://www.caa.govt.nz/Script/AirReg3.asp?Mark=' + result.rego.substring(3,6) ">CAA</a> -->

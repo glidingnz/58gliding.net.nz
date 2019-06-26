@@ -62,7 +62,7 @@ Instructions from https://laravel.com/docs/5.8/mix
 </VirtualHost>
 ```
 
-2. Sub sites use a subdomain e.g. piako.58gliding.net.test. Set up  your hosts file to point to a couple of sub sites for testing e.g. 
+3. Sub sites use a subdomain e.g. piako.58gliding.net.test. Either set up a local DNS server to serve up the .test domain name OR much easier, set up  your hosts file to point to a couple of sub sites for testing e.g. 
 
 ```
 127.0.0.1 58gliding.net.test
