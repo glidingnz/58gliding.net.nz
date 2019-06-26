@@ -4548,8 +4548,6 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     document.body.appendChild(script);
 
     script.onload = function () {
-      _this.mapkit = window.mapkit;
-
       _this.loadMap();
     }; // start the timer
 
@@ -4616,9 +4614,10 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         }
       });
       this.map = new this.mapkit.Map("map", {
-        center: new mapkit.Coordinate(-39.38, 157.31),
+        center: new mapkit.Coordinate(-41.18301, 174.0),
         isRotationEnabled: false,
-        showsMapTypeControl: true
+        showsMapTypeControl: true,
+        showsUserLocation: true
       });
       this.mapStatus = 'map';
       this.map.addEventListener("select", function (e) {
@@ -4639,7 +4638,8 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         switch (event.status) {
           case "Initialized":
             // Mapkit was initialized and configured.
-            that.loadDays();
+            that.loadDays(); // that.zoomTo(-41.18301,174.0, 8);
+
             break;
         }
       });
@@ -66130,8 +66130,7 @@ var render = function() {
             expression: "mapStatus=='map'"
           }
         ],
-        staticClass: "row",
-        staticStyle: { "margin-top": "20px" }
+        staticClass: "row mt-1"
       },
       [
         _c("div", { staticClass: "col-md-9" }, [
@@ -66208,230 +66207,224 @@ var render = function() {
             ]
           ),
           _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass: "form-inline",
-              staticStyle: { "margin-top": "20px" }
-            },
-            [
-              _c(
-                "div",
-                { staticClass: "form-group", staticStyle: { float: "right" } },
-                [
-                  _c("div", { staticClass: "checkbox" }, [
-                    _c(
-                      "label",
-                      {
-                        staticClass: "form-check-label",
-                        attrs: { for: "showTrails" }
-                      },
-                      [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.showTrails,
-                              expression: "showTrails"
-                            }
-                          ],
-                          staticClass: "form-check-input",
-                          attrs: { id: "showTrails", type: "checkbox" },
-                          domProps: {
-                            checked: Array.isArray(_vm.showTrails)
-                              ? _vm._i(_vm.showTrails, null) > -1
-                              : _vm.showTrails
-                          },
-                          on: {
-                            change: function($event) {
-                              var $$a = _vm.showTrails,
-                                $$el = $event.target,
-                                $$c = $$el.checked ? true : false
-                              if (Array.isArray($$a)) {
-                                var $$v = null,
-                                  $$i = _vm._i($$a, $$v)
-                                if ($$el.checked) {
-                                  $$i < 0 &&
-                                    (_vm.showTrails = $$a.concat([$$v]))
-                                } else {
-                                  $$i > -1 &&
-                                    (_vm.showTrails = $$a
-                                      .slice(0, $$i)
-                                      .concat($$a.slice($$i + 1)))
-                                }
+          _c("div", { staticClass: "form-inline mt-2" }, [
+            _c(
+              "div",
+              { staticClass: "form-group", staticStyle: { float: "right" } },
+              [
+                _c("div", { staticClass: "checkbox mr-2" }, [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "form-check-label",
+                      attrs: { for: "showTrails" }
+                    },
+                    [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.showTrails,
+                            expression: "showTrails"
+                          }
+                        ],
+                        staticClass: "form-check-input",
+                        attrs: { id: "showTrails", type: "checkbox" },
+                        domProps: {
+                          checked: Array.isArray(_vm.showTrails)
+                            ? _vm._i(_vm.showTrails, null) > -1
+                            : _vm.showTrails
+                        },
+                        on: {
+                          change: function($event) {
+                            var $$a = _vm.showTrails,
+                              $$el = $event.target,
+                              $$c = $$el.checked ? true : false
+                            if (Array.isArray($$a)) {
+                              var $$v = null,
+                                $$i = _vm._i($$a, $$v)
+                              if ($$el.checked) {
+                                $$i < 0 && (_vm.showTrails = $$a.concat([$$v]))
                               } else {
-                                _vm.showTrails = $$c
+                                $$i > -1 &&
+                                  (_vm.showTrails = $$a
+                                    .slice(0, $$i)
+                                    .concat($$a.slice($$i + 1)))
                               }
+                            } else {
+                              _vm.showTrails = $$c
                             }
                           }
-                        }),
-                        _vm._v(" Long Trails")
-                      ]
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "checkbox" }, [
-                    _c(
-                      "label",
-                      {
-                        staticClass: "form-check-label",
-                        attrs: { for: "live-update" }
-                      },
-                      [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.liveLoading,
-                              expression: "liveLoading"
-                            }
-                          ],
-                          staticClass: "form-check-input",
-                          attrs: { id: "live-update", type: "checkbox" },
-                          domProps: {
-                            checked: Array.isArray(_vm.liveLoading)
-                              ? _vm._i(_vm.liveLoading, null) > -1
-                              : _vm.liveLoading
+                        }
+                      }),
+                      _vm._v(" Long Trails")
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "checkbox mr-2" }, [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "form-check-label",
+                      attrs: { for: "live-update" }
+                    },
+                    [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.liveLoading,
+                            expression: "liveLoading"
+                          }
+                        ],
+                        staticClass: "form-check-input",
+                        attrs: { id: "live-update", type: "checkbox" },
+                        domProps: {
+                          checked: Array.isArray(_vm.liveLoading)
+                            ? _vm._i(_vm.liveLoading, null) > -1
+                            : _vm.liveLoading
+                        },
+                        on: {
+                          click: function($event) {
+                            return _vm.toggleLive()
                           },
-                          on: {
-                            click: function($event) {
-                              return _vm.toggleLive()
-                            },
-                            change: function($event) {
-                              var $$a = _vm.liveLoading,
-                                $$el = $event.target,
-                                $$c = $$el.checked ? true : false
-                              if (Array.isArray($$a)) {
-                                var $$v = null,
-                                  $$i = _vm._i($$a, $$v)
-                                if ($$el.checked) {
-                                  $$i < 0 &&
-                                    (_vm.liveLoading = $$a.concat([$$v]))
-                                } else {
-                                  $$i > -1 &&
-                                    (_vm.liveLoading = $$a
-                                      .slice(0, $$i)
-                                      .concat($$a.slice($$i + 1)))
-                                }
+                          change: function($event) {
+                            var $$a = _vm.liveLoading,
+                              $$el = $event.target,
+                              $$c = $$el.checked ? true : false
+                            if (Array.isArray($$a)) {
+                              var $$v = null,
+                                $$i = _vm._i($$a, $$v)
+                              if ($$el.checked) {
+                                $$i < 0 && (_vm.liveLoading = $$a.concat([$$v]))
                               } else {
-                                _vm.liveLoading = $$c
+                                $$i > -1 &&
+                                  (_vm.liveLoading = $$a
+                                    .slice(0, $$i)
+                                    .concat($$a.slice($$i + 1)))
                               }
+                            } else {
+                              _vm.liveLoading = $$c
                             }
                           }
-                        }),
-                        _vm._v(" Live")
-                      ]
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "checkbox" }, [
-                    _c(
-                      "label",
-                      {
-                        staticClass: "form-check-label",
-                        attrs: { for: "follow" }
-                      },
-                      [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.followSelected,
-                              expression: "followSelected"
-                            }
-                          ],
-                          staticClass: "form-check-input",
-                          attrs: { id: "follow", type: "checkbox" },
-                          domProps: {
-                            checked: Array.isArray(_vm.followSelected)
-                              ? _vm._i(_vm.followSelected, null) > -1
-                              : _vm.followSelected
-                          },
-                          on: {
-                            change: function($event) {
-                              var $$a = _vm.followSelected,
-                                $$el = $event.target,
-                                $$c = $$el.checked ? true : false
-                              if (Array.isArray($$a)) {
-                                var $$v = null,
-                                  $$i = _vm._i($$a, $$v)
-                                if ($$el.checked) {
-                                  $$i < 0 &&
-                                    (_vm.followSelected = $$a.concat([$$v]))
-                                } else {
-                                  $$i > -1 &&
-                                    (_vm.followSelected = $$a
-                                      .slice(0, $$i)
-                                      .concat($$a.slice($$i + 1)))
-                                }
+                        }
+                      }),
+                      _vm._v(" Live")
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "checkbox mr-2" }, [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "form-check-label",
+                      attrs: { for: "follow" }
+                    },
+                    [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.followSelected,
+                            expression: "followSelected"
+                          }
+                        ],
+                        staticClass: "form-check-input",
+                        attrs: { id: "follow", type: "checkbox" },
+                        domProps: {
+                          checked: Array.isArray(_vm.followSelected)
+                            ? _vm._i(_vm.followSelected, null) > -1
+                            : _vm.followSelected
+                        },
+                        on: {
+                          change: function($event) {
+                            var $$a = _vm.followSelected,
+                              $$el = $event.target,
+                              $$c = $$el.checked ? true : false
+                            if (Array.isArray($$a)) {
+                              var $$v = null,
+                                $$i = _vm._i($$a, $$v)
+                              if ($$el.checked) {
+                                $$i < 0 &&
+                                  (_vm.followSelected = $$a.concat([$$v]))
                               } else {
-                                _vm.followSelected = $$c
+                                $$i > -1 &&
+                                  (_vm.followSelected = $$a
+                                    .slice(0, $$i)
+                                    .concat($$a.slice($$i + 1)))
                               }
+                            } else {
+                              _vm.followSelected = $$c
                             }
                           }
-                        }),
-                        _vm._v(" Follow Selected")
-                      ]
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "checkbox" }, [
-                    _c(
-                      "label",
-                      {
-                        staticClass: "form-check-label",
-                        attrs: { for: "zoomselected" }
-                      },
-                      [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.zoomSelected,
-                              expression: "zoomSelected"
-                            }
-                          ],
-                          staticClass: "form-check-input",
-                          attrs: { id: "zoomselected", type: "checkbox" },
-                          domProps: {
-                            checked: Array.isArray(_vm.zoomSelected)
-                              ? _vm._i(_vm.zoomSelected, null) > -1
-                              : _vm.zoomSelected
-                          },
-                          on: {
-                            change: function($event) {
-                              var $$a = _vm.zoomSelected,
-                                $$el = $event.target,
-                                $$c = $$el.checked ? true : false
-                              if (Array.isArray($$a)) {
-                                var $$v = null,
-                                  $$i = _vm._i($$a, $$v)
-                                if ($$el.checked) {
-                                  $$i < 0 &&
-                                    (_vm.zoomSelected = $$a.concat([$$v]))
-                                } else {
-                                  $$i > -1 &&
-                                    (_vm.zoomSelected = $$a
-                                      .slice(0, $$i)
-                                      .concat($$a.slice($$i + 1)))
-                                }
+                        }
+                      }),
+                      _vm._v(" Follow Selected")
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "checkbox mr-2" }, [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "form-check-label",
+                      attrs: { for: "zoomselected" }
+                    },
+                    [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.zoomSelected,
+                            expression: "zoomSelected"
+                          }
+                        ],
+                        staticClass: "form-check-input",
+                        attrs: { id: "zoomselected", type: "checkbox" },
+                        domProps: {
+                          checked: Array.isArray(_vm.zoomSelected)
+                            ? _vm._i(_vm.zoomSelected, null) > -1
+                            : _vm.zoomSelected
+                        },
+                        on: {
+                          change: function($event) {
+                            var $$a = _vm.zoomSelected,
+                              $$el = $event.target,
+                              $$c = $$el.checked ? true : false
+                            if (Array.isArray($$a)) {
+                              var $$v = null,
+                                $$i = _vm._i($$a, $$v)
+                              if ($$el.checked) {
+                                $$i < 0 &&
+                                  (_vm.zoomSelected = $$a.concat([$$v]))
                               } else {
-                                _vm.zoomSelected = $$c
+                                $$i > -1 &&
+                                  (_vm.zoomSelected = $$a
+                                    .slice(0, $$i)
+                                    .concat($$a.slice($$i + 1)))
                               }
+                            } else {
+                              _vm.zoomSelected = $$c
                             }
                           }
-                        }),
-                        _vm._v(" Zoom to Selected")
-                      ]
-                    )
-                  ])
-                ]
-              ),
-              _vm._v("\n\n\n\t\t\t\tDay:\n\t\t\t\t"),
+                        }
+                      }),
+                      _vm._v(" Zoom to Selected")
+                    ]
+                  )
+                ])
+              ]
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "ml-auto" }, [
+              _vm._v("\n\t\t\t\t\tDay:\n\t\t\t\t\t"),
               _c(
                 "div",
                 {
@@ -66451,13 +66444,13 @@ var render = function() {
                       ],
                       attrs: { href: "/tracking/" + day.day_date }
                     },
-                    [_vm._v(_vm._s(day.day_date) + "\n\t\t\t\t\t")]
+                    [_vm._v(_vm._s(day.day_date) + "\n\t\t\t\t\t\t")]
                   )
                 }),
                 0
               )
-            ]
-          )
+            ])
+          ])
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "col-md-3" }, [

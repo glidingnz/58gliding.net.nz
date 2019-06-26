@@ -77,7 +77,7 @@
 		Loading...
 	</div>
 
-	<div class="row" style="margin-top: 20px;" v-show="mapStatus=='map'">
+	<div class="row mt-1" v-show="mapStatus=='map'">
 		<div class="col-md-9">
 			<div id="map" class="maps"  v-bind:class="[  fullScreen ? 'fullscreen' : '']">
 				<button class="exitFullScreen btn btn-secondary btn-sm" v-on:click="toggleFullScreen">Full Screen</button>
@@ -85,26 +85,26 @@
 				<button v-show="fullScreen || collapseLegend" class="toggleLegend fa btn btn-sm btn-secondary" v-on:click="collapseLegend=!collapseLegend" v-bind:class="[  collapseLegend ? 'fa-angle-down' : 'fa-angle-up']" style="pointer-events: auto;">&nbsp;<span v-show="!collapseLegend">Hide</span><span v-show="collapseLegend">Show</span> Legend</button>
 			</div>
 
-				
 
-			<div class="form-inline" style="margin-top: 20px;">
+			<div class="form-inline mt-2">
 				
 				<div class="form-group" style="float: right;">
 
-					<div class="checkbox"><label for="showTrails" class="form-check-label"><input id="showTrails" type="checkbox"  v-model="showTrails" class="form-check-input"> Long Trails</label></div>
+					<div class="checkbox mr-2"><label for="showTrails" class="form-check-label"><input id="showTrails" type="checkbox"  v-model="showTrails" class="form-check-input"> Long Trails</label></div>
 
-					<div class="checkbox"><label for="live-update" class="form-check-label"><input id="live-update" type="checkbox"  v-on:click="toggleLive()" class="form-check-input" v-model="liveLoading"> Live</label></div>
+					<div class="checkbox mr-2"><label for="live-update" class="form-check-label"><input id="live-update" type="checkbox"  v-on:click="toggleLive()" class="form-check-input" v-model="liveLoading"> Live</label></div>
 
-					<div class="checkbox"><label for="follow" class="form-check-label"><input id="follow" type="checkbox"  v-model="followSelected" class="form-check-input"> Follow Selected</label></div>
-					<div class="checkbox"><label for="zoomselected" class="form-check-label"><input id="zoomselected" type="checkbox"  v-model="zoomSelected" class="form-check-input"> Zoom to Selected</label></div>
+					<div class="checkbox mr-2"><label for="follow" class="form-check-label"><input id="follow" type="checkbox"  v-model="followSelected" class="form-check-input"> Follow Selected</label></div>
+					<div class="checkbox mr-2"><label for="zoomselected" class="form-check-label"><input id="zoomselected" type="checkbox"  v-model="zoomSelected" class="form-check-input"> Zoom to Selected</label></div>
 				
 				</div>
 
-
-				Day:
-				<div class="btn-group" role="group" style="margin-bottom: 0;">
-					<a v-bind:href="'/tracking/' + day.day_date"  v-for="(day, index) in firstDays" class="btn" v-bind:class="[ day.day_date==flyingDay ? 'btn-secondary' : 'btn-outline-dark']">{{day.day_date}}
-					</a>
+				<div class="ml-auto">
+					Day:
+					<div class="btn-group" role="group" style="margin-bottom: 0;">
+						<a v-bind:href="'/tracking/' + day.day_date"  v-for="(day, index) in firstDays" class="btn" v-bind:class="[ day.day_date==flyingDay ? 'btn-secondary' : 'btn-outline-dark']">{{day.day_date}}
+						</a>
+					</div>
 				</div>
 			</div>
 
@@ -286,7 +286,6 @@
 		script.src = "https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js";
 		document.body.appendChild(script);
 		script.onload = () => {
-			this.mapkit = window.mapkit;
 			this.loadMap();
 		}
 		// start the timer
@@ -347,9 +346,10 @@
 				done(that.apple_auth);
 			}});
 			this.map = new this.mapkit.Map("map", { 
-				center: new mapkit.Coordinate(-39.38,157.31) ,
+				center: new mapkit.Coordinate(-41.18301,174.0),
 				isRotationEnabled: false,
-				showsMapTypeControl: true
+				showsMapTypeControl: true,
+				showsUserLocation: true
 			});
 			this.mapStatus = 'map';
 			this.map.addEventListener("select", function(e) {
@@ -371,6 +371,7 @@
 					case "Initialized":
 					// Mapkit was initialized and configured.
 					that.loadDays();
+					// that.zoomTo(-41.18301,174.0, 8);
 				break;
 				}
 			});
