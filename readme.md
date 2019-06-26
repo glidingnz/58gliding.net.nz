@@ -54,17 +54,20 @@ Instructions from https://laravel.com/docs/5.8/mix
 1. Read the Laravel instructions here https://laravel.com/docs/5.8
 2. Set up Apache virtual host as follows
 
-`<VirtualHost *:80>
+```
+<VirtualHost *:80>
    DocumentRoot /Users/tim/Sites/58.gliding.net.nz/public
    ServerName 58gliding.net.test
    ServerAlias *.58gliding.net.test
-</VirtualHost>`
+</VirtualHost>```
 
 2. Sub sites use a subdomain e.g. piako.58gliding.net.test. Set up  your hosts file to point to a couple of sub sites for testing e.g. 
 
-`127.0.0.1 58gliding.net.test
+```
+127.0.0.1 58gliding.net.test
 127.0.0.1 piako.58gliding.net.test
-127.0.0.1 auckland.58gliding.net.test`
+127.0.0.1 auckland.58gliding.net.test
+```
 
 ## Login with the default user
 
