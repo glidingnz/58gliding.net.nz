@@ -1,72 +1,86 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+# Gliding New Zealand Web App Platform
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+The GNZ web app platform's goal is to provide a platform for anyone to build apps, while maintaining a consistent experience for end users. The apps can be used by any gliding club. Contributors are welcome, either to help work on existing apps, or build entirely new apps.
 
-## About Laravel
+Built on Laravel 5.8
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Installation
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Requirements
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- MySQL
+- Apache
+- PHP 7.2 or something?
+- Git https://git-scm.com
+- Composer https://getcomposer.org
 
-## Learning Laravel
+### Download the code
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+`git clone https://github.com/glidingnz/58gliding.net.nz.git`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1400 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Create Databases
 
-## Laravel Sponsors
+Create two MySQL databases. The '58glidernet' is the app platform database. In MySQL:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+`CREATE DATABASE ogn`
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
+`CREATE DATABASE 58glidernet`
 
-## Contributing
+Ensure you have users configured that can access those databases.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Security Vulnerabilities
+### Laravel Install steps
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. Clone the example .env file `cp .env.example .env`. Edit with your database connection details for each database. Change homestead to 58glidernet
+2. In the project directory `composer install`
+3. Give the uploads/ directory write-access by the web server: `chown -R www-data:www-data public`
+4. Change the permissions of the storage/ directory: `chmod -R 777 storage/`
+5. Change the permissions of the bootstrap cache directory: `chmod -R 777 bootstrap/cache`
+6. Create a Laravel app key `php artisan key:generate`
+7. Migrate the databases `php artisan migrate`. If this doesn't work, check your .env file.
+8. Install demo seed data `php artisan db:seed`. This will insert a random assortment of users, and other data.
+
+### Javascript/CSS build instructions
+
+Instructions from https://laravel.com/docs/5.8/mix
+
+1. Install npm and node 
+2. Install what's required for Laravel with `npm install` in the project directory
+3. Run `npm run dev` to compile CSS and Javascript once
+4. Run `npm run watch` to watch for CSS and Javascript changes while developing
+
+### Configure Apache for Virtual Hosts
+
+1. Read the Laravel instructions here https://laravel.com/docs/5.8
+2. Set up Apache virtual host as follows
+
+`<VirtualHost *:80>
+   DocumentRoot /Users/tim/Sites/58.gliding.net.nz/public
+   ServerName 58gliding.net.test
+   ServerAlias *.58gliding.net.test
+</VirtualHost>`
+
+2. Sub sites use a subdomain e.g. piako.58gliding.net.test. Set up  your hosts file to point to a couple of sub sites for testing e.g. 
+
+`127.0.0.1 58gliding.net.test
+127.0.0.1 piako.58gliding.net.test
+127.0.0.1 auckland.58gliding.net.test`
+
+## Login with the default user
+
+A default root user is setup with the following username/password
+
+	root@gliding.co.nz
+	root
+
+This will allow you to give roles and permissions to other users in your local system.
+
+### Apple Maps
+
+To test Apple Maps used on the tracking page, you need a key, installed the .env file. Either create one if you're a paid up apple developer, or contact Tim to get one.
+
 
 ## License
 
-The Laravel framework is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The Laravel framework & GNZ Web App Platform is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+
