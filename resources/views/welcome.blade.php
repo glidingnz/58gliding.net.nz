@@ -3,10 +3,10 @@
 @section('content')
 
 <div class="container">
-	
+
 		<div class="row">
 			<div class="col-md-12">
-				
+
 				<?php if (!$org) { ?><h1>Welcome to gliding.net.nz</h1><?php } ?>
 				<?php if ($org) { ?>
 					<h1>{{$org->name}}</h1>
@@ -14,7 +14,7 @@
 
 			</div>
 		</div>
-	
+
 	<div class="row">
 
 		<?php if (!$org) { ?>
@@ -24,7 +24,7 @@
 				{{-- <example-component></example-component> --}}
 			</div>
 		<?php } else { ?>
-	
+
 
 		<?php } ?>
 
@@ -49,8 +49,9 @@
 			<h2>Nationwide Tools</h2>
 
 			<div class="list-group app-list">
-				<a class="list-group-item" href="//{{env('APP_DOMAIN')}}/aircraft"><span class="fa fa-plane"></span> Aircraft Database</a>
-				<a class="list-group-item" href="/tracking"><span class="fa fa-map-marker-alt"></span> Tracking</a>
+				<a class="list-group-item" href="{{ url('aircraft')}}"><span class="fa fa-plane"></span> Aircraft Database</a>
+				<a class="list-group-item" href="{{ url('tracking')}}"><span class="fa fa-map-marker-alt"></span> Tracking</a>
+                <a class="list-group-item" href="{{ url('waypoints')}}"><span class="fa fa-map-marker-alt"></span> Turnpoints</a>
 			</div>
 
 		</div>

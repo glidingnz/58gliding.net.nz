@@ -60,6 +60,7 @@
 		<ul class="navbar-nav mr-auto">
 			<li class="nav-item"><a class="nav-link" href="{{ url('/aircraft')}}">Aircraft</a></li>
 			<li class="nav-item"><a class="nav-link" href="{{ url('/tracking')}}">Tracking</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url('/waypoints')}}">Turnpoints</a></li>
 			<li class="nav-item"><a class="nav-link" href="{{ url('/members')}}">Members</a></li>
 			<li class="nav-messages"></li>
 		</ul>

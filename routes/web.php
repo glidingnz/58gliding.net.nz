@@ -29,6 +29,9 @@ Route::get('/aircraft', 'Apps\AircraftController@index');
 Route::get('/aircraft/{rego}', 'Apps\AircraftController@view');
 Route::get('/aircraft/{rego}/edit', 'Apps\AircraftController@edit');
 
+Route::get('/waypoints', 'Apps\WaypointsController@index');
+Route::post('/waypoints-upload', 'Apps\WaypointsController@upload');
+
 Route::get('/tracking', 'Apps\TrackingController@index');
 Route::get('/tracking/{year}-{month}-{day}', 'Apps\TrackingController@day');
 Route::get('/tracking/{year}-{month}-{day}/{rego}', 'Apps\TrackingController@track');

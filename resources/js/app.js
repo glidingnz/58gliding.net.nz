@@ -40,6 +40,7 @@ Vue.component('achievements', require('./components/Achievements.vue').default);
 Vue.component('edit-achievements', require('./components/EditAchievements.vue').default);
 Vue.component('ratings', require('./components/Ratings.vue').default);
 Vue.component('ratings-report', require('./components/RatingsReport.vue').default);
+Vue.component('waypoints', require('./components/Waypoints.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
