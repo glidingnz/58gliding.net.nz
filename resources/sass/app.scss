@@ -9,6 +9,10 @@
 //@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 @import '~bootstrap/scss/bootstrap';
 
+@import 'node_modules/bootstrap-vue/src/index.scss';
+
+//@import 'node_modules/v-calendar/lib/v-calendar.min.css';
+
 body {
 	padding-bottom: 20px;
 }

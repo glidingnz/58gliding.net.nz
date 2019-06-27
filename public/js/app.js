@@ -9601,7 +9601,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\ndiv.chart-container {\r\n\ttext-align: center;\r\n\twidth: 100%;\r\n\tpadding-left: 20px;\r\n\tpadding-right: 20px;\n}\ndiv.chart {\r\n\twidth: 100%;\n}\r\n", ""]);
+exports.push([module.i, "\ndiv.chart-container {\n\ttext-align: center;\n\twidth: 100%;\n\tpadding-left: 20px;\n\tpadding-right: 20px;\n}\ndiv.chart {\n\twidth: 100%;\n}\n", ""]);
 
 // exports
 
@@ -9639,7 +9639,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.btn-group {\r\n\tmargin-bottom: 20px;\n}\n.filter-buttons {\r\n\tmargin-bottom: 15px;\n}\n.filter-buttons .btn {\r\n\tmargin-bottom: 5px;\n}\n.filter-buttons .btn-group {\r\n\tmargin-bottom: 0;\n}\r\n", ""]);
+exports.push([module.i, "\n.btn-group {\n\tmargin-bottom: 20px;\n}\n.filter-buttons {\n\tmargin-bottom: 15px;\n}\n.filter-buttons .btn {\n\tmargin-bottom: 5px;\n}\n.filter-buttons .btn-group {\n\tmargin-bottom: 0;\n}\n", ""]);
 
 // exports
 
@@ -9658,7 +9658,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.messages-panel {\r\n\tposition: fixed;\r\n\twidth: 30em;\r\n\tmin-height: 50px;\r\n\tbackground-color: #FFF;\r\n\tborder: 1px solid #EEE;\r\n\tpadding: 10px;\r\n\tmargin-left: -20px;\r\n\tmargin-top: 6px;\r\n\tz-index: 9999;\r\n\ttop: 0px;\n}\n.message-error { color: #A00;\n}\n.message-warning { color: #DC9200;\n}\n.message-success { color: #0A0;\n}\n.message-note { color: #3C8DBC;\n}\na.no-messages { color: #CCC;\n}\na.new-messages { color: #A00;\n}\na.old-messages { color: #444;\n}\r\n", ""]);
+exports.push([module.i, "\n.messages-panel {\n\tposition: fixed;\n\twidth: 30em;\n\tmin-height: 50px;\n\tbackground-color: #FFF;\n\tborder: 1px solid #EEE;\n\tpadding: 10px;\n\tmargin-left: -20px;\n\tmargin-top: 6px;\n\tz-index: 9999;\n\ttop: 0px;\n}\n.message-error { color: #A00;\n}\n.message-warning { color: #DC9200;\n}\n.message-success { color: #0A0;\n}\n.message-note { color: #3C8DBC;\n}\na.no-messages { color: #CCC;\n}\na.new-messages { color: #A00;\n}\na.old-messages { color: #444;\n}\n", ""]);
 
 // exports
 
@@ -9677,7 +9677,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.fa-exclamation-circle {\r\n\tcolor: #A00;\n}\r\n", ""]);
+exports.push([module.i, "\n.fa-exclamation-circle {\n\tcolor: #A00;\n}\n", ""]);
 
 // exports
 
@@ -63829,18 +63829,18 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("td", [
-              _vm._v("\r\n\t\t\t\t\t\t" + _vm._s(_vm.results.address_1)),
+              _vm._v("\n\t\t\t\t\t\t" + _vm._s(_vm.results.address_1)),
               _vm.results.address_1 ? _c("br") : _vm._e(),
-              _vm._v("\r\n\t\t\t\t\t\t" + _vm._s(_vm.results.address_2)),
+              _vm._v("\n\t\t\t\t\t\t" + _vm._s(_vm.results.address_2)),
               _vm.results.address_2 ? _c("br") : _vm._e(),
-              _vm._v("\r\n\t\t\t\t\t\t" + _vm._s(_vm.results.city)),
+              _vm._v("\n\t\t\t\t\t\t" + _vm._s(_vm.results.city)),
               _vm.results.city ? _c("br") : _vm._e(),
               _vm._v(
-                "\r\n\t\t\t\t\t\t" +
+                "\n\t\t\t\t\t\t" +
                   _vm._s(_vm.results.country) +
                   " " +
                   _vm._s(_vm.results.zip_post) +
-                  "\r\n\t\t\t\t\t"
+                  "\n\t\t\t\t\t"
               )
             ])
           ]),
@@ -65870,7 +65870,7 @@ var render = function() {
             }
           ]
         },
-        [_vm._v("\r\n\t\tLoading...\r\n\t")]
+        [_vm._v("\n\t\tLoading...\n\t")]
       ),
       _vm._v(" "),
       _c("div", { staticClass: "row", staticStyle: { "margin-top": "20px" } }, [
@@ -65911,13 +65911,13 @@ var render = function() {
                     _vm.highlightedPoint.altfeet != null
                       ? _c("div", [
                           _vm._v(
-                            "\r\n\t\t\t\t\t\t\t" +
+                            "\n\t\t\t\t\t\t\t" +
                               _vm._s(_vm.highlightedPoint.altfeet) +
                               " ft / " +
                               _vm._s(_vm.highlightedPoint.alt) +
                               " m / " +
                               _vm._s(_vm.highlightedPoint.aglfeet) +
-                              " ft AGL\r\n\t\t\t\t\t\t"
+                              " ft AGL\n\t\t\t\t\t\t"
                           )
                         ])
                       : _vm._e(),
@@ -65994,9 +65994,9 @@ var render = function() {
                   _vm._v(" "),
                   _c("td", [
                     _vm._v(
-                      "\r\n\t\t\t\t\t\t" +
+                      "\n\t\t\t\t\t\t" +
                         _vm._s(_vm.lastSeenTime(_vm.highlightedPoint.nzdate)) +
-                        "\r\n\t\t\t\t\t\t"
+                        "\n\t\t\t\t\t\t"
                     ),
                     _vm.highlightedPoint.type == 1
                       ? _c("span", [_vm._v("FLARM")])
@@ -66062,7 +66062,7 @@ var render = function() {
                       },
                       [_vm._v("Google Maps")]
                     ),
-                    _vm._v("\r\n\t\t\t\t\t\t  "),
+                    _vm._v("\n\t\t\t\t\t\t  "),
                     _c(
                       "a",
                       {
@@ -66353,7 +66353,7 @@ var render = function() {
           }
         ]
       },
-      [_vm._v("\r\n\t\tLoading...\r\n\t")]
+      [_vm._v("\n\t\tLoading...\n\t")]
     ),
     _vm._v(" "),
     _c(
@@ -66661,7 +66661,7 @@ var render = function() {
             ),
             _vm._v(" "),
             _c("div", { staticClass: "ml-auto" }, [
-              _vm._v("\r\n\t\t\t\t\tDay:\r\n\t\t\t\t\t"),
+              _vm._v("\n\t\t\t\t\tDay:\n\t\t\t\t\t"),
               _c(
                 "div",
                 {
@@ -66681,7 +66681,7 @@ var render = function() {
                       ],
                       attrs: { href: "/tracking/" + day.day_date }
                     },
-                    [_vm._v(_vm._s(day.day_date) + "\r\n\t\t\t\t\t\t")]
+                    [_vm._v(_vm._s(day.day_date) + "\n\t\t\t\t\t\t")]
                   )
                 }),
                 0
@@ -66724,13 +66724,13 @@ var render = function() {
                     _vm.selectedPoint.altfeet != null
                       ? _c("div", [
                           _vm._v(
-                            "\r\n\t\t\t\t\t\t\t" +
+                            "\n\t\t\t\t\t\t\t" +
                               _vm._s(_vm.selectedPoint.altfeet) +
                               " ft / " +
                               _vm._s(_vm.selectedPoint.altmeters) +
                               " m / " +
                               _vm._s(_vm.selectedPoint.aglfeet) +
-                              " ft AGL\r\n\t\t\t\t\t\t"
+                              " ft AGL\n\t\t\t\t\t\t"
                           )
                         ])
                       : _vm._e(),
@@ -66807,9 +66807,9 @@ var render = function() {
                   _vm._v(" "),
                   _c("td", [
                     _vm._v(
-                      "\r\n\t\t\t\t\t\t" +
+                      "\n\t\t\t\t\t\t" +
                         _vm._s(_vm.lastSeenTime(_vm.selectedPoint.thetime)) +
-                        "\r\n\t\t\t\t\t\t"
+                        "\n\t\t\t\t\t\t"
                     ),
                     _vm.selectedPoint.type == 1
                       ? _c("span", [_vm._v("FLARM")])
@@ -66875,7 +66875,7 @@ var render = function() {
                       },
                       [_vm._v("Google")]
                     ),
-                    _vm._v("\r\n\t\t\t\t\t\t  "),
+                    _vm._v("\n\t\t\t\t\t\t  "),
                     _c(
                       "a",
                       {
@@ -66889,7 +66889,7 @@ var render = function() {
                       },
                       [_vm._v("Apple")]
                     ),
-                    _vm._v("   \r\n\t\t\t\t\t\t"),
+                    _vm._v("   \n\t\t\t\t\t\t"),
                     _vm.selectedAircraft.rego
                       ? _c(
                           "a",
@@ -66976,7 +66976,7 @@ var render = function() {
                         }),
                         _vm._v(" All")
                       ]),
-                      _vm._v("  \r\n\t\t\t\t\t\t\t"),
+                      _vm._v("  \n\t\t\t\t\t\t\t"),
                       _c("label", { attrs: { for: "showNorth" } }, [
                         _c("input", {
                           directives: [
@@ -67003,7 +67003,7 @@ var render = function() {
                         }),
                         _vm._v(" North")
                       ]),
-                      _vm._v("  \r\n\t\t\t\t\t\t\t"),
+                      _vm._v("  \n\t\t\t\t\t\t\t"),
                       _c("label", { attrs: { for: "showSouth" } }, [
                         _c("input", {
                           directives: [
@@ -67138,7 +67138,7 @@ var render = function() {
                         },
                         [_vm._v("Alt")]
                       ),
-                      _vm._v("\r\n\t\t\t\t\t\t\t("),
+                      _vm._v("\n\t\t\t\t\t\t\t("),
                       _c(
                         "a",
                         {
@@ -67177,7 +67177,7 @@ var render = function() {
                         },
                         [_vm._v("AGL")]
                       ),
-                      _vm._v(")\r\n\t\t\t\t\t\t")
+                      _vm._v(")\n\t\t\t\t\t\t")
                     ]),
                     _vm._v(" "),
                     _c("th", [
@@ -67284,9 +67284,9 @@ var render = function() {
                                     { attrs: { alt: aircraft.nzdate } },
                                     [
                                       _vm._v(
-                                        "\r\n\t\t\t\t\t\t\t\t" +
+                                        "\n\t\t\t\t\t\t\t\t" +
                                           _vm._s(aircraft.timeago) +
-                                          "\r\n\t\t\t\t\t\t\t"
+                                          "\n\t\t\t\t\t\t\t"
                                       )
                                     ]
                                   )
@@ -67319,7 +67319,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("td", { attrs: { colspan: "4" } }, [
       _vm._v(
-        "\r\n\t\t\t\t\t\t\tMissing your aircraft/rego? Set up tracking in the "
+        "\n\t\t\t\t\t\t\tMissing your aircraft/rego? Set up tracking in the "
       ),
       _c("a", { attrs: { href: "/aircraft" } }, [_vm._v("aircraft database")])
     ])
@@ -83582,8 +83582,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\wamp64\www\58gliding.net.nz\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\wamp64\www\58gliding.net.nz\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/tim/Sites/58.gliding.net.nz/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/tim/Sites/58.gliding.net.nz/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
