@@ -11,7 +11,7 @@
 				</div>
 			</div>
 
-			<h1 class="results-title">Aircraft</h1>
+			<h1 class="results-title d-inline">Aircraft</h1>
 
 		</div>
 

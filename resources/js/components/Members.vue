@@ -15,71 +15,68 @@
 
 <template>
 <div>
-	<div class="row">
-		<h1 class="col-xs-6 results-title">Members</h1>
-		<div class="btn-group col-xs-6 col-md-4  pull-right" role="group">
+	<div class="container">
+		<div class="input-group ml-auto col-md-4 col-6 float-right" role="group">
 
 			<div class="input-group">
-				<input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term" v-model="state.search" debounce="300">
-				<div class="input-group-btn">
+				<input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term" v-model="state.search">
+				<div class="input-group-append">
 					<button class="btn btn-outline-dark" type="submit" v-on:click="state.search=''"><i class="fa fa-times"></i></button>
 				</div>
 			</div>
 
 		</div>
+
+		<h1 class="col-xs-6 results-title">Members</h1>
 	</div>
 
-	<div class="row clearfix">
+	<div class="container clearfix">
 
-		<div class="filter-buttons nav nav-pills col-xs-12 col-sm-8" role="group">
-
-			<div class="btn-group" role="group">
-				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='all' }" v-on:click="filterTo('all')">All</button>
-				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='instructors' }" v-on:click="filterTo('instructors')">Instructors</button>
-				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='tow-pilots' }" v-on:click="filterTo('tow-pilots')">Tow Pilots</button>
-				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='youth' }" v-on:click="filterTo('youth')" title="">Youth</button>
-				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='non-qgp' }" v-on:click="filterTo('non-qgp')" title="Non QGP who are flying members">Non QGP</button>
-				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='qgp' }" v-on:click="filterTo('qgp')">QGP</button>
-				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='oo' }" v-on:click="filterTo('oo')">OOs</button>
-				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='coaches' }" v-on:click="filterTo('coaches')">Coaches</button>
-				<button type="button" class="btn btn-outline-dark btn-sm" v-bind:class="{ 'btn-primary': state.type=='contest_pilots' }" v-on:click="filterTo('contest_pilots')">Contest Pilots</button>
-			</div>
-		</div>
-
-		<select name="org" v-model="state.org" class="col-xs-12 col-sm-4 form-control input-sm pull-right" style="width: auto; margin-bottom: 20px;">
+		<select name="org" v-model="state.org" class="col-xs-12 col-sm-4 form-control input-sm float-right" style="width: auto; margin-bottom: 20px;">
 			<option v-bind:value="null">All Clubs</option>
 			<option v-for="org in orgs" v-bind:value="org.gnz_code">{{org.name}}</option>
 		</select>
+
+		<div class="filter-buttons nav nav-pills col-xs-12 col-sm-8" role="group">
+
+			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='all' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('all')">All</button>
+			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='instructors' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('instructors')">Instructors</button>
+			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='tow-pilots' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('tow-pilots')">Tow Pilots</button>
+			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='youth' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('youth')" title="">Youth</button>
+			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='non-qgp' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('non-qgp')" title="Non QGP who are flying members">Non QGP</button>
+			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='qgp' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('qgp')">QGP</button>
+			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='oo' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('oo')">OOs</button>
+			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='coaches' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('coaches')">Coaches</button>
+			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='contest_pilots' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('contest_pilots')">Contest Pilots</button>
+		</div>
+
 	</div>
 
 	
-	<div class="row">
-		<div class="col-xs-12 col-sm-4 hidden-xs">
+	<div class="container">
 
-			<h2 class="results-title">{{ total }} Results</h2>
+		<div class="float-right">
 
-		</div>
-
-		<div class="col-xs-12 col-sm-8">
-
-
-			<div class="btn-group pull-right" role="group">
+			<div class="btn-group mr-2" role="group">
 				<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="previous()">&lt;</button>
 				<button type="button" class="btn btn-outline-dark btn-sm disabled">Page {{ state.page }} of {{ last_page }}</button>
 				<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="next()">Next &gt;</button>
 			</div>
 
-			<div class="btn-group pull-right" role="group" style="margin-right: 20px;">
+			<div class="btn-group  mr-2" role="group">
 				<button type="button" class="btn btn-outline-dark btn-sm disabled">Export</button>
 				<button class="btn btn-outline-dark btn-sm" v-on:click="exportData('xls')">XLS</button>
 				<button class="btn btn-outline-dark btn-sm" v-on:click="exportData('csv')">CSV</button>
 			</div>
 
-			<div class="btn-group pull-right" style="margin-right: 20px;">
+			<div class="btn-group ">
 				<button class="btn btn-outline-dark btn-sm" v-on:click="toggleEmail()">Email</button>
 			</div>
 
 		</div>
+
+		<h2>{{ total }} Results</h2>
+
 	</div>
 
 	<div class="row" v-show="showEmail" style="margin-bottom: 20px;">
@@ -97,8 +94,8 @@
 			<textarea type="text" class="form-control" rows="5" v-model="emailMessage"></textarea>
 
 			<br>
-			<input type="submit" v-bind:value="'Send Email to ' + total + 'members'" class=" btn btn-primary" v-on:click="sendEmail()"  v-show="!emailSending">
-			<input type="submit" v-bind:value="'Send Email to ' + total + 'members'" class=" btn btn-disabled" v-show="emailSending">
+			<input type="submit" v-bind:value="'Send Email to ' + total + ' members'" class=" btn btn-primary" v-on:click="sendEmail()"  v-show="!emailSending">
+			<input type="submit" v-bind:value="'Send Email to ' + total + ' members'" class=" btn btn-disabled" v-show="emailSending">
 			<span v-show="emailSending"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i> Sending</span>
 		</div>
 		<div class="col-xs-12 col-sm-6 ">
@@ -132,38 +129,41 @@
 
 	</div>
 
-	<table class="row table results-table table-striped">
-		<tr>
-			<th class="hidden-xs hidden-sm">GNZ ID</th>
-			<th>Firstname</th>
-			<th>Lastname</th>
-			<th>Club</th>
-			<th>Member Type</th>
-			<th>City</th>
-			<th>Mobile</th>
-			<th>Email</th>
-			<th>OO</th>
-			<th></th>
-			<th v-if="showEdit" colspan=3></th>
-		</tr>
-		<tr v-for="result in results">
-			<td class="hidden-xs hidden-sm nowrap"><a v-bind:href="'/members/' + result.id">{{ result.nzga_number }}</a></td>
-			<td><a v-bind:href="'/members/' + result.id">{{ result.first_name }}</a></td>
-			<td><a v-bind:href="'/members/' + result.id">{{ result.last_name }}</a></td>
-			<td>{{ result.club }}</td>
-			<td>{{ result.membership_type }}</td>
-			<td>{{ result.city }}</td>
-			<td>{{ result.mobile_phone }}</td>
-			<td><a v-bind:href="'mailto:' + result.email">{{ result.email }}</a></td>
-			<td>{{ result.observer_number }}</td>
-			<td><a v-bind:href="'/members/' + result.id + '/achievements/'" class="btn btn-primary btn-xs"><i class="fa fa-trophy"></i></a></td>
-			<td class="center" v-if="showEdit"><a v-bind:href="'http://members.gliding.co.nz/index.php?r=member/update&id=' + result.id" class="btn btn-outline-dark btn-xs">Old Edit</a></td>
-			<td class="center" v-if="showEdit"><a v-bind:href="'/members/' + result.id + '/edit'" class="btn btn-primary btn-xs">Edit</a></td>
-			<td class="center" v-if="showEdit"><a v-bind:href="'/members/' + result.id + '/ratings'" class="btn btn-primary btn-xs">Ratings</a></td>
+	<div class="container">
+		<table class="table results-table table-striped">
+			<tr>
+				<th class="d-none d-lg-table-cell">GNZ ID</th>
+				<th>Firstname</th>
+				<th>Lastname</th>
+				<th>Club</th>
+				<th>Member Type</th>
+				<th>City</th>
+				<th>Mobile</th>
+				<th>Email</th>
+				<th>OO</th>
+				<th></th>
+			</tr>
+			<tr v-for="result in results">
+				<td class="d-none d-lg-table-cell nowrap"><a v-bind:href="'/members/' + result.id">{{ result.nzga_number }}</a></td>
+				<td><a v-bind:href="'/members/' + result.id">{{ result.first_name }}</a></td>
+				<td><a v-bind:href="'/members/' + result.id">{{ result.last_name }}</a></td>
+				<td>{{ result.club }}</td>
+				<td>{{ result.membership_type }}</td>
+				<td>{{ result.city }}</td>
+				<td>{{ result.mobile_phone }}</td>
+				<td><a v-bind:href="'mailto:' + result.email">{{ result.email }}</a></td>
+				<td>{{ result.observer_number }}</td>
+				<td>
+					<a v-bind:href="'/members/' + result.id + '/achievements/'" class="btn btn-primary btn-sm mr-1 mb-1"><i class="fa fa-trophy"></i></a>
+					<a v-if="showEdit" v-bind:href="'http://members.gliding.co.nz/index.php?r=member/update&id=' + result.id" class="btn mr-1 mb-1 btn-outline-dark btn-sm">Old Edit</a>
+					<a v-if="showEdit" v-bind:href="'/members/' + result.id + '/edit'" class="btn mr-1 mb-1 btn-outline-dark btn-sm">Edit</a>
+					<a v-if="showEdit" v-bind:href="'/members/' + result.id + '/ratings'" class="btn mb-1 btn-outline-dark btn-sm">Ratings</a>
+				</td>
 
-		</tr>
-	</table>
-</div>
+			</tr>
+		</table>
+	</div>
+
 </div>
 </template>
 

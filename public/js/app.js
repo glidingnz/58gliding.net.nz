@@ -61035,7 +61035,7 @@ var render = function() {
         ]
       ),
       _vm._v(" "),
-      _c("h1", { staticClass: "results-title" }, [_vm._v("Aircraft")])
+      _c("h1", { staticClass: "results-title d-inline" }, [_vm._v("Aircraft")])
     ]),
     _vm._v(" "),
     _c(
@@ -63820,13 +63820,11 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("div", { staticClass: "row" }, [
-      _c("h1", { staticClass: "col-xs-6 results-title" }, [_vm._v("Members")]),
-      _vm._v(" "),
+    _c("div", { staticClass: "container" }, [
       _c(
         "div",
         {
-          staticClass: "btn-group col-xs-6 col-md-4  pull-right",
+          staticClass: "input-group ml-auto col-md-4 col-6 float-right",
           attrs: { role: "group" }
         },
         [
@@ -63845,8 +63843,7 @@ var render = function() {
                 type: "text",
                 placeholder: "Search",
                 name: "srch-term",
-                id: "srch-term",
-                debounce: "300"
+                id: "srch-term"
               },
               domProps: { value: _vm.state.search },
               on: {
@@ -63859,7 +63856,7 @@ var render = function() {
               }
             }),
             _vm._v(" "),
-            _c("div", { staticClass: "input-group-btn" }, [
+            _c("div", { staticClass: "input-group-append" }, [
               _c(
                 "button",
                 {
@@ -63876,159 +63873,12 @@ var render = function() {
             ])
           ])
         ]
-      )
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "row clearfix" }, [
-      _c(
-        "div",
-        {
-          staticClass: "filter-buttons nav nav-pills col-xs-12 col-sm-8",
-          attrs: { role: "group" }
-        },
-        [
-          _c("div", { staticClass: "btn-group", attrs: { role: "group" } }, [
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-dark btn-sm",
-                class: { "btn-primary": _vm.state.type == "all" },
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    return _vm.filterTo("all")
-                  }
-                }
-              },
-              [_vm._v("All")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-dark btn-sm",
-                class: { "btn-primary": _vm.state.type == "instructors" },
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    return _vm.filterTo("instructors")
-                  }
-                }
-              },
-              [_vm._v("Instructors")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-dark btn-sm",
-                class: { "btn-primary": _vm.state.type == "tow-pilots" },
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    return _vm.filterTo("tow-pilots")
-                  }
-                }
-              },
-              [_vm._v("Tow Pilots")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-dark btn-sm",
-                class: { "btn-primary": _vm.state.type == "youth" },
-                attrs: { type: "button", title: "" },
-                on: {
-                  click: function($event) {
-                    return _vm.filterTo("youth")
-                  }
-                }
-              },
-              [_vm._v("Youth")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-dark btn-sm",
-                class: { "btn-primary": _vm.state.type == "non-qgp" },
-                attrs: {
-                  type: "button",
-                  title: "Non QGP who are flying members"
-                },
-                on: {
-                  click: function($event) {
-                    return _vm.filterTo("non-qgp")
-                  }
-                }
-              },
-              [_vm._v("Non QGP")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-dark btn-sm",
-                class: { "btn-primary": _vm.state.type == "qgp" },
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    return _vm.filterTo("qgp")
-                  }
-                }
-              },
-              [_vm._v("QGP")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-dark btn-sm",
-                class: { "btn-primary": _vm.state.type == "oo" },
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    return _vm.filterTo("oo")
-                  }
-                }
-              },
-              [_vm._v("OOs")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-dark btn-sm",
-                class: { "btn-primary": _vm.state.type == "coaches" },
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    return _vm.filterTo("coaches")
-                  }
-                }
-              },
-              [_vm._v("Coaches")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-dark btn-sm",
-                class: { "btn-primary": _vm.state.type == "contest_pilots" },
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    return _vm.filterTo("contest_pilots")
-                  }
-                }
-              },
-              [_vm._v("Contest Pilots")]
-            )
-          ])
-        ]
       ),
       _vm._v(" "),
+      _c("h1", { staticClass: "col-xs-6 results-title" }, [_vm._v("Members")])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "container clearfix" }, [
       _c(
         "select",
         {
@@ -64040,7 +63890,7 @@ var render = function() {
               expression: "state.org"
             }
           ],
-          staticClass: "col-xs-12 col-sm-4 form-control input-sm pull-right",
+          staticClass: "col-xs-12 col-sm-4 form-control input-sm float-right",
           staticStyle: { width: "auto", "margin-bottom": "20px" },
           attrs: { name: "org" },
           on: {
@@ -64071,74 +63921,235 @@ var render = function() {
           })
         ],
         2
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "filter-buttons nav nav-pills col-xs-12 col-sm-8",
+          attrs: { role: "group" }
+        },
+        [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm mr-1",
+              class: [
+                _vm.state.type == "all" ? "btn-secondary" : "btn-outline-dark"
+              ],
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.filterTo("all")
+                }
+              }
+            },
+            [_vm._v("All")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm mr-1",
+              class: [
+                _vm.state.type == "instructors"
+                  ? "btn-secondary"
+                  : "btn-outline-dark"
+              ],
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.filterTo("instructors")
+                }
+              }
+            },
+            [_vm._v("Instructors")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm mr-1",
+              class: [
+                _vm.state.type == "tow-pilots"
+                  ? "btn-secondary"
+                  : "btn-outline-dark"
+              ],
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.filterTo("tow-pilots")
+                }
+              }
+            },
+            [_vm._v("Tow Pilots")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm mr-1",
+              class: [
+                _vm.state.type == "youth" ? "btn-secondary" : "btn-outline-dark"
+              ],
+              attrs: { type: "button", title: "" },
+              on: {
+                click: function($event) {
+                  return _vm.filterTo("youth")
+                }
+              }
+            },
+            [_vm._v("Youth")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm mr-1",
+              class: [
+                _vm.state.type == "non-qgp"
+                  ? "btn-secondary"
+                  : "btn-outline-dark"
+              ],
+              attrs: {
+                type: "button",
+                title: "Non QGP who are flying members"
+              },
+              on: {
+                click: function($event) {
+                  return _vm.filterTo("non-qgp")
+                }
+              }
+            },
+            [_vm._v("Non QGP")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm mr-1",
+              class: [
+                _vm.state.type == "qgp" ? "btn-secondary" : "btn-outline-dark"
+              ],
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.filterTo("qgp")
+                }
+              }
+            },
+            [_vm._v("QGP")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm mr-1",
+              class: [
+                _vm.state.type == "oo" ? "btn-secondary" : "btn-outline-dark"
+              ],
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.filterTo("oo")
+                }
+              }
+            },
+            [_vm._v("OOs")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm mr-1",
+              class: [
+                _vm.state.type == "coaches"
+                  ? "btn-secondary"
+                  : "btn-outline-dark"
+              ],
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.filterTo("coaches")
+                }
+              }
+            },
+            [_vm._v("Coaches")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm mr-1",
+              class: [
+                _vm.state.type == "contest_pilots"
+                  ? "btn-secondary"
+                  : "btn-outline-dark"
+              ],
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.filterTo("contest_pilots")
+                }
+              }
+            },
+            [_vm._v("Contest Pilots")]
+          )
+        ]
       )
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-xs-12 col-sm-4 hidden-xs" }, [
-        _c("h2", { staticClass: "results-title" }, [
-          _vm._v(_vm._s(_vm.total) + " Results")
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-xs-12 col-sm-8" }, [
-        _c(
-          "div",
-          { staticClass: "btn-group pull-right", attrs: { role: "group" } },
-          [
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-dark btn-sm",
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    return _vm.previous()
-                  }
+    _c("div", { staticClass: "container" }, [
+      _c("div", { staticClass: "float-right" }, [
+        _c("div", { staticClass: "btn-group mr-2", attrs: { role: "group" } }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-outline-dark btn-sm",
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.previous()
                 }
-              },
-              [_vm._v("<")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-dark btn-sm disabled",
-                attrs: { type: "button" }
-              },
-              [
-                _vm._v(
-                  "Page " +
-                    _vm._s(_vm.state.page) +
-                    " of " +
-                    _vm._s(_vm.last_page)
-                )
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-dark btn-sm",
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    return _vm.next()
-                  }
+              }
+            },
+            [_vm._v("<")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-outline-dark btn-sm disabled",
+              attrs: { type: "button" }
+            },
+            [
+              _vm._v(
+                "Page " +
+                  _vm._s(_vm.state.page) +
+                  " of " +
+                  _vm._s(_vm.last_page)
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-outline-dark btn-sm",
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.next()
                 }
-              },
-              [_vm._v("Next >")]
-            )
-          ]
-        ),
+              }
+            },
+            [_vm._v("Next >")]
+          )
+        ]),
         _vm._v(" "),
         _c(
           "div",
-          {
-            staticClass: "btn-group pull-right",
-            staticStyle: { "margin-right": "20px" },
-            attrs: { role: "group" }
-          },
+          { staticClass: "btn-group  mr-2", attrs: { role: "group" } },
           [
             _c(
               "button",
@@ -64177,28 +64188,23 @@ var render = function() {
           ]
         ),
         _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "btn-group pull-right",
-            staticStyle: { "margin-right": "20px" }
-          },
-          [
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-dark btn-sm",
-                on: {
-                  click: function($event) {
-                    return _vm.toggleEmail()
-                  }
+        _c("div", { staticClass: "btn-group " }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-outline-dark btn-sm",
+              on: {
+                click: function($event) {
+                  return _vm.toggleEmail()
                 }
-              },
-              [_vm._v("Email")]
-            )
-          ]
-        )
-      ])
+              }
+            },
+            [_vm._v("Email")]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("h2", [_vm._v(_vm._s(_vm.total) + " Results")])
     ]),
     _vm._v(" "),
     _c(
@@ -64324,7 +64330,7 @@ var render = function() {
             ],
             staticClass: " btn btn-primary",
             attrs: { type: "submit" },
-            domProps: { value: "Send Email to " + _vm.total + "members" },
+            domProps: { value: "Send Email to " + _vm.total + " members" },
             on: {
               click: function($event) {
                 return _vm.sendEmail()
@@ -64343,7 +64349,7 @@ var render = function() {
             ],
             staticClass: " btn btn-disabled",
             attrs: { type: "submit" },
-            domProps: { value: "Send Email to " + _vm.total + "members" }
+            domProps: { value: "Send Email to " + _vm.total + " members" }
           }),
           _vm._v(" "),
           _c(
@@ -64419,128 +64425,102 @@ var render = function() {
       ]
     ),
     _vm._v(" "),
-    _c(
-      "table",
-      { staticClass: "row table results-table table-striped" },
-      [
-        _c("tr", [
-          _c("th", { staticClass: "hidden-xs hidden-sm" }, [_vm._v("GNZ ID")]),
+    _c("div", { staticClass: "container" }, [
+      _c(
+        "table",
+        { staticClass: "table results-table table-striped" },
+        [
+          _vm._m(1),
           _vm._v(" "),
-          _c("th", [_vm._v("Firstname")]),
-          _vm._v(" "),
-          _c("th", [_vm._v("Lastname")]),
-          _vm._v(" "),
-          _c("th", [_vm._v("Club")]),
-          _vm._v(" "),
-          _c("th", [_vm._v("Member Type")]),
-          _vm._v(" "),
-          _c("th", [_vm._v("City")]),
-          _vm._v(" "),
-          _c("th", [_vm._v("Mobile")]),
-          _vm._v(" "),
-          _c("th", [_vm._v("Email")]),
-          _vm._v(" "),
-          _c("th", [_vm._v("OO")]),
-          _vm._v(" "),
-          _c("th"),
-          _vm._v(" "),
-          _vm.showEdit ? _c("th", { attrs: { colspan: "3" } }) : _vm._e()
-        ]),
-        _vm._v(" "),
-        _vm._l(_vm.results, function(result) {
-          return _c("tr", [
-            _c("td", { staticClass: "hidden-xs hidden-sm nowrap" }, [
-              _c("a", { attrs: { href: "/members/" + result.id } }, [
-                _vm._v(_vm._s(result.nzga_number))
-              ])
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c("a", { attrs: { href: "/members/" + result.id } }, [
-                _vm._v(_vm._s(result.first_name))
-              ])
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c("a", { attrs: { href: "/members/" + result.id } }, [
-                _vm._v(_vm._s(result.last_name))
-              ])
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(result.club))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(result.membership_type))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(result.city))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(result.mobile_phone))]),
-            _vm._v(" "),
-            _c("td", [
-              _c("a", { attrs: { href: "mailto:" + result.email } }, [
-                _vm._v(_vm._s(result.email))
-              ])
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(result.observer_number))]),
-            _vm._v(" "),
-            _c("td", [
-              _c(
-                "a",
-                {
-                  staticClass: "btn btn-primary btn-xs",
-                  attrs: { href: "/members/" + result.id + "/achievements/" }
-                },
-                [_c("i", { staticClass: "fa fa-trophy" })]
-              )
-            ]),
-            _vm._v(" "),
-            _vm.showEdit
-              ? _c("td", { staticClass: "center" }, [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "btn btn-outline-dark btn-xs",
-                      attrs: {
-                        href:
-                          "http://members.gliding.co.nz/index.php?r=member/update&id=" +
-                          result.id
-                      }
-                    },
-                    [_vm._v("Old Edit")]
-                  )
+          _vm._l(_vm.results, function(result) {
+            return _c("tr", [
+              _c("td", { staticClass: "d-none d-lg-table-cell nowrap" }, [
+                _c("a", { attrs: { href: "/members/" + result.id } }, [
+                  _vm._v(_vm._s(result.nzga_number))
                 ])
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.showEdit
-              ? _c("td", { staticClass: "center" }, [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "btn btn-primary btn-xs",
-                      attrs: { href: "/members/" + result.id + "/edit" }
-                    },
-                    [_vm._v("Edit")]
-                  )
+              ]),
+              _vm._v(" "),
+              _c("td", [
+                _c("a", { attrs: { href: "/members/" + result.id } }, [
+                  _vm._v(_vm._s(result.first_name))
                 ])
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.showEdit
-              ? _c("td", { staticClass: "center" }, [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "btn btn-primary btn-xs",
-                      attrs: { href: "/members/" + result.id + "/ratings" }
-                    },
-                    [_vm._v("Ratings")]
-                  )
+              ]),
+              _vm._v(" "),
+              _c("td", [
+                _c("a", { attrs: { href: "/members/" + result.id } }, [
+                  _vm._v(_vm._s(result.last_name))
                 ])
-              : _vm._e()
-          ])
-        })
-      ],
-      2
-    )
+              ]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(result.club))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(result.membership_type))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(result.city))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(result.mobile_phone))]),
+              _vm._v(" "),
+              _c("td", [
+                _c("a", { attrs: { href: "mailto:" + result.email } }, [
+                  _vm._v(_vm._s(result.email))
+                ])
+              ]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(result.observer_number))]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "a",
+                  {
+                    staticClass: "btn btn-primary btn-sm mr-1 mb-1",
+                    attrs: { href: "/members/" + result.id + "/achievements/" }
+                  },
+                  [_c("i", { staticClass: "fa fa-trophy" })]
+                ),
+                _vm._v(" "),
+                _vm.showEdit
+                  ? _c(
+                      "a",
+                      {
+                        staticClass: "btn mr-1 mb-1 btn-outline-dark btn-sm",
+                        attrs: {
+                          href:
+                            "http://members.gliding.co.nz/index.php?r=member/update&id=" +
+                            result.id
+                        }
+                      },
+                      [_vm._v("Old Edit")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.showEdit
+                  ? _c(
+                      "a",
+                      {
+                        staticClass: "btn mr-1 mb-1 btn-outline-dark btn-sm",
+                        attrs: { href: "/members/" + result.id + "/edit" }
+                      },
+                      [_vm._v("Edit")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.showEdit
+                  ? _c(
+                      "a",
+                      {
+                        staticClass: "btn mb-1 btn-outline-dark btn-sm",
+                        attrs: { href: "/members/" + result.id + "/ratings" }
+                      },
+                      [_vm._v("Ratings")]
+                    )
+                  : _vm._e()
+              ])
+            ])
+          })
+        ],
+        2
+      )
+    ])
   ])
 }
 var staticRenderFns = [
@@ -64595,6 +64575,32 @@ var staticRenderFns = [
           _vm._v(" for more on how this works.")
         ])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("th", { staticClass: "d-none d-lg-table-cell" }, [_vm._v("GNZ ID")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Firstname")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Lastname")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Club")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Member Type")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("City")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Mobile")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Email")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("OO")]),
+      _vm._v(" "),
+      _c("th")
     ])
   }
 ]
