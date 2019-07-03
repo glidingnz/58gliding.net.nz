@@ -44,18 +44,25 @@
 				showAdmin: false
 			}
 		},
-		ready() {
-			this.loadWaypoints();
+		mounted() {
+			this.loadSelected();
 			if (window.Laravel.allowsEdit==true) this.showEdit=true;
 			if (window.Laravel.admin==true) this.showAdmin=true;
 		},
 		methods: {
-			loadWaypoints: function() {
-				this.$http.get('/api/v1/waypoints/').then(function (response) {
-					var responseJson = response.json();
-					this.results = responseJson.data;
-				});
-			},
+            loadSelected: function() {
+                var that=this;
+                window.axios.get('/api/v1/waypoints', {params: this.state}).then(function (response) {
+
+                    that.results = response.data.data;
+                    that.last_page = response.data.last_page;
+                    that.total = response.data.total;
+
+                    if (that.state.page > that.last_page && that.last_page>0) {
+                        that.state.page = 1;
+                    }
+                });
+            },
 			displayDirection: function(direction) {
 				if (direction) return direction + '&deg;';
 				return '';
