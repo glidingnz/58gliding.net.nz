@@ -90,6 +90,18 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
                     "column" => "grid-w-6"
                 ]
             ],
+            "style" => [
+                "label" => "Style",
+                "presenter" => "styleName",
+                "filter" => [
+                    "enabled" => true,
+                    'type' => 'select',
+                    'data' => \App\Models\Presenters\WaypointPresenter::Styles,
+                ],
+                "styles" => [
+                    "column" => "grid-w-6"
+                ]
+            ],
             "created_at" => [
                 "sort" => false,
                 "date" => "true",
