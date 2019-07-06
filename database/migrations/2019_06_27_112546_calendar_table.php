@@ -17,7 +17,8 @@ class CalendarTable extends Migration
         Schema::create('days', function(Blueprint $table)
         {
             $table->integer('id', true);
-            $table->integer('org_id');
+            $table->integer('org_id')->nullable();
+            $table->integer('event_id')->nullable();
             $table->date('day_date');
             $table->boolean('active')->default(1);
             $table->text('description')->nullable();
@@ -28,6 +29,7 @@ class CalendarTable extends Migration
             $table->boolean('towing')->default(1);
             $table->string('status')->default('flying');
             $table->string('cancelled_reason')->default('');
+            $table->softDeletes();
         });
     }
 

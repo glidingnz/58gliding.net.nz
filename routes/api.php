@@ -85,3 +85,10 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 		]]);
 	});
 });
+
+Route::group(['namespace' => 'Api'], function()
+{
+	Route::resource('days', 'DayAPIController');
+});
+
+Route::resource('days', 'DayAPIController');

@@ -32,7 +32,8 @@ class WaypointsTables extends Migration
 			$table->timestamps();
 		});
 
-		DB::statement("ALTER TABLE waypoints ADD COLUMN location POINT");
+		// skip for now
+		//DB::statement("ALTER TABLE waypoints ADD COLUMN location POINT");
 
 		// a group of waypoints shall be called a 'cup' after the famous cup file
 		Schema::create('cups', function (Blueprint $table) {
