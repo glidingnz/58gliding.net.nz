@@ -1,25 +1,25 @@
-<style>
-
-</style>
 
 <template>
 	<div>
 
 		<h1>Edit Club Calendar</h1>
 
-		<v-date-picker :columns="3" mode="multiple" v-model="days" @dayclick="dayClicked" is-inline />
+		<v-date-picker :columns="4" mode="multiple" v-model="days" @dayclick="dayClicked" is-inline />
 
 		<h2 class="mt-2">Selected Flying Days</h2>
 
 		<table class="table table-striped">
 			<tr>
 				<th>Date</th>
-				<th>Comments</th>
+				<th>Description</th>
+				<th class="text-center">Towing</th>
+				<th class="text-center">Winching</th>
+				<th class="text-center">Trial Flights</th>
+				<th class="text-center">Training</th>
+				<th class="text-center">Comp</th>
+				<th>Cancelled</th>
 			</tr>
-			<tr v-for="day in results">
-				<td>{{renderDate(day.day_date)}}</td>
-				<td>{{day.description}}</td>
-			</tr>
+			<edit-calendar-row v-for="day in results" v-bind:key="day.id" :row="day" :org-id="orgId"></edit-calendar-row>
 		</table>
 
 
@@ -95,7 +95,7 @@
 					day_date: this.$moment(date).format('YYYY-MM-DD')
 					};
 				window.axios.post('/api/days/deactivate', data).then(function (response) {
-					//that.load();
+					that.load();
 				});
 			},
 			renderDate: function(date) {

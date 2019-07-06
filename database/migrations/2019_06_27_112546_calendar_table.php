@@ -27,8 +27,9 @@ class CalendarTable extends Migration
             $table->boolean('training')->default(0);
             $table->boolean('winching')->default(0);
             $table->boolean('towing')->default(1);
-            $table->string('status')->default('flying');
-            $table->string('cancelled_reason')->default('');
+            $table->string('status')->nullable()->default('flying');
+            $table->boolean('cancelled')->default(0);
+            $table->string('cancelled_reason')->nullable()->default('');
             $table->softDeletes();
             $table->timestamps();
         });

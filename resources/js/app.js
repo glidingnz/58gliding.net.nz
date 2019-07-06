@@ -41,6 +41,7 @@ Vue.component('edit-achievements', require('./components/EditAchievements.vue').
 Vue.component('ratings', require('./components/Ratings.vue').default);
 Vue.component('ratings-report', require('./components/RatingsReport.vue').default);
 Vue.component('edit-calendar', require('./components/calendar/CalendarEdit.vue').default);
+Vue.component('edit-calendar-row', require('./components/calendar/CalendarEditRow.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

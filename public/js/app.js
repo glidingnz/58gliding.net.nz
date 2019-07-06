@@ -5234,7 +5234,128 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_2___default.a;
         org_id: this.orgId,
         day_date: this.$moment(date).format('YYYY-MM-DD')
       };
-      window.axios.post('/api/days/deactivate', data).then(function (response) {//that.load();
+      window.axios.post('/api/days/deactivate', data).then(function (response) {
+        that.load();
+      });
+    },
+    renderDate: function renderDate(date) {
+      return this.$moment(date).format('ddd, MMM Do YY');
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/CalendarEditRow.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calendar/CalendarEditRow.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../mixins.js */ "./resources/js/mixins.js");
+/* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
+/* harmony default export */ __webpack_exports__["default"] = ({
+  mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
+  props: ['row', 'orgId'],
+  data: function data() {
+    return {
+      id: this.row.id,
+      day_date: this.row.day_date,
+      description: this.row.description,
+      towing: this.row.towing,
+      winching: this.row.winching,
+      trialflights: this.row.trialflights,
+      training: this.row.training,
+      competition: this.row.competition,
+      cancelled: this.row.cancelled,
+      cancelled_reason: this.row.cancelled_reason
+    };
+  },
+  created: function created() {
+    this.debouncedSaveRow = _.debounce(this.saveRow, 500);
+  },
+  watch: {
+    day_date: function day_date(a, b) {
+      this.debouncedSaveRow();
+    },
+    description: function description(a, b) {
+      this.debouncedSaveRow();
+    },
+    towing: function towing(a, b) {
+      this.debouncedSaveRow();
+    },
+    winching: function winching(a, b) {
+      this.debouncedSaveRow();
+    },
+    trialflights: function trialflights(a, b) {
+      this.debouncedSaveRow();
+    },
+    training: function training(a, b) {
+      this.debouncedSaveRow();
+    },
+    competition: function competition(a, b) {
+      this.debouncedSaveRow();
+    },
+    cancelled: function cancelled(a, b) {
+      this.debouncedSaveRow();
+    },
+    cancelled_reason: function cancelled_reason(a, b) {
+      this.debouncedSaveRow();
+    }
+  },
+  methods: {
+    saveRow: function saveRow() {
+      var that = this; // insert a day into the database
+
+      var data = {
+        id: this.id,
+        org_id: this.orgId,
+        day_date: this.$moment(this.day_date).format('YYYY-MM-DD'),
+        description: this.description,
+        towing: this.towing,
+        winching: this.winching,
+        trialflights: this.trialflights,
+        training: this.training,
+        competition: this.competition,
+        cancelled: this.cancelled,
+        cancelled_reason: this.cancelled_reason
+      };
+      window.axios.put('/api/days/' + this.id, data).then(function (response) {
+        that.load();
       });
     },
     renderDate: function renderDate(date) {
@@ -68025,7 +68146,7 @@ var render = function() {
       _c("h1", [_vm._v("Edit Club Calendar")]),
       _vm._v(" "),
       _c("v-date-picker", {
-        attrs: { columns: 3, mode: "multiple", "is-inline": "" },
+        attrs: { columns: 4, mode: "multiple", "is-inline": "" },
         on: { dayclick: _vm.dayClicked },
         model: {
           value: _vm.days,
@@ -68045,11 +68166,10 @@ var render = function() {
           _vm._m(0),
           _vm._v(" "),
           _vm._l(_vm.results, function(day) {
-            return _c("tr", [
-              _c("td", [_vm._v(_vm._s(_vm.renderDate(day.day_date)))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(day.description))])
-            ])
+            return _c("edit-calendar-row", {
+              key: day.id,
+              attrs: { row: day, "org-id": _vm.orgId }
+            })
           })
         ],
         2
@@ -68066,10 +68186,358 @@ var staticRenderFns = [
     return _c("tr", [
       _c("th", [_vm._v("Date")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Comments")])
+      _c("th", [_vm._v("Description")]),
+      _vm._v(" "),
+      _c("th", { staticClass: "text-center" }, [_vm._v("Towing")]),
+      _vm._v(" "),
+      _c("th", { staticClass: "text-center" }, [_vm._v("Winching")]),
+      _vm._v(" "),
+      _c("th", { staticClass: "text-center" }, [_vm._v("Trial Flights")]),
+      _vm._v(" "),
+      _c("th", { staticClass: "text-center" }, [_vm._v("Training")]),
+      _vm._v(" "),
+      _c("th", { staticClass: "text-center" }, [_vm._v("Comp")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Cancelled")])
     ])
   }
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/CalendarEditRow.vue?vue&type=template&id=7d2f502c&":
+/*!***************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calendar/CalendarEditRow.vue?vue&type=template&id=7d2f502c& ***!
+  \***************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("tr", [
+    _c("td", [_vm._v(_vm._s(_vm.renderDate(_vm.day_date)))]),
+    _vm._v(" "),
+    _c("td", { staticClass: "align-middle text-center" }, [
+      _c("textarea", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.description,
+            expression: "description"
+          }
+        ],
+        staticClass: "form-control",
+        attrs: { type: "text", rows: "1" },
+        domProps: { value: _vm.description },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.description = $event.target.value
+          }
+        }
+      })
+    ]),
+    _vm._v(" "),
+    _c("td", { staticClass: "align-middle text-center" }, [
+      _c("div", { staticClass: "form-check-inline" }, [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.towing,
+              expression: "towing"
+            }
+          ],
+          staticClass: "form-check-input",
+          attrs: { type: "checkbox" },
+          domProps: {
+            checked: Array.isArray(_vm.towing)
+              ? _vm._i(_vm.towing, null) > -1
+              : _vm.towing
+          },
+          on: {
+            change: function($event) {
+              var $$a = _vm.towing,
+                $$el = $event.target,
+                $$c = $$el.checked ? true : false
+              if (Array.isArray($$a)) {
+                var $$v = null,
+                  $$i = _vm._i($$a, $$v)
+                if ($$el.checked) {
+                  $$i < 0 && (_vm.towing = $$a.concat([$$v]))
+                } else {
+                  $$i > -1 &&
+                    (_vm.towing = $$a.slice(0, $$i).concat($$a.slice($$i + 1)))
+                }
+              } else {
+                _vm.towing = $$c
+              }
+            }
+          }
+        })
+      ])
+    ]),
+    _vm._v(" "),
+    _c("td", { staticClass: "align-middle text-center" }, [
+      _c("div", { staticClass: "form-check-inline" }, [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.winching,
+              expression: "winching"
+            }
+          ],
+          staticClass: "form-check-input",
+          attrs: { type: "checkbox" },
+          domProps: {
+            checked: Array.isArray(_vm.winching)
+              ? _vm._i(_vm.winching, null) > -1
+              : _vm.winching
+          },
+          on: {
+            change: function($event) {
+              var $$a = _vm.winching,
+                $$el = $event.target,
+                $$c = $$el.checked ? true : false
+              if (Array.isArray($$a)) {
+                var $$v = null,
+                  $$i = _vm._i($$a, $$v)
+                if ($$el.checked) {
+                  $$i < 0 && (_vm.winching = $$a.concat([$$v]))
+                } else {
+                  $$i > -1 &&
+                    (_vm.winching = $$a
+                      .slice(0, $$i)
+                      .concat($$a.slice($$i + 1)))
+                }
+              } else {
+                _vm.winching = $$c
+              }
+            }
+          }
+        })
+      ])
+    ]),
+    _vm._v(" "),
+    _c("td", { staticClass: "align-middle text-center" }, [
+      _c("div", { staticClass: "form-check-inline" }, [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.trialflights,
+              expression: "trialflights"
+            }
+          ],
+          staticClass: "form-check-input",
+          attrs: { type: "checkbox" },
+          domProps: {
+            checked: Array.isArray(_vm.trialflights)
+              ? _vm._i(_vm.trialflights, null) > -1
+              : _vm.trialflights
+          },
+          on: {
+            change: function($event) {
+              var $$a = _vm.trialflights,
+                $$el = $event.target,
+                $$c = $$el.checked ? true : false
+              if (Array.isArray($$a)) {
+                var $$v = null,
+                  $$i = _vm._i($$a, $$v)
+                if ($$el.checked) {
+                  $$i < 0 && (_vm.trialflights = $$a.concat([$$v]))
+                } else {
+                  $$i > -1 &&
+                    (_vm.trialflights = $$a
+                      .slice(0, $$i)
+                      .concat($$a.slice($$i + 1)))
+                }
+              } else {
+                _vm.trialflights = $$c
+              }
+            }
+          }
+        })
+      ])
+    ]),
+    _vm._v(" "),
+    _c("td", { staticClass: "align-middle text-center" }, [
+      _c("div", { staticClass: "form-check-inline" }, [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.training,
+              expression: "training"
+            }
+          ],
+          staticClass: "form-check-input",
+          attrs: { type: "checkbox" },
+          domProps: {
+            checked: Array.isArray(_vm.training)
+              ? _vm._i(_vm.training, null) > -1
+              : _vm.training
+          },
+          on: {
+            change: function($event) {
+              var $$a = _vm.training,
+                $$el = $event.target,
+                $$c = $$el.checked ? true : false
+              if (Array.isArray($$a)) {
+                var $$v = null,
+                  $$i = _vm._i($$a, $$v)
+                if ($$el.checked) {
+                  $$i < 0 && (_vm.training = $$a.concat([$$v]))
+                } else {
+                  $$i > -1 &&
+                    (_vm.training = $$a
+                      .slice(0, $$i)
+                      .concat($$a.slice($$i + 1)))
+                }
+              } else {
+                _vm.training = $$c
+              }
+            }
+          }
+        })
+      ])
+    ]),
+    _vm._v(" "),
+    _c("td", { staticClass: "align-middle text-center" }, [
+      _c("div", { staticClass: "form-check-inline" }, [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.competition,
+              expression: "competition"
+            }
+          ],
+          staticClass: "form-check-input",
+          attrs: { type: "checkbox" },
+          domProps: {
+            checked: Array.isArray(_vm.competition)
+              ? _vm._i(_vm.competition, null) > -1
+              : _vm.competition
+          },
+          on: {
+            change: function($event) {
+              var $$a = _vm.competition,
+                $$el = $event.target,
+                $$c = $$el.checked ? true : false
+              if (Array.isArray($$a)) {
+                var $$v = null,
+                  $$i = _vm._i($$a, $$v)
+                if ($$el.checked) {
+                  $$i < 0 && (_vm.competition = $$a.concat([$$v]))
+                } else {
+                  $$i > -1 &&
+                    (_vm.competition = $$a
+                      .slice(0, $$i)
+                      .concat($$a.slice($$i + 1)))
+                }
+              } else {
+                _vm.competition = $$c
+              }
+            }
+          }
+        })
+      ])
+    ]),
+    _vm._v(" "),
+    _c("td", { staticClass: "align-middle" }, [
+      _c("div", { staticClass: "form-row form-check-inline" }, [
+        _c("div", { staticClass: "col-auto" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.cancelled,
+                expression: "cancelled"
+              }
+            ],
+            staticClass: "form-check-input ",
+            attrs: { type: "checkbox" },
+            domProps: {
+              checked: Array.isArray(_vm.cancelled)
+                ? _vm._i(_vm.cancelled, null) > -1
+                : _vm.cancelled
+            },
+            on: {
+              change: function($event) {
+                var $$a = _vm.cancelled,
+                  $$el = $event.target,
+                  $$c = $$el.checked ? true : false
+                if (Array.isArray($$a)) {
+                  var $$v = null,
+                    $$i = _vm._i($$a, $$v)
+                  if ($$el.checked) {
+                    $$i < 0 && (_vm.cancelled = $$a.concat([$$v]))
+                  } else {
+                    $$i > -1 &&
+                      (_vm.cancelled = $$a
+                        .slice(0, $$i)
+                        .concat($$a.slice($$i + 1)))
+                  }
+                } else {
+                  _vm.cancelled = $$c
+                }
+              }
+            }
+          })
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-auto" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.cancelled_reason,
+                expression: "cancelled_reason"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: {
+              type: "text",
+              disabled: !_vm.cancelled,
+              placeholder: "Reason"
+            },
+            domProps: { value: _vm.cancelled_reason },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.cancelled_reason = $event.target.value
+              }
+            }
+          })
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -80258,6 +80726,7 @@ Vue.component('edit-achievements', __webpack_require__(/*! ./components/EditAchi
 Vue.component('ratings', __webpack_require__(/*! ./components/Ratings.vue */ "./resources/js/components/Ratings.vue")["default"]);
 Vue.component('ratings-report', __webpack_require__(/*! ./components/RatingsReport.vue */ "./resources/js/components/RatingsReport.vue")["default"]);
 Vue.component('edit-calendar', __webpack_require__(/*! ./components/calendar/CalendarEdit.vue */ "./resources/js/components/calendar/CalendarEdit.vue")["default"]);
+Vue.component('edit-calendar-row', __webpack_require__(/*! ./components/calendar/CalendarEditRow.vue */ "./resources/js/components/calendar/CalendarEditRow.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -81727,6 +82196,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarEdit_vue_vue_type_template_id_343227fe___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarEdit_vue_vue_type_template_id_343227fe___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/calendar/CalendarEditRow.vue":
+/*!**************************************************************!*\
+  !*** ./resources/js/components/calendar/CalendarEditRow.vue ***!
+  \**************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _CalendarEditRow_vue_vue_type_template_id_7d2f502c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CalendarEditRow.vue?vue&type=template&id=7d2f502c& */ "./resources/js/components/calendar/CalendarEditRow.vue?vue&type=template&id=7d2f502c&");
+/* harmony import */ var _CalendarEditRow_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CalendarEditRow.vue?vue&type=script&lang=js& */ "./resources/js/components/calendar/CalendarEditRow.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _CalendarEditRow_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _CalendarEditRow_vue_vue_type_template_id_7d2f502c___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _CalendarEditRow_vue_vue_type_template_id_7d2f502c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/calendar/CalendarEditRow.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/calendar/CalendarEditRow.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************!*\
+  !*** ./resources/js/components/calendar/CalendarEditRow.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarEditRow_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./CalendarEditRow.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/CalendarEditRow.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarEditRow_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/calendar/CalendarEditRow.vue?vue&type=template&id=7d2f502c&":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/components/calendar/CalendarEditRow.vue?vue&type=template&id=7d2f502c& ***!
+  \*********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarEditRow_vue_vue_type_template_id_7d2f502c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./CalendarEditRow.vue?vue&type=template&id=7d2f502c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/CalendarEditRow.vue?vue&type=template&id=7d2f502c&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarEditRow_vue_vue_type_template_id_7d2f502c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarEditRow_vue_vue_type_template_id_7d2f502c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

@@ -48,6 +48,7 @@ class Day extends Model
         'winching',
         'towing',
         'status',
+        'cancelled',
         'cancelled_reason'
     ];
 
@@ -68,6 +69,7 @@ class Day extends Model
         'winching' => 'boolean',
         'towing' => 'boolean',
         'status' => 'string',
+        'cancelled' => 'boolean',
         'cancelled_reason' => 'string'
     ];
 
