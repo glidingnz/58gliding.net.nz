@@ -42,7 +42,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             \App\Http\Middleware\LoadOrg::class,
-            'throttle:60,1',
+            'throttle:600,1',
             'bindings',
         ],
     ];

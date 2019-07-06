@@ -5159,6 +5159,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -5183,8 +5193,11 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_2___default.a;
   },
   methods: {
     dayClicked: function dayClicked(clickedDay) {
-      // check if clicked day is in array or not
-      if (this.days.includes(clickedDay.date)) {
+      // check if clicked day is in array or not.
+      // The days array is not updated when this clicked function is called.
+      if (this.days.find(function (item) {
+        return item.getTime() == clickedDay.date.getTime();
+      })) {
         // remove
         this.removeDay(clickedDay.date);
       } else {
@@ -5205,26 +5218,27 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_2___default.a;
       });
     },
     addDay: function addDay(date) {
-      // insert a day into the database
+      var that = this; // insert a day into the database
+
       var data = {
         org_id: this.orgId,
         day_date: this.$moment(date).format('YYYY-MM-DD')
       };
       window.axios.post('/api/days', data).then(function (response) {
-        console.log(response);
+        that.load();
       });
     },
     removeDay: function removeDay(date) {
+      var that = this;
       var data = {
         org_id: this.orgId,
         day_date: this.$moment(date).format('YYYY-MM-DD')
       };
-      window.axios.post('/api/days/deactivate', data).then(function (response) {
-        console.log(response);
-      }); // insert a day into the database
-      // window.axios.delete('/api/v1/days/' + , {}).then(function (response) {
-      // 		console.log(response);
-      // 	});
+      window.axios.post('/api/days/deactivate', data).then(function (response) {//that.load();
+      });
+    },
+    renderDate: function renderDate(date) {
+      return this.$moment(date).format('ddd, MMM Do YY');
     }
   }
 });
@@ -68022,12 +68036,40 @@ var render = function() {
         }
       }),
       _vm._v(" "),
-      _c("p", [_vm._v("Select active flying days above")])
+      _c("h2", { staticClass: "mt-2" }, [_vm._v("Selected Flying Days")]),
+      _vm._v(" "),
+      _c(
+        "table",
+        { staticClass: "table table-striped" },
+        [
+          _vm._m(0),
+          _vm._v(" "),
+          _vm._l(_vm.results, function(day) {
+            return _c("tr", [
+              _c("td", [_vm._v(_vm._s(_vm.renderDate(day.day_date)))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(day.description))])
+            ])
+          })
+        ],
+        2
+      )
     ],
     1
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("th", [_vm._v("Date")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Comments")])
+    ])
+  }
+]
 render._withStripped = true
 
 

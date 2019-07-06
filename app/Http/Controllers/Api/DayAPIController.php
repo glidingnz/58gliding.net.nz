@@ -37,6 +37,8 @@ class DayAPIController extends AppBaseController
 	{
 		$query = Day::query();
 
+		$query->orderBy('day_date');
+
 		// limit by organisation
 		if ($request->has('org_id')) $query->where('org_id','=',$request->input('org_id'));
 
