@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use InfyOm\Generator\Utils\ResponseUtil;
 use Response;
+use DB;
 
 /**
  * @SWG\Swagger(
@@ -16,15 +17,22 @@ use Response;
  * This class should be parent class for other API controllers
  * Class AppBaseController
  */
-class AppBaseController extends Controller
+class AppBaseController extends Api\ApiController
 {
+
     public function sendResponse($result, $message)
     {
-        return Response::json(ResponseUtil::makeResponse($message, $result));
+		$response = ResponseUtil::makeResponse($message, $result);
+		$this->_get_db_queries();
+		$response['queries'] = $this->data['queries'];
+        return Response::json($response);
     }
 
     public function sendError($error, $code = 404)
     {
+		$this->_get_db_queries();
+		$result['data'] = $this->data['queries'];
+
         return Response::json(ResponseUtil::makeError($error), $code);
     }
 }

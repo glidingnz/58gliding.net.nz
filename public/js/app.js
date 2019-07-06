@@ -5159,8 +5159,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 
 
 
@@ -5171,7 +5169,9 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_2___default.a;
   data: function data() {
     return {
       results: [],
-      days: [] // an array of the days this club has selected so far
+      days: [],
+      // an array of the days this club has selected so far
+      previousDays: [] // to be used to check what has changed since we clicked
 
     };
   },
@@ -5179,36 +5179,33 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_2___default.a;
     this.load();
   },
   watch: {
-    days: function days(newDays, previousDays) {
-      // work out if we've added or removed a day
-      var addedDays = newDays.filter(function (val) {
-        return previousDays.indexOf(val) == -1;
-      });
-      var removedDays = previousDays.filter(function (val) {
-        return newDays.indexOf(val) == -1;
-      }); // if we have a day in the addedDays array, we can insert it
-
-      if (addedDays.length > 0) {
-        this.addDay(addedDays[0]);
-      } // if we have a day in the addedDays array, we can disable it
-
-
-      if (removedDays.length > 0) {
-        this.removeDay(removedDays[0]);
-      }
-    }
+    days: function days(newDays, previousDays) {}
   },
   methods: {
-    test: function test(selecteddate) {//console.log(selecteddate);
+    dayClicked: function dayClicked(clickedDay) {
+      // check if clicked day is in array or not
+      if (this.days.includes(clickedDay.date)) {
+        // remove
+        this.removeDay(clickedDay.date);
+      } else {
+        // insert
+        this.addDay(clickedDay.date);
+      }
     },
-    load: function load() {// var that = this;
-      // window.axios.get('/api/v1/achievements?member_id=' + this.memberId).then(function (response) {
-      // 	that.results = response.data.data;
-      // });
+    load: function load() {
+      var that = this;
+      window.axios.get('/api/days?org_id=' + this.orgId).then(function (response) {
+        that.results = response.data.data; // remove all existing days
+
+        that.days = []; // update all calendar days from what's loaded
+
+        for (var i = 0; i < that.results.length; i++) {
+          that.days.push(that.$moment(that.results[i].day_date, "YYYY-MM-DD").toDate());
+        }
+      });
     },
     addDay: function addDay(date) {
       // insert a day into the database
-      console.log(this);
       var data = {
         org_id: this.orgId,
         day_date: this.$moment(date).format('YYYY-MM-DD')
@@ -5217,7 +5214,14 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_2___default.a;
         console.log(response);
       });
     },
-    removeDay: function removeDay(date) {// insert a day into the database
+    removeDay: function removeDay(date) {
+      var data = {
+        org_id: this.orgId,
+        day_date: this.$moment(date).format('YYYY-MM-DD')
+      };
+      window.axios.post('/api/days/deactivate', data).then(function (response) {
+        console.log(response);
+      }); // insert a day into the database
       // window.axios.delete('/api/v1/days/' + , {}).then(function (response) {
       // 		console.log(response);
       // 	});
@@ -68008,7 +68012,7 @@ var render = function() {
       _vm._v(" "),
       _c("v-date-picker", {
         attrs: { columns: 3, mode: "multiple", "is-inline": "" },
-        on: { input: _vm.test },
+        on: { dayclick: _vm.dayClicked },
         model: {
           value: _vm.days,
           callback: function($$v) {
@@ -68018,8 +68022,7 @@ var render = function() {
         }
       }),
       _vm._v(" "),
-      _c("p", [_vm._v("Select active flying days above")]),
-      _vm._v("\n\n\n\t" + _vm._s(_vm.days) + "\n\n\n")
+      _c("p", [_vm._v("Select active flying days above")])
     ],
     1
   )

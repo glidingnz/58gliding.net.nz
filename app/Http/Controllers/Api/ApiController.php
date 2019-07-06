@@ -14,6 +14,8 @@ class ApiController extends Controller
 		DB::enableQueryLog();
 		$this->data['success']=false;
 		$this->data['http_code']=500;
+
+		parent::__construct();
 	}
 
 	public function success($data=[], $paginated=false)

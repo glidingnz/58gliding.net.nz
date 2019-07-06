@@ -23,6 +23,7 @@ class DayAPIController extends AppBaseController
 	public function __construct(DayRepository $dayRepo)
 	{
 		$this->dayRepository = $dayRepo;
+		parent::__construct();
 	}
 
 	/**
@@ -34,13 +35,18 @@ class DayAPIController extends AppBaseController
 	 */
 	public function index(Request $request)
 	{
-		$days = $this->dayRepository->all(
-			$request->except(['skip', 'limit']),
-			$request->get('skip'),
-			$request->get('limit')
-		);
+		$query = Day::query();
 
-		return $this->sendResponse($days->toArray(), 'Days retrieved successfully');
+		// limit by organisation
+		if ($request->has('org_id')) $query->where('org_id','=',$request->input('org_id'));
+
+		// only get active days unless specified
+		if (!$request->has('show_inactive')) $query->where('active','<>','false');
+
+		if ($results = $query->paginate($request->input('per-page', 50)))
+		{
+			return $this->success($results, TRUE);
+		}
 	}
 
 
@@ -55,10 +61,24 @@ class DayAPIController extends AppBaseController
 	public function store(CreateDayAPIRequest $request)
 	{
 		$input = $request->all();
+		if (!$request->has('org_id')) return $this->sendError('org_id is required');
+		if (!$request->has('day_date')) return $this->sendError('day_date is required');
 
-		$day = $this->dayRepository->create($input);
+		// check if day already exists. If so activate, rather than create
+		if ($existingDay = Day::where('org_id','=',$request->input('org_id'))->where('day_date','=',$request->input('day_date'))->first())
+		{
+			$existingDay->active = true;
+			$existingDay->deleted_at = null;
+			$existingDay->save();
 
-		return $this->sendResponse($day->toArray(), 'Day saved successfully');
+			return $this->sendResponse($existingDay->toArray(), 'Day existing and activated successfully');
+		}
+		else
+		{
+			$day = $this->dayRepository->create($input);
+
+			return $this->sendResponse($day->toArray(), 'Day added successfully');
+		}
 	}
 
 	/**
@@ -124,9 +144,38 @@ class DayAPIController extends AppBaseController
 		if (empty($day)) {
 			return $this->sendError('Day not found');
 		}
-
 		$day->delete();
 
 		return $this->sendResponse($id, 'Day deleted successfully');
+	}
+
+
+	/**
+	 * Deactivate a day.
+	 * POST /days/deactivate
+	 *
+	 * @param string $day
+	 *
+	 * @throws \Exception
+	 *
+	 * @return Response
+	 */
+	public function deactivate(Request $request)
+	{
+		if (!$request->has('org_id')) return $this->sendError('org_id is required');
+		if (!$request->has('day_date')) return $this->sendError('day_date is required');
+
+		/** @var Day $day */
+		if ($day = Day::where('org_id','=',$request->input('org_id'))->where('day_date','=',$request->input('day_date'))->first())
+		{
+			$day->active=false;
+			$day->save();
+			return $this->sendResponse($day, 'Day deactivated successfully');
+		}
+
+		if (empty($day)) {
+			return $this->sendError('Day not found');
+		}
+
 	}
 }

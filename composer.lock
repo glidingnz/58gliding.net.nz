@@ -4,8 +4,44 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "caea3f3142c58cfad190a5f0f0464e70",
+    "content-hash": "aa32ce3aedfa22790b6b621156d30b30",
     "packages": [
+        {
+            "name": "coenjacobs/eloquent-composite-primary-keys",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/coenjacobs/eloquent-composite-primary-keys.git",
+                "reference": "62d0cc1107cf3f91e4890f65d2bc08c13a3195f8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/coenjacobs/eloquent-composite-primary-keys/zipball/62d0cc1107cf3f91e4890f65d2bc08c13a3195f8",
+                "reference": "62d0cc1107cf3f91e4890f65d2bc08c13a3195f8",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^5.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CoenJacobs\\EloquentCompositePrimaryKeys\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Coen Jacobs",
+                    "email": "coenjacobs@gmail.com"
+                }
+            ],
+            "description": "Offers composite primary keys on Eloquent models",
+            "time": "2017-10-23T09:10:24+00:00"
+        },
         {
             "name": "defuse/php-encryption",
             "version": "v2.2.1",
@@ -6131,8 +6167,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "infyomlabs/laravel-generator": 20,
-        "infyomlabs/adminlte-templates": 20
+        "infyomlabs/adminlte-templates": 20,
+        "infyomlabs/laravel-generator": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

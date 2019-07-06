@@ -7,12 +7,10 @@
 
 		<h1>Edit Club Calendar</h1>
 
-		<v-date-picker :columns="3" mode="multiple" v-model="days" @input="test" is-inline />
+		<v-date-picker :columns="3" mode="multiple" v-model="days" @dayclick="dayClicked" is-inline />
 
 		<p>Select active flying days above</p>
 
-
-		{{days}}
 
 
 	</div>
@@ -31,7 +29,8 @@
 		data() {
 			return {
 				results: [],
-				days: [] // an array of the days this club has selected so far
+				days: [], // an array of the days this club has selected so far
+				previousDays: [] // to be used to check what has changed since we clicked
 			}
 		},
 		mounted() {
@@ -40,40 +39,39 @@
 		watch: {
 			days: function(newDays, previousDays) {
 
-				// work out if we've added or removed a day
-				var addedDays = newDays.filter(function(val) {
-					return previousDays.indexOf(val) == -1;
-				});
-
-				var removedDays = previousDays.filter(function(val) {
-					return newDays.indexOf(val) == -1;
-				});
-
-				// if we have a day in the addedDays array, we can insert it
-				if (addedDays.length>0) {
-					this.addDay(addedDays[0]);
-				}
-
-				// if we have a day in the addedDays array, we can disable it
-				if (removedDays.length>0) {
-					this.removeDay(removedDays[0]);
-				}
-
 			}
 		},
 		methods: {
-			test: function(selecteddate) {
-				//console.log(selecteddate);
+			dayClicked: function(clickedDay) {
+
+
+				// check if clicked day is in array or not
+				if (this.days.includes(clickedDay.date)) {
+					// remove
+					this.removeDay(clickedDay.date);
+				} else {
+					// insert
+					this.addDay(clickedDay.date);
+				}
 			},
 			load: function() {
-				// var that = this;
-				// window.axios.get('/api/v1/achievements?member_id=' + this.memberId).then(function (response) {
-				// 	that.results = response.data.data;
-				// });
+				var that = this;
+				window.axios.get('/api/days?org_id=' + this.orgId).then(function (response) {
+					that.results = response.data.data;
+
+					// remove all existing days
+					that.days = [];
+
+					// update all calendar days from what's loaded
+					for (var i=0; i<that.results.length; i++) {
+						that.days.push(that.$moment(that.results[i].day_date, "YYYY-MM-DD").toDate());
+					}
+				});
+
+
 			},
 			addDay: function(date) {
 				// insert a day into the database
-					console.log(this);
 				var data = {
 					org_id: this.orgId,
 					day_date: this.$moment(date).format('YYYY-MM-DD')
@@ -83,6 +81,16 @@
 					});
 			},
 			removeDay: function(date) {
+
+				var data = {
+					org_id: this.orgId,
+					day_date: this.$moment(date).format('YYYY-MM-DD')
+					};
+				window.axios.post('/api/days/deactivate', data).then(function (response) {
+						console.log(response);
+					});
+
+
 				// insert a day into the database
 				// window.axios.delete('/api/v1/days/' + , {}).then(function (response) {
 				// 		console.log(response);
