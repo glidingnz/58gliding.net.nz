@@ -43,6 +43,8 @@ Route::GET('/btraced/{rego}', 'Api\v1\TrackingApiController@btraced'); // specia
 
 Route::get('/api-control', 'HomeController@api_controller');
 
+Route::get('/calendar', 'Apps\CalendarController@index');
+
 Route::get('/members', 'Apps\MembersController@index');
 Route::group(['middleware' => ['auth']], function () {
 	Route::get('/user/account', 'UserController@view_account');
@@ -65,7 +67,6 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/members/{id}/ratings', 'Apps\MembersController@ratings');
 	Route::get('/members/download/{key}', 'Apps\MembersController@download');
 
-	Route::get('/calendar', 'Apps\CalendarController@index');
 	Route::get('/calendar/edit', 'Apps\CalendarController@edit');
 
 });

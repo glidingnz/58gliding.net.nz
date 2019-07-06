@@ -4,22 +4,22 @@
 
 		<h1>Edit Club Calendar</h1>
 
-		<v-date-picker :columns="4" mode="multiple" v-model="days" @dayclick="dayClicked" is-inline />
+		<v-date-picker :columns="4" mode="multiple" v-model="days" @dayclick="dayClicked" is-inline :min-date='new Date()' />
 
 		<h2 class="mt-2">Selected Flying Days</h2>
 
 		<table class="table table-striped">
 			<tr>
 				<th>Date</th>
-				<th>Description</th>
-				<th class="text-center">Towing</th>
-				<th class="text-center">Winching</th>
+				<th>Day Details</th>
+				<th class="text-center">Tows</th>
+				<th class="text-center">Winch</th>
 				<th class="text-center">Trial Flights</th>
 				<th class="text-center">Training</th>
 				<th class="text-center">Comp</th>
 				<th>Cancelled</th>
 			</tr>
-			<edit-calendar-row v-for="day in results" v-bind:key="day.id" :row="day" :org-id="orgId"></edit-calendar-row>
+			<edit-calendar-row v-for="day in results" v-bind:key="day.id" :row="day" :org-id="orgId" ></edit-calendar-row>
 		</table>
 
 
@@ -66,7 +66,9 @@
 			},
 			load: function() {
 				var that = this;
-				window.axios.get('/api/days?org_id=' + this.orgId).then(function (response) {
+				// select all days from today onwards
+				window.axios.get('/api/days?org_id=' + this.orgId + '&start_date=' + this.$moment().format('YYYY-MM-DD')).then(function (response) {
+					that.results=[];
 					that.results = response.data.data;
 
 					// remove all existing days

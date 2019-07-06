@@ -5206,8 +5206,10 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_2___default.a;
       }
     },
     load: function load() {
-      var that = this;
-      window.axios.get('/api/days?org_id=' + this.orgId).then(function (response) {
+      var that = this; // select all days from today onwards
+
+      window.axios.get('/api/days?org_id=' + this.orgId + '&start_date=' + this.$moment().format('YYYY-MM-DD')).then(function (response) {
+        that.results = [];
         that.results = response.data.data; // remove all existing days
 
         that.days = []; // update all calendar days from what's loaded
@@ -5259,6 +5261,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -68145,7 +68172,12 @@ var render = function() {
       _c("h1", [_vm._v("Edit Club Calendar")]),
       _vm._v(" "),
       _c("v-date-picker", {
-        attrs: { columns: 4, mode: "multiple", "is-inline": "" },
+        attrs: {
+          columns: 4,
+          mode: "multiple",
+          "is-inline": "",
+          "min-date": new Date()
+        },
         on: { dayclick: _vm.dayClicked },
         model: {
           value: _vm.days,
@@ -68185,11 +68217,11 @@ var staticRenderFns = [
     return _c("tr", [
       _c("th", [_vm._v("Date")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Description")]),
+      _c("th", [_vm._v("Day Details")]),
       _vm._v(" "),
-      _c("th", { staticClass: "text-center" }, [_vm._v("Towing")]),
+      _c("th", { staticClass: "text-center" }, [_vm._v("Tows")]),
       _vm._v(" "),
-      _c("th", { staticClass: "text-center" }, [_vm._v("Winching")]),
+      _c("th", { staticClass: "text-center" }, [_vm._v("Winch")]),
       _vm._v(" "),
       _c("th", { staticClass: "text-center" }, [_vm._v("Trial Flights")]),
       _vm._v(" "),
@@ -68261,7 +68293,7 @@ var render = function() {
             }
           ],
           staticClass: "form-check-input",
-          attrs: { type: "checkbox" },
+          attrs: { id: "towing" + _vm.id, type: "checkbox" },
           domProps: {
             checked: Array.isArray(_vm.towing)
               ? _vm._i(_vm.towing, null) > -1
@@ -68286,7 +68318,9 @@ var render = function() {
               }
             }
           }
-        })
+        }),
+        _vm._v(" "),
+        _c("label", { attrs: { for: "towing" + _vm.id } }, [_vm._v("Tows")])
       ])
     ]),
     _vm._v(" "),
@@ -68302,7 +68336,7 @@ var render = function() {
             }
           ],
           staticClass: "form-check-input",
-          attrs: { type: "checkbox" },
+          attrs: { id: "winching" + _vm.id, type: "checkbox" },
           domProps: {
             checked: Array.isArray(_vm.winching)
               ? _vm._i(_vm.winching, null) > -1
@@ -68329,7 +68363,9 @@ var render = function() {
               }
             }
           }
-        })
+        }),
+        _vm._v(" "),
+        _c("label", { attrs: { for: "winching" + _vm.id } }, [_vm._v("Winch")])
       ])
     ]),
     _vm._v(" "),
@@ -68345,7 +68381,7 @@ var render = function() {
             }
           ],
           staticClass: "form-check-input",
-          attrs: { type: "checkbox" },
+          attrs: { id: "trialflights" + _vm.id, type: "checkbox" },
           domProps: {
             checked: Array.isArray(_vm.trialflights)
               ? _vm._i(_vm.trialflights, null) > -1
@@ -68372,7 +68408,11 @@ var render = function() {
               }
             }
           }
-        })
+        }),
+        _vm._v(" "),
+        _c("label", { attrs: { for: "trialflights" + _vm.id } }, [
+          _vm._v("Trial Flights")
+        ])
       ])
     ]),
     _vm._v(" "),
@@ -68388,7 +68428,7 @@ var render = function() {
             }
           ],
           staticClass: "form-check-input",
-          attrs: { type: "checkbox" },
+          attrs: { id: "training" + _vm.id, type: "checkbox" },
           domProps: {
             checked: Array.isArray(_vm.training)
               ? _vm._i(_vm.training, null) > -1
@@ -68415,7 +68455,11 @@ var render = function() {
               }
             }
           }
-        })
+        }),
+        _vm._v(" "),
+        _c("label", { attrs: { for: "training" + _vm.id } }, [
+          _vm._v("Training")
+        ])
       ])
     ]),
     _vm._v(" "),
@@ -68431,7 +68475,7 @@ var render = function() {
             }
           ],
           staticClass: "form-check-input",
-          attrs: { type: "checkbox" },
+          attrs: { id: "competition" + _vm.id, type: "checkbox" },
           domProps: {
             checked: Array.isArray(_vm.competition)
               ? _vm._i(_vm.competition, null) > -1
@@ -68458,7 +68502,11 @@ var render = function() {
               }
             }
           }
-        })
+        }),
+        _vm._v(" "),
+        _c("label", { attrs: { for: "competition" + _vm.id } }, [
+          _vm._v("Comp")
+        ])
       ])
     ]),
     _vm._v(" "),
@@ -68475,7 +68523,7 @@ var render = function() {
               }
             ],
             staticClass: "form-check-input ",
-            attrs: { type: "checkbox" },
+            attrs: { id: "cancelled" + _vm.id, type: "checkbox" },
             domProps: {
               checked: Array.isArray(_vm.cancelled)
                 ? _vm._i(_vm.cancelled, null) > -1

@@ -3,15 +3,40 @@
 	<tr>
 		<td>{{renderDate(day_date)}}</td>
 		<td class="align-middle text-center"><textarea type="text" class="form-control" v-model="description" rows="1"></textarea></td>
-		<td class="align-middle text-center"><div class="form-check-inline"><input type="checkbox" v-model="towing" class="form-check-input"></div></td>
-		<td class="align-middle text-center"><div class="form-check-inline"><input type="checkbox" v-model="winching" class="form-check-input"></div></td>
-		<td class="align-middle text-center"><div class="form-check-inline"><input type="checkbox" v-model="trialflights" class="form-check-input"></div></td>
-		<td class="align-middle text-center"><div class="form-check-inline"><input type="checkbox" v-model="training" class="form-check-input"></div></td>
-		<td class="align-middle text-center"><div class="form-check-inline"><input type="checkbox" v-model="competition" class="form-check-input"></div></td>
+		<td class="align-middle text-center">
+			<div class="form-check-inline">
+				<input :id="'towing'+id" type="checkbox" v-model="towing" class="form-check-input">
+				<label :for="'towing'+id">Tows</label>
+			</div>
+		</td>
+		<td class="align-middle text-center">
+			<div class="form-check-inline">
+				<input :id="'winching'+id" type="checkbox" v-model="winching" class="form-check-input">
+				<label :for="'winching'+id">Winch</label>
+			</div>
+		</td>
+		<td class="align-middle text-center">
+			<div class="form-check-inline">
+				<input :id="'trialflights'+id" type="checkbox" v-model="trialflights" class="form-check-input">
+				<label :for="'trialflights'+id">Trial Flights</label>
+			</div>
+		</td>
+		<td class="align-middle text-center">
+			<div class="form-check-inline">
+				<input :id="'training'+id" type="checkbox" v-model="training" class="form-check-input">
+				<label :for="'training'+id">Training</label>
+			</div>
+		</td>
+		<td class="align-middle text-center">
+			<div class="form-check-inline">
+				<input :id="'competition'+id" type="checkbox" v-model="competition" class="form-check-input">
+				<label :for="'competition'+id">Comp</label>
+			</div>
+		</td>
 		<td class="align-middle">
 			<div class="form-row form-check-inline">
 				<div class="col-auto">
-					<input type="checkbox" v-model="cancelled" class="form-check-input ">
+					<input :id="'cancelled'+id" type="checkbox" v-model="cancelled" class="form-check-input ">
 				</div>
 				
 				<div class="col-auto">

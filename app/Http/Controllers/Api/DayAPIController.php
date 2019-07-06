@@ -43,7 +43,14 @@ class DayAPIController extends AppBaseController
 		if ($request->has('org_id')) $query->where('org_id','=',$request->input('org_id'));
 
 		// only get active days unless specified
-		if (!$request->has('show_inactive')) $query->where('active','<>','false');
+		if (!$request->has('inactive')) $query->where('active','<>','false');
+
+		// only get future days unless specified. 2 days ensures it works no matter the timezone.
+		//if (!$request->has('past')) $query->whereRaw('day_date >= NOW() - INTERVAL 2 DAY');
+
+		// start and end dates
+		if ($request->has('start_date')) $query->where('day_date', '>=', $request->input('start_date'));
+		if ($request->has('end_date')) $query->where('day_date', '<=', $request->input('end_date'));
 
 		if ($results = $query->paginate($request->input('per-page', 50)))
 		{
