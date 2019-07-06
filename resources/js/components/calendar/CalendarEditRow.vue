@@ -23,7 +23,6 @@
 	</tr>
 </template>
 
-
 <script>
 	import common from '../../mixins.js';
 	import moment from 'moment';
