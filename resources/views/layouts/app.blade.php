@@ -15,7 +15,7 @@
         <link rel="stylesheet" type="text/css" href="{{ asset('css/font-awesome.min.css')}}">
         <!-- grid's css (required) -->
         <link rel="stylesheet" type="text/css" href="{{ asset('vendor/leantony/grid/css/grid.css') }}" />
-        !-- date picker (required if you need date picker & date range filters) -->
+        <!-- date picker (required if you need date picker & date range filters) -->
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
 
 
