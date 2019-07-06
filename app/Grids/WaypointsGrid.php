@@ -24,7 +24,7 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
         'view',
         'delete',
         'refresh',
-        'export'
+        //'export'
     ];
 
     /**
@@ -49,6 +49,7 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
                     "enabled" => true,
                     "operator" => "like"
                 ],
+                "search" => ["enabled" => true],
                 "styles" => [
                     "column" => "grid-w-10"
                 ]
@@ -59,6 +60,7 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
                     "enabled" => true,
                     "operator" => "like"
                 ],
+                "search" => ["enabled" => true],
                 "styles" => [
                     "column" => "grid-w-6"
                 ]
@@ -69,6 +71,7 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
                     "enabled" => true,
                     "operator" => "like"
                 ],
+                "search" => ["enabled" => true],
             ],
             "lat" => [
                 "label" => "Lat",
@@ -102,15 +105,20 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
                     "column" => "grid-w-6"
                 ]
             ],
-            "created_at" => [
-                "sort" => false,
-                "date" => "true",
-                "filter" => [
-                    "enabled" => true,
-                    "type" => "daterange",
-                    "operator" => "<="
-                ]
-            ]
+            'direction'=>[
+                'label'=>'direction',
+                'renderIf'=>function() {return 0;},
+                'export'=>true,
+            ],
+            //"created_at" => [
+            //    "sort" => false,
+            //    "date" => "true",
+            //    "filter" => [
+            //        "enabled" => true,
+            //        "type" => "daterange",
+            //        "operator" => "<="
+            //    ]
+            //]
         ];
     }
 
@@ -159,6 +167,7 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
         // call `editToolbarButton` to edit a toolbar button
         // call `editRowButton` to edit a row button
         // call `editButtonProperties` to do either of the above. All the edit functions accept the properties as an array
+
     }
 
     /**

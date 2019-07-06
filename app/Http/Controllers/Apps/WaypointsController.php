@@ -23,6 +23,7 @@ class WaypointsController extends Controller
     public function index(Request $request)
     {
         $waypoints = Waypoint::class;
+
         return (new WaypointsGrid(['waypoints' => $waypoints]))
         ->create(['query' => Waypoint::query(), 'request' => $request])
         ->renderOn('waypoints.waypoints');
@@ -56,7 +57,7 @@ class WaypointsController extends Controller
         $modal = [
             'model' => class_basename(Waypoint::class),
             'route' => route('waypoints.show',['waypoint'=>$waypoint->id]),
-            'method' => 'patch',
+            'method' => 'PATCH',
             'action' => 'show',
             'pjaxContainer' => $request->get('ref'),
         ];
@@ -73,35 +74,53 @@ class WaypointsController extends Controller
     */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'code' => 'unique:waypoints,code',
+            'name' => 'min:3|max:80',
+            'description' => 'min:3|max:80',
+            'lat' => 'numeric',
+            'long' => 'numeric',
+            'elevation' => 'nullable|numeric',
+            'direction' => 'nullable|numeric',
+            'length' =>'nullable|numeric',
+            'frequency'=>'nullable|numeric',
+        ]);
+
+        $waypoint = Waypoint::create($request->except(['_method','_token']));
+
+        if ($waypoint->exists) {
+            return response()->json(['success'=>true,'message'=>'Waypoint Created']);
+        }
+        return response()->json(['success' => false], 400);
     }
 
     public function update(Request $request, $id)
     {
-        /*
         $this->validate($request, [
-        'name' => 'required|min:3|max:30',
-        'email' => 'required|email|unique:users,id,' . $id,
+            //'code' => 'unique:waypoints,code',
+            'name' => 'min:3|max:80',
+            'description' => 'min:3|max:80',
+            'lat' => 'numeric',
+            'long' => 'numeric',
+            'elevation' => 'nullable|numeric',
+            'direction' => 'nullable|numeric',
+            'length' =>'nullable|numeric',
+            'frequency'=>'nullable|numeric',
         ]);
-        $status = User::query()->findOrFail($id)->update($request->all());
+
+        $status = Waypoint::where('id',$id)->update($request->except(['_method','_token','code']));
+
         if ($status) {
-        return new JsonResponse([
-        'success' => true,
-        'message' => 'user with id ' . $id . ' has been updated.'
-        ]);
+            return response()->json(['success'=>true,'message'=>'Waypoint Updated']);
         }
-        return new JsonResponse(['success' => false], 400);
-        */
+        return response()->json(['success' => false], 400);
     }
 
     public function destroy($id)
     {
         $status = Waypoint::query()->findOrFail($id)->delete();
-        return new JsonResponse([
-            'success' => $status,
-            'message' => 'Waypoint has been deleted.'
-        ]);
+        response()->json(['success'=>true,'message'=>'Waypoint Deleted']);
     }
-
 
     public function upload(Request $request)
     {

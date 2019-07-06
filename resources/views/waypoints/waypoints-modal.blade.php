@@ -37,7 +37,7 @@
 <div class="form-group row">
     <label for="input_elevation" class="col-sm-2 col-form-label">Elevation:</label>
     <div class="col-sm-10">
-        <input type="integer" class="form-control" id="input_elevation" name="style"
+        <input type="integer" class="form-control" id="input_elevation" name="elevation"
             placeholder="Enter Elevation" value="{{ isset($waypoint) ? $waypoint->elevation : old('elevation')}}">
     </div>
 </div>
@@ -68,21 +68,21 @@
 <div class="form-group row">
     <label for="input_direction" class="col-sm-2 col-form-label">Rwy Direction:</label>
     <div class="col-sm-10">
-        <input type="integer" class="form-control" id="input_direction" name="style"
+        <input type="integer" class="form-control" id="input_direction" name="direction"
             placeholder="Runway Direction" value="{{ isset($waypoint) ? $waypoint->direction : old('direction')}}">
     </div>
 </div>
 <div class="form-group row">
     <label for="input_length" class="col-sm-2 col-form-label">Length:</label>
     <div class="col-sm-10">
-        <input type="integer" class="form-control" id="input_length" name="style"
+        <input type="integer" class="form-control" id="input_length" name="length"
             placeholder="Runway Length" value="{{ isset($waypoint) ? $waypoint->length : old('length')}}">
     </div>
 </div>
 <div class="form-group row">
     <label for="input_frequency" class="col-sm-2 col-form-label">Frequency:</label>
     <div class="col-sm-10">
-        <input type="integer" class="form-control" id="input_frequency" name="style"
+        <input type="integer" class="form-control" id="input_frequency" name="frequency"
             placeholder="Frequency" value="{{ isset($waypoint) ? $waypoint->frequency : old('frequency')}}">
     </div>
 </div>
