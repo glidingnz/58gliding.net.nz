@@ -24,20 +24,17 @@
 				{{-- <example-component></example-component> --}}
 			</div>
 		<?php } else { ?>
-	
 
 		<?php } ?>
-
 
 		<?php if ($org) { ?>
 			<div class="col-md-6">
 
 				<h2>Club Tools</h2>
-				<div class="list-group app-list">
+				<div class="list-group app-list mb-2">
 					<a class="list-group-item" href="/ratings-report"><span class="fa fa-clipboard-check"></span> BFRs, Medicals &amp; Ratings</a>
 					<a class="list-group-item" href="/members"><span class="fa fa-users"></span> Members</a>
-{{-- 					<a class="list-group-item" href="/calendar">Calendar</a>
-	--}}
+					<a class="list-group-item" href="/calendar"><span class="fa fa-calendar"></span>Calendar</a>
 				</div>
 
 				<a href="//{{env('APP_DOMAIN')}}/">Switch Club</a>

@@ -58,12 +58,14 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('/admin/import-aircraft-from-caa', 'AdminController@import_aircraft_from_caa');
 	Route::post('/admin/email-address-changes', 'AdminController@email_address_changes');
 
-
 	Route::get('/members/{id}', 'Apps\MembersController@view');
 	Route::get('/members/{id}/achievements', 'Apps\MembersController@achievements');
 	Route::get('/members/{id}/achievements/edit', 'Apps\MembersController@edit_achievements');
 	Route::get('/members/{id}/edit', 'Apps\MembersController@edit');
 	Route::get('/members/{id}/ratings', 'Apps\MembersController@ratings');
 	Route::get('/members/download/{key}', 'Apps\MembersController@download');
+
+	Route::get('/calendar', 'Apps\CalendarController@index');
+	Route::get('/calendar/edit', 'Apps\CalendarController@edit');
 
 });

@@ -79,14 +79,14 @@ class Day extends Model
     public static $rules = [
         'org_id' => 'required',
         'day_date' => 'required',
-        'active' => 'required',
-        'trialflights' => 'required',
-        'competition' => 'required',
-        'training' => 'required',
-        'winching' => 'required',
-        'towing' => 'required',
-        'status' => 'required',
-        'cancelled_reason' => 'required'
+        // 'active' => 'required',
+        // 'trialflights' => 'required',
+        // 'competition' => 'required',
+        // 'training' => 'required',
+        // 'winching' => 'required',
+        // 'towing' => 'required',
+        // 'status' => 'required',
+        // 'cancelled_reason' => 'required'
     ];
 
     

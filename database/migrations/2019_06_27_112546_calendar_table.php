@@ -30,6 +30,7 @@ class CalendarTable extends Migration
             $table->string('status')->default('flying');
             $table->string('cancelled_reason')->default('');
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 

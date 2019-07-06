@@ -18,6 +18,11 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:api');
 
 
+Route::group(['namespace' => 'Api'], function()
+{
+	Route::resource('days', 'DayAPIController');
+});
+
 Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 {
 
@@ -47,9 +52,9 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 		'index'
 	]]);
 		
-	Route::resource('days', 'DaysApiController', ['only' => [
-		'index', 'show', 'destroy', 'create', 'update'
-	]]);
+	// Route::resource('days', 'DayApiController', ['only' => [
+	// 	'index', 'show', 'destroy', 'create', 'update'
+	// ]]);
 
 	Route::get('/roles',  'RolesApiController@index');
 	Route::get('/badges',  'BadgesApiController@index');
@@ -85,10 +90,3 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 		]]);
 	});
 });
-
-Route::group(['namespace' => 'Api'], function()
-{
-	Route::resource('days', 'DayAPIController');
-});
-
-Route::resource('days', 'DayAPIController');

@@ -17,115 +17,116 @@ use Response;
 
 class DayAPIController extends AppBaseController
 {
-    /** @var  DayRepository */
-    private $dayRepository;
+	/** @var  DayRepository */
+	private $dayRepository;
 
-    public function __construct(DayRepository $dayRepo)
-    {
-        $this->dayRepository = $dayRepo;
-    }
+	public function __construct(DayRepository $dayRepo)
+	{
+		$this->dayRepository = $dayRepo;
+	}
 
-    /**
-     * Display a listing of the Day.
-     * GET|HEAD /days
-     *
-     * @param Request $request
-     * @return Response
-     */
-    public function index(Request $request)
-    {
-        $days = $this->dayRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
-        );
+	/**
+	 * Display a listing of the Day.
+	 * GET|HEAD /days
+	 *
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function index(Request $request)
+	{
+		$days = $this->dayRepository->all(
+			$request->except(['skip', 'limit']),
+			$request->get('skip'),
+			$request->get('limit')
+		);
 
-        return $this->sendResponse($days->toArray(), 'Days retrieved successfully');
-    }
+		return $this->sendResponse($days->toArray(), 'Days retrieved successfully');
+	}
 
-    /**
-     * Store a newly created Day in storage.
-     * POST /days
-     *
-     * @param CreateDayAPIRequest $request
-     *
-     * @return Response
-     */
-    public function store(CreateDayAPIRequest $request)
-    {
-        $input = $request->all();
 
-        $day = $this->dayRepository->create($input);
+	/**
+	 * Store a newly created Day in storage.
+	 * POST /days
+	 *
+	 * @param CreateDayAPIRequest $request
+	 *
+	 * @return Response
+	 */
+	public function store(CreateDayAPIRequest $request)
+	{
+		$input = $request->all();
 
-        return $this->sendResponse($day->toArray(), 'Day saved successfully');
-    }
+		$day = $this->dayRepository->create($input);
 
-    /**
-     * Display the specified Day.
-     * GET|HEAD /days/{id}
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
-    public function show($id)
-    {
-        /** @var Day $day */
-        $day = $this->dayRepository->find($id);
+		return $this->sendResponse($day->toArray(), 'Day saved successfully');
+	}
 
-        if (empty($day)) {
-            return $this->sendError('Day not found');
-        }
+	/**
+	 * Display the specified Day.
+	 * GET|HEAD /days/{id}
+	 *
+	 * @param int $id
+	 *
+	 * @return Response
+	 */
+	public function show($id)
+	{
+		/** @var Day $day */
+		$day = $this->dayRepository->find($id);
 
-        return $this->sendResponse($day->toArray(), 'Day retrieved successfully');
-    }
+		if (empty($day)) {
+			return $this->sendError('Day not found');
+		}
 
-    /**
-     * Update the specified Day in storage.
-     * PUT/PATCH /days/{id}
-     *
-     * @param int $id
-     * @param UpdateDayAPIRequest $request
-     *
-     * @return Response
-     */
-    public function update($id, UpdateDayAPIRequest $request)
-    {
-        $input = $request->all();
+		return $this->sendResponse($day->toArray(), 'Day retrieved successfully');
+	}
 
-        /** @var Day $day */
-        $day = $this->dayRepository->find($id);
+	/**
+	 * Update the specified Day in storage.
+	 * PUT/PATCH /days/{id}
+	 *
+	 * @param int $id
+	 * @param UpdateDayAPIRequest $request
+	 *
+	 * @return Response
+	 */
+	public function update($id, UpdateDayAPIRequest $request)
+	{
+		$input = $request->all();
 
-        if (empty($day)) {
-            return $this->sendError('Day not found');
-        }
+		/** @var Day $day */
+		$day = $this->dayRepository->find($id);
 
-        $day = $this->dayRepository->update($input, $id);
+		if (empty($day)) {
+			return $this->sendError('Day not found');
+		}
 
-        return $this->sendResponse($day->toArray(), 'Day updated successfully');
-    }
+		$day = $this->dayRepository->update($input, $id);
 
-    /**
-     * Remove the specified Day from storage.
-     * DELETE /days/{id}
-     *
-     * @param int $id
-     *
-     * @throws \Exception
-     *
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        /** @var Day $day */
-        $day = $this->dayRepository->find($id);
+		return $this->sendResponse($day->toArray(), 'Day updated successfully');
+	}
 
-        if (empty($day)) {
-            return $this->sendError('Day not found');
-        }
+	/**
+	 * Remove the specified Day from storage.
+	 * DELETE /days/{id}
+	 *
+	 * @param int $id
+	 *
+	 * @throws \Exception
+	 *
+	 * @return Response
+	 */
+	public function destroy($id)
+	{
+		/** @var Day $day */
+		$day = $this->dayRepository->find($id);
 
-        $day->delete();
+		if (empty($day)) {
+			return $this->sendError('Day not found');
+		}
 
-        return $this->sendResponse($id, 'Day deleted successfully');
-    }
+		$day->delete();
+
+		return $this->sendResponse($id, 'Day deleted successfully');
+	}
 }
