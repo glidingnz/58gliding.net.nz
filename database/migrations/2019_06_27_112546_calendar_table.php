@@ -48,8 +48,8 @@ class CalendarTable extends Migration
 			});
 		}
 
-		if (!Schema::hasTable('roster')) {
-			Schema::create('roster', function(Blueprint $table)
+		if (!Schema::hasTable('rosters')) {
+			Schema::create('rosters', function(Blueprint $table)
 			{
 				$table->integer('id', true);
 				$table->integer('org_id')->nullable();
