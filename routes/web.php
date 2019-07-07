@@ -33,6 +33,8 @@ Route::get('/aircraft/{rego}/edit', 'Apps\AircraftController@edit');
 Route::resource('/waypoints', 'Apps\WaypointsController');
 Route::post('/waypoints-upload', 'Apps\WaypointsController@upload');
 
+Route::resource('/cups', 'Apps\CupsController');
+
 Route::get('/tracking', 'Apps\TrackingController@index');
 Route::get('/tracking/{year}-{month}-{day}', 'Apps\TrackingController@day');
 Route::get('/tracking/{year}-{month}-{day}/{rego}', 'Apps\TrackingController@track');
