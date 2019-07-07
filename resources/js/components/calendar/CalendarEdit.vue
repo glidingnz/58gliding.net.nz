@@ -1,25 +1,43 @@
+<style>
+.date {
+	white-space: nowrap;
+}
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+	/* Force table to not be like tables anymore */
+	table.collapsable, .collapsable thead, .collapsable tbody, .collapsable th, .collapsable td, .collapsable tr { 
+		display: block; 
+	}
+
+	td:nth-of-type(4):before { content: "Day Cancelled "; }
+
+	.date {
+		font-size: 170%;
+		font-weight: bold;
+	}
+}
+</style>
 
 <template>
 	<div>
 
 		<h1>Edit Club Calendar</h1>
 
-		<v-date-picker :columns="4" mode="multiple" v-model="days" @dayclick="dayClicked" is-inline :min-date='new Date()' />
+		<v-date-picker mode="multiple" v-model="days" @dayclick="dayClicked" :columns="$screens({ default: 1, md:2, lg: 3, xl:4 })" is-inline :min-date="new Date()" />
 
 		<h2 class="mt-2">Selected Flying Days</h2>
 
-		<table class="table table-striped">
+		<table class="table table-striped table-sm collapsable">
 			<tr>
 				<th>Date</th>
 				<th>Day Details</th>
-				<th class="text-center">Tows</th>
-				<th class="text-center">Winch</th>
-				<th class="text-center">Trial Flights</th>
-				<th class="text-center">Training</th>
-				<th class="text-center">Comp</th>
+				<th>Day Options</th>
 				<th>Cancelled</th>
 			</tr>
-			<edit-calendar-row v-for="day in results" v-bind:key="day.id" :row="day" :org-id="orgId" ></edit-calendar-row>
+			<edit-calendar-row v-for="day in results" v-bind:key="day.id" :row="day" :org-id="orgId" v-on:rowupdated="load()"></edit-calendar-row>
 		</table>
 
 

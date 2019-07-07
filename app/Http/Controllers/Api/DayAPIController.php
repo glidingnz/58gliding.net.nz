@@ -56,6 +56,7 @@ class DayAPIController extends AppBaseController
 		{
 			return $this->success($results, TRUE);
 		}
+		return $this->sendError('Day not found');
 	}
 
 

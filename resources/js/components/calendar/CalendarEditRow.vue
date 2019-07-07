@@ -1,33 +1,29 @@
 
 <template>
 	<tr>
-		<td>{{renderDate(day_date)}}</td>
-		<td class="align-middle text-center"><textarea type="text" class="form-control" v-model="description" rows="1"></textarea></td>
-		<td class="align-middle text-center">
+		<td class="date">{{renderDate(day_date)}}</td>
+		<td class="align-middle ">
+			<autosize-textarea>
+				<textarea type="text" class="form-control" v-model="description" rows="1"></textarea>
+			</autosize-textarea>
+		</td>
+		<td class="align-baseline ">
 			<div class="form-check-inline">
 				<input :id="'towing'+id" type="checkbox" v-model="towing" class="form-check-input">
 				<label :for="'towing'+id">Tows</label>
 			</div>
-		</td>
-		<td class="align-middle text-center">
 			<div class="form-check-inline">
 				<input :id="'winching'+id" type="checkbox" v-model="winching" class="form-check-input">
 				<label :for="'winching'+id">Winch</label>
 			</div>
-		</td>
-		<td class="align-middle text-center">
 			<div class="form-check-inline">
 				<input :id="'trialflights'+id" type="checkbox" v-model="trialflights" class="form-check-input">
-				<label :for="'trialflights'+id">Trial Flights</label>
+				<label :for="'trialflights'+id">TFs</label>
 			</div>
-		</td>
-		<td class="align-middle text-center">
 			<div class="form-check-inline">
 				<input :id="'training'+id" type="checkbox" v-model="training" class="form-check-input">
 				<label :for="'training'+id">Training</label>
 			</div>
-		</td>
-		<td class="align-middle text-center">
 			<div class="form-check-inline">
 				<input :id="'competition'+id" type="checkbox" v-model="competition" class="form-check-input">
 				<label :for="'competition'+id">Comp</label>
@@ -102,7 +98,7 @@
 					cancelled_reason: this.cancelled_reason
 				};
 				window.axios.put('/api/days/' + this.id, data).then(function (response) {
-					that.load();
+					that.$emit('rowupdated', response.data.data);
 				});
 			},
 			renderDate: function(date) {

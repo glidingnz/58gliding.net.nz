@@ -22,6 +22,7 @@ Route::group(['namespace' => 'Api'], function()
 {
 	Route::resource('days', 'DayAPIController');
 	Route::post('/days/deactivate',  'DayAPIController@deactivate');
+	Route::resource('duties', 'DutiesAPIController');
 });
 
 Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
@@ -91,3 +92,5 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 		]]);
 	});
 });
+
+
