@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\API;
 
-use App\Models\duties;
+use App\Models\Duty;
 use InfyOm\Generator\Request\APIRequest;
 
 class CreatedutiesAPIRequest extends APIRequest
@@ -24,6 +24,6 @@ class CreatedutiesAPIRequest extends APIRequest
      */
     public function rules()
     {
-        return duties::$rules;
+        return Duty::$rules;
     }
 }

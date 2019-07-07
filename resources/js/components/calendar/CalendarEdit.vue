@@ -24,7 +24,7 @@ only screen and (max-width: 760px),
 <template>
 	<div>
 
-		<h1>Edit Club Calendar</h1>
+		<h1><a href="/calendar/">Calendar</a> &gt; Edit Club Calendar</h1>
 
 		<v-date-picker mode="multiple" v-model="days" @dayclick="dayClicked" :columns="$screens({ default: 1, md:2, lg: 3, xl:4 })" is-inline :min-date="new Date()" />
 

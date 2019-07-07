@@ -1,6 +1,6 @@
 <template>
 <div>
-	<h1>Edit Duties</h1>
+	<h1><a href="/calendar/">Calendar</a> &gt; Edit Default Duties</h1>
 
 	<p>These are the default duties added to a day on the roster. You can add one off duties on the roster itself.</p>
 
@@ -17,10 +17,12 @@
 		</tr>
 		<tr>
 			<th>Duty Name</th>
+			<th>Update</th>
 			<th>Delete</th>
 		</tr>
 		<tr v-for="duty in duties">
 			<td><input type="text" v-model="duty.name" class="form-control"></td>
+			<td><button v-on:click="updateDuty(duty)" class="btn btn-outline-dark btn-sm">Save</button></td>
 			<td><button v-on:click="deleteDuty(duty)" class="btn btn-outline-dark btn-sm">Delete</button></td>
 		</tr>
 	</table>
@@ -55,21 +57,21 @@ export default {
 				name: this.newDutyName };
 
 			window.axios.post('/api/duties', data).then(function (response) {
+				that.load();
 				messages.$emit('success', 'Duty Added');
 			});
 		},
-		updateDuty: function(id, name) {
-			// var data = {orgID: orgID}
-			// window.axios.post('/api/v1/role-user/' + roleUserID, data).then(function (response) {
-			// 	messages.$emit('success', 'Role Updated');
-			// });
+		updateDuty: function(duty) {
+			window.axios.put('/api/duties/' + duty.id, duty).then(function (response) {
+				messages.$emit('success', 'Duty Updated');
+			});
 		},
-		deleteDuty: function(roleUserID) {
-			// var that = this;
-			// window.axios.delete('/api/v1/role-user/' + roleUserID).then(function (response) {
-			// 	messages.$emit('success', 'Role Deleted');
-			// 	that.loadUserRoles();
-			// });
+		deleteDuty: function(duty) {
+			var that = this;
+			window.axios.delete('/api/duties/' + duty.id).then(function (response) {
+				messages.$emit('success', 'Duty Deleted');
+				that.load();
+			});
 		},
 
 	}

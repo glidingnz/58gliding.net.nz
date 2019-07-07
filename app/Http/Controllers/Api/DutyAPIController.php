@@ -15,7 +15,7 @@ use Response;
  * @package App\Http\Controllers\API
  */
 
-class DutiesAPIController extends AppBaseController
+class DutyAPIController extends AppBaseController
 {
 	/** @var  dutiesRepository */
 	private $dutiesRepository;
@@ -58,7 +58,6 @@ class DutiesAPIController extends AppBaseController
 	 */
 	public function store(CreatedutiesAPIRequest $request)
 	{
-		echo 'hi'; exit();
 		$input = $request->all();
 
 		$duties = $this->dutiesRepository->create($input);

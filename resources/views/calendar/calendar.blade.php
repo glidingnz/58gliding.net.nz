@@ -7,7 +7,8 @@
 
 	<?php if ($org) { ?>
 
-		<a class="btn btn-primary" href="/calendar/edit">Edit Club Calendar</a>
+	<a class="btn btn-primary" href="/calendar/edit">Edit Flying Days Calendar</a>
+	<a class="btn btn-primary" href="/calendar/duties/edit">Edit Default Club Duties</a>
 
 	<?php } else { ?> 
 

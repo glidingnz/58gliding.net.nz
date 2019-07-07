@@ -5,7 +5,7 @@ namespace App\Http\Requests\API;
 use App\Models\Duty;
 use InfyOm\Generator\Request\APIRequest;
 
-class UpdatedutiesAPIRequest extends APIRequest
+class UpdateDutyAPIRequest extends APIRequest
 {
     /**
      * Determine if the user is authorized to make this request.

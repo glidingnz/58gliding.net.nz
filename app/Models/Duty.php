@@ -6,9 +6,9 @@ use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class duties
+ * Class Duty
  * @package App\Models
- * @version July 7, 2019, 3:04 am UTC
+ * @version July 7, 2019, 4:09 am UTC
  *
  * @property \Illuminate\Database\Eloquent\Collection 
  * @property \Illuminate\Database\Eloquent\Collection 

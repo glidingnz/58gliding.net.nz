@@ -3382,6 +3382,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -5445,6 +5455,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -5470,19 +5482,21 @@ __webpack_require__.r(__webpack_exports__);
         name: this.newDutyName
       };
       window.axios.post('/api/duties', data).then(function (response) {
+        that.load();
         messages.$emit('success', 'Duty Added');
       });
     },
-    updateDuty: function updateDuty(id, name) {// var data = {orgID: orgID}
-      // window.axios.post('/api/v1/role-user/' + roleUserID, data).then(function (response) {
-      // 	messages.$emit('success', 'Role Updated');
-      // });
+    updateDuty: function updateDuty(duty) {
+      window.axios.put('/api/duties/' + duty.id, duty).then(function (response) {
+        messages.$emit('success', 'Duty Updated');
+      });
     },
-    deleteDuty: function deleteDuty(roleUserID) {// var that = this;
-      // window.axios.delete('/api/v1/role-user/' + roleUserID).then(function (response) {
-      // 	messages.$emit('success', 'Role Deleted');
-      // 	that.loadUserRoles();
-      // });
+    deleteDuty: function deleteDuty(duty) {
+      var that = this;
+      window.axios["delete"]('/api/duties/' + duty.id).then(function (response) {
+        messages.$emit('success', 'Duty Deleted');
+        that.load();
+      });
     }
   }
 });
@@ -10056,7 +10070,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.messages-panel {\n\tposition: fixed;\n\twidth: 30em;\n\tmin-height: 50px;\n\tbackground-color: #FFF;\n\tborder: 1px solid #EEE;\n\tpadding: 10px;\n\tmargin-left: -20px;\n\tmargin-top: 6px;\n\tz-index: 9999;\n\ttop: 0px;\n}\n.message-error { color: #A00;\n}\n.message-warning { color: #DC9200;\n}\n.message-success { color: #0A0;\n}\n.message-note { color: #3C8DBC;\n}\na.no-messages { color: #CCC;\n}\na.new-messages { color: #A00;\n}\na.old-messages { color: #444;\n}\n", ""]);
+exports.push([module.i, "\n.messages-panel {\n\tposition: fixed;\n\twidth: 20em;\n\tmin-height: 50px;\n\tbackground-color: #FFF;\n\tborder: 1px solid #EEE;\n\tpadding: 10px;\n\tmargin-top: 15px;\n\tmargin-left: -15em;\n\tz-index: 9999;\n\ttop: 0px;\n\tright: 20px;\n\tborder-radius: 5px;\n\tbox-shadow: 0px 3px 20px #666;\n\tfont-size: 120%;\n}\n.close-panel {\n\tfont-size: 140%;\n\tfloat: right;\n\tcolor: #888;\n}\n.message-error { color: #A00;\n}\n.message-warning { color: #DC9200;\n}\n.message-success { color: #0A0;\n}\n.message-note { color: #3C8DBC;\n}\na.no-messages { color: #CCC;\n}\na.new-messages { color: #A00;\n}\na.old-messages { color: #444;\n}\n", ""]);
 
 // exports
 
@@ -65441,8 +65455,7 @@ var render = function() {
       },
       [
         _c("i", {
-          staticClass: "fa fa-times",
-          staticStyle: { float: "right" },
+          staticClass: "fa fa-times close-panel",
           on: {
             click: function($event) {
               return _vm.togglePanel()
@@ -68349,7 +68362,7 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("h1", [_vm._v("Edit Club Calendar")]),
+      _vm._m(0),
       _vm._v(" "),
       _c("v-date-picker", {
         attrs: {
@@ -68374,7 +68387,7 @@ var render = function() {
         "table",
         { staticClass: "table table-striped table-sm collapsable" },
         [
-          _vm._m(0),
+          _vm._m(1),
           _vm._v(" "),
           _vm._l(_vm.results, function(day) {
             return _c("edit-calendar-row", {
@@ -68395,6 +68408,15 @@ var render = function() {
   )
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h1", [
+      _c("a", { attrs: { href: "/calendar/" } }, [_vm._v("Calendar")]),
+      _vm._v(" > Edit Club Calendar")
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -68785,7 +68807,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h1", [_vm._v("Edit Duties")]),
+    _vm._m(0),
     _vm._v(" "),
     _c("p", [
       _vm._v(
@@ -68845,7 +68867,7 @@ var render = function() {
           _c("td")
         ]),
         _vm._v(" "),
-        _vm._m(0),
+        _vm._m(1),
         _vm._v(" "),
         _vm._l(_vm.duties, function(duty) {
           return _c("tr", [
@@ -68880,6 +68902,21 @@ var render = function() {
                   staticClass: "btn btn-outline-dark btn-sm",
                   on: {
                     click: function($event) {
+                      return _vm.updateDuty(duty)
+                    }
+                  }
+                },
+                [_vm._v("Save")]
+              )
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-outline-dark btn-sm",
+                  on: {
+                    click: function($event) {
                       return _vm.deleteDuty(duty)
                     }
                   }
@@ -68899,8 +68936,19 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
+    return _c("h1", [
+      _c("a", { attrs: { href: "/calendar/" } }, [_vm._v("Calendar")]),
+      _vm._v(" > Edit Default Duties")
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
     return _c("tr", [
       _c("th", [_vm._v("Duty Name")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Update")]),
       _vm._v(" "),
       _c("th", [_vm._v("Delete")])
     ])
