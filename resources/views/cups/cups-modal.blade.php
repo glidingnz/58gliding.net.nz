@@ -13,4 +13,12 @@
             placeholder="Enter Description" value="{{ isset($cup) ? $cup->description : old('description')}}">
     </div>
 </div>
+<div class="panel-heading"><h5 class="panel-title">Turnpoints</h5></div>
+<div class="panel panel-primary">
+    <div class="list-group pre-scrollable" id="waypoint-list">
+            @foreach ($cup->waypoints as $waypoint)
+            <li class="list-group-item">{{$waypoint->code.'  -  '.$waypoint->name}}</li>
+            @endforeach
+    </div>
+</div>
 {!! Modal::end() !!}
