@@ -39,6 +39,7 @@ Ensure you have users configured that can access those databases.
 6. Create a Laravel app key `php artisan key:generate`
 7. Migrate the databases `php artisan migrate`. If this doesn't work, check your .env file.
 8. Install demo seed data `php artisan db:seed`. This will insert a random assortment of users, and other data.
+9. generate Secure Keys for passport `php artisan passport:keys`
 
 ### Javascript/CSS build instructions
 

@@ -15,7 +15,7 @@
 
 <template>
 <div>
-	<div class="container">
+	<div class="container-fluid">
 		<div class="input-group ml-auto col-md-4 col-6 float-right" role="group">
 
 			<div class="input-group">
@@ -30,7 +30,7 @@
 		<h1 class="col-xs-6 results-title">Members</h1>
 	</div>
 
-	<div class="container clearfix">
+	<div class="container-fluid clearfix">
 
 		<select name="org" v-model="state.org" class="col-xs-12 col-sm-4 form-control input-sm float-right" style="width: auto; margin-bottom: 20px;">
 			<option v-bind:value="null">All Clubs</option>
@@ -52,8 +52,8 @@
 
 	</div>
 
-	
-	<div class="container">
+
+	<div class="container-fluid">
 
 		<div class="float-right">
 
@@ -103,7 +103,7 @@
 			<div class="panel panel-default" v-show="tipsShowing">
 				<div class="panel-heading">Tips <a href="javascript:void(0)" class="pull-right fa fa-times" v-on:click="toggleTips()"></a></div>
 				<div class="panel-body">
-					
+
 						<ul>
 							<li>
 								<b>Include links</b>
@@ -129,7 +129,7 @@
 
 	</div>
 
-	<div class="container">
+	<div class="container-fluid">
 		<table class="table results-table table-striped">
 			<tr>
 				<th class="d-none d-lg-table-cell">GNZ ID</th>
@@ -274,7 +274,7 @@
 			loadSelected: function() {
 				var that = this;
 				window.axios.get('/api/v1/members', {params: this.state}).then(function (response) {
-					
+
 					that.results = response.data.data;
 					that.last_page = response.data.last_page;
 					that.total = response.data.total;

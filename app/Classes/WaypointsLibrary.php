@@ -44,28 +44,30 @@ class WaypointsLibrary
 			$waypoint->description = trim($row[10],'"');
 			$waypoint->style = trim($row[6],'"');
 
-			if (substr($row[5], -1)=='m') $waypoint->elevation = $this->meters_to_feet(substr($row[5], 0, -1));
-			if (substr($row[5], -2)=='ft') $waypoint->elevation = substr($row[5], 0, -2);
+			if (substr($row[5], -1)=='m') $elevation = $this->meters_to_feet(substr($row[5], 0, -1));
+			if (substr($row[5], -2)=='ft') $elevation = substr($row[5], 0, -2);
+            $waypoint->elevation = $elevation == 0 ? null : $elevation;
 
 			// set code to be the code field
-			$waypoint->code=trim($row[1],'"');
+			$waypoint->code = substr(trim($row[1],'"'),0,6);
 
-			$waypoint->direction=trim($row[7],'"');
+            $direction = trim($row[7],'"');
+			$waypoint->direction = $direction == 0 ? null : $direction;
 
-			if (substr($row[8], -1)=='m') $waypoint->length = substr($row[8], 0, -1);
-			if (substr($row[8], -2)=='ft') $waypoint->length = $this->feet_to_meters(substr($row[8], 0, -2));
+			if (substr($row[8], -1)=='m') $length = substr($row[8], 0, -1);
+			if (substr($row[8], -2)=='ft') $length = $this->feet_to_meters(substr($row[8], 0, -2));
+            $waypoint->length = $length == 0 ? null : $length;
 
-
-
-			$waypoint->frequency=trim($row[9],'"');
+            $frequency=floatval(trim($row[9],'"'));
+			$waypoint->frequency = $frequency == 0 ? null : $frequency;
 
 			// check if the name has a number at the front from existing files
-			$split_name = preg_split("/([0-9]+)[ ]+/", $waypoint->name, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-			if (count($split_name)==2)
-			{
-				$waypoint->name = $split_name[1];
-				$waypoint->number = $split_name[0];
-			}
+			//$split_name = preg_split("/([0-9]+)[ ]+/", $waypoint->name, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+			//if (count($split_name)==2)
+			//{
+			//	$waypoint->name = $split_name[1];
+			//	$waypoint->number = $split_name[0];
+			//}
 
 			// check for 3 letter codes from Murray
 			$split_name = preg_split("/([0-9A-Z]{3})[ ]+/", $waypoint->name, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
@@ -77,7 +79,7 @@ class WaypointsLibrary
 			$waypoint->lat = $this->convertDMSToDecimal($row[3]);
 			$waypoint->long = $this->convertDMSToDecimal($row[4]);
 
-			$waypoint->batch = $batch;
+			//$waypoint->batch = $batch;
 
 			$waypoints[] = $waypoint;
 		}
@@ -90,13 +92,13 @@ class WaypointsLibrary
 		return 0;
 	}
 
-	public function feet_to_meters($feet) 
+	public function feet_to_meters($feet)
 	{
 		return round(floatval($feet) / 3.2808399);
 	}
 
 
-	public function meters_to_feet($meters) 
+	public function meters_to_feet($meters)
 	{
 		return round(floatval($meters) * 3.2808399);
 	}
@@ -124,7 +126,7 @@ class WaypointsLibrary
 				$latlng = str_replace("."," ",$latlng); // remove all periods, not enough chunks left by keeping last one
 			}
 		}
-		
+
 		// Remove unneeded characters
 		$latlng = trim($latlng);
 		$latlng = str_replace("º"," ",$latlng);
