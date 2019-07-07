@@ -7,8 +7,14 @@
 
 	<?php if ($org) { ?>
 
-	<a class="btn btn-primary" href="/calendar/edit">Edit Flying Days Calendar</a>
-	<a class="btn btn-primary" href="/calendar/duties/edit">Edit Default Club Duties</a>
+		<h1>Calendar</h1>
+
+		<a class="btn btn-primary" href="/calendar/edit">Edit Flying Days Calendar</a>
+		<a class="btn btn-primary" href="/calendar/duties/edit">Edit Default Club Duties</a>
+		<a class="btn btn-primary" href="/calendar/roster/edit">Edit Roster</a>
+
+		<flying-calendar org-id="{{$org['id']}}"></flying-calendar>
+
 
 	<?php } else { ?> 
 

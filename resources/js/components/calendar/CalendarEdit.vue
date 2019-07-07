@@ -37,7 +37,7 @@ only screen and (max-width: 760px),
 				<th>Day Options</th>
 				<th>Cancelled</th>
 			</tr>
-			<edit-calendar-row v-for="day in results" v-bind:key="day.id" :row="day" :org-id="orgId" v-on:rowupdated="load()"></edit-calendar-row>
+			<edit-calendar-row v-for="day in results" v-bind:key="day.id" :row="day" :org-id="orgId" v-on:rowupdated="rowUpdated()"></edit-calendar-row>
 		</table>
 
 
@@ -64,11 +64,6 @@ only screen and (max-width: 760px),
 		mounted() {
 			this.load();
 		},
-		watch: {
-			days: function(newDays, previousDays) {
-
-			}
-		},
 		methods: {
 			dayClicked: function(clickedDay) {
 
@@ -81,6 +76,10 @@ only screen and (max-width: 760px),
 					// insert
 					this.addDay(clickedDay.date);
 				}
+			},
+			rowUpdated: function() {
+				messages.$emit('success', 'Row Saved');
+				this.load();
 			},
 			load: function() {
 				var that = this;
@@ -105,6 +104,7 @@ only screen and (max-width: 760px),
 					org_id: this.orgId,
 					day_date: this.$moment(date).format('YYYY-MM-DD') };
 				window.axios.post('/api/days', data).then(function (response) {
+					messages.$emit('success', 'Day Added');
 					that.load();
 				});
 			},
@@ -115,6 +115,7 @@ only screen and (max-width: 760px),
 					day_date: this.$moment(date).format('YYYY-MM-DD')
 					};
 				window.axios.post('/api/days/deactivate', data).then(function (response) {
+					messages.$emit('success', 'Day Removed');
 					that.load();
 				});
 			},
