@@ -61,7 +61,7 @@
 			<li class="nav-item"><a class="nav-link" href="{{ url('/aircraft')}}">Aircraft</a></li>
 			<li class="nav-item"><a class="nav-link" href="{{ url('/tracking')}}">Tracking</a></li>
 			<li class="nav-item"><a class="nav-link" href="{{ url('/members')}}">Members</a></li>
-			@if ($org)
+			@if (isset($org) && $org)
 				<li class="nav-item"><a class="nav-link" href="{{ url('/ratings-report')}}">BFRs & Medicals</a></li>
 				<li class="nav-item"><a class="nav-link" href="{{ url('/calendar')}}">Calendar</a></li>
 			@endif
