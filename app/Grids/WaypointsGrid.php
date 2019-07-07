@@ -5,6 +5,8 @@ namespace App\Grids;
 use Closure;
 use Leantony\Grid\Grid;
 
+use Gate;
+
 class WaypointsGrid extends Grid implements WaypointsGridInterface
 {
     /**
@@ -167,6 +169,10 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
         // call `editToolbarButton` to edit a toolbar button
         // call `editRowButton` to edit a row button
         // call `editButtonProperties` to do either of the above. All the edit functions accept the properties as an array
+
+        $this->editToolbarButton('create', ['renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
+        //$this->editRowButton('view', ['renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
+        $this->editRowButton('delete', ['renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
 
     }
 

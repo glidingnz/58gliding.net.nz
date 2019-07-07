@@ -7,10 +7,10 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Cup;
 use App\Models\Waypoint;
-
-
 use App\Grids\CupsGrid;
 use App\Grids\CupsGridInterface;
+
+use Gate;
 
 class CupsController extends Controller
 {
@@ -26,6 +26,8 @@ class CupsController extends Controller
 
     public function create(Request $request)
     {
+        if (!Gate::allows('waypoint-admin')) return response()->json(['success' => false], 401);
+
         $cup = new Cup;
         $modal = [
             'model' => class_basename(Cup::class),
@@ -69,6 +71,8 @@ class CupsController extends Controller
     */
     public function store(Request $request)
     {
+        if (!Gate::allows('waypoint-admin')) return response()->json(['success' => false], 401);
+
         $this->validate($request, [
             'name' => 'min:3|max:80',
             'description' => 'min:3|max:140',
@@ -84,6 +88,8 @@ class CupsController extends Controller
 
     public function update(Request $request, $id)
     {
+        if (!Gate::allows('waypoint-admin')) return response()->json(['success' => false], 401);
+
         $this->validate($request, [
             'name' => 'min:3|max:80',
             'description' => 'min:3|max:140',
@@ -99,6 +105,8 @@ class CupsController extends Controller
 
     public function destroy($id)
     {
+        if (!Gate::allows('waypoint-admin')) return response()->json(['success' => false], 401);
+
         $status = Cup::query()->findOrFail($id)->delete();
         response()->json(['success'=>true,'message'=>'Waypoint List Deleted']);
     }

@@ -12,6 +12,7 @@ use App\Grids\WaypointsGrid;
 use App\Grids\WaypointsGridInterface;
 
 use Form;
+use Gate;
 
 class WaypointsController extends Controller
 {
@@ -31,6 +32,9 @@ class WaypointsController extends Controller
 
     public function create(Request $request)
     {
+
+        if (!Gate::allows('waypoint-admin')) return response()->json(['success' => false], 401);
+
         $waypoint = new Waypoint;
         $modal = [
             'model' => class_basename(Waypoint::class),
@@ -74,6 +78,8 @@ class WaypointsController extends Controller
     */
     public function store(Request $request)
     {
+        if (!Gate::allows('waypoint-admin')) return response()->json(['success' => false], 401);
+
         $this->validate($request, [
             'code' => 'unique:waypoints,code',
             'name' => 'min:3|max:80',
@@ -96,6 +102,8 @@ class WaypointsController extends Controller
 
     public function update(Request $request, $id)
     {
+        if (!Gate::allows('waypoint-admin')) return response()->json(['success' => false], 401);
+
         $this->validate($request, [
             //'code' => 'unique:waypoints,code',
             'name' => 'min:3|max:80',
@@ -118,12 +126,16 @@ class WaypointsController extends Controller
 
     public function destroy($id)
     {
+        if (!Gate::allows('waypoint-admin')) return response()->json(['success' => false], 401);
+
         $status = Waypoint::query()->findOrFail($id)->delete();
         response()->json(['success'=>true,'message'=>'Waypoint Deleted']);
     }
 
     public function upload(Request $request)
     {
+
+        if (!Gate::allows('waypoint-admin')) return response()->json(['success' => false], 401);
 
         $wp_lib = new WaypointsLibrary();
 

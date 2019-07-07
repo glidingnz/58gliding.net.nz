@@ -13,34 +13,15 @@ class WaypointsApiController extends ApiController
     public function index(request $request)
     {
 
-        // switch ($request->input('sort'))
-        // {
-        //     case 'first_name':
-        //     case 'last_name':
-        //     case 'email':
-        //     case 'gnz_id':
-        //     case 'gnz_active':
-        //     case 'gnz_confirmed':
-        //     case 'activated':
-        //         $sort = $request->input('sort');
-        //         break;
-        //     default:
-        //         $sort = 'email';
-        //         break;
-        // }
-
-        // if ($request->input('direction')=='asc') $direction="ASC";
-        // else $direction = "DESC";
-
         $query = Waypoint::query();
 
         if ($request->input('q'))
         {
             $s = '%' . $request->input('q') .'%';
-            $query->where(function($usersQuery) use ($s) {
-                $usersQuery->where('code','like',$s);
-                $usersQuery->orWhere('name','like',$s);
-                $usersQuery->orWhere('description','like',$s);
+            $query->where(function($waypointsQuery) use ($s) {
+                $waypointsQuery->where('code','like',$s);
+                $waypointsQuery->orWhere('name','like',$s);
+                $waypointsQuery->orWhere('description','like',$s);
             });
         }
 

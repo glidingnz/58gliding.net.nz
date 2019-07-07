@@ -4,6 +4,9 @@ namespace App\Grids;
 
 use Closure;
 use Leantony\Grid\Grid;
+use Leantony\Grid\Buttons\GenericButton;
+
+use Gate;
 
 class CupsGrid extends Grid implements CupsGridInterface
 {
@@ -24,6 +27,7 @@ class CupsGrid extends Grid implements CupsGridInterface
         'view',
         'delete',
         'refresh',
+        'download',
         //'export'
     ];
 
@@ -59,7 +63,7 @@ class CupsGrid extends Grid implements CupsGridInterface
                     "enabled" => true,
                     "operator" => "="
                 ],
-                "search" => true,
+                "search" => ["enabled" => true],
                 "styles" => [
                     "column" => "grid-w-10"
                 ]
@@ -70,7 +74,7 @@ class CupsGrid extends Grid implements CupsGridInterface
                     "enabled" => true,
                     "operator" => "="
                 ],
-                "search" => true,
+                "search" => ["enabled" => true],
                 "styles" => [
                     "column" => "grid-w-20"
                 ]
@@ -133,6 +137,29 @@ class CupsGrid extends Grid implements CupsGridInterface
         // call `editToolbarButton` to edit a toolbar button
         // call `editRowButton` to edit a row button
         // call `editButtonProperties` to do either of the above. All the edit functions accept the properties as an array
+
+        $this->editToolbarButton('create', ['renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
+        $this->editRowButton('delete', ['renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
+
+        $this->addRowButton('download', (new GenericButton([
+            'name' => 'Download',
+            'icon' => 'fa-download',
+            'position' => 0,
+            'class' => 'btn btn-primary btn-sm grid-row-button',
+            'showModal' => true,
+            'gridId' => $this->getId(),
+            'type' => static::$TYPE_ROW,
+            'title' => 'Turnpoints',
+            'url' => function ($gridName, $item) {
+                return $this->getViewUrl([
+                    $gridName => $item->{$this->getDefaultRouteParameter()}, 'ref' => $this->getId()
+                ]);
+            },
+            'renderIf' => function ($gridName, $item) {
+                return in_array('download', $this->buttonsToGenerate);
+            }
+        ])));
+
     }
 
     /**

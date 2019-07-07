@@ -17,28 +17,28 @@ use Auth;
 class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * The policy mappings for the application.
-     *
-     * @var array
-     */
+    * The policy mappings for the application.
+    *
+    * @var array
+    */
     protected $policies = [
         'App\Model' => 'App\Policies\ModelPolicy',
     ];
 
     /**
-     * Register any authentication / authorization services.
-     *
-     * @return void
-     */
+    * Register any authentication / authorization services.
+    *
+    * @return void
+    */
     /**
-     * Register any authentication / authorization services.
-     *
-     * @return void
-     */
+    * Register any authentication / authorization services.
+    *
+    * @return void
+    */
     public function boot()
     {
         $this->registerPolicies();
-        
+
         Passport::routes();
 
 
@@ -57,7 +57,7 @@ class AuthServiceProvider extends ServiceProvider
                     return true;
                 }
             }
-            
+
             return false;
         });
 
@@ -102,14 +102,14 @@ class AuthServiceProvider extends ServiceProvider
                     return true;
                 }
             }
-            
+
             return false;
         });
 
 
         // optionally pass in a specific organisation object. Otherwise it uses the currently viewed organisation.
         Gate::define('club-member', function ($user, $org=NULL) {
-            
+
             if (Gate::allows('club-admin', $org)) return true; // check above first!
 
             // check if we are current in an org
@@ -153,7 +153,7 @@ class AuthServiceProvider extends ServiceProvider
             if ($user->gnz_id!=null && $user->gnz_active==1)
             {
                 $member = Member::where('nzga_number', $user->gnz_id)->first();
-                if ($member) 
+                if ($member)
                 {
                     $user->is_gnz_member=true;
                     return true;
@@ -196,7 +196,7 @@ class AuthServiceProvider extends ServiceProvider
             if ($user->gnz_id>0 && $user->gnz_active==1)
             {
                 $member = Member::where('nzga_number', $user->gnz_id)->where('coach', true)->first();
-                if ($member) 
+                if ($member)
                 {
                     $user->can_edit_achievements=true;
                     return true;
@@ -208,10 +208,10 @@ class AuthServiceProvider extends ServiceProvider
 
 
         /**
-         * Params:
-         * user - the current user
-         * member - the member we are wanting to edit
-         */
+        * Params:
+        * user - the current user
+        * member - the member we are wanting to edit
+        */
         Gate::define('edit-member', function($user, $member) {
             // if noraml admin, editing allowed
             if (Gate::allows('admin')) return true;
@@ -250,6 +250,24 @@ class AuthServiceProvider extends ServiceProvider
 
                 if ($userRole) {
                     $user->can_edit_awards = true;
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        Gate::define('waypoint-admin', function($user) {
+
+            // check if we've already approved this
+            if (isset($user->is_admin) && $user->is_admin==true) return true;
+
+            if (Gate::allows('root')) return true; // check above first!
+
+            if ($role = Role::where('slug','waypoint-admin')->first())
+            {
+                $userRole = RoleUser::where('role_id', $role->id)->where('user_id', $user->id)->first();
+
+                if ($userRole) {
                     return true;
                 }
             }

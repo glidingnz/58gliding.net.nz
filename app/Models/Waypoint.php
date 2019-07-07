@@ -15,6 +15,6 @@ class Waypoint extends Model
 
     public function cups()
     {
-        return $this->belongsToMany('App\Models\Cups');
+        return $this->belongsToMany('App\Models\Cup');
     }
 }
