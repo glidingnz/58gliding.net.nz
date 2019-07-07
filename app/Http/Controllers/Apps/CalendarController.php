@@ -19,4 +19,9 @@ class CalendarController extends Controller
 		return view('calendar/calendar-edit');
 	}
 
+	public function editDuties()
+	{
+		return view('calendar/duties-edit');
+	}
+
 }

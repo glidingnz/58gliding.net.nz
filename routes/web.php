@@ -68,5 +68,6 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/members/download/{key}', 'Apps\MembersController@download');
 
 	Route::get('/calendar/edit', 'Apps\CalendarController@edit');
+	Route::get('/calendar/duties/edit', 'Apps\CalendarController@editDuties');
 
 });

@@ -23,6 +23,7 @@ class DutiesAPIController extends AppBaseController
 	public function __construct(dutiesRepository $dutiesRepo)
 	{
 		$this->dutiesRepository = $dutiesRepo;
+		parent::__construct();
 	}
 
 	/**
@@ -57,6 +58,7 @@ class DutiesAPIController extends AppBaseController
 	 */
 	public function store(CreatedutiesAPIRequest $request)
 	{
+		echo 'hi'; exit();
 		$input = $request->all();
 
 		$duties = $this->dutiesRepository->create($input);

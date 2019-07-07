@@ -1,0 +1,77 @@
+<template>
+<div>
+	<h1>Edit Duties</h1>
+
+	<p>These are the default duties added to a day on the roster. You can add one off duties on the roster itself.</p>
+
+	<table class="table table-striped">
+		<tr>
+			<td>
+				<div class="d-flex">
+					<div class="col-4">Add New Duty:</div>
+					<input type="text" v-model="newDutyName" class="form-control inline ml-auto" size="10">
+				</div>
+			</td>
+			<td><button v-on:click="createDuty()" type="submit" class="btn btn-outline-dark">Add Duty</button></td>
+			<td></td>
+		</tr>
+		<tr>
+			<th>Duty Name</th>
+			<th>Delete</th>
+		</tr>
+		<tr v-for="duty in duties">
+			<td><input type="text" v-model="duty.name" class="form-control"></td>
+			<td><button v-on:click="deleteDuty(duty)" class="btn btn-outline-dark btn-sm">Delete</button></td>
+		</tr>
+	</table>
+
+</div>
+</template>
+
+<script>
+export default {
+	data: function() {
+		return {
+			duties: [],
+			newDutyName: '',
+		}
+	},
+	props: ['orgId'],
+	created: function() {
+		this.load();
+	},
+	methods: {
+		load: function() {
+			var that = this;
+			window.axios.get('/api/duties/?org_id=' + this.orgId).then(function (response) {
+				that.duties = response.data.data;
+			});
+		},
+		createDuty: function() {
+			var that = this;
+
+			var data = {
+				org_id: this.orgId,
+				name: this.newDutyName };
+
+			window.axios.post('/api/duties', data).then(function (response) {
+				messages.$emit('success', 'Duty Added');
+			});
+		},
+		updateDuty: function(id, name) {
+			// var data = {orgID: orgID}
+			// window.axios.post('/api/v1/role-user/' + roleUserID, data).then(function (response) {
+			// 	messages.$emit('success', 'Role Updated');
+			// });
+		},
+		deleteDuty: function(roleUserID) {
+			// var that = this;
+			// window.axios.delete('/api/v1/role-user/' + roleUserID).then(function (response) {
+			// 	messages.$emit('success', 'Role Deleted');
+			// 	that.loadUserRoles();
+			// });
+		},
+
+	}
+}
+</script>

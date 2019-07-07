@@ -43,6 +43,7 @@ Vue.component('ratings-report', require('./components/RatingsReport.vue').defaul
 Vue.component('edit-calendar', require('./components/calendar/CalendarEdit.vue').default);
 Vue.component('edit-calendar-row', require('./components/calendar/CalendarEditRow.vue').default);
 Vue.component('autosize-textarea', require('./components/widgets/AutosizeTextarea.vue').default);
+Vue.component('edit-duties', require('./components/calendar/DutiesEdit.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
