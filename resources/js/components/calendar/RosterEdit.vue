@@ -1,42 +1,38 @@
 <style>
 .date {
-	white-space: nowrap;
-}
-
-	.date {
-		font-size: 170%;
-		font-weight: bold;
-	}
+	font-size: 170%;
+	font-weight: bold;
 }
 </style>
 
 <template>
-	<div class="mt-4">
+	<div class="">
+
+		<h1><a href="/calendar/">Calendar</a> &gt; Edit Roster</h1>
 
 		<table class="table table-striped table-sm collapsable">
 			<tr>
 				<th>Date</th>
 				<th>Available</th>
-				<th>Notes</th>
 			</tr>
-			<tr v-for="day in results" v-bind:key="day.id" :row="day" :org-id="orgId" v-on:rowupdated="load()">
-				<td>
-					<b>{{renderDate(day.day_date)}}</b>
-				</td>
-				<td>
-					
-					<span v-if="day.winching"><span class="fa fa-check"></span> Winching</span>
-					<span v-if="day.towing"><span class="fa fa-check"></span> Towing</span>
-					<span v-if="day.training"><span class="fa fa-check"></span> Training</span>
-					<span v-if="day.trialflights"><span class="fa fa-check"></span> Trial Flights</span>
-				</td>
-				<td>
-					<div v-if="day.cancelled" class="bg-danger text-white px-2 py-1 rounded-lg">
-						<span class="fa fa-exclamation-circle text-white"></span> Day Cancelled<span v-if="day.cancelled_reason">: {{day.cancelled_reason}}</span>
-					</div>
-					<span v-html="renderDescription(day.description)"></span>
-				</td>
-			</tr>
+			<template v-for="day in results" >
+				<tr >
+					<td>
+						<b>{{renderDate(day.day_date)}}</b>
+					</td>
+					<td>
+						<span v-if="day.winching"><span class="fa fa-check"></span> Winching</span>
+						<span v-if="day.towing"><span class="fa fa-check"></span> Towing</span>
+						<span v-if="day.training"><span class="fa fa-check"></span> Training</span>
+						<span v-if="day.trialflights"><span class="fa fa-check"></span> Trial Flights</span>
+					</td>
+				</tr>
+				<tr v-if="day.description">
+					<td colspan="2">
+						<span v-html="renderDescription(day.description)"></span>
+					</td>
+				</tr>
+			</template>
 		</table>
 
 	</div>
@@ -58,12 +54,12 @@
 			}
 		},
 		mounted() {
-			this.load();
+			this.loadDays();
 		},
 		watch: {
 		},
 		methods: {
-			load: function() {
+			loadDays: function() {
 				var that = this;
 				// select all days from today onwards
 				window.axios.get('/api/days?org_id=' + this.orgId + '&start_date=' + this.$moment().format('YYYY-MM-DD')).then(function (response) {

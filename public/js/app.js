@@ -5666,10 +5666,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
  //import VCalendar from 'v-calendar';
 
 
@@ -5683,11 +5679,11 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     };
   },
   mounted: function mounted() {
-    this.load();
+    this.loadDays();
   },
   watch: {},
   methods: {
-    load: function load() {
+    loadDays: function loadDays() {
       var that = this; // select all days from today onwards
 
       window.axios.get('/api/days?org_id=' + this.orgId + '&start_date=' + this.$moment().format('YYYY-MM-DD')).then(function (response) {
@@ -10400,9 +10396,17 @@ exports.push([module.i, "\n.date {\n\twhite-space: nowrap;\n}\n@media \nonly scr
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calendar/RosterEdit.vue?vue&type=style&index=0&lang=css& ***!
   \*************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-throw new Error("Module build failed (from ./node_modules/postcss-loader/src/index.js):\nSyntaxError\n\n(10:1) Unexpected }\n\n \u001b[90m  8 | \u001b[39m\t\tfont-weight\u001b[33m:\u001b[39m bold\u001b[33m;\u001b[39m\n \u001b[90m  9 | \u001b[39m\t\u001b[33m}\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 10 | \u001b[39m\u001b[33m}\u001b[39m\n \u001b[90m    | \u001b[39m\u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 11 | \u001b[39m\n");
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.date {\n\tfont-size: 170%;\n\tfont-weight: bold;\n}\n", ""]);
+
+// exports
+
 
 /***/ }),
 
@@ -69393,26 +69397,18 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "mt-4" }, [
+  return _c("div", {}, [
+    _vm._m(0),
+    _vm._v(" "),
     _c(
       "table",
       { staticClass: "table table-striped table-sm collapsable" },
       [
-        _vm._m(0),
+        _vm._m(1),
         _vm._v(" "),
         _vm._l(_vm.results, function(day) {
-          return _c(
-            "tr",
-            {
-              key: day.id,
-              attrs: { row: day, "org-id": _vm.orgId },
-              on: {
-                rowupdated: function($event) {
-                  return _vm.load()
-                }
-              }
-            },
-            [
+          return [
+            _c("tr", [
               _c("td", [
                 _c("b", [_vm._v(_vm._s(_vm.renderDate(day.day_date)))])
               ]),
@@ -69445,37 +69441,23 @@ var render = function() {
                       _vm._v(" Trial Flights")
                     ])
                   : _vm._e()
-              ]),
-              _vm._v(" "),
-              _c("td", [
-                day.cancelled
-                  ? _c(
-                      "div",
-                      {
-                        staticClass: "bg-danger text-white px-2 py-1 rounded-lg"
-                      },
-                      [
-                        _c("span", {
-                          staticClass: "fa fa-exclamation-circle text-white"
-                        }),
-                        _vm._v(" Day Cancelled"),
-                        day.cancelled_reason
-                          ? _c("span", [
-                              _vm._v(": " + _vm._s(day.cancelled_reason))
-                            ])
-                          : _vm._e()
-                      ]
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                _c("span", {
-                  domProps: {
-                    innerHTML: _vm._s(_vm.renderDescription(day.description))
-                  }
-                })
               ])
-            ]
-          )
+            ]),
+            _vm._v(" "),
+            day.description
+              ? _c("tr", [
+                  _c("td", { attrs: { colspan: "2" } }, [
+                    _c("span", {
+                      domProps: {
+                        innerHTML: _vm._s(
+                          _vm.renderDescription(day.description)
+                        )
+                      }
+                    })
+                  ])
+                ])
+              : _vm._e()
+          ]
         })
       ],
       2
@@ -69487,12 +69469,19 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
+    return _c("h1", [
+      _c("a", { attrs: { href: "/calendar/" } }, [_vm._v("Calendar")]),
+      _vm._v(" > Edit Roster")
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
     return _c("tr", [
       _c("th", [_vm._v("Date")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Available")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Notes")])
+      _c("th", [_vm._v("Available")])
     ])
   }
 ]

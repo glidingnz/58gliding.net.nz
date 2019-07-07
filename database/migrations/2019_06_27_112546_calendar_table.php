@@ -55,9 +55,8 @@ class CalendarTable extends Migration
 				$table->integer('org_id')->nullable();
 				$table->integer('day_id')->nullable();
 				$table->date('day_date')->nullable();
-				$table->integer('dayrole_id')->nullable();
-				$table->integer('member_id')->nullable();
 				$table->text('duty_name')->nullable();
+				$table->integer('member_id')->nullable();
 				$table->text('helper_name')->nullable();
 				$table->text('helper_mobile')->nullable();
 				$table->softDeletes();
@@ -96,6 +95,6 @@ class CalendarTable extends Migration
 		//
 		Schema::dropIfExists('days');
 		Schema::dropIfExists('duties');
-		Schema::dropIfExists('roster');
+		Schema::dropIfExists('rosters');
 	}
 }

@@ -24,4 +24,9 @@ class CalendarController extends Controller
 		return view('calendar/duties-edit');
 	}
 
+	public function editRoster()
+	{
+		return view('calendar/roster-edit');
+	}
+
 }
