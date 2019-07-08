@@ -51,7 +51,7 @@
     </head>
     <body>
         <div id="app">
-            <nav class="navbar navbar-dark bg-dark navbar-expand">
+            <nav class="navbar navbar-dark bg-dark navbar-expand-md">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     <?php if (isset($org) && $org) { ?>
                         {{$org->name}}
@@ -59,13 +59,18 @@
                         Gliding.net.nz
                     <?php } ?>
                 </a>
-
                 <!-- Left Side Of Navbar -->
-                <ul class="navbar-nav mr-auto">
+                <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="{{ url('/aircraft')}}">Aircraft</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/tracking')}}">Tracking</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/waypoints')}}">Turnpoints</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url('/members')}}">Members</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('/tracking')}}">Tracking</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Turnpoints</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{{ url('/cups')}}">Download Turnpoints</a>
+                            <a class="dropdown-item" href="{{ url('/waypoints')}}">Turnpoint Database</a>
+                        </div>
+                    </li>
                     <li class="nav-messages"></li>
                 </ul>
 
