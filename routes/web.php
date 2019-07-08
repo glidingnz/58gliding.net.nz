@@ -22,6 +22,10 @@ Route::get('/oauth', function () {
 
 Auth::routes();
 
+Route::post('/register', 'UserController@create'); //override default register route, to use our own
+Route::get('/activate', 'UserController@activate');
+Route::post('/activate', 'UserController@activate_post');
+
 Route::get('/home', 'HomeController@index')->name('home');
 
 
