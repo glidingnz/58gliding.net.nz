@@ -3382,6 +3382,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -10433,7 +10444,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.messages-panel {\n\tposition: fixed;\n\twidth: 30em;\n\tmin-height: 50px;\n\tbackground-color: #FFF;\n\tborder: 1px solid #EEE;\n\tpadding: 10px;\n\tmargin-left: -20px;\n\tmargin-top: 6px;\n\tz-index: 9999;\n\ttop: 0px;\n}\n.message-error { color: #A00;\n}\n.message-warning { color: #DC9200;\n}\n.message-success { color: #0A0;\n}\n.message-note { color: #3C8DBC;\n}\na.no-messages { color: #CCC;\n}\na.new-messages { color: #A00;\n}\na.old-messages { color: #444;\n}\n", ""]);
+exports.push([module.i, "\n.messages-panel {\n\tposition: fixed;\n\tmax-width: 20em;\n\twidth: 90%;\n\tmin-height: 50px;\n\tbackground-color: #FFF;\n\tborder: 1px solid #EEE;\n\tpadding: 10px;\n\tmargin-top: 15px;\n\tmargin-left: -15em;\n\tz-index: 9999;\n\ttop: 0px;\n\tright: 20px;\n\tborder-radius: 5px;\n\tbox-shadow: 0px 3px 20px #666;\n\tfont-size: 120%;\n}\n.close-panel {\n\tfont-size: 140%;\n\tfloat: right;\n\tcolor: #888;\n}\n.message-error { color: #A00;\n}\n.message-warning { color: #DC9200;\n}\n.message-success { color: #0A0;\n}\n.message-note { color: #3C8DBC;\n}\na.no-messages { color: #CCC;\n}\na.new-messages { color: #A00;\n}\na.old-messages { color: #444;\n}\n", ""]);
 
 // exports
 
@@ -65879,8 +65890,7 @@ var render = function() {
       },
       [
         _c("i", {
-          staticClass: "fa fa-times",
-          staticStyle: { float: "right" },
+          staticClass: "fa fa-times close-panel",
           on: {
             click: function($event) {
               return _vm.togglePanel()
