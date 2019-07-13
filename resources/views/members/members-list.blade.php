@@ -3,7 +3,7 @@
 @section('content')
 
 
-<div class="container" id="members">
+<div class="container-fluid" id="members">
 
 	@can('gnz-member')
 		<members org-code="{{$org['gnz_code']}}"></members>

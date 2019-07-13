@@ -4602,7 +4602,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         center: new mapkit.Coordinate(-41.18301, 174.0),
         isRotationEnabled: false,
         showsMapTypeControl: true,
-        showsUserLocation: true
+        showsUserLocation: false
       });
       this.mapStatus = 'map';
       this.map.addEventListener("select", function (e) {
@@ -65054,7 +65054,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "container-fluid" }, [
       _c(
         "div",
         {
@@ -65112,7 +65112,7 @@ var render = function() {
       _c("h1", { staticClass: "col-xs-6 results-title" }, [_vm._v("Members")])
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "container clearfix" }, [
+    _c("div", { staticClass: "container-fluid clearfix" }, [
       _c(
         "select",
         {
@@ -65333,7 +65333,7 @@ var render = function() {
       )
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "container-fluid" }, [
       _c("div", { staticClass: "float-right" }, [
         _c("div", { staticClass: "btn-group mr-2", attrs: { role: "group" } }, [
           _c(
@@ -65659,7 +65659,7 @@ var render = function() {
       ]
     ),
     _vm._v(" "),
-    _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "container-fluid" }, [
       _c(
         "table",
         { staticClass: "table results-table table-striped" },

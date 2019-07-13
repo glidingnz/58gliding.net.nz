@@ -176,6 +176,10 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\MessagesServiceProvider::class,
 
+        
+        
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+
     ],
 
     /*
@@ -227,6 +231,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Messages' => App\Facades\Messages::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
     ],
 
