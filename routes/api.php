@@ -46,10 +46,6 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 	Route::resource('/ratings', 'RatingsApiController', ['only' => [
 		'index'
 	]]);
-		
-	Route::resource('days', 'DaysApiController', ['only' => [
-		'index', 'show', 'destroy', 'create', 'update'
-	]]);
 
 	Route::get('/roles',  'RolesApiController@index');
 	Route::get('/badges',  'BadgesApiController@index');
