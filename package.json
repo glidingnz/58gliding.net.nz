@@ -27,6 +27,7 @@
     "dependencies": {
         "highcharts": "^7.1.2",
         "moment": "^2.24.0",
+        "multiselect": "^0.9.12",
         "nprogress": "^0.2.0",
         "pjax": "^0.2.8"
     }

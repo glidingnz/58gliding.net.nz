@@ -12,6 +12,7 @@ class Waypoint extends Model
     protected $presenter = 'App\Models\Presenters\WaypointPresenter';
 
     protected $fillable = ['id','name','code','country','lat','long','elevation','style','direction','length','frequency','description'];
+    protected $hidden = ['pivot'];
 
     public function cups()
     {

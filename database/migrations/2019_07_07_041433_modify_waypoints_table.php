@@ -25,8 +25,8 @@ class ModifyWaypointsTable extends Migration
             $table->string('name',80);
             $table->string('code',6);
             $table->string('country',2)->nullable()->default('NZ');
-            $table->decimal('lat',9,2);
-            $table->decimal('long',9,2);
+            $table->decimal('lat',9,3);
+            $table->decimal('long',10,3);
             $table->integer('elevation')->nullable();
             $table->integer('style')->nullable();
             $table->integer('direction')->nullable();

@@ -28,6 +28,7 @@ class CupsGrid extends Grid implements CupsGridInterface
         'delete',
         'refresh',
         'download',
+        'attach',
         //'export'
     ];
 
@@ -146,18 +147,46 @@ class CupsGrid extends Grid implements CupsGridInterface
             'icon' => 'fa-download',
             'position' => 0,
             'class' => 'btn btn-primary btn-sm grid-row-button',
-            'showModal' => true,
+            'showModal' => false,
             'gridId' => $this->getId(),
             'type' => static::$TYPE_ROW,
             'title' => 'Turnpoints',
-            'url' => function ($gridName, $item) {
-                return $this->getViewUrl([
-                    $gridName => $item->{$this->getDefaultRouteParameter()}, 'ref' => $this->getId()
-                ]);
+            'url' => function($gridName, $gridItem) {
+                return '/cups/download/'.$gridItem->id;
             },
             'renderIf' => function ($gridName, $item) {
                 return in_array('download', $this->buttonsToGenerate);
             }
+        ])));
+
+        $this->addRowButton('attach', (new GenericButton([
+            'name' => 'Attach',
+            'icon' => 'fa-paperclip',
+            'position' => 2,
+            'class' => 'btn btn-outline-success btn-sm grid-row-button',
+            'showModal' => true,
+            'gridId' => $this->getId(),
+            'type' => static::$TYPE_ROW,
+            'title' => 'Turnpoints',
+            'url' => function($gridName, $gridItem) {
+                return '/cups/attach/'.$gridItem->id;
+            },
+            'renderIf' => function() {return Gate::allows('waypoint-admin');}
+        ])));
+
+        $this->addRowButton('detach', (new GenericButton([
+            'name' => 'Detach',
+            'icon' => 'fa-unlink',
+            'position' => 3,
+            'class' => 'btn btn-outline-danger btn-sm grid-row-button',
+            'showModal' => true,
+            'gridId' => $this->getId(),
+            'type' => static::$TYPE_ROW,
+            'title' => 'Turnpoints',
+            'url' => function($gridName, $gridItem) {
+                return '/cups/detach/'.$gridItem->id;
+            },
+            'renderIf' => function() {return Gate::allows('waypoint-admin');}
         ])));
 
     }

@@ -86,4 +86,6 @@
             placeholder="Frequency" value="{{ isset($waypoint) ? $waypoint->frequency : old('frequency')}}">
     </div>
 </div>
+@can('waypoint-admin')
 {!! Modal::end() !!}
+@endcan

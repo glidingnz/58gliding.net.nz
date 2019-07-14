@@ -4,6 +4,7 @@ namespace App\Grids;
 
 use Closure;
 use Leantony\Grid\Grid;
+use Leantony\Grid\Buttons\GenericButton;
 
 use Gate;
 
@@ -26,6 +27,7 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
         'view',
         'delete',
         'refresh',
+        'link'
         //'export'
     ];
 
@@ -171,9 +173,26 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
         // call `editButtonProperties` to do either of the above. All the edit functions accept the properties as an array
 
         $this->editToolbarButton('create', ['renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
-        //$this->editRowButton('view', ['renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
         $this->editRowButton('delete', ['renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
 
+        /*
+        $this->addRowButton('link', new GenericButton(([
+            'name' => 'Link',
+            'icon' => 'fa-paperclip',
+            'position' => 1,
+            'class' => 'btn btn-outline-success btn-sm grid-row-button',
+            'showModal' => true,
+            'gridId' => $this->getId(),
+            'type' => static::$TYPE_ROW,
+            'title' => 'link turnpoint',
+            'url' => function ($gridName, $item) {
+                return route('waypoints.show',[
+                    $gridName => $item->{$this->getDefaultRouteParameter()}, 'ref' => $this->getId()
+                ]);
+            },
+            'renderIf' => function() {return Gate::allows('waypoint-admin');}
+        ])));
+        */
     }
 
     /**

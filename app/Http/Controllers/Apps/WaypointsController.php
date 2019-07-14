@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Models\Waypoint;
+use App\Models\Cup;
 use App\Classes\WaypointsLibrary;
 
 use App\Grids\WaypointsGrid;
@@ -27,7 +28,7 @@ class WaypointsController extends Controller
 
         return (new WaypointsGrid(['waypoints' => $waypoints]))
         ->create(['query' => Waypoint::query(), 'request' => $request])
-        ->renderOn('waypoints.waypoints');
+        ->renderOn('waypoints.index');
     }
 
     public function create(Request $request)
@@ -67,7 +68,7 @@ class WaypointsController extends Controller
         ];
 
         // modal
-        return view('waypoints.waypoints-modal', compact('modal','waypoint'))->render();
+        return view('waypoints.show-modal', compact('modal','waypoint'))->render();
     }
 
     /**

@@ -8,6 +8,7 @@ class Cup extends Model
 {
 
     protected $fillable = ['id','name','description'];
+    protected $hidden = ['pivot'];
 
     public function waypoints()
     {

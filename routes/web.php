@@ -29,17 +29,18 @@ Route::get('/aircraft', 'Apps\AircraftController@index');
 Route::get('/aircraft/{rego}', 'Apps\AircraftController@view');
 Route::get('/aircraft/{rego}/edit', 'Apps\AircraftController@edit');
 
-//Route::get('/waypoints', 'Apps\WaypointsController@index');
-Route::resource('/waypoints', 'Apps\WaypointsController');
+Route::resource('waypoints', 'Apps\WaypointsController');
 Route::post('/waypoints-upload', 'Apps\WaypointsController@upload');
 
 Route::resource('/cups', 'Apps\CupsController');
+Route::match(['get','patch'],'/cups/attach/{ref}', 'Apps\CupsController@attach');
+Route::match(['get','patch'],'/cups/detach/{ref}', 'Apps\CupsController@detach');
+Route::get('/cups/download/{ref}', 'Apps\CupsController@download');
 
 Route::get('/tracking', 'Apps\TrackingController@index');
 Route::get('/tracking/{year}-{month}-{day}', 'Apps\TrackingController@day');
 Route::get('/tracking/{year}-{month}-{day}/{rego}', 'Apps\TrackingController@track');
 Route::get('/tracking2/{year}-{month}-{day}', 'Apps\TrackingController@day2');
-Route::get('/calendar', 'Apps\CalendarController@index');
 
 Route::get('/ratings-report', 'Apps\MembersController@ratingsReport');
 
