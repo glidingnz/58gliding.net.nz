@@ -3162,6 +3162,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked.js");
@@ -65457,153 +65463,14 @@ var render = function() {
       },
       [
         _c("div", { staticClass: "col-xs-12 col-sm-6" }, [
-          _c("b", [_vm._v("From")]),
-          _c("br"),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.emailFrom,
-                expression: "emailFrom"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: {
-              type: "text",
-              placeholder: "Your email e.g. jim@pear.co.nz"
-            },
-            domProps: { value: _vm.emailFrom },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.emailFrom = $event.target.value
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("b", [_vm._v("Subject")]),
-          _c("br"),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.emailSubject,
-                expression: "emailSubject"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: { type: "text", placeholder: "Subject" },
-            domProps: { value: _vm.emailSubject },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.emailSubject = $event.target.value
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("span", { staticClass: "pull-right" }, [
-            _c("i", { staticClass: "fa fa-info-circle" }),
-            _c(
-              "a",
-              {
-                attrs: { href: "javascript:void(0)" },
-                on: {
-                  click: function($event) {
-                    return _vm.toggleTips()
-                  }
-                }
-              },
-              [_vm._v(" Email Tips...")]
-            )
-          ]),
-          _vm._v(" "),
-          _c("b", [_vm._v("Message")]),
-          _c("br"),
-          _vm._v(" "),
-          _c("textarea", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.emailMessage,
-                expression: "emailMessage"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: { type: "text", rows: "5" },
-            domProps: { value: _vm.emailMessage },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.emailMessage = $event.target.value
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("br"),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "show",
-                rawName: "v-show",
-                value: !_vm.emailSending,
-                expression: "!emailSending"
-              }
-            ],
-            staticClass: " btn btn-primary",
-            attrs: { type: "submit" },
-            domProps: { value: "Send Email to " + _vm.total + " members" },
-            on: {
-              click: function($event) {
-                return _vm.sendEmail()
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "show",
-                rawName: "v-show",
-                value: _vm.emailSending,
-                expression: "emailSending"
-              }
-            ],
-            staticClass: " btn btn-disabled",
-            attrs: { type: "submit" },
-            domProps: { value: "Send Email to " + _vm.total + " members" }
-          }),
-          _vm._v(" "),
-          _c(
-            "span",
-            {
-              directives: [
-                {
-                  name: "show",
-                  rawName: "v-show",
-                  value: _vm.emailSending,
-                  expression: "emailSending"
-                }
-              ]
-            },
-            [
-              _c("i", { staticClass: "fa fa-spinner fa-pulse fa-2x fa-fw" }),
-              _vm._v(" Sending")
-            ]
+          _vm._v(
+            "\n\t\t\tSorry, email not working at the moment. To be fixed soon.\n\t\t"
           )
         ]),
+        _vm._v(" "),
+        false
+          ? undefined
+          : _vm._e(),
         _vm._v(" "),
         _c("div", { staticClass: "col-xs-12 col-sm-6 " }, [
           _c(

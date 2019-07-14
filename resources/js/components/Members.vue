@@ -82,6 +82,10 @@
 	<div class="row" v-show="showEmail" style="margin-bottom: 20px;">
 
 		<div class="col-xs-12 col-sm-6">
+			Sorry, email not working at the moment. To be fixed soon.
+		</div>
+
+		<div class="col-xs-12 col-sm-6" v-if="false">
 			<b>From</b><br>
 			<input type="text" class="form-control" v-model="emailFrom" placeholder="Your email e.g. jim@pear.co.nz">
 
@@ -94,8 +98,10 @@
 			<textarea type="text" class="form-control" rows="5" v-model="emailMessage"></textarea>
 
 			<br>
+
 			<input type="submit" v-bind:value="'Send Email to ' + total + ' members'" class=" btn btn-primary" v-on:click="sendEmail()"  v-show="!emailSending">
 			<input type="submit" v-bind:value="'Send Email to ' + total + ' members'" class=" btn btn-disabled" v-show="emailSending">
+
 			<span v-show="emailSending"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i> Sending</span>
 		</div>
 		<div class="col-xs-12 col-sm-6 ">
