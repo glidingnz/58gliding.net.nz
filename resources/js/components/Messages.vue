@@ -1,15 +1,25 @@
 <style>
 .messages-panel {
 	position: fixed;
-	width: 30em;
+	max-width: 20em;
+	width: 90%;
 	min-height: 50px;
 	background-color: #FFF;
 	border: 1px solid #EEE;
 	padding: 10px;
-	margin-left: -20px;
-	margin-top: 6px;
+	margin-top: 15px;
+	margin-left: -15em;
 	z-index: 9999;
 	top: 0px;
+	right: 20px;
+	border-radius: 5px;
+	box-shadow: 0px 3px 20px #666;
+	font-size: 120%;
+}
+.close-panel {
+	font-size: 140%;
+	float: right;
+	color: #888;
 }
 .message-error { color: #A00; }
 .message-warning { color: #DC9200; }
@@ -25,7 +35,8 @@ a.old-messages { color: #444; }
 		<a class="fa fa-bell-o no-messages" v-bind:class="{ 'no-messages': areNoMessages, 'new-messages': areNewMessages , 'old-messages': areOldMessages }" href="javascript:void(null)" v-on:click="togglePanel()"></a>
 		<div class="messages-panel" v-show="panelOpen">
 
-			<i class="fa fa-times" style="float:right;" v-on:click="togglePanel()"></i>
+			<i class="fa fa-times close-panel"  v-on:click="togglePanel()"></i>
+
 			<div v-for="message in newMessages" v-bind:class="'message message-' + message.type">
 				<i class="fa" v-bind:class="{'fa-minus-circle':message.type=='error', 'fa-exclamation-triangle':message.type=='warning', 'fa-check-circle':message.type=='success', 'fa-info-circle':message.type=='note'}"></i> {{message.text}}
 			</div>

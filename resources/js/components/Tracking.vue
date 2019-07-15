@@ -349,7 +349,7 @@
 				center: new mapkit.Coordinate(-41.18301,174.0),
 				isRotationEnabled: false,
 				showsMapTypeControl: true,
-				showsUserLocation: true
+				showsUserLocation: false
 			});
 			this.mapStatus = 'map';
 			this.map.addEventListener("select", function(e) {
