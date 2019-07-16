@@ -4,7 +4,7 @@
 
 <div class="container-fluid" id="waypoints">
 
-    <form action="/waypoints-upload" method="post" enctype="multipart/form-data">
+    <form action="waypoints-upload" method="post" enctype="multipart/form-data">
         {{ csrf_field() }}
         Upload
         <input type="file" name="waypoints">

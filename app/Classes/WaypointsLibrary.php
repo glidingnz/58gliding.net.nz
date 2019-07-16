@@ -27,12 +27,11 @@ class WaypointsLibrary
 		$data =  Storage::get($filepath);
 
 		$rows = preg_split("/\r\n|\n|\r/", $data);
-		$batch = $this->get_next_batch();
 		$waypoints = Array(); // store the results in here
 
 		foreach ($rows AS $row)
 		{
-			$waypoint = new Waypoint;
+			$waypoint = [];
 
 			$row = str_getcsv($row);
 
@@ -40,56 +39,35 @@ class WaypointsLibrary
 			if (preg_replace("/[^A-Za-z0-9 ]/", '', strtolower($row[0]))=='name') continue;
 			if (count($row)<10) continue;
 
-			$waypoint->name = trim($row[0],'"');
-			$waypoint->description = trim($row[10],'"');
-			$waypoint->style = trim($row[6],'"');
+			$waypoint['name'] = trim($row[0],'"');
+			$waypoint['description'] = trim($row[10],'"');
+			$waypoint['style'] = trim($row[6],'"');
+            $waypoint['country'] = trim($row[2],'"');
 
 			if (substr($row[5], -1)=='m') $elevation = $this->meters_to_feet(substr($row[5], 0, -1));
 			if (substr($row[5], -2)=='ft') $elevation = substr($row[5], 0, -2);
-            $waypoint->elevation = $elevation == 0 ? null : $elevation;
+            $waypoint['elevation']= $elevation == 0 ? null : $elevation;
 
 			// set code to be the code field
-			$waypoint->code = substr(trim($row[1],'"'),0,6);
+			$waypoint['code'] = substr(trim($row[1],'"'),0,6);
 
             $direction = trim($row[7],'"');
-			$waypoint->direction = $direction == 0 ? null : $direction;
+			$waypoint['direction'] = $direction == 0 ? null : $direction;
 
+            $length = 0;
 			if (substr($row[8], -1)=='m') $length = substr($row[8], 0, -1);
 			if (substr($row[8], -2)=='ft') $length = $this->feet_to_meters(substr($row[8], 0, -2));
-            $waypoint->length = $length == 0 ? null : $length;
+            $waypoint['length'] = $length == 0 ? null : $length;
 
             $frequency=floatval(trim($row[9],'"'));
-			$waypoint->frequency = $frequency == 0 ? null : $frequency;
+			$waypoint['frequency'] = $frequency == 0 ? null : $frequency;
 
-			// check if the name has a number at the front from existing files
-			//$split_name = preg_split("/([0-9]+)[ ]+/", $waypoint->name, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-			//if (count($split_name)==2)
-			//{
-			//	$waypoint->name = $split_name[1];
-			//	$waypoint->number = $split_name[0];
-			//}
-
-			// check for 3 letter codes from Murray
-			$split_name = preg_split("/([0-9A-Z]{3})[ ]+/", $waypoint->name, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-			if (count($split_name)==2)
-			{
-				$waypoint->name = $split_name[1];
-			}
-
-			$waypoint->lat = $this->convertDMSToDecimal($row[3]);
-			$waypoint->long = $this->convertDMSToDecimal($row[4]);
-
-			//$waypoint->batch = $batch;
+			$waypoint['lat' ]= $this->convertDMSToDecimal($row[3]);
+			$waypoint['long'] = $this->convertDMSToDecimal($row[4]);
 
 			$waypoints[] = $waypoint;
 		}
 		return $waypoints;
-	}
-
-
-	public function get_next_batch()
-	{
-		return 0;
 	}
 
 	public function feet_to_meters($feet)

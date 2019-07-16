@@ -152,7 +152,7 @@ class CupsGrid extends Grid implements CupsGridInterface
             'type' => static::$TYPE_ROW,
             'title' => 'Turnpoints',
             'url' => function($gridName, $gridItem) {
-                return '/cups/download/'.$gridItem->id;
+                return route('cups.download',$gridItem->id);
             },
             'renderIf' => function ($gridName, $item) {
                 return in_array('download', $this->buttonsToGenerate);
@@ -169,7 +169,7 @@ class CupsGrid extends Grid implements CupsGridInterface
             'type' => static::$TYPE_ROW,
             'title' => 'Turnpoints',
             'url' => function($gridName, $gridItem) {
-                return '/cups/attach/'.$gridItem->id;
+                return route('cups.attach',$gridItem->id);
             },
             'renderIf' => function() {return Gate::allows('waypoint-admin');}
         ])));
@@ -184,7 +184,7 @@ class CupsGrid extends Grid implements CupsGridInterface
             'type' => static::$TYPE_ROW,
             'title' => 'Turnpoints',
             'url' => function($gridName, $gridItem) {
-                return '/cups/detach/'.$gridItem->id;
+                return route('cups.detach',$gridItem->id);
             },
             'renderIf' => function() {return Gate::allows('waypoint-admin');}
         ])));

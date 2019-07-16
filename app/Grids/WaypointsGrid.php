@@ -27,7 +27,7 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
         'view',
         'delete',
         'refresh',
-        'link'
+        'download',
         //'export'
     ];
 
@@ -81,7 +81,7 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
                 "label" => "Lat",
                 "filter" => [
                     "enabled" => true,
-                    "operator" => "like"
+                    "query" => function($query, $columnName, $userInput) {return $query->whereBetween("lat", [$userInput-2.5,$userInput+2.5]);},
                 ],
                 "styles" => [
                     "column" => "grid-w-6"
@@ -91,7 +91,7 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
                 "label" => "Lon",
                 "filter" => [
                     "enabled" => true,
-                    "operator" => "like"
+                    "query" => function($query, $columnName, $userInput) {return $query->whereBetween("long", [$userInput-2.5,$userInput+2.5]);},
                 ],
                 "styles" => [
                     "column" => "grid-w-6"
@@ -175,24 +175,18 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
         $this->editToolbarButton('create', ['renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
         $this->editRowButton('delete', ['renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
 
-        /*
-        $this->addRowButton('link', new GenericButton(([
-            'name' => 'Link',
-            'icon' => 'fa-paperclip',
-            'position' => 1,
-            'class' => 'btn btn-outline-success btn-sm grid-row-button',
-            'showModal' => true,
+
+        $this->makeCustomButton([
+            'name' => 'download',
+            'icon' => 'fa-download',
+            'position' => 0,
+            'class' => 'btn btn-primary',
+            'showModal' => false,
             'gridId' => $this->getId(),
-            'type' => static::$TYPE_ROW,
-            'title' => 'link turnpoint',
-            'url' => function ($gridName, $item) {
-                return route('waypoints.show',[
-                    $gridName => $item->{$this->getDefaultRouteParameter()}, 'ref' => $this->getId()
-                ]);
-            },
-            'renderIf' => function() {return Gate::allows('waypoint-admin');}
-        ])));
-        */
+            'title' => 'Turnpoints',
+            'url' => function () {return route('waypoints.download');},
+            ],
+            static::$TYPE_TOOLBAR);
     }
 
     /**

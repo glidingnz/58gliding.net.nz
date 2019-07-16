@@ -2,6 +2,8 @@
 namespace App\Http\Controllers\Apps;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
@@ -45,7 +47,7 @@ class WaypointsController extends Controller
         ];
 
         // modal
-        return view('waypoints.waypoints-modal', compact('modal','waypoint'))->render();
+        return view('waypoints.show-modal', compact('modal','waypoint'))->render();
     }
 
     /**
@@ -133,22 +135,86 @@ class WaypointsController extends Controller
         response()->json(['success'=>true,'message'=>'Waypoint Deleted']);
     }
 
-    public function upload(Request $request)
-    {
+    public function upload(Request $request){
 
         if (!Gate::allows('waypoint-admin')) return response()->json(['success' => false], 401);
 
         $wp_lib = new WaypointsLibrary();
 
         $path = $request->file('waypoints')->store('waypoints');
-        $waypoints = $wp_lib->process_cup_file($path);
+        $imports = $wp_lib->process_cup_file($path);
 
-        foreach ($waypoints AS $waypoint)
+        foreach ($imports AS $import)
         {
+            $waypoint = Waypoint::query(['code'=>$import['code']])->updateOrCreate([
+                'name' => $import['name'],
+                'code' => $import['code'],
+                'country' => $import['country'],
+                'lat' => $import['lat'],
+                'long' => $import['long'],
+                'style' => $import['style'],
+                'elevation' => $import['elevation'],
+                'length' => $import['length'],
+                'direction' => $import['direction'],
+                'frequency' => $import['frequency'],
+                'description' => $import['description'],
+            ]);
             $waypoint->save();
         }
 
-        return redirect('waypoints');
+        return Redirect::back();
+    }
+
+    public function download(Request $request){
+
+
+        $headers = [
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Content-type'        => 'text/csv',
+            'Content-Disposition' => "attachment; filename=All-Turnpoints.cup",
+            'Expires'             => '0',
+            'Pragma'              => 'public',
+        ];
+
+        //Get a list of all waypoints and write them to the export file
+        $waypoints = Waypoint::query();
+        $list = $waypoints->select('name','code','country','lat','long','elevation','style','direction','length','frequency','description')->get()->toArray();
+
+        # add headers for each column in the CSV download
+        array_unshift($list, array_keys($list[0]));
+
+        $callback = function() use ($list)
+        {
+
+            $FH = fopen('php://output', 'w');
+            fputcsv($FH, ['name','code','country','lat','lon','elev','style','rwdir','rwlen','freq','desc']);
+            unset($list[0]);
+            foreach ($list as $row) {
+                $row['elevation'] .= 'ft';
+                $row['lat'] = $row['lat']  < 0 ? sprintf("%08.3f",abs($row['lat']))."S" : sprintf("%08.3f",$row['lat'])."N";
+                $row['long'] = $row['long'] < 0 ? sprintf("%09.3f",abs($row['long']))."W" : sprintf("%09.3f",$row['long'])."E";
+                fputcsv($FH, $row);
+            }
+
+            //Get a list of all Waypoint Groups and add them to the export file as a SeeYou Task
+
+            fputcsv($FH, ['-----Related Tasks-----']);
+
+            $cups = Cup::all();
+
+            foreach ($cups as $cup){
+                $list = $cup->waypoints()->pluck('name')->toArray();
+                array_unshift($list,$cup->name,'???');
+                array_push($list,'???');
+                fputcsv($FH, $list);
+            }
+            fclose($FH);
+        };
+
+        return Response::stream($callback, 200, $headers);
+
+
+        return Redirect::back();
     }
 
 }

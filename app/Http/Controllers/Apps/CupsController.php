@@ -38,7 +38,7 @@ class CupsController extends Controller
         ];
 
         // modal
-        return view('cups.cups-modal', compact('modal','cup'))->render();
+        return view('cups.show-modal', compact('modal','cup'))->render();
     }
 
     /**
@@ -158,7 +158,7 @@ class CupsController extends Controller
     }
 
     public function download(Request $request, $id){
-        debugbreak();
+
         $cup = Cup::findOrFail($id);
 
         $headers = [
