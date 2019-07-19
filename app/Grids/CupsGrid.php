@@ -140,7 +140,8 @@ class CupsGrid extends Grid implements CupsGridInterface
         // call `editButtonProperties` to do either of the above. All the edit functions accept the properties as an array
 
         $this->editToolbarButton('create', ['renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
-        $this->editRowButton('delete', ['renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
+        $this->editRowButton('view', ['class' => 'btn btn-primary btn-sm grid-row-button']);
+        $this->editRowButton('delete', ['position' => 99,'renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
 
         $this->addRowButton('download', (new GenericButton([
             'name' => 'Download',

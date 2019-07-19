@@ -51,7 +51,7 @@
 			<div class="list-group app-list">
 				<a class="list-group-item" href="{{ url('aircraft')}}"><span class="fa fa-plane"></span> Aircraft Database</a>
 				<a class="list-group-item" href="{{ url('tracking')}}"><span class="fa fa-map-marker-alt"></span> Tracking</a>
-                <a class="list-group-item" href="{{ url('waypoints')}}"><span class="fa fa-map-marker-alt"></span> Turnpoints</a>
+                <a class="list-group-item" href="{{ url('cups')}}"><span class="fa fa-map-marker-alt"></span> Turnpoints</a>
 			</div>
 
 		</div>

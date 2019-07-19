@@ -6,29 +6,28 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Api\ApiController;
-use App\Models\Waypoint;
+use App\Models\Cup;
 
-class WaypointsApiController extends ApiController
+class CupsApiController extends ApiController
 {
     public function index(request $request)
     {
 
-        $query = Waypoint::query();
+        $query = Cup::query();
 
         if ($request->input('q'))
         {
             $s = '%' . $request->input('q') .'%';
             $query->where(function($waypointsQuery) use ($s) {
-                $waypointsQuery->where('code','like',$s);
-                $waypointsQuery->orWhere('name','like',$s);
+                $waypointsQuery->where('name','like',$s);
                 $waypointsQuery->orWhere('description','like',$s);
             });
         }
 
 
-        if ($waypoints = $query->get())
+        if ($cups = $query->get())
         {
-            return $this->success($waypoints);
+            return $this->success($cups);
         }
         return $this->error();
     }
@@ -41,9 +40,9 @@ class WaypointsApiController extends ApiController
     */
     public function show($id)
     {
-        if ($turnpoint = Waypoint::find($id))
+        if ($cup = Cup::with('waypoints')->find($id))
         {
-            return $this->success($turnpoint);
+            return $this->success($cup);
         }
         return $this->error();
     }

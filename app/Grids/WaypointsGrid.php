@@ -174,6 +174,20 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
 
         $this->editToolbarButton('create', ['renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
         $this->editRowButton('delete', ['renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
+        $this->editRowButton('view', ['class' => 'btn btn-primary btn-sm grid-row-button']);
+
+        $this->makeCustomButton([
+            'name' => 'upload',
+            'icon' => 'fa-upload',
+            'position' => 0,
+            'class' => 'btn btn-success',
+            'showModal' => true,
+            'gridId' => $this->getId(),
+            'title' => 'Turnpoints',
+            'url' => function () {return route('waypoints.upload');},
+            'renderIf' => function() {return Gate::allows('waypoint-admin');}
+            ],
+            static::$TYPE_TOOLBAR);
 
 
         $this->makeCustomButton([

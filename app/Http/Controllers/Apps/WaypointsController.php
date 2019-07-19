@@ -2,11 +2,10 @@
 namespace App\Http\Controllers\Apps;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests;
 use App\Models\Waypoint;
 use App\Models\Cup;
 use App\Classes\WaypointsLibrary;
@@ -139,30 +138,46 @@ class WaypointsController extends Controller
 
         if (!Gate::allows('waypoint-admin')) return response()->json(['success' => false], 401);
 
-        $wp_lib = new WaypointsLibrary();
+        if ($request->input('_method')=='POST') {
+            DebugBreak();
+            $wp_lib = new WaypointsLibrary();
 
-        $path = $request->file('waypoints')->store('waypoints');
-        $imports = $wp_lib->process_cup_file($path);
+            $path = $request->file('waypoints')->store('waypoints');
+            $imports = $wp_lib->process_cup_file($path);
 
-        foreach ($imports AS $import)
-        {
-            $waypoint = Waypoint::query(['code'=>$import['code']])->updateOrCreate([
-                'name' => $import['name'],
-                'code' => $import['code'],
-                'country' => $import['country'],
-                'lat' => $import['lat'],
-                'long' => $import['long'],
-                'style' => $import['style'],
-                'elevation' => $import['elevation'],
-                'length' => $import['length'],
-                'direction' => $import['direction'],
-                'frequency' => $import['frequency'],
-                'description' => $import['description'],
-            ]);
-            $waypoint->save();
+            foreach ($imports AS $import)
+            {
+                $waypoint = Waypoint::updateOrCreate(['code'=>$import['code']],
+                    [
+                        'name' => $import['name'],
+                        'code' => $import['code'],
+                        'country' => $import['country'],
+                        'lat' => $import['lat'],
+                        'long' => $import['long'],
+                        'style' => $import['style'],
+                        'elevation' => $import['elevation'],
+                        'length' => $import['length'],
+                        'direction' => $import['direction'],
+                        'frequency' => $import['frequency'],
+                        'description' => $import['description'],
+                ]);
+                $waypoint->save();
+            }
+            // Cannot redirect to modal form that uses a "File" because of pJax bug
+            return Redirect::back();
         }
 
-        return Redirect::back();
+        $modal = [
+            'model' => 'Waypoints',
+            'route' => route('waypoints.upload'),
+            'method' => 'POST',
+            'action' => 'Upload',
+            'pjaxContainer' => $request->get('ref'),
+        ];
+
+        // modal
+        return view('waypoints.upload-modal',compact('modal'))->render();
+
     }
 
     public function download(Request $request){

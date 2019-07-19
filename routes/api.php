@@ -49,8 +49,12 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 
 	Route::get('/roles',  'RolesApiController@index');
 	Route::get('/badges',  'BadgesApiController@index');
-	Route::get('/waypoints',  'WaypointsApiController@index');
 
+	Route::get('/waypoints',  'WaypointsApiController@index');
+    Route::get('/waypoints/{id}',  'WaypointsApiController@show');
+
+        Route::get('/cups',  'CupsApiController@index');
+    Route::get('/cups/{id}',  'CupsApiController@show');
 
 	// special anonymous member stats for external use
 	Route::get('/members/anonymous-stats', 'MembersApiController@anonymous_member_dates');

@@ -34,7 +34,7 @@ Route::get('/aircraft/{rego}', 'Apps\AircraftController@view');
 Route::get('/aircraft/{rego}/edit', 'Apps\AircraftController@edit');
 
 Route::get('/waypoints/download', 'Apps\WaypointsController@download')->name('waypoints.download');
-Route::post('/waypoints/upload', 'Apps\WaypointsController@upload')->name('waypoints.upload');
+Route::match(['get','post'],'/waypoints/upload', 'Apps\WaypointsController@upload')->name('waypoints.upload');
 Route::resource('/waypoints', 'Apps\WaypointsController');
 
 Route::match(['get','patch'],'/cups/attach/{ref}', 'Apps\CupsController@attach')->name('cups.attach');
