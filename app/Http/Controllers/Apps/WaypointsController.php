@@ -139,7 +139,7 @@ class WaypointsController extends Controller
         if (!Gate::allows('waypoint-admin')) return response()->json(['success' => false], 401);
 
         if ($request->input('_method')=='POST') {
-            DebugBreak();
+
             $wp_lib = new WaypointsLibrary();
 
             $path = $request->file('waypoints')->store('waypoints');
@@ -186,7 +186,7 @@ class WaypointsController extends Controller
         $headers = [
             'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
             'Content-type'        => 'text/csv',
-            'Content-Disposition' => "attachment; filename=All-Turnpoints.cup",
+            'Content-Disposition' => "attachment; filename=All-Waypoints.cup",
             'Expires'             => '0',
             'Pragma'              => 'public',
         ];

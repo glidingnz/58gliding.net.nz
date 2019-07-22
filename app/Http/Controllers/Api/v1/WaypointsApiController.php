@@ -41,9 +41,9 @@ class WaypointsApiController extends ApiController
     */
     public function show($id)
     {
-        if ($turnpoint = Waypoint::find($id))
+        if ($waypoint = Waypoint::find($id))
         {
-            return $this->success($turnpoint);
+            return $this->success($waypoint);
         }
         return $this->error();
     }

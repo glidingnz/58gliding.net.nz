@@ -15,7 +15,7 @@ class CupsGrid extends Grid implements CupsGridInterface
     *
     * @var string
     */
-    protected $name = 'Turnpoint Lists';
+    protected $name = 'Waypoint Lists';
 
     /**
     * List of buttons to be generated on the grid
@@ -151,7 +151,7 @@ class CupsGrid extends Grid implements CupsGridInterface
             'showModal' => false,
             'gridId' => $this->getId(),
             'type' => static::$TYPE_ROW,
-            'title' => 'Turnpoints',
+            'title' => 'Waypoints',
             'url' => function($gridName, $gridItem) {
                 return route('cups.download',$gridItem->id);
             },
@@ -168,7 +168,7 @@ class CupsGrid extends Grid implements CupsGridInterface
             'showModal' => true,
             'gridId' => $this->getId(),
             'type' => static::$TYPE_ROW,
-            'title' => 'Turnpoints',
+            'title' => 'Waypoints',
             'url' => function($gridName, $gridItem) {
                 return route('cups.attach',$gridItem->id);
             },
@@ -183,7 +183,7 @@ class CupsGrid extends Grid implements CupsGridInterface
             'showModal' => true,
             'gridId' => $this->getId(),
             'type' => static::$TYPE_ROW,
-            'title' => 'Turnpoints',
+            'title' => 'Waypoints',
             'url' => function($gridName, $gridItem) {
                 return route('cups.detach',$gridItem->id);
             },

@@ -134,7 +134,6 @@ class CupsController extends Controller
     public function update(Request $request, $id){
         if (!Gate::allows('waypoint-admin')) return response()->json(['success' => false], 401);
 
-        DebugBreak();
         $this->validate($request, [
             'name' => 'min:3|max:80',
             'description' => 'min:3|max:140',
@@ -149,12 +148,6 @@ class CupsController extends Controller
             return response()->json(['success'=>true,'message'=>'Waypoint List Updated']);
         }
         return response()->json(['success' => false], 400);
-    }
-
-    public function generate(Request $request, $id){
-
-        $cup = Cup::query()->findOrFail($id);
-
     }
 
     public function download(Request $request, $id){

@@ -183,7 +183,7 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
             'class' => 'btn btn-success',
             'showModal' => true,
             'gridId' => $this->getId(),
-            'title' => 'Turnpoints',
+            'title' => 'Waypoints',
             'url' => function () {return route('waypoints.upload');},
             'renderIf' => function() {return Gate::allows('waypoint-admin');}
             ],
@@ -197,7 +197,7 @@ class WaypointsGrid extends Grid implements WaypointsGridInterface
             'class' => 'btn btn-primary',
             'showModal' => false,
             'gridId' => $this->getId(),
-            'title' => 'Turnpoints',
+            'title' => 'Waypoints',
             'url' => function () {return route('waypoints.download');},
             ],
             static::$TYPE_TOOLBAR);
