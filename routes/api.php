@@ -51,8 +51,8 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 	Route::get('/badges',  'BadgesApiController@index');
 
 	Route::get('/waypoints',  'WaypointsApiController@index');
-    Route::get('/waypoints/{id}',  'WaypointsApiController@show');
     Route::get('/waypoints/lists',  'CupsApiController@index');
+    Route::get('/waypoints/{id}',  'WaypointsApiController@show');
     Route::get('/waypoints/lists/{id}',  'CupsApiController@show');
 
 	// special anonymous member stats for external use
