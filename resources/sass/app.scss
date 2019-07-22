@@ -1,6 +1,6 @@
 
 // Fonts
-//@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
+@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
 
 // Variables
 @import "variables";
@@ -58,8 +58,8 @@ td.center, th.center {
 	text-align:center;
 }
 
-.table th,
-.table td {
+#waypoints .table th,
+#waypoints .table td {
   padding: 0.12rem;
   vertical-align: top;
   border-top: 2px solid #dee2e6;
