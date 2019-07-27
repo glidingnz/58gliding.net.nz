@@ -52,7 +52,6 @@
 
 	</div>
 
-	
 	<div class="container-fluid">
 
 		<div class="float-right">
@@ -109,7 +108,7 @@
 			<div class="panel panel-default" v-show="tipsShowing">
 				<div class="panel-heading">Tips <a href="javascript:void(0)" class="pull-right fa fa-times" v-on:click="toggleTips()"></a></div>
 				<div class="panel-body">
-					
+
 						<ul>
 							<li>
 								<b>Include links</b>
@@ -280,7 +279,7 @@
 			loadSelected: function() {
 				var that = this;
 				window.axios.get('/api/v1/members', {params: this.state}).then(function (response) {
-					
+
 					that.results = response.data.data;
 					that.last_page = response.data.last_page;
 					that.total = response.data.total;

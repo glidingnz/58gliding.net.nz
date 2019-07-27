@@ -6,7 +6,6 @@
 @import "variables";
 
 // Bootstrap
-//@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 @import '~bootstrap/scss/bootstrap';
 
 body {
@@ -57,4 +56,11 @@ td.center, th.center {
 .app-list span.fa {
 	width: 2em;
 	text-align:center;
+}
+
+#waypoints .table th,
+#waypoints .table td {
+  padding: 0.12rem;
+  vertical-align: top;
+  border-top: 2px solid #dee2e6;
 }

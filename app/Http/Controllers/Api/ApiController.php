@@ -28,7 +28,10 @@ class ApiController extends Controller
 		$this->data['data'] = $data;
 		$this->data['success']=true;
 		$this->data['http_code']=200;
-		$this->_get_db_queries();
+		if (env('APP_DEBUG')) {
+			$this->_get_db_queries();
+		}
+
 		return $this->data;
 	}
 

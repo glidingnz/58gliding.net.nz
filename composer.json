@@ -19,7 +19,9 @@
         "maatwebsite/excel": "~2.1.0",
         "nyholm/psr7": "^1.1",
         "bogardo/mailgun": "^5.1",
-        "php-http/guzzle6-adapter": "^1.1"
+        "php-http/guzzle6-adapter": "^1.1",
+        "laracasts/presenter": "^0.2.1",
+        "leantony/laravel-grid": "2.0.x-dev"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
@@ -27,7 +29,8 @@
         "fzaninotto/faker": "^1.4",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^3.0",
-        "phpunit/phpunit": "^7.5"
+        "phpunit/phpunit": "^7.5",
+        "sven/artisan-view": "^3.2"
     },
     "config": {
         "optimize-autoloader": true,

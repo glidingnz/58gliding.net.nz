@@ -11164,3 +11164,10 @@ th.center {
   text-align: center;
 }
 
+#waypoints .table th,
+#waypoints .table td {
+  padding: 0.12rem;
+  vertical-align: top;
+  border-top: 2px solid #dee2e6;
+}
+
