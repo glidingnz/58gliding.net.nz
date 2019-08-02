@@ -5,7 +5,7 @@ namespace App\Grids;
 use Closure;
 use Leantony\Grid\Grid;
 
-class ContestEntriesGrid extends Grid implements EntriesGridInterface
+class EntriesGrid extends Grid implements EntriesGridInterface
 {
     /**
      * The name of the grid
