@@ -318,7 +318,7 @@
 					return false;
 				}
 
-				//this.emailSending = true;
+				this.emailSending = true;
 
 				window.axios.post('/api/v1/members/email', data).then(function (response) {
 					that.emailSending=false;

@@ -3313,9 +3313,9 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
       if (this.emailMessage == '') {
         messages.$emit('error', 'A message is required');
         return false;
-      } //this.emailSending = true;
+      }
 
-
+      this.emailSending = true;
       window.axios.post('/api/v1/members/email', data).then(function (response) {
         that.emailSending = false;
         var responseJson = response.data;
