@@ -81,10 +81,6 @@
 	<div class="row" v-show="showEmail" style="margin-bottom: 20px;">
 
 		<div class="col-xs-12 col-sm-6">
-			Sorry, email not working at the moment. To be fixed soon.
-		</div>
-
-		<div class="col-xs-12 col-sm-6" v-if="false">
 			<b>From</b><br>
 			<input type="text" class="form-control" v-model="emailFrom" placeholder="Your email e.g. jim@pear.co.nz">
 
@@ -302,6 +298,7 @@
 				this.tipsShowing = !this.tipsShowing;
 			},
 			sendEmail: function() {
+				var that = this;
 
 				var data = this.state;
 				data.from = this.emailFrom;
@@ -321,11 +318,11 @@
 					return false;
 				}
 
-				this.emailSending = true;
+				//this.emailSending = true;
 
 				window.axios.post('/api/v1/members/email', data).then(function (response) {
-					this.emailSending=false;
-					var responseJson = response.json();
+					that.emailSending=false;
+					var responseJson = response.data;
 
 					if (responseJson.success==true) messages.$emit('success', 'Message Sent');
 					else messages.$emit('error', 'Message not sent. Something went wrong.');
