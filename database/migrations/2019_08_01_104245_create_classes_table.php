@@ -16,14 +16,12 @@ class CreateClassesTable extends Migration
         Schema::create('classes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name',80)->nullable(false);
-            $table->text('description');
-            $table->bigInteger('contest_id')->unsigned()->nullable(false);
-            $table->foreign('contest_id')->references('id')->on('contests');
-            $table->json('attribute_1');
-            $table->json('attribute_2');
-            $table->json('attribute_3');
-            $table->json('attribute_4');
-            $table->json('attribute_5');
+            $table->text('description')->nullable();
+            $table->json('attribute_1')->nullable();
+            $table->json('attribute_2')->nullable();
+            $table->json('attribute_3')->nullable();
+            $table->json('attribute_4')->nullable();
+            $table->json('attribute_5')->nullable();
             $table->timestamps();
         });
     }

@@ -42,6 +42,10 @@ Route::match(['get','patch'],'/cups/detach/{ref}', 'Apps\CupsController@detach')
 Route::get('/cups/download/{ref}', 'Apps\CupsController@download')->name('cups.download');
 Route::resource('/cups', 'Apps\CupsController');
 
+Route::resource('/contests', 'Apps\ContestsController');
+Route::resource('/contestclasses', 'Apps\ContestClassesController');
+Route::resource('/contestentries', 'Apps\ContestEntriesController');
+
 Route::get('/tracking', 'Apps\TrackingController@index');
 Route::get('/tracking/{year}-{month}-{day}', 'Apps\TrackingController@day');
 Route::get('/tracking/{year}-{month}-{day}/{rego}', 'Apps\TrackingController@track');

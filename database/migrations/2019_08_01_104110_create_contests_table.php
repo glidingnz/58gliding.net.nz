@@ -20,15 +20,15 @@ class CreateContestsTable extends Migration
             $table->date('practice')->nullable();
             $table->date('start')->nullable(false);
             $table->date('end')->nullable(false);
-            $table->string('website',140);
-            $table->string('contact',140);
-            $table->string('email',140);
-            $table->string('location',140);
-            $table->json('attribute_1');
-            $table->json('attribute_2');
-            $table->json('attribute_3');
-            $table->json('attribute_4');
-            $table->json('attribute_5');
+            $table->string('website',140)->nullable();
+            $table->string('contact',140)->nullable();
+            $table->string('email',140)->nullable();
+            $table->string('location',140)->nullable();
+            $table->json('attribute_1')->nullable();
+            $table->json('attribute_2')->nullable();
+            $table->json('attribute_3')->nullable();
+            $table->json('attribute_4')->nullable();
+            $table->json('attribute_5')->nullable();
             $table->timestamps();
         });
     }
