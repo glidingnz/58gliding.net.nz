@@ -1,7 +1,8 @@
 <style>
 .messages-panel {
 	position: fixed;
-	width: 20em;
+	max-width: 20em;
+	width: 90%;
 	min-height: 50px;
 	background-color: #FFF;
 	border: 1px solid #EEE;

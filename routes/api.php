@@ -31,7 +31,7 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 
 	Route::get('/aircraft/{rego}', 'AircraftApiController@rego')
 		->where('rego','(?i)ZK-[A-Z]{3}(?-i)');
-		
+
 	Route::resource('aircraft', 'AircraftApiController', ['only' => [
 		'index', 'show', 'update'
 	]]);
@@ -50,7 +50,7 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 	Route::get('/electron/', 'TrackingApiController@electron');
 	Route::post('/spotnz', 'TrackingApiController@spotnz');
 	Route::get('/spotnz', 'TrackingApiController@spotnz');
-		
+
 	Route::resource('/ratings', 'RatingsApiController', ['only' => [
 		'index'
 	]]);
@@ -61,8 +61,11 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 
 	Route::get('/roles',  'RolesApiController@index');
 	Route::get('/badges',  'BadgesApiController@index');
-	Route::get('/waypoints',  'WaypointsApiController@index');
 
+	Route::get('/waypoints',  'WaypointsApiController@index');
+	Route::get('/waypoints/lists',  'CupsApiController@index');
+	Route::get('/waypoints/{id}',  'WaypointsApiController@show');
+	Route::get('/waypoints/lists/{id}',  'CupsApiController@show');
 
 	// special anonymous member stats for external use
 	Route::get('/members/anonymous-stats', 'MembersApiController@anonymous_member_dates');
@@ -70,7 +73,7 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 	Route::get('/members/address-changes/{limit_date}', 'MembersApiController@address_changes');
 
 	Route::get('/ratings/report',  'RatingMemberApiController@ratingsReport');
-	
+
 	Route::group(['middleware' => ['auth:api']], function () {
 
 		Route::get('/users',  'UsersApiController@index');
@@ -78,7 +81,7 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 		Route::post('/users/{userID}/roles',  'RolesApiController@add_user_role');
 		Route::delete('/role-user/{roleUserID}',  'RolesApiController@delete_user_role');
 		Route::post('/role-user/{roleUserID}',  'RolesApiController@update_user_role');
-		
+
 		Route::resource('/members/{member_id}/ratings', 'RatingMemberApiController', ['only' => [
 			'index', 'store', 'create'
 		]]);

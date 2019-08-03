@@ -10,47 +10,41 @@ use App\Models\Waypoint;
 
 class WaypointsApiController extends ApiController
 {
-	public function index(request $request)
-	{
+    public function index(request $request)
+    {
 
-		// switch ($request->input('sort'))
-		// {
-		// 	case 'first_name':
-		// 	case 'last_name':
-		// 	case 'email':
-		// 	case 'gnz_id':
-		// 	case 'gnz_active':
-		// 	case 'gnz_confirmed':
-		// 	case 'activated':
-		// 		$sort = $request->input('sort');
-		// 		break;
-		// 	default:
-		// 		$sort = 'email';
-		// 		break;
-		// }
+        $query = Waypoint::query();
 
-		// if ($request->input('direction')=='asc') $direction="ASC";
-		// else $direction = "DESC";
-
-		$query = Waypoint::query();
-
-		if ($request->input('q'))
-		{
-			$s = '%' . $request->input('q') .'%';
-			$query->where(function($usersQuery) use ($s) {
-				$usersQuery->where('email','like',$s);
-				$usersQuery->orWhere('first_name','like',$s);
-				$usersQuery->orWhere('last_name','like',$s);
-				$usersQuery->orWhere('gnz_id','like',$s);
-			});
-		}
+        if ($request->input('q'))
+        {
+            $s = '%' . $request->input('q') .'%';
+            $query->where(function($waypointsQuery) use ($s) {
+                $waypointsQuery->where('code','like',$s);
+                $waypointsQuery->orWhere('name','like',$s);
+                $waypointsQuery->orWhere('description','like',$s);
+            });
+        }
 
 
-		if ($waypoints = $query->get())
-		{
-			return $this->success($waypoints);
-		}
-		return $this->error(); 
-	}
+        if ($waypoints = $query->get())
+        {
+            return $this->success($waypoints);
+        }
+        return $this->error();
+    }
 
+    /**
+    * Display the specified resource.
+    *
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
+    public function show($id)
+    {
+        if ($waypoint = Waypoint::find($id))
+        {
+            return $this->success($waypoint);
+        }
+        return $this->error();
+    }
 }

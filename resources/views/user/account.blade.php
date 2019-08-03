@@ -13,19 +13,10 @@
 
 	<h1>My Account</h1>
 
-	<form action="/update-account" method="post" class="form-horizontal">
-		<?php /*
-		<div class="form-group">
-			<label class="col-sm-2 control-label" for="userUsername">Username</label>
-			<div class="col-sm-5">
-				<input class="form-control" type="text" id="userUsername" name="userUsername" value="">
-			</div>
-			<div class="col-sm-5 form-help">By default this is your email address. You can choose something shorter if desired.</div>
-		</div>
-		*/ ?>
+	<form action="/update-account" method="post" class="container ">
 		{{ csrf_field() }}
-		<div class="form-group">
-			<label class="col-sm-2 control-label" for="email">Email</label>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" for="email">Email</label>
 			<div class="col-sm-5">
 				<input class="form-control" type="text" id="email" name="email" size="40" value="{{ old('email', $user->email) }}">
 				</div>
@@ -41,14 +32,12 @@
 		</div>
 
 
-		<div class="form-group">
-			<label class="col-sm-2 control-label" for="gnz_id">GNZ Number</label>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" for="gnz_id">GNZ Number</label>
 			<div class="col-sm-5">
-				<input class="form-control" type="text" id="gnz_id" name="gnz_id" value="{{ old('gnz_id', $user->gnz_id) }}">
-			</div>
+				<input class="form-control mb-2" type="text" id="gnz_id" name="gnz_id" value="{{ old('gnz_id', $user->gnz_id) }}">
 
-			<div class="col-sm-5 form-help">To validate your GNZ membership your email address must match what's in the GNZ database. Email <a href="mailto:membership@gliding.co.nz">membership@gliding.co.nz</a> if your email address has changed recently.</div>
-			<div class="col-sm-offset-2 col-sm-5" style="margin-top: 10px;">
+
 				<?php if ($user->activated) { ?>
 					<?php if ($user->gnz_active) { ?>
 						<span class="success"><i class="fa fa-check-square-o"></i> GNZ Number Validated</span>
@@ -59,32 +48,35 @@
 				<?php } else { ?>
 					<span class="error"><i class="fa fa-exclamation-circle"></i> Validating your GNZ number requires a valid email address
 				<?php } ?>
+
 			</div>
+
+			<div class="col-sm-5 form-help">To validate your GNZ membership your email address must match what's in the GNZ database. Email <a href="mailto:membership@gliding.co.nz">membership@gliding.co.nz</a> if your email address has changed recently.</div>
 		</div>
 
-		<div class="form-group">
-			<label class="col-sm-2 control-label" for="mobile">Mobile</label>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" for="mobile">Mobile</label>
 			<div class="col-sm-5">
 				<input class="form-control" type="text" id="mobile" name="mobile" size="40" value="{{ old('mobile', $user->mobile) }}">
 			</div>
 			<div class="col-sm-5 form-help">Note this might be displayed publicly e.g. so public can contact instructor of the day</div>
 		</div>
 
-		<div class="form-group">
-			<label class="col-sm-2 control-label" for="first_name">First Name</label>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" for="first_name">First Name</label>
 			<div class="col-sm-5">
 				<input class="form-control" type="text" id="first_name" name="first_name" size="40" value="{{ old('first_name', $user->first_name) }}">
 			</div>
 		</div>
-		<div class="form-group">
-			<label class="col-sm-2 control-label" for="last_name">Last Name</label>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" for="last_name">Last Name</label>
 			<div class="col-sm-5">
 				<input class="form-control" type="text" id="last_name" name="last_name" size="40" value="{{ old('last_name', $user->last_name) }}">
 			</div>
 		</div>
 
-		<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-5">
+		<div class="form-group row">
+			<div class="offset-sm-2 col-sm-5">
 				<input value="Update Account" name="update-account" type="submit" class="btn btn-primary">
 			</div>
 		</div>

@@ -13,8 +13,15 @@
 	<!-- Styles -->
 	<link href="{{ asset('/css/app.css')}}" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{{ asset('/css/font-awesome.min.css')}}">
+	
+	<!-- date picker (required if you need date picker & date range filters) -->
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
 {{-- 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
  --}}
+
+	 <!-- load page specific styles -->
+	 @yield('styles')
+
 	<?php
 	// get messages defined by flash data
 	if (Session::has('error')) Messages::error(Session::get('error'));
@@ -65,6 +72,13 @@
 				<li class="nav-item"><a class="nav-link" href="{{ url('/ratings-report')}}">BFRs & Medicals</a></li>
 				<li class="nav-item"><a class="nav-link" href="{{ url('/calendar')}}">Calendar</a></li>
 			@endif
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Waypoints</a>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="{{ url('/cups')}}">Download Waypoints</a>
+					<a class="dropdown-item" href="{{ url('/waypoints')}}">Waypoint Database</a>
+				</div>
+			</li>
 		</ul>
 
 		<!-- Right Side Of Navbar -->
@@ -94,8 +108,43 @@
 	@yield('content')
 
 	</div>
-	<!-- Scripts -->
+
+	<!-- modal container (required if you need to render dynamic bootstrap modals) -->
+	@include('leantony::modal.container')
+
 	<script src="{{ asset('/js/app.js')}}"></script>
+
+	<!-- Following Scripts Requred by Laravel Grid -->
+	<!-- progress bar js (not required, but cool) -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+	<!-- moment js (required by datepicker library) -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+	<!-- pjax js (required) -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.pjax/2.0.1/jquery.pjax.min.js"></script>
+	<!-- datepicker js (required for datepickers) -->
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+	<!-- required to supply js functionality for the grid -->
+	<script src="{{ asset('vendor/leantony/grid/js/grid.js') }}"></script>
+	<script>
+		// send csrf token (see https://laravel.com/docs/5.6/csrf#csrf-x-csrf-token) - this is required
+		$.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			}
+		});
+
+		// for the progress bar (required for progress bar functionality)
+		$(document).on('pjax:start', function () {
+			NProgress.start();
+		});
+		$(document).on('pjax:end', function () {
+			NProgress.done();
+		});
+	</script>
+	<!-- End Laravel Grid Scripts -->
+
+	<!-- entry point for all scripts injected by the generated grids (required) -->
+	@stack('grid_js')
 
 	<!-- load page specific scripts -->
 	@yield('scripts')

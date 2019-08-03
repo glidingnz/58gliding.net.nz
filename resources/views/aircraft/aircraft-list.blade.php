@@ -3,7 +3,7 @@
 @section('content')
 
 
-<div class="container" id="aircraft">
+<div class="container-fluid" id="aircraft">
 
 	<aircraft></aircraft>
 

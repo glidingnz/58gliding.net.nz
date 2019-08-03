@@ -15,7 +15,7 @@
 
 <template>
 <div>
-	<div class="container">
+	<div class="container-fluid">
 		<div class="input-group ml-auto col-md-4 col-6 float-right" role="group">
 
 			<div class="input-group">
@@ -30,7 +30,7 @@
 		<h1 class="col-xs-6 results-title">Members</h1>
 	</div>
 
-	<div class="container clearfix">
+	<div class="container-fluid clearfix">
 
 		<select name="org" v-model="state.org" class="col-xs-12 col-sm-4 form-control input-sm float-right" style="width: auto; margin-bottom: 20px;">
 			<option v-bind:value="null">All Clubs</option>
@@ -52,8 +52,7 @@
 
 	</div>
 
-	
-	<div class="container">
+	<div class="container-fluid">
 
 		<div class="float-right">
 
@@ -82,54 +81,80 @@
 	<div class="row" v-show="showEmail" style="margin-bottom: 20px;">
 
 		<div class="col-xs-12 col-sm-6">
-			<b>From</b><br>
-			<input type="text" class="form-control" v-model="emailFrom" placeholder="Your email e.g. jim@pear.co.nz">
+			<div class="card">
+				<h5 class="card-header">Create Email</h5>
 
-			<b>Subject</b><br>
-			<input type="text" class="form-control" v-model="emailSubject" placeholder="Subject">
+				<div class="card-body">
 
-			<span class="pull-right"><i class="fa fa-info-circle"></i><a href="javascript:void(0)"  v-on:click="toggleTips()"> Email Tips...</a></span>
+					<b>From</b><br>
+					<input type="text" class="form-control" v-model="emailFrom" placeholder="Your email e.g. jim@pear.co.nz">
 
-			<b>Message</b><br>
-			<textarea type="text" class="form-control" rows="5" v-model="emailMessage"></textarea>
+					<b>Subject</b><br>
+					<input type="text" class="form-control" v-model="emailSubject" placeholder="Subject">
 
-			<br>
-			<input type="submit" v-bind:value="'Send Email to ' + total + ' members'" class=" btn btn-primary" v-on:click="sendEmail()"  v-show="!emailSending">
-			<input type="submit" v-bind:value="'Send Email to ' + total + ' members'" class=" btn btn-disabled" v-show="emailSending">
-			<span v-show="emailSending"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i> Sending</span>
+					<b>Message</b><br>
+					<textarea type="text" class="form-control" rows="5" v-model="emailMessage"></textarea>
+
+				</div>
+				<div class="card-footer">
+
+					<span class="float-right">
+						<i class="fa fa-info-circle"></i>
+						<a href="javascript:void(0)"  v-on:click="toggleTips()"> Show Email Tips...</a>
+					</span>
+
+					<input type="submit" v-bind:value="'Send Email to ' + total + ' members'" class=" btn btn-primary" v-on:click="sendEmail()"  v-show="!emailSending">
+					<input type="submit" v-bind:value="'Send Email to ' + total + ' members'" class=" btn btn-disabled" v-show="emailSending">
+
+					<span v-show="emailSending"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i> Sending</span>
+				</div>
+			</div>
 		</div>
 		<div class="col-xs-12 col-sm-6 ">
 
-			<div class="panel panel-default" v-show="tipsShowing">
-				<div class="panel-heading">Tips <a href="javascript:void(0)" class="pull-right fa fa-times" v-on:click="toggleTips()"></a></div>
-				<div class="panel-body">
-					
-						<ul>
-							<li>
-								<b>Include links</b>
-								<p>Always include a link when referring to something on the internet. People are lazy, so make life easy for them e.g.</p>
-								<pre>Don't forget about our classifieds system<br>http://gliding.co.nz/classifies</pre>
-							</li>
-							<li>
-								<b>Put links on a fresh new line with no punctuation</b>
-								<p>Most email readers will turn a link into a working clickable link, but only if it doesn't have a full stop at the end.</p>
-							</li>
-							<li>This supports Markdown. Markdown makes it easy to add styles to the email. <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Check this Markdown Cheatsheet</a> for more on how this works.</li>
-						</ul>
+			<div class="card mb-4">
+
+				<h5 class="card-header">Preview: {{emailSubject}} <span v-if="!emailSubject" class="text-muted">(No Subject)</span></h5>
+				<div class="card-body" v-html="compiledMarkdown"></div>
+			</div>
+
+			<div class="card" v-show="tipsShowing">
+				<div class="card-header">Email Tips 
+					<a href="javascript:void(0)" class="float-right " v-on:click="toggleTips()"><span class="fa fa-times"> </span> Close Tips</a></div>
+				<div class="card-body">
+
+					<ul class="list-group list-group-flush">
+						<li class="list-group-item">This supports Markdown. Markdown makes it easy to add styles to the email. <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Check this Markdown Cheatsheet</a> for more on how this works. Some examples:
+
+						<p style="font-family: monospace;">
+						# Main Heading<br>
+						## Sub Heading (up to ####)<br>
+						*italics*<br>
+						**bold text**<br>
+						[https://www.google.com](https://www.google.com)<br>
+						--- (Horizontal Rule)
+						</p>
+
+						</li>
+						<li class="list-group-item">
+							<b>Include links</b>
+							<p>Always include a link when referring to something on the internet. People are lazy, so make life easy for them e.g.</p>
+							<pre>Don't forget about our classifieds system<br>http://gliding.co.nz/classifies</pre>
+						</li>
+						<li class="list-group-item">
+							<b>Put links on a fresh new line with no punctuation</b>
+							<p>Most email readers will turn a link into a working clickable link, but only if it doesn't have a full stop at the end.</p>
+						</li>
+					</ul>
 				</div>
 			</div>
 
-
-			<b>Preview</b><br>
-			<div class="panel panel-default">
-				<div class="panel-heading">{{emailSubject}} <span v-if="!emailSubject" class="text-muted">(No Subject)</span></div>
-				<div  class="panel-body" v-html="compiledMarkdown"></div>
-			</div>
+			
 		</div>
 
 	</div>
 
-	<div class="container">
+	<div class="container-fluid">
 		<table class="table results-table table-striped">
 			<tr>
 				<th class="d-none d-lg-table-cell">GNZ ID</th>
@@ -196,7 +221,7 @@
 				emailSubject: '',
 				emailMessage: '',
 				emailSending: false,
-				tipsShowing: false
+				tipsShowing: true
 			}
 		},
 		watch: {
@@ -274,7 +299,7 @@
 			loadSelected: function() {
 				var that = this;
 				window.axios.get('/api/v1/members', {params: this.state}).then(function (response) {
-					
+
 					that.results = response.data.data;
 					that.last_page = response.data.last_page;
 					that.total = response.data.total;
@@ -297,6 +322,7 @@
 				this.tipsShowing = !this.tipsShowing;
 			},
 			sendEmail: function() {
+				var that = this;
 
 				var data = this.state;
 				data.from = this.emailFrom;
@@ -319,8 +345,8 @@
 				this.emailSending = true;
 
 				window.axios.post('/api/v1/members/email', data).then(function (response) {
-					this.emailSending=false;
-					var responseJson = response.json();
+					that.emailSending=false;
+					var responseJson = response.data;
 
 					if (responseJson.success==true) messages.$emit('success', 'Message Sent');
 					else messages.$emit('error', 'Message not sent. Something went wrong.');
