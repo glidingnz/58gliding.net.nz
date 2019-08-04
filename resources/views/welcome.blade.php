@@ -49,8 +49,9 @@
 			<h2>Nationwide Tools</h2>
 
 			<div class="list-group app-list">
+                <a class="list-group-item" href="{{ url('contests')}}"><span class="fa fa-trophy"></span> Events</a>
 				<a class="list-group-item" href="{{ url('aircraft')}}"><span class="fa fa-plane"></span> Aircraft Database</a>
-				<a class="list-group-item" href="{{ url('tracking')}}"><span class="fa fa-map-marker-alt"></span> Tracking</a>
+				<a class="list-group-item" href="{{ url('tracking')}}"><span class="fa fa-map"></span> Tracking</a>
                 <a class="list-group-item" href="{{ url('cups')}}"><span class="fa fa-map-marker-alt"></span> Turnpoints</a>
 			</div>
 
