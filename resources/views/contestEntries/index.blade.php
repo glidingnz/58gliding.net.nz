@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="container-fluid" id="contestEntries">
+<div class="container-fluid" id="gridview">
     {!! $grid !!}
 </div>
 
