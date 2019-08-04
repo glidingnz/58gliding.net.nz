@@ -4,6 +4,9 @@ namespace App\Grids;
 
 use Closure;
 use Leantony\Grid\Grid;
+use Leantony\Grid\Buttons\GenericButton;
+
+use Gate;
 
 class ContestsGrid extends Grid implements ContestsGridInterface
 {
@@ -24,7 +27,8 @@ class ContestsGrid extends Grid implements ContestsGridInterface
         'view',
         'delete',
         'refresh',
-        //'export'
+        //'export',
+        'Enter',
     ];
 
     /**
@@ -146,6 +150,27 @@ class ContestsGrid extends Grid implements ContestsGridInterface
         // call `editToolbarButton` to edit a toolbar button
         // call `editRowButton` to edit a row button
         // call `editButtonProperties` to do either of the above. All the edit functions accept the properties as an array
+
+        $this->editToolbarButton('create', ['renderIf'=> function() {return Gate::allows('contest-admin');} ]);
+        $this->editRowButton('delete', ['renderIf'=> function() {return Gate::allows('contest-admin');} ]);
+        $this->editRowButton('view', ['class' => 'btn btn-primary btn-sm grid-row-button']);
+
+        $this->addRowButton('Enter', (new GenericButton([
+            'name' => 'Enter',
+            'icon' => 'fa-download',
+            'position' => 0,
+            'class' => 'btn btn-primary btn-sm grid-row-button',
+            'showModal' => true,
+            'gridId' => $this->getId(),
+            'type' => static::$TYPE_ROW,
+            'title' => 'Enter',
+            'url' => function($gridName, $gridItem) {
+                return route('contestentries.create',$gridItem->id);
+            },
+            'renderIf' => function ($gridName, $item) {
+                return in_array('Enter', $this->buttonsToGenerate);
+            }
+        ])));
     }
 
     /**
