@@ -16,6 +16,6 @@ class Contest extends Model
 
     public function contestClass()
     {
-        return $this->hasMany('App\Models\ContestClass','id','classes_id');
+        return $this->belongsToMany('App\Models\ContestClass','classes_contests','contest_id','class_id');
     }
 }
