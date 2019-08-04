@@ -20,7 +20,7 @@ class ContestClassesController extends Controller
 
         return (new ClassesGrid(['contests' => $contests]))
         ->create(['query' => ContestClass::query(), 'request' => $request])
-        ->renderOn('contestclasses.index');
+        ->renderOn('contestClasses.index');
     }
 
     public function create(Request $request)
@@ -36,7 +36,7 @@ class ContestClassesController extends Controller
         ];
 
         // modal
-        return view('contestclasses.show-modal', compact('modal','contestClass'))->render();
+        return view('contestClasses.show-modal', compact('modal','contestClass'))->render();
     }
 
     public function show($id, Request $request)
@@ -51,7 +51,7 @@ class ContestClassesController extends Controller
         ];
 
         // modal
-        return view('contestclasses.show-modal', compact('modal','contestClass'))->render();
+        return view('contestClasses.show-modal', compact('modal','contestClass'))->render();
     }
 
     public function store(Request $request)
