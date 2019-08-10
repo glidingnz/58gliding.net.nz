@@ -9,6 +9,7 @@ use App\Models\ContestEntry;
 use App\Grids\EntriesGrid;
 use App\Grids\EntriesGridInterface;
 use App\Models\Contest;
+use App\Models\ContestProfile;
 
 use Form;
 use Gate;
@@ -26,10 +27,9 @@ class ContestEntriesController extends Controller
 
     public function create(Request $request)
     {
-        if (!Gate::allows('contest-admin')) return response()->json(['success' => false], 401);
 
         $contestEntry = new ContestEntry;
-        $contestList = Contest::where('end','>',date('Y-m-d',time()))->pluck('name','id');
+        $contestName = Contest::query()->findOrfail($request->id)->pluck('name','id');
 
         $modal = [
             'model' => 'Contest',
@@ -39,7 +39,7 @@ class ContestEntriesController extends Controller
         ];
 
         // modal
-        return view('contestEntries.show-modal', compact('modal','contestEntry','contestList'))->render();
+        return view('contestEntries.show', compact('modal','contestEntry','contestList'))->render();
     }
 
     public function show($id, Request $request)
@@ -95,5 +95,17 @@ class ContestEntriesController extends Controller
 
         $status = ContestEntry::query()->findOrFail($id)->delete();
         response()->json(['success'=>true,'message'=>'Contest Entry Deleted']);
+    }
+
+    public function savedata(Request $request)
+    {
+        $status = ContestProfile::updateOrCreate(['id'=>auth()->user()->id],$request->except(['token','contest_name','contest_class']));
+        return ( $status ?  'Data Saved' : 'Cannot Save Data. No Profile');
+    }
+
+    public function loaddata()
+    {
+        $data = ContestProfile::findOrFail(auth()->user()->id)->get()->toArray();
+        return json_encode($data);
     }
 }

@@ -85,6 +85,7 @@
 @endcan
 
 <script>
+    //Attach Datepicker to Practice Date
     $('#input_practice').daterangepicker({
         singleDatePicker: true,
         locale: {
@@ -92,6 +93,7 @@
             separator: ' - ',
         }
     });
+    //Attach Datepicker to Start Date
     $('#input_start').daterangepicker({
         singleDatePicker: true,
         locale: {
@@ -99,6 +101,7 @@
             separator: ' - ',
         }
     });
+    //Attach Datepicker to End Date
     $('#input_end').daterangepicker({
         singleDatePicker: true,
         locale: {
@@ -106,19 +109,18 @@
             separator: ' - ',
         }
     });
-
+    //Select All Classes in dropdown on Form Submit
     $('#modal_form').on('click', '#modal_submit', function(e){
         $('#selected_class option').prop('selected', true);
         $('#available_class option').prop('selected', true);
     });
-
+    //Called from Add Button
     function AddClass()
     {
         var selected = $('#available_class option:selected');
         selected.appendTo('#selected_class');
     }
-
-
+    //Called from Remove Button
     function RemoveClass()
     {
         var selected = $('#selected_class option:selected');

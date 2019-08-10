@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEntriesTable extends Migration
+class CreateContestProfileTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,38 +13,34 @@ class CreateEntriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('entries', function (Blueprint $table) {
+        Schema::create('contest_profile', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('contest_id')->unsigned()->nullable(false);
-            $table->bigInteger('classes_id')->unsigned()->nullable(false);
-            $table->foreign('contest_id')->references('id')->on('contests');
-            $table->foreign('classes_id')->references('id')->on('classes');
 
-            $table->string('first_name',40)->nullable(false);
-            $table->string('last_name',40)->nullable(false);
-            $table->boolean('is_copilot')->default(false);
-            $table->string('mobile',14)->nullable(false);
-            $table->string('email',80)->nullable(false);
-            $table->string('address_1',100)->nullable(false);
+            $table->string('first_name',40)->nullable();
+            $table->string('last_name',40)->nullable();
+            $table->boolean('is_copilot')->nullable()->default(0);
+            $table->string('mobile',14)->nullable();
+            $table->string('email',80)->nullable();
+            $table->string('address_1',100)->nullable();
             $table->string('address_2',100)->nullable();
             $table->string('address_3',100)->nullable();
-            $table->string('club',80)->nullable(false);
+            $table->string('club',80)->nullable();
 
-            $table->string('e_contact',80)->nullable(false);
-            $table->string('e_mobile',14)->nullable(false);
+            $table->string('e_contact',80)->nullable();
+            $table->string('e_mobile',14)->nullable();
             $table->string('e_phone',14)->nullable();
             $table->string('e_email',80)->nullable();
-            $table->string('e_address_1',100)->nullable(false);
+            $table->string('e_address_1',100)->nullable();
             $table->string('e_address_2',100)->nullable();
             $table->string('e_address_3',100)->nullable();
             $table->string('e_relationship',80)->nullable();
 
             $table->string('glider',6)->nullable();
             $table->string('type',80)->nullable();
-            $table->decimal('wingspan',3,1)->nullable();
-            $table->decimal('handicap',4,3)->nullable();
-            $table->boolean('winglets')->nullable();
-            $table->boolean('has_tracker')->nullable();
+            $table->decimal('wingspan',3,1)->nullable()->default(0);
+            $table->decimal('handicap',4,3)->nullable()->default(0);
+            $table->boolean('winglets')->nullable()->default(0);
+            $table->boolean('has_tracker')->nullable()->default(0);
 
             $table->string('crew_name',80)->nullable();
             $table->string('c_phone',14)->nullable();
@@ -56,12 +52,12 @@ class CreateEntriesTable extends Migration
             $table->string('trailer_plate',8)->nullable();
             $table->string('crew_notes',140)->nullable();
 
-            $table->boolean('declaration')->nullable(false)->default(false);
             $table->json('attribute_1')->nullable();
             $table->json('attribute_2')->nullable();
             $table->json('attribute_3')->nullable();
             $table->json('attribute_4')->nullable();
             $table->json('attribute_5')->nullable();
+
             $table->timestamps();
         });
     }
@@ -73,6 +69,6 @@ class CreateEntriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('entries');
+        Schema::dropIfExists('contest_profile');
     }
 }

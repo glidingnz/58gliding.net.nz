@@ -44,6 +44,8 @@ Route::resource('/cups', 'Apps\CupsController');
 
 Route::resource('/contests', 'Apps\ContestsController');
 Route::resource('/contestclasses', 'Apps\ContestClassesController');
+Route::post('/contestentries/savedata', 'Apps\ContestEntriesController@savedata')->name('contestentries.savedata');
+Route::post('/contestentries/loaddata', 'Apps\ContestEntriesController@loaddata')->name('contestentries.loaddata');
 Route::resource('/contestentries', 'Apps\ContestEntriesController');
 
 Route::get('/tracking', 'Apps\TrackingController@index');

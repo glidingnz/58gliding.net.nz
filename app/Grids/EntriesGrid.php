@@ -43,25 +43,41 @@ class EntriesGrid extends Grid implements EntriesGridInterface
     public function setColumns()
     {
         $this->columns = [
-		    "id" => [
-		        "label" => "ID",
-		        "filter" => [
-		            "enabled" => true,
-		            "operator" => "="
-		        ],
-		        "styles" => [
-		            "column" => "grid-w-10"
-		        ]
-		    ],
-		    "created_at" => [
-		        "sort" => false,
-		        "date" => "true",
-		        "filter" => [
-		            "enabled" => true,
-		            "type" => "date",
-		            "operator" => "<="
-		        ]
-		    ]
+            "first_name" => [
+                "label" => "Fiurst Name",
+                "filter" => [
+                    "enabled" => true,
+                    "operator" => "like"
+                ],
+                "search" => ["enabled" => true],
+                "styles" => [
+                    "column" => "grid-w-6"
+                ]
+            ],
+            "last_name" => [
+                "label" => "Last Name",
+                "filter" => [
+                    "enabled" => true,
+                    "operator" => "like"
+                ],
+                "search" => ["enabled" => true],
+            ],
+            "glider" => [
+                "label" => "Glider",
+                "filter" => [
+                    "enabled" => true,
+                    "operator" => "like"
+                ],
+                "search" => ["enabled" => true],
+            ],
+            "contestClass.name" => [
+                "label" => "Class",
+                "filter" => [
+                    "enabled" => true,
+                    "operator" => "like"
+                ],
+                "search" => ["enabled" => true],
+            ],
 		];
     }
 

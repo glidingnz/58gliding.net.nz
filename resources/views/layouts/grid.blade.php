@@ -50,7 +50,7 @@
         </script>
     </head>
     <body>
-        <div id="app">
+        <div id="app_without_vue">
             <nav class="navbar navbar-dark bg-dark navbar-expand-md">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     <?php if (isset($org) && $org) { ?>

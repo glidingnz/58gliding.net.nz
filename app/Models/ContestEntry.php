@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class ContestEntry extends Model
 {
     protected $table='entries';
+    protected $guarded=['id'];
+    protected $hidden=['pivot'];
 
     public function contest()
     {

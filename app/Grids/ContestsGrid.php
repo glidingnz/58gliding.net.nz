@@ -160,12 +160,12 @@ class ContestsGrid extends Grid implements ContestsGridInterface
             'icon' => 'fa-download',
             'position' => 0,
             'class' => 'btn btn-primary btn-sm grid-row-button',
-            'showModal' => true,
+            'showModal' => false,
             'gridId' => $this->getId(),
             'type' => static::$TYPE_ROW,
             'title' => 'Enter',
             'url' => function($gridName, $gridItem) {
-                return route('contestentries.create',$gridItem->id);
+                return route('contestentries.create',['id'=>$gridItem->id]);
             },
             'renderIf' => function ($gridName, $item) {
                 return in_array('Enter', $this->buttonsToGenerate);
