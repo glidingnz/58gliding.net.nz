@@ -8,17 +8,17 @@ use Leantony\Grid\Grid;
 class EntriesGrid extends Grid implements EntriesGridInterface
 {
     /**
-     * The name of the grid
-     *
-     * @var string
-     */
+    * The name of the grid
+    *
+    * @var string
+    */
     protected $name = 'Entries';
 
     /**
-     * List of buttons to be generated on the grid
-     *
-     * @var array
-     */
+    * List of buttons to be generated on the grid
+    *
+    * @var array
+    */
     protected $buttonsToGenerate = [
         'create',
         'view',
@@ -28,10 +28,10 @@ class EntriesGrid extends Grid implements EntriesGridInterface
     ];
 
     /**
-     * Specify if the rows on the table should be clicked to navigate to the record
-     *
-     * @var bool
-     */
+    * Specify if the rows on the table should be clicked to navigate to the record
+    *
+    * @var bool
+    */
     protected $linkableRows = false;
 
     /**
@@ -70,22 +70,48 @@ class EntriesGrid extends Grid implements EntriesGridInterface
                 ],
                 "search" => ["enabled" => true],
             ],
-            "contestClass.name" => [
-                "label" => "Class",
+            "type" => [
+                "label" => "Type",
                 "filter" => [
                     "enabled" => true,
                     "operator" => "like"
                 ],
                 "search" => ["enabled" => true],
             ],
-		];
+            "contest_id" => [
+                'label' => 'Contest',
+                'export' => true,
+                'search' => ['enabled' => true],
+                'presenter' => function ($columnData, $columnName) {
+                    return $columnData->contest->name;
+                },
+                'filter' => [
+                    'enabled' => true,
+                    'type' => 'select',
+                    'data' => \App\Models\Contest::query()->pluck('name', 'id')
+                ]
+            ],
+            "classes_id" => [
+                'label' => 'Class',
+                'export' => true,
+                'search' => ['enabled' => true],
+                'presenter' => function ($columnData, $columnName) {
+                    return $columnData->contestClass->name;
+                },
+                'filter' => [
+                    'enabled' => true,
+                    'type' => 'select',
+                    'data' => \App\Models\ContestClass::query()->pluck('name', 'id')
+                ]
+            ],
+        ];
     }
 
     /**
-     * Set the links/routes. This are referenced using named routes, for the sake of simplicity
-     *
-     * @return void
-     */
+    * Set the links/routes. This are referenced using named routes, for the sake of simplicity
+    *
+    * @return void
+    */
     public function setRoutes()
     {
         // searching, sorting and filtering

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Apps;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 use App\Models\ContestEntry;
 use App\Grids\EntriesGrid;
@@ -21,15 +22,13 @@ class ContestEntriesController extends Controller
         $entries = ContestEntry::class;
 
         return (new EntriesGrid(['entries' => $entries]))
-        ->create(['query' => ContestEntry::query(), 'request' => $request])
+        ->create(['query' => ContestEntry::query()->with(['contestClass','contest']), 'request' => $request])
         ->renderOn('contestEntries.index');
     }
 
     public function create(Request $request)
     {
-
-        $contestEntry = new ContestEntry;
-        $contestName = Contest::query()->findOrfail($request->id)->pluck('name','id');
+        $contest = Contest::with('contestClass')->find($request->id);
 
         $modal = [
             'model' => 'Contest',
@@ -39,12 +38,14 @@ class ContestEntriesController extends Controller
         ];
 
         // modal
-        return view('contestEntries.show', compact('modal','contestEntry','contestList'))->render();
+        return view('contestEntries.show', compact('modal','contest'))->render();
     }
 
     public function show($id, Request $request)
     {
         $contestEntry = ContestEntry::query()->findOrFail($id);
+        $contest = Contest::with('contestClass')->find($contestEntry->contest_id);
+
         $modal = [
             'model' => 'Contest Entry',
             'route' => route('contestentries.show',['contestclass'=>$contestEntry->id]),
@@ -54,18 +55,37 @@ class ContestEntriesController extends Controller
         ];
 
         // modal
-        return view('contestEntries.show-modal', compact('modal','contestEntry'))->render();
+        return view('contestEntries.show-modal', compact('modal','contestEntry','contest'))->render();
     }
 
     public function store(Request $request)
     {
-        if (!Gate::allows('contest-admin')) return response()->json(['success' => false], 401);
 
-        $this->validate($request, [
-            'name' => 'unique:classes,name',
+        $validator = Validator::make($request->all(),[
+            'contest_name'=> 'required',
+            'contest_class'=> 'required',
+            'first_name' => 'required',
+            'last_name'  => 'required',
+            'is_copilot' => 'boolean',
+            'mobile' => 'required|length:14|regex:/([+(\d]{1})(([\d+() -.]){5,16})([+(\d]{1})/',
+            'email'=>'email',
+            'address_1' =>'required',
+            'club' => 'required',
+            'e_contact' => 'required|length:14',
+            'e_mobile' => 'required|regex:/([+(\d]{1})(([\d+() -.]){5,16})([+(\d]{1})/',
+            'e_address_1' => 'required',
+            'glider' => 'required_unless:is_copilot,1',
+            'handicap' => 'numeric|required_unless:is_copilot,1',
+            'wingspan' => 'numeric|required_unless:is_copilot,1',
         ]);
 
-        $contestEntry = ContestEntry::create($request->except(['_method','_token']));
+        if ($validator->fails()) {
+            return redirect(route('contestentries.create',['id'=>$request->contest_id]))
+            ->withErrors($validator)
+            ->withInput();
+        }
+
+        $contestEntry = ContestEntry::create($request->except(['_method','_token','contest_name']));
 
         if ($contestEntry->exists) {
             return response()->json(['success'=>true,'message'=>'Contest Entry Created']);
@@ -75,13 +95,26 @@ class ContestEntriesController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (!Gate::allows('contest-admin')) return response()->json(['success' => false], 401);
 
-        $this->validate($request, [
-            //'name' => 'unique:classes,name',
+        $this->validate($request,[
+            'contest_name'=> 'required',
+            //'contest_class'=> 'required',
+            'first_name' => 'required',
+            'last_name'  => 'required',
+            'is_copilot' => 'boolean',
+            'mobile' => 'required|regex:/([+(\d]{1})(([\d+() -.]){5,16})([+(\d]{1})/',
+            'email'=>'email',
+            'address_1' =>'required',
+            'club' => 'required',
+            'e_contact' => 'required',
+            'e_mobile' => 'required|regex:/([+(\d]{1})(([\d+() -.]){5,16})([+(\d]{1})/',
+            'e_address_1' => 'required',
+            'glider' => 'required_unless:is_copilot,1',
+            'handicap' => 'numeric|required_unless:is_copilot,1',
+            'wingspan' => 'numeric|required_unless:is_copilot,1',
         ]);
 
-        $status = ContestEntry::where('id',$id)->update($request->except(['_method','_token','code']));
+        $status = ContestEntry::where('id',$id)->update($request->except(['_method','_token','contest_name']));
 
         if ($status) {
             return response()->json(['success'=>true,'message'=>'Contest Entry Updated']);
@@ -105,7 +138,8 @@ class ContestEntriesController extends Controller
 
     public function loaddata()
     {
-        $data = ContestProfile::findOrFail(auth()->user()->id)->get()->toArray();
+        $data = ContestProfile::find(auth()->user()->id);
+        if ($data) $data = json_encode($data->toarray());
         return json_encode($data);
     }
 }

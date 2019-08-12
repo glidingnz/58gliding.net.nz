@@ -1,16 +1,24 @@
 {!! Modal::start($modal) !!}
+
 <div class="form-group row">
     <label for="input_contest_name" class="col-sm-4 col-form-label">Contest:</label>
     <div class="col-sm-6">
+        <input type="hidden" class="form-control" id="input_id" name="contest_id" value="{{ isset($contest) ? $contest->id : old('contest_id')}}">
         <input type="text" class="form-control" id="input_contest_name" name="contest_name"
-            placeholder="Contest" value="{{ isset($contestEntry) ? $contestEntry->contest_name : old('contest_name')}}">
+            placeholder="Contest" value="{{ isset($contest) ? $contest->name : old('contest_name')}}">
     </div>
 </div>
 <div class="form-group row">
-    <label for="input_contest_class" class="col-sm-4 col-form-label">Class:</label>
+    <label for="input_classes_id" class="col-sm-4 col-form-label">Class:</label>
     <div class="col-sm-6">
-        <input type="text" class="form-control" id="input_contest_class" name="contest_class"
-            placeholder="Class" value="{{ isset($contestEntry) ? $contestEntry->contest_class : old('contest_class')}}">
+        <select id="classes_id" name="classes_id" class="form-control" >
+            @foreach ($contest->contestClass as $class)
+            <option value="{{$class['id']}}">
+                {{$class['name']}}
+            </option>
+            @endforeach
+        </select>
+
     </div>
 </div>
 <div class="panel-group">
@@ -40,7 +48,7 @@
                 <div class="col-sm-6">
                     <input type="hidden" name="is_copilot" value="0">
                     <input type="checkbox" class="form-control" id="input_is_copilot" name="is_copilot"
-                    placeholder="is 2nd Pilot" value="1" {{ old('is_copilot')==1 ? 'checked' :''}}>
+                    placeholder="is 2nd Pilot" value="1" {{ old('is_copilot') ? 'checked' :''}}>
                 </div>
             </div>
             <div class="form-group row">
@@ -302,7 +310,7 @@
     <button type="button" class="btn btn-primary" id="save_profile" onclick="sendData()"><i class="fa fa-save"></i>&nbsp;{{ 'Save For Later' }}</button>
     <button type="button" class="btn btn-primary" id="load_profile" onclick="loadData()"><i class="fa fa-times"></i>&nbsp;{{ 'Use Saved Details' }}</button>
     <!--button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;{{ 'Close' }}</button-->
-    <button type="submit" class="btn btn-success" id="modal_submit"  onclick="return confirm('Confirm your Entry to This Competition')"><i class="fa fa-save"></i>&nbsp;{{ 'Enter Contest' }}</button>
+    <button type="submit" class="btn btn-success" ><i class="fa fa-save"></i>&nbsp;{{ 'Enter Contest' }}</button>
 </div>
 
 </form>
@@ -329,18 +337,19 @@
             url: "loaddata",
             type: "POST",
             data: {},
+            dataType: "json",
             cache: false,
             async: true,
             success: function (data) {
-                data = $.parseJSON(data);
-                data = data[0];
+                result = $.parseJSON(data);
 
                 // reset form values from json object
-                $.each(data, function(name, val){
+                $.each(result, function(name, val){
                     var $el = $('[name="'+name+'"]'),
                     type = $el.attr('type');
 
                     switch(type){
+                        case 'hidden':
                         case 'checkbox':
                             $el.attr('checked', 'checked');
                             break;
