@@ -63,7 +63,7 @@ return [
         /**
          * Strict mode - only export columns available on the corresponding DB table
          */
-        'strict_mode' => true,
+        'strict_mode' => false,
     ],
 
     /**

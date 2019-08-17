@@ -176,9 +176,10 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\MessagesServiceProvider::class,
 
-        
-        
+
+
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Felixkiss\UniqueWithValidator\ServiceProvider::class,
 
     ],
 

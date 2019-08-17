@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9d27b72d4423c38fd7ae81f36de180ea",
+    "content-hash": "ff737fc8795c56df74c1feec0fbeaf45",
     "packages": [
         {
             "name": "bogardo/mailgun",
@@ -740,6 +740,59 @@
                 "parser"
             ],
             "time": "2019-03-17T18:48:37+00:00"
+        },
+        {
+            "name": "felixkiss/uniquewith-validator",
+            "version": "3.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/felixkiss/uniquewith-validator.git",
+                "reference": "11e3c12758f8f1c335618ab8eabecd338985aff9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/felixkiss/uniquewith-validator/zipball/11e3c12758f8f1c335618ab8eabecd338985aff9",
+                "reference": "11e3c12758f8f1c335618ab8eabecd338985aff9",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "5.*",
+                "illuminate/validation": "5.*",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "bossa/phpspec2-expect": "^2.3",
+                "phpspec/phpspec": "^3.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Felixkiss\\UniqueWithValidator\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Felixkiss\\UniqueWithValidator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Felix Kiss",
+                    "email": "felix@felixkiss.com"
+                }
+            ],
+            "description": "Custom Laravel Validator for combined unique indexes",
+            "homepage": "https://github.com/felixkiss/uniquewith-validator",
+            "keywords": [
+                "laravel"
+            ],
+            "time": "2019-02-12T18:30:56+00:00"
         },
         {
             "name": "fideloper/proxy",
