@@ -49,6 +49,7 @@ class ContestEntriesController extends Controller
     public function create(Request $request)
     {
         $contest = Contest::with('contestClass')->find($request->id);
+        $email = @auth()->user()->email;
 
         $modal = [
             'model' => 'Contest',
@@ -58,7 +59,7 @@ class ContestEntriesController extends Controller
         ];
 
         // modal
-        return view('contestEntries.show', compact('modal','contest'))->render();
+        return view('contestEntries.show', compact('modal','contest','email'))->render();
     }
 
     public function show($id, Request $request)

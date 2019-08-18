@@ -62,7 +62,7 @@
                 <label for="input_email" class="col-sm-4 col-form-label">email:</label>
                 <div class="col-sm-6">
                     <input type="email" class="form-control" id="input_email" name="email"
-                        placeholder="Email" value="{{ isset($contestEntry) ? $contestEntry->email : old('email')}}">
+                        placeholder="Email" value="{{ isset($contestEntry) ? $contestEntry->email : (isset($email) ? $email : old('email'))}}">
                 </div>
             </div>
             <div class="form-group row">
@@ -360,6 +360,7 @@
                             $el.val(val);
                     }
                 });
+                alert ('Data Loaded');
 
             }
         });
