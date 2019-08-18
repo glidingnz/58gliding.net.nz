@@ -1,7 +1,10 @@
 {!! Modal::start($modal) !!}
-<div class="modal-footer">
-    <button type="button" class="btn btn-success" id="load_profile" onclick="loadData()"><i class="fa fa-check"></i>&nbsp;{{ 'Load Profile' }}</button>
-    <button type="button" class="btn btn-primary" id="save_profile" onclick="sendData()"><i class="fa fa-save"></i>&nbsp;{{ 'Save Profile for Next Time' }}</button>
+<div class="form-group row">
+    <div class="col-sm-12">
+        <label for="load_profile" class="col-sm-6 col-form-label">Log in to be able to save your Contest Profile:</label>
+        <button type="button" class="btn btn-success" id="load_profile" onclick="loadData()"><i class="fa fa-check"></i>&nbsp;{{ 'Load Contest Profile' }}</button>
+        <button type="button" class="btn btn-primary" id="save_profile" onclick="sendData()"><i class="fa fa-save"></i>&nbsp;{{ 'Save Contest Profile for Next Time' }}</button>
+    </div>
 </div>
 <div class="form-group row">
     <label for="input_contest_name" class="col-sm-4 col-form-label">Contest:</label>
@@ -329,7 +332,7 @@
                 i. The pilot will wear a serviceable parachute, which has been packed within the last 12 months, during flight in the competition.
                 j. The pilot is a current financial member of Gliding New Zealand
                 k. The Contest Director may use flight tracks recovered from the competitors GPS for administrative and promotional activities.
-             </textarea>
+            </textarea>
             <div class="form-group row">
                 <label for="input_declaration" class="col-sm-4 col-form-label">I accept the Contest Entry Conditions:</label>
                 <div class="col-sm-6">
