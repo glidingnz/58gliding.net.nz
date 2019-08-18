@@ -1,10 +1,13 @@
 {!! Modal::start($modal) !!}
-
+<div class="modal-footer">
+    <button type="button" class="btn btn-success" id="load_profile" onclick="loadData()"><i class="fa fa-check"></i>&nbsp;{{ 'Load Profile' }}</button>
+    <button type="button" class="btn btn-primary" id="save_profile" onclick="sendData()"><i class="fa fa-save"></i>&nbsp;{{ 'Save Profile for Next Time' }}</button>
+</div>
 <div class="form-group row">
     <label for="input_contest_name" class="col-sm-4 col-form-label">Contest:</label>
     <div class="col-sm-6">
         <input type="hidden" class="form-control" id="input_id" name="contest_id" value="{{ isset($contest) ? $contest->id : old('contest_id')}}">
-        <input type="text" class="form-control" id="input_contest_name" name="contest_name"
+        <input type="text" class="form-control" id="input_contest_name" name="contest_name" disabled
             placeholder="Contest" value="{{ isset($contest) ? $contest->name : old('contest_name')}}">
     </div>
 </div>
@@ -300,15 +303,47 @@
             </h5>
         </div>
         <div id="collapse5" class="panel-collapse collapse">
-            <!-- Confirm Conditions -->
+            <textarea rows="30" cols="60" class="form-control" disabled="">
+                I hereby apply to compete in the NZ Club Class Championships and agree to abide by the Competition rules of Gliding New Zealand.
+                In consideration of this entry being accepted I agree to save harmless indemnify and keep indemnified Gliding New Zealand, The
+                Contest Organizers, the Sailplane Racing Committee and their respective officers, members, employees, agents, and representatives
+                (the "organisers") against all actions, suits, claims and demands costs, damages and expenses to which the organisers shall or
+                may be liable for or in respect of any loss, damage, accidents or injury of whatsoever nature or kind and howsoever sustained or
+                occasioned and whether to aircraft property or persons arising directly or indirectly or in connection with these gliding
+                championships or activity related thereto and notwithstanding that any waiver or other indulgence has been given to any pilot(s)
+                in respect of any obligation and I shall and do hereby fully and completely indemnify and protect the organisers against all or
+                any liabilityfor damage loss or injury caused by any act, omission or negligence on the part of me and my servants, agents or
+                crew.
+
+                I further declare that:
+
+                a. The entered aircraft will have a current annual/tech log.
+                b. The entered aircraft will have an operable Mode C capable transponder if flight into controlled airspace is to be undertaken.
+                It is understood that tasks may be set inside of transponder mandatory airspace.
+                c. The entered aircraft will have an operable airband transceiver radio.
+                d. The entered aircraft will have fitted or the pilot in command will have on their person an Emergency Locator Transmitter ( 406MHz).
+                e. The entered aircraft will have current aeronautical charts covering the competition area.
+                f. The pilot is a Qualified Glider Pilot certified by the national body of their home country, including a Flight Radio Operators qualification.
+                g. The pilot will have a current BFR.
+                h. The pilot and aircraft are covered by current third party insurance cover to the value of at least $500,000
+                i. The pilot will wear a serviceable parachute, which has been packed within the last 12 months, during flight in the competition.
+                j. The pilot is a current financial member of Gliding New Zealand
+                k. The Contest Director may use flight tracks recovered from the competitors GPS for administrative and promotional activities.
+             </textarea>
+            <div class="form-group row">
+                <label for="input_declaration" class="col-sm-4 col-form-label">I accept the Contest Entry Conditions:</label>
+                <div class="col-sm-6">
+                    <input type="hidden" name="declaration" value="0">
+                    <input type="checkbox" class="form-control" id="input_declaration" name="declaration"
+                    placeholder="declaration" value="1" {{ old('declaration') ? 'checked' :''}}>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Modal footer -->
 <div class="modal-footer">
-    <button type="button" class="btn btn-primary" id="save_profile" onclick="sendData()"><i class="fa fa-save"></i>&nbsp;{{ 'Save For Later' }}</button>
-    <button type="button" class="btn btn-primary" id="load_profile" onclick="loadData()"><i class="fa fa-times"></i>&nbsp;{{ 'Use Saved Details' }}</button>
     <!--button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;{{ 'Close' }}</button-->
     <button type="submit" class="btn btn-success" ><i class="fa fa-save"></i>&nbsp;{{ 'Enter Contest' }}</button>
 </div>

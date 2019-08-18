@@ -39,6 +39,7 @@ class ContestEntryRequest extends FormRequest
             'glider' => 'required_unless:is_copilot,1',
             'handicap' => 'required_unless:is_copilot,1',
             'wingspan' => 'required_unless:is_copilot,1',
+            'declaration' => 'accepted'
         ];
     }
 
@@ -61,6 +62,7 @@ class ContestEntryRequest extends FormRequest
             'glider.required_unless' => 'Glider Reg cannot be blank',
             'handicap.required_unless' => 'Glider Handicap cannot be blank',
             'wingspan.required_unless' => 'Glider Winspan cannot be blank',
+            'declaration.accepted' => 'You must accept the Contest Conditions of Entry',
         ];
     }
 }

@@ -67,7 +67,7 @@
                         </div>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Events</a>
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Contests</a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="{{ url('/contests')}}">Contests</a>
                             <a class="dropdown-item" href="{{ url('/contestclasses')}}">Classes</a>
