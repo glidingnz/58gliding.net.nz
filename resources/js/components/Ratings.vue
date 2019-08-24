@@ -135,6 +135,7 @@
 				window.axios.get('/api/v1/ratings').then(function (response) {
 					that.loaded = true;
 					that.ratings = response.data.data;
+					that.newRating.rating_id = null;
 				});
 
 				this.getMemberRatings();
