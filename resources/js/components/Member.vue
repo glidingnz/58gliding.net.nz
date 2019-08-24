@@ -2,7 +2,8 @@
 <div>
 	<a class="btn btn-primary" v-if="showEdit" style="float:right; margin-left: 10px;" v-bind:href="'/members/' + results.id + '/edit'">Edit {{results.first_name}}</a>
 	<a class="btn btn-outline-dark" v-if="showEdit" style="float:right; margin-left: 10px;" v-bind:href="'http://members.gliding.co.nz/index.php?r=member/update&id=' + results.id">Old Edit</a>
-	<a class="btn btn-outline-dark" style="float:right;" v-bind:href="'/members/' + results.id + '/achievements'">Achievements</a>
+	<a class="btn btn-outline-dark float-right ml-2" v-bind:href="'/members/' + results.id + '/ratings'">BFR, Medicals & Ratings</a>
+	<a class="btn btn-outline-dark float-right" v-bind:href="'/members/' + results.id + '/achievements'">Achievements</a>
 
 	<h1 class="results-title"><a href="/members">Members</a> &raquo; {{results.first_name}} {{results.last_name}}</h1>
 

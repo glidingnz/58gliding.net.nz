@@ -2951,6 +2951,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -67537,8 +67538,16 @@ var render = function() {
     _c(
       "a",
       {
-        staticClass: "btn btn-outline-dark",
-        staticStyle: { float: "right" },
+        staticClass: "btn btn-outline-dark float-right ml-2",
+        attrs: { href: "/members/" + _vm.results.id + "/ratings" }
+      },
+      [_vm._v("BFR, Medicals & Ratings")]
+    ),
+    _vm._v(" "),
+    _c(
+      "a",
+      {
+        staticClass: "btn btn-outline-dark float-right",
         attrs: { href: "/members/" + _vm.results.id + "/achievements" }
       },
       [_vm._v("Achievements")]
