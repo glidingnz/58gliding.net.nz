@@ -67541,7 +67541,10 @@ var render = function() {
         staticClass: "btn btn-outline-dark float-right ml-2",
         attrs: { href: "/members/" + _vm.results.id + "/ratings" }
       },
-      [_vm._v("BFR, Medicals & Ratings")]
+      [
+        _c("span", { staticClass: "fa fa-clipboard-check" }),
+        _vm._v(" BFR, Medicals & Ratings")
+      ]
     ),
     _vm._v(" "),
     _c(
@@ -67550,7 +67553,7 @@ var render = function() {
         staticClass: "btn btn-outline-dark float-right",
         attrs: { href: "/members/" + _vm.results.id + "/achievements" }
       },
-      [_vm._v("Achievements")]
+      [_c("span", { staticClass: "fa fa-trophy" }), _vm._v(" Achievements")]
     ),
     _vm._v(" "),
     _c("h1", { staticClass: "results-title" }, [
