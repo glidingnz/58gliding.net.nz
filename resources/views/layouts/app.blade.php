@@ -71,6 +71,9 @@
                             <a class="dropdown-item" href="{{ url('/waypoints')}}">Waypoint Database</a>
                         </div>
                     </li>
+                    <?php if (isset($org) && $org) { ?>
+                        <li class="nav-item"><a class="nav-link" href="{{ url('/Ratings')}}">Ratings</a></li>
+                    <?php } ?>
                     <li class="nav-messages"></li>
                 </ul>
 

@@ -46,6 +46,9 @@ module.exports = {
 				var date2 = this.createDateFromMysql(dateString2);
 			}
 			return (date2-date1)/(1000*60*60*24);
+		},
+		formatDate: function(date) {
+			return Vue.prototype.$moment(date).format('ddd Do MMM YYYY');
 		}
 	}
 }
