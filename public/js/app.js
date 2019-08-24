@@ -3678,7 +3678,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
@@ -39127,7 +39126,7 @@ var block = {
     + ')',
   def: /^ {0,3}\[(label)\]: *\n? *<?([^\s>]+)>?(?:(?: +\n? *| *\n *)(title))? *(?:\n+|$)/,
   table: noop,
-  lheading: /^([^\n]+)\n *(=|-){2,} *(?:\n+|$)/,
+  lheading: /^([^\n]+)\n {0,3}(=|-){2,} *(?:\n+|$)/,
   paragraph: /^([^\n]+(?:\n(?!hr|heading|lheading| {0,3}>|<\/?(?:tag)(?: +|\n|\/?>)|<(?:script|pre|style|!--))[^\n]+)*)/,
   text: /^[^\n]+/
 };
@@ -39310,14 +39309,21 @@ Lexer.prototype.token = function(src, top) {
 
     // code
     if (cap = this.rules.code.exec(src)) {
+      var lastToken = this.tokens[this.tokens.length - 1];
       src = src.substring(cap[0].length);
-      cap = cap[0].replace(/^ {4}/gm, '');
-      this.tokens.push({
-        type: 'code',
-        text: !this.options.pedantic
-          ? rtrim(cap, '\n')
-          : cap
-      });
+      // An indented code block cannot interrupt a paragraph.
+      if (lastToken && lastToken.type === 'paragraph') {
+        lastToken.text += '\n' + cap[0].trimRight();
+      } else {
+        cap = cap[0].replace(/^ {4}/gm, '');
+        this.tokens.push({
+          type: 'code',
+          codeBlockStyle: 'indented',
+          text: !this.options.pedantic
+            ? rtrim(cap, '\n')
+            : cap
+        });
+      }
       continue;
     }
 
@@ -39637,7 +39643,7 @@ var inline = {
   reflink: /^!?\[(label)\]\[(?!\s*\])((?:\\[\[\]]?|[^\[\]\\])+)\]/,
   nolink: /^!?\[(?!\s*\])((?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]])*)\](?:\[\])?/,
   strong: /^__([^\s_])__(?!_)|^\*\*([^\s*])\*\*(?!\*)|^__([^\s][\s\S]*?[^\s])__(?!_)|^\*\*([^\s][\s\S]*?[^\s])\*\*(?!\*)/,
-  em: /^_([^\s_])_(?!_)|^\*([^\s*"<\[])\*(?!\*)|^_([^\s][\s\S]*?[^\s_])_(?!_|[^\spunctuation])|^_([^\s_][\s\S]*?[^\s])_(?!_|[^\spunctuation])|^\*([^\s"<\[][\s\S]*?[^\s*])\*(?!\*)|^\*([^\s*"<\[][\s\S]*?[^\s])\*(?!\*)/,
+  em: /^_([^\s_])_(?!_)|^\*([^\s*<\[])\*(?!\*)|^_([^\s<][\s\S]*?[^\s_])_(?!_|[^\spunctuation])|^_([^\s_<][\s\S]*?[^\s])_(?!_|[^\spunctuation])|^\*([^\s<"][\s\S]*?[^\s\*])\*(?!\*|[^\spunctuation])|^\*([^\s*"<\[][\s\S]*?[^\s])\*(?!\*)/,
   code: /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/,
   br: /^( {2,}|\\)\n(?!\s*$)/,
   del: noop,
@@ -39722,7 +39728,10 @@ inline.gfm.url = edit(inline.gfm.url, 'i')
 
 inline.breaks = merge({}, inline.gfm, {
   br: edit(inline.br).replace('{2,}', '*').getRegex(),
-  text: edit(inline.gfm.text).replace(/\{2,\}/g, '*').getRegex()
+  text: edit(inline.gfm.text)
+    .replace('\\b_', '\\b_| {2,}\\n')
+    .replace(/\{2,\}/g, '*')
+    .getRegex()
 });
 
 /**
@@ -40183,7 +40192,7 @@ TextRenderer.prototype.strong =
 TextRenderer.prototype.em =
 TextRenderer.prototype.codespan =
 TextRenderer.prototype.del =
-TextRenderer.prototype.text = function (text) {
+TextRenderer.prototype.text = function(text) {
   return text;
 };
 
@@ -40228,7 +40237,7 @@ Parser.prototype.parse = function(src) {
   // use an InlineLexer with a TextRenderer to extract pure text
   this.inlineText = new InlineLexer(
     src.links,
-    merge({}, this.options, {renderer: new TextRenderer()})
+    merge({}, this.options, { renderer: new TextRenderer() })
   );
   this.tokens = src.reverse();
 
@@ -40245,7 +40254,8 @@ Parser.prototype.parse = function(src) {
  */
 
 Parser.prototype.next = function() {
-  return this.token = this.tokens.pop();
+  this.token = this.tokens.pop();
+  return this.token;
 };
 
 /**
@@ -40389,7 +40399,7 @@ Parser.prototype.tok = function() {
  * Slugger generates header id
  */
 
-function Slugger () {
+function Slugger() {
   this.seen = {};
 }
 
@@ -40397,7 +40407,7 @@ function Slugger () {
  * Convert string to unique id
  */
 
-Slugger.prototype.slug = function (value) {
+Slugger.prototype.slug = function(value) {
   var slug = value
     .toLowerCase()
     .trim()
@@ -40423,11 +40433,11 @@ Slugger.prototype.slug = function (value) {
 function escape(html, encode) {
   if (encode) {
     if (escape.escapeTest.test(html)) {
-      return html.replace(escape.escapeReplace, function (ch) { return escape.replacements[ch]; });
+      return html.replace(escape.escapeReplace, function(ch) { return escape.replacements[ch]; });
     }
   } else {
     if (escape.escapeTestNoEncode.test(html)) {
-      return html.replace(escape.escapeReplaceNoEncode, function (ch) { return escape.replacements[ch]; });
+      return html.replace(escape.escapeReplaceNoEncode, function(ch) { return escape.replacements[ch]; });
     }
   }
 
@@ -40548,7 +40558,7 @@ function merge(obj) {
 function splitCells(tableRow, count) {
   // ensure that every cell-delimiting pipe has a space
   // before it to distinguish it from an escaped pipe
-  var row = tableRow.replace(/\|/g, function (match, offset, str) {
+  var row = tableRow.replace(/\|/g, function(match, offset, str) {
         var escaped = false,
             curr = offset;
         while (--curr >= 0 && str[curr] === '\\') escaped = !escaped;
@@ -40730,7 +40740,7 @@ marked.setOptions = function(opt) {
   return marked;
 };
 
-marked.getDefaults = function () {
+marked.getDefaults = function() {
   return {
     baseUrl: null,
     breaks: false,
@@ -68903,7 +68913,7 @@ var render = function() {
                     expression: "newRating.rating_id"
                   }
                 ],
-                staticClass: "form-control",
+                staticClass: "form-control mr-2",
                 attrs: { name: "add_rating", id: "add_rating" },
                 on: {
                   change: [
@@ -68953,7 +68963,7 @@ var render = function() {
                   expression: "newRating.awarded"
                 }
               ],
-              staticClass: "form-control",
+              staticClass: "form-control ml-2 mr-2",
               attrs: { type: "text", value: "" },
               domProps: { value: _vm.newRating.awarded },
               on: {
@@ -68977,7 +68987,7 @@ var render = function() {
                     expression: "presetExpires"
                   }
                 ],
-                staticClass: "form-control",
+                staticClass: "form-control ml-2 ",
                 attrs: { name: "expires", id: "expires" },
                 on: {
                   change: function($event) {
@@ -69085,7 +69095,7 @@ var render = function() {
                   expression: "searchText"
                 }
               ],
-              staticClass: "form-control",
+              staticClass: "form-control ml-2",
               attrs: { type: "search", placeholder: "Search..." },
               domProps: { value: _vm.searchText },
               on: {
@@ -69118,7 +69128,7 @@ var render = function() {
                     expression: "authorising_member_id"
                   }
                 ],
-                staticClass: "form-control",
+                staticClass: "form-control ml-2",
                 attrs: { name: "peopleSearch", id: "peopleSearch" },
                 on: {
                   change: function($event) {
@@ -69168,7 +69178,8 @@ var render = function() {
                     value: _vm.peopleSearchResults.length == 0,
                     expression: "peopleSearchResults.length==0"
                   }
-                ]
+                ],
+                staticClass: "ml-2"
               },
               [_vm._v("No members found")]
             ),
@@ -69176,7 +69187,7 @@ var render = function() {
             _c(
               "a",
               {
-                staticClass: "btn btn-outline-dark pull-right",
+                staticClass: "btn btn-outline-dark ml-2",
                 on: {
                   click: function($event) {
                     return _vm.insert()
@@ -69212,12 +69223,9 @@ var render = function() {
               [
                 _c("td", [_vm._v(_vm._s(result.name))]),
                 _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(result.awarded))]),
+                _c("td", [_vm._v(_vm._s(_vm.formatDate(result.awarded)))]),
                 _vm._v(" "),
                 _c("td", [
-                  _vm._v(
-                    "\n\t\t\t\t\t" + _vm._s(result.expires) + "\n\t\t\t\t\t"
-                  ),
                   _c(
                     "span",
                     {
@@ -69249,7 +69257,7 @@ var render = function() {
                         "\n\t\t\t\t\t\t" +
                           _vm._s(result.timeToExpire) +
                           " (" +
-                          _vm._s(result.expires) +
+                          _vm._s(_vm.formatDate(result.expires)) +
                           ")\n\t\t\t\t\t"
                       )
                     ]
@@ -86762,6 +86770,9 @@ module.exports = {
       }
 
       return (date2 - date1) / (1000 * 60 * 60 * 24);
+    },
+    formatDate: function formatDate(date) {
+      return Vue.prototype.$moment(date).format('ddd Do MMM YYYY');
     }
   }
 };
