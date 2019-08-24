@@ -29,6 +29,7 @@ li.nav-messages {
 }
 
 .error { color: #A00; }
+.danger { color: #A00; }
 .warning { color: #DC9200; }
 .success { color: #0A0; }
 .note { color: #3C8DBC; }
@@ -57,6 +58,16 @@ td.center, th.center {
 	width: 2em;
 	text-align:center;
 }
+
+/*fix for missing btn-xs in bootstrap 4, which works well in tables */
+$btn-padding-x-xs:  .25rem !default;
+$btn-padding-y-xs:  .17rem !default;
+$input-btn-line-height-xs: 1.1 !default;
+.btn.btn-xs {
+   // line-height: ensure proper height of button next to small input
+   @include button-size($btn-padding-y-xs, $btn-padding-x-xs, $font-size-sm, $input-btn-line-height-xs, $btn-border-radius-sm);
+}
+
 
 #waypoints .table th,
 #waypoints .table td {

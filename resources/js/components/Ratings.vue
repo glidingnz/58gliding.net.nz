@@ -187,10 +187,12 @@
 			getPeople: _.debounce((search, vm) => {
 				window.axios.get('/api/v1/members', {params: {"search":search}}).then(function (response) {
 					vm.peopleSearchResults = response.data.data;
-					if (responseJson.data.length==0) {
+
+					// select the first item in the list if possible
+					if (response.data.data.length==0) {
 						vm.authorising_member_id = null;
 					} else {
-						vm.authorising_member_id = responseJson.data[0].id;
+						vm.authorising_member_id = response.data.data[0].id;
 					}
 				});
 			}, 250),
