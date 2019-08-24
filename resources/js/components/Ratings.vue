@@ -14,7 +14,10 @@
 					<option v-for="rating in ratings" v-bind:value="rating.id">{{rating.name}}</option>
 				</select>
 				Granted Date (YYYY-MM-DD):
-				<input type="text" class="form-control ml-2 mr-2" value="" v-model="newRating.awarded">
+				<!-- <input type="text"  value="" v-model="newRating.awarded"> -->
+				<div class="ml-2 mr-2">
+					<v-date-picker v-model="newRating.awarded" :locale="{ id: 'nz', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }"></v-date-picker>
+				</div>
 				Expires:
 				<select class="form-control ml-2 " name="expires" id="expires" v-model="presetExpires">
 					<option value="never">Never</option>
@@ -102,6 +105,7 @@
 <script>
 	import common from '../mixins.js';
 	import moment from 'moment';
+	import VCalendar from 'v-calendar';
 	Vue.prototype.$moment = moment;
 
 	export default {
@@ -122,7 +126,7 @@
 			}
 		},
 		mounted() {
-			this.newRating.awarded = new Date().toJSON().slice(0, 10);
+			this.newRating.awarded = new Date();
 			this.load();
 		},
 		methods: {

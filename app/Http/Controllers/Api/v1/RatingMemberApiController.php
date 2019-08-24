@@ -11,6 +11,7 @@ use DateTime;
 use App\Models\Member;
 use App\Models\Rating;
 use App\Models\RatingMember;
+use Carbon\Carbon;
 
 class RatingMemberApiController extends ApiController
 {
@@ -98,16 +99,20 @@ class RatingMemberApiController extends ApiController
 			}
 			else
 			{
-				$expires_date = DateTime::createFromFormat('Y-m-d', $request->input('awarded'));
-				$expires_date->modify('+' . $request->input('expires') . ' month');
-				$item->expires = $expires_date->format('Y-m-d');
+				$expires_date = new Carbon($request->input('awarded'));
+				//$expires_date = DateTime::createFromFormat('Y-m-d', $request->input('awarded'));
+				$expires_date->addMonths($request->input('expires'));
+				//$expires_date->modify('+' . $request->input('expires') . ' month');
+				$item->expires = $expires_date->toDateString();
 			}
 			
 		}
 
+		$awarded = new Carbon($request->input('awarded'));
+
 		$item->rating_id=$request->input('rating_id');
 		$item->member_id=$request->input('member_id');
-		$item->awarded=$request->input('awarded');
+		$item->awarded= $awarded->toDateString();
 		$item->notes=$request->input('notes', '');
 		$item->authorising_member_id=$request->input('authorising_member_id');
 		$item->granted_by_user_id = $user->id;
