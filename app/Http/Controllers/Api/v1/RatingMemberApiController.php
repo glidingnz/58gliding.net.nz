@@ -57,6 +57,28 @@ class RatingMemberApiController extends ApiController
 		return $this->error(); 
 	}
 
+
+
+	/**
+	 * Get a single rating.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function get(Request $request, $member_id, $rating_id)
+	{
+		$rating_member = RatingMember::where('member_id', $member_id)->where('rating_id', $rating_id)->with(['rating', 'member'])->first();
+
+		if (!$rating_member)
+		{
+			return $this->error();
+		}
+
+		return $this->success($rating_member);
+
+	}
+
+
+
 	/**
 	 * Store a newly created resource in storage.
 	 *
@@ -124,16 +146,6 @@ class RatingMemberApiController extends ApiController
 		return $this->error('Something went wrong sorry');
 	}
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function show($id)
-	{
-		//
-	}
 
 	/**
 	 * Update the specified resource in storage.

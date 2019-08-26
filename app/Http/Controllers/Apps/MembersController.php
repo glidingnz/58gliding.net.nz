@@ -8,6 +8,8 @@ use Gate;
 use File;
 use App\Models\Member;
 use App\Models\Org;
+use App\Models\Rating;
+use App\Models\RatingMember;
 
 class MembersController extends Controller
 {
@@ -61,6 +63,9 @@ class MembersController extends Controller
 	}
 
 
+	/**
+	 * View the users ratings
+	 */
 	public function ratings($id)
 	{
 		$data['member_id']=$id;
@@ -80,6 +85,40 @@ class MembersController extends Controller
 
 		return view('members/ratings', $data);
 	}
+
+	/**
+	 * View a single rating on a user
+	 */
+	public function rating(Request $request, $member_id, $rating_id)
+	{
+		$data['member_id']=$member_id;
+		$data['rating_id']=$rating_id;
+		$data['allows_edit']=false;
+
+		// check this member has this rating
+		if (!RatingMember::where('rating_id', $rating_id)->where('member_id', $member_id)->first())
+		{
+			abort(404);
+		}
+
+		// get the club this member is a member of
+		$data['member'] = Member::findOrFail($member_id);
+		if (!$members_org = Org::where('gnz_code', $data['member']->club)->first())
+		{
+			abort(403);
+		}
+
+		$data['rating'] = Rating::findOrFail($rating_id);
+
+		// check if the current logged in user is an admin of the club
+		if (Gate::allows('club-admin', $members_org)) {
+			$data['allows_edit']=true;
+		}
+
+		return view('members/rating-view', $data);
+	}
+
+
 
 	public function ratingsReport(Request $request)
 	{

@@ -73,6 +73,8 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 		Route::resource('/members/{member_id}/ratings', 'RatingMemberApiController', ['only' => [
 			'index', 'store', 'create'
 		]]);
+		Route::get('/members/{member_id}/ratings/{rating_id}',  'RatingMemberApiController@get');
+
 
 		Route::resource('/members', 'MembersApiController', ['only' => [
 			'index', 'show', 'update'
