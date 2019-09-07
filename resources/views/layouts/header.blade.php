@@ -61,21 +61,6 @@
 					<li class="nav-item"><a class="nav-link" href="{{ url('/tracking')}}">Tracking</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/cups')}}">Waypoints</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/contests')}}">Contests</a></li>
-
-					{{-- <li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Waypoints</a>
-						<div class="dropdown-menu">
-							<a class="dropdown-item" href="{{ url('/cups')}}">Download Waypoints</a>
-							<a class="dropdown-item" href="{{ url('/waypoints')}}">Waypoint Database</a>
-						</div>
-					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Contests</a>
-						<div class="dropdown-menu">
-							<a class="dropdown-item" href="{{ url('/contests')}}">Contests</a>
-							<a class="dropdown-item" href="{{ url('/contestclasses')}}">Classes</a>
-						</div>
-					</li> --}}
 					
 					<li class="nav-messages"></li>
 				</ul>
