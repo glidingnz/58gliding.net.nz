@@ -11109,15 +11109,14 @@ li.nav-messages {
   padding-bottom: 14px;
 }
 
-.navbar-expand {
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-          flex-flow: row wrap;
+.navbar-nav {
+  flex-wrap: wrap;
 }
 
 .navbar {
   box-shadow: 0px 10px 20px #CCC;
   margin-bottom: 1.2em;
+  flex-wrap: wrap;
 }
 
 .error {

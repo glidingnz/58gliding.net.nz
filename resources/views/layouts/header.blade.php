@@ -46,7 +46,7 @@
 	</head>
 	<body>
 		<div id="app">
-			<nav class="navbar navbar-dark bg-dark navbar-expand-md">
+			<nav class="navbar navbar-dark bg-dark navbar-expand">
 				<a class="navbar-brand" href="{{ url('/') }}">
 					<?php if (isset($org) && $org) { ?>
 						{{$org->name}}
@@ -69,8 +69,8 @@
 				<ul class="navbar-nav ml-auto">
 					<!-- Authentication Links -->
 					@if (Auth::guest())
-					<li class="nav-item"><a class="nav-link " href="{{ url('/login') }}">Login</a></li>
-					<li class="nav-item"><a class="nav-link " href="{{ url('/register') }}">Register</a></li>
+						<li class="nav-item"><a class="nav-link " href="{{ url('/login') }}">Login</a></li>
+						<li class="nav-item"><a class="nav-link " href="{{ url('/register') }}">Register</a></li>
 					@else
 					@can('admin') <li class="nav-item"><a class="nav-link" href="{{ url('/admin') }}">Admin</a></li> @endcan
 					<li class="nav-item"><a class="nav-link" href="{{ url('/user/account') }}"><span class="fa fa-user"></span> {{ Auth::user()->first_name }} </a></li>
