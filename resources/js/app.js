@@ -5,6 +5,7 @@
  */
 
 require('./vendor/native.history.js');
+require('./bootstrap');
 
 window.Vue = require('vue');
 window.messages = new Vue();
