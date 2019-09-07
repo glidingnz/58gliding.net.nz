@@ -112,7 +112,7 @@
         <!-- modal container (required if you need to render dynamic bootstrap modals) -->
         @include('leantony::modal.container')
 
-        <script src="{{ asset('/js/app.js')}}"></script>
+        <script src="{{ asset('/js/grid-app.js')}}"></script>
 
         <!-- Following Scripts Requred by Laravel Grid -->
         <!-- progress bar js (not required, but cool) -->
