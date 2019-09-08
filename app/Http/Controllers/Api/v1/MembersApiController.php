@@ -10,16 +10,19 @@ use App\Http\Controllers\Api\ApiController;
 use App\Models\Member;
 use App\Models\MemberChangeLog;
 use App\Models\Org;
+use App\Exports\MembersExport;
 use DB;
 use DateTime;
 use Excel;
-use Gate;
 use Auth;
 use URL;
 use Mailgun;
+use Schema;
+use Gate;
 
 class MembersApiController extends ApiController
 {
+
 
 	/**
 	 * Display the specified resource.
@@ -29,12 +32,14 @@ class MembersApiController extends ApiController
 	 */
 	public function show($id)
 	{
+		$memberUtilities = new MemberUtilities();
+
 		if ($member = Member::find($id))
 		{
 			// check if the current user can edit this user. If so, they can see all details.
 			if (Gate::denies('edit-member', $member))
 			{
-				$this->_filter_view_results($member);
+				$memberUtilities->filter_view_results($member);
 			}
 
 			return $this->success($member);
@@ -198,6 +203,8 @@ class MembersApiController extends ApiController
 	 */
 	public function email(Request $request)
 	{
+		$memberUtilities = new MemberUtilities();
+
 		if (Gate::denies('gnz-member')) {
 			return $this->denied();
 		}
@@ -206,7 +213,7 @@ class MembersApiController extends ApiController
 		if (!$request->input('message')) return $this->error('Message is required');
 		if (!$request->input('subject')) return $this->error('Subject is required');
 
-		$query = $this->_get_filtered_members($request);
+		$query = $memberUtilities->get_filtered_members($request);
 
 		// only get the few fields we need
 		$query->select('email', 'first_name', 'last_name');
@@ -233,124 +240,27 @@ class MembersApiController extends ApiController
 	}
 
 
-	/**
-	 * Generates a query for the filtered list of members
-	 *
-	 * @return Query
-	 */
-	protected function _get_filtered_members($request)
+
+
+	public function export(Request $request, $format='xlsx')
 	{
+		$extension = 'xlsx';
 
-		$query = Member::query();
-		$query->orderBy('last_name');
-
-		if ($request->input('search'))
+		switch ($format)
 		{
-			$s = '%' . $request->input('search') .'%';
-			$query->where(function($query) use ($s) {
-				$query->where('first_name','like',$s);
-				$query->orWhere('last_name','like',$s);
-				$query->orWhere('nzga_number','like',$s);
-				$query->orWhere('club','like',$s);
-			});
-		}
-
-		if (!$request->input('resigned'))
-		{
-			$query->where(function($query) {
-				$query->where('membership_type','!=','Resigned');
-			});
-		}
-
-		if ($request->input('org') && $request->input('org')!='null')
-		{
-			// special cases for soaring centres
-
-			switch ($request->input('org'))
-			{
-				case 'MSC':
-					$query->whereIn('club',['AKL','AAV','PKO','TPO','TGA','TRK']);
-					break;
-				case 'GSC':
-					$query->whereIn('club',['GWR','WLN']);
-					break;
-				case 'OSC':
-					$query->whereIn('club',['MLB','WLN', 'NLN', 'CTY', 'COT', 'SCY', 'OGC', 'CLV']);
-					break;
-				default:
-					// for most normal clubs
-					$query->where('club','=',$request->input('org'));
-					break;
-			}
-
-		}
-
-		switch ($request->input('type'))
-		{
-			case 'glider-pilot':
-				$query->where(function($query) {
-					$query->where('membership_type','=','Flying');
-				});
+			case 'csv':
+				$extension = 'csv';
 				break;
-			case 'instructors':
-				$query->where(function($query) {
-					$query->where('instructor','=','1');
-				});
-				break;
-			case 'tow-pilots':
-				$query->where(function($query) {
-					$query->where('tow_pilot','=','1');
-				});
-				break;
-			case 'qgp':
-				$query->where(function($query) {
-					$query->where('qgp_number','>','0');
-				});
-				break;
-			case 'coaches':
-				$query->where(function($query) {
-					$query->where('coach','=','1');
-				});
-				break;
-			case 'contest_pilots':
-				$query->where(function($query) {
-					$query->where('contest_pilot','=','1');
-				});
-				break;
-			case 'students':
-			case 'non-qgp':
-				$query->where(function($query) {
-					$query->where('qgp_number','=','NULL');
-					$query->orWhere('qgp_number','=','0');
-				});
-				$query->where('tow_pilot','!=','1');
-				$query->where('membership_type','!=','Mag Only');
-				break;
-			case 'oo':
-				$query->where('observer_number','!=','NULL');
-				$query->where('observer_number','!=','');
-				$query->where('observer_number','!=','0');
-				break;
-			case 'youth':
-				// check which month we are in to decide which year we need
-				if (date("n")<=10)
-				{
-					// less or equal to October, so use this year
-					$theyear=date("Y");
-				}
-				else
-				{
-					// after october, so use next year
-					$theyear=date("Y") + 1;
-				}
-				$thirty_first_of_oct =  $theyear . '-10-31';
-				$query->whereRaw('DATE_FORMAT(FROM_DAYS(DATEDIFF("'.$thirty_first_of_oct.'", date_of_birth)),"%Y")+0 BETWEEN 1 AND 26');
-				$query->where('membership_type','!=','Mag Only');
+			case 'xls':
+				$extension = 'xls';
 				break;
 		}
 
-		return $query;
+		//return Excel::download(new MembersExport($request), 'members.xlsx');
+		return  (new MembersExport($request))->download('members.' . $extension);
+
 	}
+
 
 
 	/**
@@ -363,14 +273,14 @@ class MembersApiController extends ApiController
 		// if (Gate::denies('gnz-member')) {
 		// 	return $this->denied();
 		// }
-
-		$query = $this->_get_filtered_members($request);
+		$memberUtilities = new MemberUtilities();
+		$query = $memberUtilities->get_filtered_members($request);
 
 		// if specified, generate a CSV or excel file instead
 		if ($request->input('format')=='csv' || $request->input('format')=='xls')
 		{
 			$members = $query->get();
-			$this->_filter_view_results($members);
+			$memberUtilities->filter_view_results($members);
 
 			// generate a random key to identify and download the file
 			$random_filename = randomkeys(10);
@@ -392,45 +302,12 @@ class MembersApiController extends ApiController
 		// otherwise paginate the results
 		if ($members = $query->paginate($request->input('per-page', 50)))
 		{
-			$this->_filter_view_results($members);
+			$memberUtilities->filter_view_results($members);
 			return $this->success($members, TRUE);
 		}
 		return $this->error(); 
 	}
 
-	// filter out any columns that shouldn't be displayed unless you have permission
-	protected function _filter_view_results(&$members)
-	{
-		if (Gate::allows('membership-view')) {
-			return true;
-		}
-
-		if (Gate::denies('club-admin')) {
-			$members->makeHidden("date_of_birth");
-			$members->makeHidden("access_level");
-			$members->makeHidden("comments");
-			$members->makeHidden("address_1");
-			$members->makeHidden("address_2");
-
-			// Remove any sensitve data if privacy flag set on this user
-			if($members instanceof \Traversable) {
-				$iteratable_members = $members;
-			} else {
-				$iteratable_members[] = $members;
-			}
-
-			foreach ($iteratable_members as $member) {
-				if ($member->privacy) {
-					$member->makeHidden("email");
-					$member->makeHidden("city");
-					$member->makeHidden("country");
-					$member->makeHidden("home_phone");
-					$member->makeHidden("mobile_phone");
-					$member->makeHidden("business_phone");
-				}
-			}
-		}
-	}
 
 	// filter out any columns that shouldn't be edited unless you have permission
 	protected function _filter_edit_results(&$member)

@@ -3167,6 +3167,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked.js");
@@ -3241,11 +3242,14 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
       return this.createUrl(this.state, extras);
     },
     exportData: function exportData(format) {
-      window.axios.get('/api/v1/members?' + this.createExportUrl(format)).then(function (response) {
-        if (typeof response.data.data.url != 'undefined') {
-          window.location.href = response.data.data.url;
-        }
-      });
+      // create the url
+      var url = '/api/v1/members/export/' + format + '?' + this.createExportUrl(format); // download it!
+
+      window.location.href = url; // window.axios.get('/api/v1/members?' + this.createExportUrl(format)).then(function (response) {
+      // 	if (typeof response.data.data.url!='undefined') {
+      // 		window.location.href = response.data.data.url;
+      // 	}
+      // });
     },
     createUrl: function createUrl(obj, extras) {
       var parts = [];
@@ -47915,6 +47919,19 @@ var render = function() {
                 }
               },
               [_vm._v("XLS")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-outline-dark btn-sm",
+                on: {
+                  click: function($event) {
+                    return _vm.exportData("xlsx")
+                  }
+                }
+              },
+              [_vm._v("XLSX")]
             ),
             _vm._v(" "),
             _c(

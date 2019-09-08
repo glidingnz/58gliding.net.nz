@@ -96,5 +96,8 @@
 		<!-- load page specific scripts -->
 		@yield('scripts')
 
+		<!-- load page specific scripts -->
+		@yield('page-scripts')
+
 	</body>
 </html>
