@@ -78,7 +78,7 @@
 <div class="form-group row">
     <label for="input_terms" class="col-sm-2 col-form-label">Contest Terms:</label>
     <div class="col-sm-10">
-        <textarea rows="30" cols="60" class="form-control" class="form-control" id="input_terms" name="terms"
+        <textarea rows="8" cols="60" class="form-control" class="form-control" id="input_terms" name="terms"
             placeholder="Contest Terms"> {{ isset($contest) ? $contest->terms : old('terms')}}</textarea>
     </div>
 </div>
