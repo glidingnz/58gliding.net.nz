@@ -11,6 +11,7 @@ use DateTime;
 use App\Models\Member;
 use App\Models\Rating;
 use App\Models\RatingMember;
+use Carbon\Carbon;
 
 class RatingMemberApiController extends ApiController
 {
@@ -56,6 +57,28 @@ class RatingMemberApiController extends ApiController
 		return $this->error(); 
 	}
 
+
+
+	/**
+	 * Get a single rating.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function get(Request $request, $member_id, $rating_id)
+	{
+		$rating_member = RatingMember::where('member_id', $member_id)->where('rating_id', $rating_id)->with(['rating', 'member'])->first();
+
+		if (!$rating_member)
+		{
+			return $this->error();
+		}
+
+		return $this->success($rating_member);
+
+	}
+
+
+
 	/**
 	 * Store a newly created resource in storage.
 	 *
@@ -98,16 +121,20 @@ class RatingMemberApiController extends ApiController
 			}
 			else
 			{
-				$expires_date = DateTime::createFromFormat('Y-m-d', $request->input('awarded'));
-				$expires_date->modify('+' . $request->input('expires') . ' month');
-				$item->expires = $expires_date->format('Y-m-d');
+				$expires_date = new Carbon($request->input('awarded'));
+				//$expires_date = DateTime::createFromFormat('Y-m-d', $request->input('awarded'));
+				$expires_date->addMonths($request->input('expires'));
+				//$expires_date->modify('+' . $request->input('expires') . ' month');
+				$item->expires = $expires_date->toDateString();
 			}
 			
 		}
 
+		$awarded = new Carbon($request->input('awarded'));
+
 		$item->rating_id=$request->input('rating_id');
 		$item->member_id=$request->input('member_id');
-		$item->awarded=$request->input('awarded');
+		$item->awarded= $awarded->toDateString();
 		$item->notes=$request->input('notes', '');
 		$item->authorising_member_id=$request->input('authorising_member_id');
 		$item->granted_by_user_id = $user->id;
@@ -119,16 +146,6 @@ class RatingMemberApiController extends ApiController
 		return $this->error('Something went wrong sorry');
 	}
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function show($id)
-	{
-		//
-	}
 
 	/**
 	 * Update the specified resource in storage.

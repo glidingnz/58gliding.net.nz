@@ -11123,6 +11123,10 @@ li.nav-messages {
   color: #A00;
 }
 
+.danger {
+  color: #A00;
+}
+
 .warning {
   color: #DC9200;
 }
@@ -11161,6 +11165,15 @@ th.center {
 .app-list span.fa {
   width: 2em;
   text-align: center;
+}
+
+/*fix for missing btn-xs in bootstrap 4, which works well in tables */
+
+.btn.btn-xs {
+  padding: 0.17rem 0.25rem;
+  font-size: 0.7875rem;
+  line-height: 1.1;
+  border-radius: 0.2rem;
 }
 
 #gridview .table th,
