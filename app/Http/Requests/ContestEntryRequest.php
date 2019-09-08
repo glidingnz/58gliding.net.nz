@@ -24,7 +24,7 @@ class ContestEntryRequest extends FormRequest
     public function rules()
     {
         return [
-            'contest_name'=> 'required',
+            //'contest_name'=> 'required',
             'classes_id'=> 'required',
             'first_name' => 'required',
             'last_name'  => 'required',
@@ -45,7 +45,7 @@ class ContestEntryRequest extends FormRequest
 
     public function messages(){
         return[
-            'contest_name.required'=> 'Contest Name is Not Set',
+            //'contest_name.required'=> 'Contest Name is Not Set',
             'classes_id.required'=> 'Choose a Contest Class',
             'first_name.required' => 'First Name cannot be blank',
             'last_name.required'  => 'Last Name cannot be Blank',

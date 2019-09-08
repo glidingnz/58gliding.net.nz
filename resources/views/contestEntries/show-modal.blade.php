@@ -3,7 +3,7 @@
     <div class="col-sm-12">
         <label for="load_profile" class="col-sm-6 col-form-label">Log in to be able to save your Contest Profile:</label>
         <button type="button" class="btn btn-success" id="load_profile" onclick="loadData()"><i class="fa fa-check"></i>&nbsp;{{ 'Load Contest Profile' }}</button>
-        <button type="button" class="btn btn-primary" id="save_profile" onclick="sendData()"><i class="fa fa-save"></i>&nbsp;{{ 'Save Contest Profile for Next Time' }}</button>
+        <button type="button" class="btn btn-primary" id="save_profile" onclick="sendData()"><i class="fa fa-save"></i>&nbsp;{{ 'Save Profile for Next Time' }}</button>
     </div>
 </div>
 <div class="form-group row">
@@ -306,7 +306,7 @@
             </h5>
         </div>
         <div id="collapse5" class="panel-collapse collapse">
-            <textarea rows="30" cols="60" class="form-control" disabled="">
+            <textarea rows="30" cols="60" class="form-control" disabled id="contest_terms_id">
                 {{ isset($contest) ? $contest->terms : old('terms')}}
             </textarea>
             <div class="form-group row">

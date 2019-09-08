@@ -4,21 +4,24 @@ namespace App\Grids;
 
 use Closure;
 use Leantony\Grid\Grid;
+use Leantony\Grid\Buttons\GenericButton;
+
+use Gate;
 
 class ClassesGrid extends Grid implements ClassesGridInterface
 {
     /**
-     * The name of the grid
-     *
-     * @var string
-     */
+    * The name of the grid
+    *
+    * @var string
+    */
     protected $name = 'Classes';
 
     /**
-     * List of buttons to be generated on the grid
-     *
-     * @var array
-     */
+    * List of buttons to be generated on the grid
+    *
+    * @var array
+    */
     protected $buttonsToGenerate = [
         'create',
         'view',
@@ -28,10 +31,10 @@ class ClassesGrid extends Grid implements ClassesGridInterface
     ];
 
     /**
-     * Specify if the rows on the table should be clicked to navigate to the record
-     *
-     * @var bool
-     */
+    * Specify if the rows on the table should be clicked to navigate to the record
+    *
+    * @var bool
+    */
     protected $linkableRows = false;
 
     /**
@@ -62,14 +65,14 @@ class ClassesGrid extends Grid implements ClassesGridInterface
                 ],
                 "search" => ["enabled" => true],
             ],
-		];
+        ];
     }
 
     /**
-     * Set the links/routes. This are referenced using named routes, for the sake of simplicity
-     *
-     * @return void
-     */
+    * Set the links/routes. This are referenced using named routes, for the sake of simplicity
+    *
+    * @return void
+    */
     public function setRoutes()
     {
         // searching, sorting and filtering
@@ -110,6 +113,10 @@ class ClassesGrid extends Grid implements ClassesGridInterface
         // call `editToolbarButton` to edit a toolbar button
         // call `editRowButton` to edit a row button
         // call `editButtonProperties` to do either of the above. All the edit functions accept the properties as an array
+
+        $this->editToolbarButton('create', ['renderIf'=> function() {return Gate::allows('contest-admin');} ]);
+        $this->editRowButton('delete', ['position' => 99,'renderIf'=> function() {return Gate::allows('contest-admin');} ]);
+
     }
 
     /**
