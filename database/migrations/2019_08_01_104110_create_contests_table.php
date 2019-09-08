@@ -24,6 +24,7 @@ class CreateContestsTable extends Migration
             $table->string('contact',140)->nullable();
             $table->string('email',140)->nullable();
             $table->string('location',140)->nullable();
+            $table->text('terms')->nullable();
             $table->json('attribute_1')->nullable();
             $table->json('attribute_2')->nullable();
             $table->json('attribute_3')->nullable();
