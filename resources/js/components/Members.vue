@@ -65,6 +65,7 @@
 			<div class="btn-group  mr-2" role="group">
 				<button type="button" class="btn btn-outline-dark btn-sm disabled">Export</button>
 				<button class="btn btn-outline-dark btn-sm" v-on:click="exportData('xls')">XLS</button>
+				<button class="btn btn-outline-dark btn-sm" v-on:click="exportData('xlsx')">XLSX</button>
 				<button class="btn btn-outline-dark btn-sm" v-on:click="exportData('csv')">CSV</button>
 			</div>
 
@@ -268,12 +269,18 @@
 			},
 			exportData: function(format) {
 
-				window.axios.get('/api/v1/members?' + this.createExportUrl(format)).then(function (response) {
+				// create the url
+				var url='/api/v1/members/export/' + format + '?' + this.createExportUrl(format);
 
-					if (typeof response.data.data.url!='undefined') {
-						window.location.href = response.data.data.url;
-					}
-				});
+				// download it!
+				window.location.href = url;
+
+				// window.axios.get('/api/v1/members?' + this.createExportUrl(format)).then(function (response) {
+
+				// 	if (typeof response.data.data.url!='undefined') {
+				// 		window.location.href = response.data.data.url;
+				// 	}
+				// });
 			},
 			createUrl: function(obj, extras) {
 				var parts = [];

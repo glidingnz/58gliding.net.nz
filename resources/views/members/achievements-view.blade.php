@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('scripts')
+@section('page-scripts')
 	<script>
 		window.Laravel.allowsEdit = <?php echo json_encode(isset($allows_edit) && $allows_edit==true ? true : false); ?>;
 	</script>

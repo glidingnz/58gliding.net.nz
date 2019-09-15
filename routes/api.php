@@ -74,6 +74,8 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 
 	Route::get('/ratings/report',  'RatingMemberApiController@ratingsReport');
 
+	Route::get('/members/export/{format}', 'MembersApiController@export');
+	
 	Route::group(['middleware' => ['auth:api']], function () {
 
 		Route::get('/users',  'UsersApiController@index');
@@ -85,6 +87,9 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 		Route::resource('/members/{member_id}/ratings', 'RatingMemberApiController', ['only' => [
 			'index', 'store', 'create'
 		]]);
+		Route::get('/members/{member_id}/ratings/{rating_id}',  'RatingMemberApiController@get');
+
+
 
 		Route::resource('/members', 'MembersApiController', ['only' => [
 			'index', 'show', 'update'

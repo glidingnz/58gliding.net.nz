@@ -21,18 +21,19 @@ li.nav-messages {
 	padding-bottom: 14px;
 }
 
-
-
-.navbar-expand {
-	flex-flow: row wrap;
+.navbar-nav {
+	flex-wrap: wrap;
 }
 
 .navbar {
 	box-shadow: 0px 10px 20px #AAA;
 	margin-bottom: 1.2em;
+	flex-wrap: wrap;
 }
 
+
 .error { color: #A00; }
+.danger { color: #A00; }
 .warning { color: #DC9200; }
 .success { color: #0A0; }
 .note { color: #3C8DBC; }
@@ -62,8 +63,17 @@ td.center, th.center {
 	text-align:center;
 }
 
-#waypoints .table th,
-#waypoints .table td {
+/*fix for missing btn-xs in bootstrap 4, which works well in tables */
+$btn-padding-x-xs:  .25rem !default;
+$btn-padding-y-xs:  .17rem !default;
+$input-btn-line-height-xs: 1.1 !default;
+.btn.btn-xs {
+   // line-height: ensure proper height of button next to small input
+   @include button-size($btn-padding-y-xs, $btn-padding-x-xs, $font-size-sm, $input-btn-line-height-xs, $btn-border-radius-sm);
+}
+
+#gridview .table th,
+#gridview .table td {
   padding: 0.12rem;
   vertical-align: top;
   border-top: 2px solid #dee2e6;

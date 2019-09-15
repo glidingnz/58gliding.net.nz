@@ -42,6 +42,12 @@ Route::match(['get','patch'],'/cups/detach/{ref}', 'Apps\CupsController@detach')
 Route::get('/cups/download/{ref}', 'Apps\CupsController@download')->name('cups.download');
 Route::resource('/cups', 'Apps\CupsController');
 
+Route::resource('/contests', 'Apps\ContestsController');
+Route::resource('/contestclasses', 'Apps\ContestClassesController');
+Route::post('/contestentries/savedata', 'Apps\ContestEntriesController@savedata')->name('contestentries.savedata');
+Route::post('/contestentries/loaddata', 'Apps\ContestEntriesController@loaddata')->name('contestentries.loaddata');
+Route::resource('/contestentries', 'Apps\ContestEntriesController');
+
 Route::get('/tracking', 'Apps\TrackingController@index');
 Route::get('/tracking/{year}-{month}-{day}', 'Apps\TrackingController@day');
 Route::get('/tracking/{year}-{month}-{day}/{rego}', 'Apps\TrackingController@track');
@@ -77,6 +83,7 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/members/{id}/achievements/edit', 'Apps\MembersController@edit_achievements');
 	Route::get('/members/{id}/edit', 'Apps\MembersController@edit');
 	Route::get('/members/{id}/ratings', 'Apps\MembersController@ratings');
+	Route::get('/members/{member_id}/ratings/{rating_id}', 'Apps\MembersController@rating');
 	Route::get('/members/download/{key}', 'Apps\MembersController@download');
 
 	Route::get('/calendar/edit', 'Apps\CalendarController@edit');

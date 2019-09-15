@@ -274,5 +274,23 @@ class AuthServiceProvider extends ServiceProvider
             return false;
         });
 
+        Gate::define('contest-admin', function($user) {
+
+            // check if we've already approved this
+            if (isset($user->is_admin) && $user->is_admin==true) return true;
+
+            if (Gate::allows('root')) return true; // check above first!
+
+            if ($role = Role::where('slug','contest-admin')->first())
+            {
+                $userRole = RoleUser::where('role_id', $role->id)->where('user_id', $user->id)->first();
+
+                if ($userRole) {
+                    return true;
+                }
+            }
+            return false;
+        });
+
     }
 }

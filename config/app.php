@@ -186,6 +186,7 @@ return [
         \InfyOm\AdminLTETemplates\AdminLTETemplatesServiceProvider::class,
         
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Felixkiss\UniqueWithValidator\ServiceProvider::class,
 
     ],
 
