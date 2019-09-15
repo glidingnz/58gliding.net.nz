@@ -15,8 +15,7 @@ only screen and (max-width: 760px),
 	td:nth-of-type(4):before { content: "Day Cancelled "; }
 
 	.date {
-		font-size: 170%;
-		font-weight: bold;
+		font-size: 130%;
 	}
 }
 </style>

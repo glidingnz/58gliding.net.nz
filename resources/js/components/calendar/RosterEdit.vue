@@ -1,10 +1,3 @@
-<style>
-.date {
-	font-size: 170%;
-	font-weight: bold;
-}
-</style>
-
 <template>
 	<div class="">
 

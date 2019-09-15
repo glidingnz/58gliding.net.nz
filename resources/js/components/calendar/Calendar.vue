@@ -1,6 +1,7 @@
 <style>
-.date {
+.calendar-table .date {
 	white-space: nowrap;
+	font-weight: bold;
 }
 
 @media 
@@ -14,17 +15,21 @@ only screen and (max-width: 760px),
 
 	td:nth-of-type(4):before { content: "Day Cancelled "; }
 
-	.date {
+	.calendar-table .date {
 		font-size: 170%;
-		font-weight: bold;
 	}
+
+	.calendar-table th {
+		display: none !important;
+	}
+
 }
 </style>
 
 <template>
 	<div class="mt-4">
 
-		<table class="table table-striped table-sm collapsable">
+		<table class="table table-striped table-sm collapsable calendar-table">
 			<tr>
 				<th>Date</th>
 				<th>Available</th>
