@@ -17,11 +17,15 @@
 		</tr>
 		<tr>
 			<th>Duty Name</th>
+			<th>Custom?</th>
 			<th>Update</th>
 			<th>Delete</th>
 		</tr>
 		<tr v-for="duty in duties">
 			<td><input type="text" v-model="duty.name" class="form-control"></td>
+			<td>
+				<input type="checkbox" v-model="duty.custom" :id="duty.id + '_custom'" :value="true"> <label :for="duty.id + '_custom'">Custom</label>
+			</td>
 			<td><button v-on:click="updateDuty(duty)" class="btn btn-outline-dark btn-sm">Save</button></td>
 			<td><button v-on:click="deleteDuty(duty)" class="btn btn-outline-dark btn-sm">Delete</button></td>
 		</tr>
@@ -54,7 +58,8 @@ export default {
 
 			var data = {
 				org_id: this.orgId,
-				name: this.newDutyName };
+				name: this.newDutyName 
+			};
 
 			window.axios.post('/api/duties', data).then(function (response) {
 				that.load();

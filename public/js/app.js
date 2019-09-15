@@ -5842,6 +5842,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -5935,6 +5939,50 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
  //import VCalendar from 'v-calendar';
 
 
@@ -5944,13 +5992,28 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
   props: ['orgId'],
   data: function data() {
     return {
-      results: []
+      duties: [],
+      results: [],
+      showCustomModal: false
     };
   },
+  created: {},
   mounted: function mounted() {
     this.loadDays();
+    this.loadDuties();
   },
-  watch: {},
+  computed: {
+    defaultDuties: function defaultDuties() {
+      return this.duties.filter(function (duty) {
+        return !duty.custom;
+      });
+    },
+    customDuties: function customDuties() {
+      return this.duties.filter(function (duty) {
+        return duty.custom;
+      });
+    }
+  },
   methods: {
     loadDays: function loadDays() {
       var that = this; // select all days from today onwards
@@ -5960,12 +6023,124 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         that.results = response.data.data;
       });
     },
+    loadDuties: function loadDuties() {
+      var that = this;
+      window.axios.get('/api/duties/?org_id=' + this.orgId).then(function (response) {
+        that.duties = response.data.data;
+      });
+    },
+    openCustomModal: function openCustomModal(day) {
+      this.showCustomModal = true;
+    },
+    closeCustomModal: function closeCustomModal() {
+      this.showCustomModal = false;
+    },
     renderDate: function renderDate(date) {
       return this.$moment(date).format('ddd, MMM Do YY');
     },
     renderDescription: function renderDescription(description) {
       if (description == null) return null;
       return description.replace(/(?:\r\n|\r|\n)/g, '<br>');
+    },
+    saveRosterItem: function saveRosterItem(day, role, user) {
+      console.log(day);
+      console.log(role);
+      console.log(user);
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/RosterSelectPilot.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calendar/RosterSelectPilot.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../mixins.js */ "./resources/js/mixins.js");
+/* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
+  props: ['member', 'day', 'duty'],
+  data: function data() {
+    return {
+      memberSearch: '',
+      searchResults: [],
+      selectedMember: null,
+      memberChosen: false
+    };
+  },
+  created: function created() {
+    this.debouncedSave = _.debounce(this.searchMembers, 500);
+  },
+  watch: {
+    memberSearch: function memberSearch(a, b) {
+      this.debouncedSave();
+    },
+    selectedMember: function selectedMember() {
+      this.saveMember();
+    }
+  },
+  methods: {
+    saveMember: function saveMember() {
+      this.memberChosen = true;
+      console.log(this.member);
+      console.log(this.day);
+      console.log(this.duty);
+    },
+    clearMember: function clearMember() {
+      this.memberChosen = false;
+      this.selectedMember = null;
+      this.memberSearch = '';
+    },
+    searchMembers: function searchMembers() {
+      var that = this;
+
+      if (this.memberSearch == '') {
+        that.selectedMember = null;
+        that.searchResults = [];
+        return;
+      }
+
+      window.axios.get('/api/v1/members', {
+        params: {
+          "search": this.memberSearch
+        }
+      }).then(function (response) {
+        that.searchResults = response.data.data; // select the first item in the list if possible
+        // if (that.searchResults==0) {
+        // 	that.selectedMember = null;
+        // } else {
+        // select the one and only member
+
+        if (that.searchResults.length == 1) {
+          console.log('one person');
+          that.selectedMember = that.searchResults[0];
+          console.log(that.selectedMember);
+        }
+      });
     }
   }
 });
@@ -7003,6 +7178,25 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 // module
 exports.push([module.i, "\n.date {\n\twhite-space: nowrap;\n}\n@media \nonly screen and (max-width: 760px),\n(min-device-width: 768px) and (max-device-width: 1024px)  {\n\n\t/* Force table to not be like tables anymore */\ntable.collapsable, .collapsable thead, .collapsable tbody, .collapsable th, .collapsable td, .collapsable tr { \n\t\tdisplay: block;\n}\ntd:nth-of-type(4):before { content: \"Day Cancelled \";\n}\n.date {\n\t\tfont-size: 130%;\n}\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/RosterEdit.vue?vue&type=style&index=0&lang=css&":
+/*!*************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calendar/RosterEdit.vue?vue&type=style&index=0&lang=css& ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.edit-roster-table .no-wrap {\n\twhite-space: nowrap !important;\n}\n.add-custom-modal {\n\twidth: 100%;\n\theight: 100%;\n\tposition: fixed;\n\ttop: 0;\n\tleft: 0;\n\tbackground-color: rgba(0,0,0,0.7);\n}\n.add-custom-modal .inner {\n\twidth: 80%;\n\tmax-width: 500px;\n\theight: 50%;\n\tmargin: 10% auto 0 auto;\n\tbackground-color: #EEE;\n\tpadding: 20px; \n\tbox-shadow: 0px 6px 15px 7px rgba(0,0,0,0.27);\n\tborder-radius: 10px;\n}\n", ""]);
 
 // exports
 
@@ -44832,6 +45026,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/RosterEdit.vue?vue&type=style&index=0&lang=css&":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calendar/RosterEdit.vue?vue&type=style&index=0&lang=css& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./RosterEdit.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/RosterEdit.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/passport/AuthorizedClients.vue?vue&type=style&index=0&id=397d14ca&scoped=true&lang=css&":
 /*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/passport/AuthorizedClients.vue?vue&type=style&index=0&id=397d14ca&scoped=true&lang=css& ***!
@@ -53024,6 +53248,53 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("td", [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: duty.custom,
+                    expression: "duty.custom"
+                  }
+                ],
+                attrs: { type: "checkbox", id: duty.id + "_custom" },
+                domProps: {
+                  value: true,
+                  checked: Array.isArray(duty.custom)
+                    ? _vm._i(duty.custom, true) > -1
+                    : duty.custom
+                },
+                on: {
+                  change: function($event) {
+                    var $$a = duty.custom,
+                      $$el = $event.target,
+                      $$c = $$el.checked ? true : false
+                    if (Array.isArray($$a)) {
+                      var $$v = true,
+                        $$i = _vm._i($$a, $$v)
+                      if ($$el.checked) {
+                        $$i < 0 && _vm.$set(duty, "custom", $$a.concat([$$v]))
+                      } else {
+                        $$i > -1 &&
+                          _vm.$set(
+                            duty,
+                            "custom",
+                            $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                          )
+                      }
+                    } else {
+                      _vm.$set(duty, "custom", $$c)
+                    }
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("label", { attrs: { for: duty.id + "_custom" } }, [
+                _vm._v("Custom")
+              ])
+            ]),
+            _vm._v(" "),
+            _c("td", [
               _c(
                 "button",
                 {
@@ -53076,6 +53347,8 @@ var staticRenderFns = [
     return _c("tr", [
       _c("th", [_vm._v("Duty Name")]),
       _vm._v(" "),
+      _c("th", [_vm._v("Custom?")]),
+      _vm._v(" "),
       _c("th", [_vm._v("Update")]),
       _vm._v(" "),
       _c("th", [_vm._v("Delete")])
@@ -53103,66 +53376,168 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", {}, [
+  return _c("div", [
     _vm._m(0),
     _vm._v(" "),
     _c(
-      "table",
-      { staticClass: "table table-striped table-sm collapsable" },
+      "div",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: _vm.showCustomModal,
+            expression: "showCustomModal"
+          }
+        ],
+        staticClass: "add-custom-modal",
+        attrs: { tabindex: "0" },
+        on: {
+          click: function($event) {
+            return _vm.closeCustomModal()
+          },
+          keyup: function($event) {
+            if (
+              !$event.type.indexOf("key") &&
+              _vm._k($event.keyCode, "esc", 27, $event.key, ["Esc", "Escape"])
+            ) {
+              return null
+            }
+            return _vm.closeCustomModal()
+          }
+        }
+      },
       [
-        _vm._m(1),
+        _c(
+          "div",
+          {
+            staticClass: "inner",
+            on: {
+              click: function($event) {
+                $event.stopPropagation()
+              }
+            }
+          },
+          [
+            _c("h2", [_vm._v("Add Extra Duty")]),
+            _vm._v(" "),
+            _c(
+              "select",
+              { staticClass: "form-control" },
+              _vm._l(_vm.duties, function(customDuty) {
+                return _c("option", { domProps: { value: customDuty.id } }, [
+                  _vm._v(_vm._s(customDuty.name))
+                ])
+              }),
+              0
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-outline-dark",
+                on: {
+                  click: function($event) {
+                    return _vm.closeCustomModal()
+                  }
+                }
+              },
+              [_vm._v("Cancel")]
+            )
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "table",
+      {
+        staticClass:
+          "edit-roster-table table table-striped table-sm collapsable"
+      },
+      [
+        _c(
+          "tr",
+          [
+            _c("th", [_vm._v("Date")]),
+            _vm._v(" "),
+            _c("th", [_vm._v("Available")]),
+            _vm._v(" "),
+            _vm._l(_vm.defaultDuties, function(duty) {
+              return [_c("th", [_vm._v(_vm._s(duty.name))])]
+            }),
+            _vm._v(" "),
+            _c("th", [_vm._v("Extras")])
+          ],
+          2
+        ),
         _vm._v(" "),
         _vm._l(_vm.results, function(day) {
           return [
-            _c("tr", [
-              _c("td", [
-                _c("b", [_vm._v(_vm._s(_vm.renderDate(day.day_date)))])
-              ]),
-              _vm._v(" "),
-              _c("td", [
-                day.winching
-                  ? _c("span", [
-                      _c("span", { staticClass: "fa fa-check" }),
-                      _vm._v(" Winching")
-                    ])
-                  : _vm._e(),
+            _c(
+              "tr",
+              [
+                _c("td", [
+                  _c("b", [_vm._v(_vm._s(_vm.renderDate(day.day_date)))]),
+                  _vm._v(" "),
+                  day.description
+                    ? _c("p", {
+                        domProps: {
+                          innerHTML: _vm._s(
+                            _vm.renderDescription(day.description)
+                          )
+                        }
+                      })
+                    : _vm._e()
+                ]),
                 _vm._v(" "),
-                day.towing
-                  ? _c("span", [
-                      _c("span", { staticClass: "fa fa-check" }),
-                      _vm._v(" Towing")
-                    ])
-                  : _vm._e(),
+                _c("td", [
+                  day.winching
+                    ? _c("span", [
+                        _c("span", { staticClass: "fa fa-check" }),
+                        _vm._v(" Winching")
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  day.towing
+                    ? _c("span", [
+                        _c("span", { staticClass: "fa fa-check" }),
+                        _vm._v(" Towing")
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  day.training
+                    ? _c("span", [
+                        _c("span", { staticClass: "fa fa-check" }),
+                        _vm._v(" Training")
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  day.trialflights
+                    ? _c("span", [
+                        _c("span", { staticClass: "fa fa-check" }),
+                        _vm._v(" Trial Flights")
+                      ])
+                    : _vm._e()
+                ]),
                 _vm._v(" "),
-                day.training
-                  ? _c("span", [
-                      _c("span", { staticClass: "fa fa-check" }),
-                      _vm._v(" Training")
-                    ])
-                  : _vm._e(),
+                _vm._l(_vm.defaultDuties, function(duty) {
+                  return [_c("td", { staticClass: "no-wrap" })]
+                }),
                 _vm._v(" "),
-                day.trialflights
-                  ? _c("span", [
-                      _c("span", { staticClass: "fa fa-check" }),
-                      _vm._v(" Trial Flights")
-                    ])
-                  : _vm._e()
-              ])
-            ]),
-            _vm._v(" "),
-            day.description
-              ? _c("tr", [
-                  _c("td", { attrs: { colspan: "2" } }, [
-                    _c("span", {
-                      domProps: {
-                        innerHTML: _vm._s(
-                          _vm.renderDescription(day.description)
-                        )
+                _c("td", [
+                  _c("button", {
+                    staticClass: "btn fa fa-plus-circle",
+                    on: {
+                      click: function($event) {
+                        return _vm.openCustomModal()
                       }
-                    })
-                  ])
+                    }
+                  })
                 ])
-              : _vm._e()
+              ],
+              2
+            )
           ]
         })
       ],
@@ -53179,18 +53554,131 @@ var staticRenderFns = [
       _c("a", { attrs: { href: "/calendar/" } }, [_vm._v("Calendar")]),
       _vm._v(" > Edit Roster")
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c("th", [_vm._v("Date")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Available")])
-    ])
   }
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/RosterSelectPilot.vue?vue&type=template&id=09a5196b&":
+/*!*****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calendar/RosterSelectPilot.vue?vue&type=template&id=09a5196b& ***!
+  \*****************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    !_vm.memberChosen
+      ? _c("div", [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.memberSearch,
+                expression: "memberSearch"
+              }
+            ],
+            staticClass: "form-control",
+            domProps: { value: _vm.memberSearch },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.memberSearch = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.selectedMember,
+                  expression: "selectedMember"
+                },
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.searchResults.length > 0,
+                  expression: "searchResults.length>0"
+                }
+              ],
+              staticClass: "form-control",
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.selectedMember = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                }
+              }
+            },
+            [
+              _c("option", { domProps: { value: null } }, [
+                _vm._v(
+                  _vm._s(_vm.searchResults.length) +
+                    " result" +
+                    _vm._s(_vm.searchResults.length == 1 ? "" : "s")
+                )
+              ]),
+              _vm._v(" "),
+              _vm._l(_vm.searchResults, function(member) {
+                return _c("option", { domProps: { value: member } }, [
+                  _vm._v(
+                    _vm._s(member.first_name) + " " + _vm._s(member.last_name)
+                  )
+                ])
+              })
+            ],
+            2
+          )
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.memberChosen && _vm.selectedMember
+      ? _c("div", [
+          _vm._v(
+            "\n\t\t" +
+              _vm._s(_vm.selectedMember.first_name) +
+              " " +
+              _vm._s(_vm.selectedMember.last_name) +
+              "\n\t\t"
+          ),
+          _c("button", {
+            staticClass: "btn fa fa-cross",
+            on: {
+              click: function($event) {
+                return _vm.clearMember()
+              }
+            }
+          })
+        ])
+      : _vm._e()
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -66457,6 +66945,7 @@ Vue.component('edit-calendar-row', __webpack_require__(/*! ./components/calendar
 Vue.component('autosize-textarea', __webpack_require__(/*! ./components/widgets/AutosizeTextarea.vue */ "./resources/js/components/widgets/AutosizeTextarea.vue")["default"]);
 Vue.component('edit-duties', __webpack_require__(/*! ./components/calendar/DutiesEdit.vue */ "./resources/js/components/calendar/DutiesEdit.vue")["default"]);
 Vue.component('waypoints', __webpack_require__(/*! ./components/Waypoints.vue */ "./resources/js/components/Waypoints.vue")["default"]);
+Vue.component('roster-select-pilot', __webpack_require__(/*! ./components/calendar/RosterSelectPilot.vue */ "./resources/js/components/calendar/RosterSelectPilot.vue")["default"]);
 Vue.component('passport-clients', __webpack_require__(/*! ./components/passport/Clients.vue */ "./resources/js/components/passport/Clients.vue")["default"]);
 Vue.component('passport-authorized-clients', __webpack_require__(/*! ./components/passport/AuthorizedClients.vue */ "./resources/js/components/passport/AuthorizedClients.vue")["default"]);
 Vue.component('passport-personal-access-tokens', __webpack_require__(/*! ./components/passport/PersonalAccessTokens.vue */ "./resources/js/components/passport/PersonalAccessTokens.vue")["default"]);
@@ -68337,7 +68826,9 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _RosterEdit_vue_vue_type_template_id_1fb6e5cb___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./RosterEdit.vue?vue&type=template&id=1fb6e5cb& */ "./resources/js/components/calendar/RosterEdit.vue?vue&type=template&id=1fb6e5cb&");
 /* harmony import */ var _RosterEdit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RosterEdit.vue?vue&type=script&lang=js& */ "./resources/js/components/calendar/RosterEdit.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _RosterEdit_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./RosterEdit.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/calendar/RosterEdit.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -68345,7 +68836,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _RosterEdit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _RosterEdit_vue_vue_type_template_id_1fb6e5cb___WEBPACK_IMPORTED_MODULE_0__["render"],
   _RosterEdit_vue_vue_type_template_id_1fb6e5cb___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
@@ -68377,6 +68868,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/calendar/RosterEdit.vue?vue&type=style&index=0&lang=css&":
+/*!******************************************************************************************!*\
+  !*** ./resources/js/components/calendar/RosterEdit.vue?vue&type=style&index=0&lang=css& ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_RosterEdit_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./RosterEdit.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/RosterEdit.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_RosterEdit_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_RosterEdit_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_RosterEdit_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_RosterEdit_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_RosterEdit_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
 /***/ "./resources/js/components/calendar/RosterEdit.vue?vue&type=template&id=1fb6e5cb&":
 /*!****************************************************************************************!*\
   !*** ./resources/js/components/calendar/RosterEdit.vue?vue&type=template&id=1fb6e5cb& ***!
@@ -68390,6 +68897,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RosterEdit_vue_vue_type_template_id_1fb6e5cb___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RosterEdit_vue_vue_type_template_id_1fb6e5cb___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/calendar/RosterSelectPilot.vue":
+/*!****************************************************************!*\
+  !*** ./resources/js/components/calendar/RosterSelectPilot.vue ***!
+  \****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _RosterSelectPilot_vue_vue_type_template_id_09a5196b___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./RosterSelectPilot.vue?vue&type=template&id=09a5196b& */ "./resources/js/components/calendar/RosterSelectPilot.vue?vue&type=template&id=09a5196b&");
+/* harmony import */ var _RosterSelectPilot_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RosterSelectPilot.vue?vue&type=script&lang=js& */ "./resources/js/components/calendar/RosterSelectPilot.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _RosterSelectPilot_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _RosterSelectPilot_vue_vue_type_template_id_09a5196b___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _RosterSelectPilot_vue_vue_type_template_id_09a5196b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/calendar/RosterSelectPilot.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/calendar/RosterSelectPilot.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/calendar/RosterSelectPilot.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_RosterSelectPilot_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./RosterSelectPilot.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/RosterSelectPilot.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_RosterSelectPilot_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/calendar/RosterSelectPilot.vue?vue&type=template&id=09a5196b&":
+/*!***********************************************************************************************!*\
+  !*** ./resources/js/components/calendar/RosterSelectPilot.vue?vue&type=template&id=09a5196b& ***!
+  \***********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RosterSelectPilot_vue_vue_type_template_id_09a5196b___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./RosterSelectPilot.vue?vue&type=template&id=09a5196b& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/RosterSelectPilot.vue?vue&type=template&id=09a5196b&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RosterSelectPilot_vue_vue_type_template_id_09a5196b___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RosterSelectPilot_vue_vue_type_template_id_09a5196b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

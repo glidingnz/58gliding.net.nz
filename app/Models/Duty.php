@@ -30,6 +30,7 @@ class Duty extends Model
 
     public $fillable = [
         'org_id',
+        'custom',
         'name'
     ];
 
@@ -41,6 +42,7 @@ class Duty extends Model
     protected $casts = [
         'id' => 'integer',
         'org_id' => 'integer',
+        'custom' => 'boolean',
         'name' => 'string'
     ];
 

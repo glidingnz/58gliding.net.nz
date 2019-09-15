@@ -1,17 +1,58 @@
+<style>
+	.edit-roster-table .no-wrap {
+		white-space: nowrap !important;
+	}
+
+	.add-custom-modal {
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		top: 0;
+		left: 0;
+		background-color: rgba(0,0,0,0.7);
+	}
+	.add-custom-modal .inner {
+		width: 80%;
+		max-width: 500px;
+		height: 50%;
+		margin: 10% auto 0 auto;
+		background-color: #EEE;
+		padding: 20px;
+		-webkit-box-shadow: 0px 6px 15px 7px rgba(0,0,0,0.27); 
+		box-shadow: 0px 6px 15px 7px rgba(0,0,0,0.27);
+		border-radius: 10px;
+	}
+</style>
+
 <template>
-	<div class="">
+	<div>
 
 		<h1><a href="/calendar/">Calendar</a> &gt; Edit Roster</h1>
 
-		<table class="table table-striped table-sm collapsable">
+		<div class="add-custom-modal" v-show="showCustomModal" v-on:click="closeCustomModal()" @keyup.esc="closeCustomModal()" tabindex="0">
+			<div class="inner" v-on:click.stop="">
+				<h2>Add Extra Duty</h2>
+				<select class="form-control" >
+					<option :value="customDuty.id" v-for="customDuty in duties">{{customDuty.name}}</option>
+				</select>
+				<button v-on:click="closeCustomModal()" class="btn btn-outline-dark">Cancel</button>
+			</div>
+		</div>
+
+		<table class="edit-roster-table table table-striped table-sm collapsable">
 			<tr>
 				<th>Date</th>
 				<th>Available</th>
+				<template v-for="duty in defaultDuties">
+					<th>{{duty.name}}</th>
+				</template>
+				<th>Extras</th>
 			</tr>
 			<template v-for="day in results" >
 				<tr >
 					<td>
 						<b>{{renderDate(day.day_date)}}</b>
+						<p v-if="day.description" v-html="renderDescription(day.description)"></p>
 					</td>
 					<td>
 						<span v-if="day.winching"><span class="fa fa-check"></span> Winching</span>
@@ -19,10 +60,13 @@
 						<span v-if="day.training"><span class="fa fa-check"></span> Training</span>
 						<span v-if="day.trialflights"><span class="fa fa-check"></span> Trial Flights</span>
 					</td>
-				</tr>
-				<tr v-if="day.description">
-					<td colspan="2">
-						<span v-html="renderDescription(day.description)"></span>
+					<template v-for="duty in defaultDuties">
+						<td class="no-wrap">
+							<!-- <roster-select-pilot :member="null" :day="day" :duty="duty"></roster-select-pilot> -->
+						</td>
+					</template>
+					<td>
+						<button class="btn fa fa-plus-circle" v-on:click="openCustomModal()"></button>
 					</td>
 				</tr>
 			</template>
@@ -43,13 +87,28 @@
 		props: ['orgId'],
 		data() {
 			return {
-				results: []
+				duties: [],
+				results: [],
+				showCustomModal: false
 			}
+		},
+		created: {
 		},
 		mounted() {
 			this.loadDays();
+			this.loadDuties();
 		},
-		watch: {
+		computed: {
+			defaultDuties: function() {
+				return this.duties.filter(function(duty) {
+					return !duty.custom;
+				});
+			},
+			customDuties: function() {
+				return this.duties.filter(function(duty) {
+					return duty.custom;
+				});
+			}
 		},
 		methods: {
 			loadDays: function() {
@@ -60,12 +119,29 @@
 					that.results = response.data.data;
 				});
 			},
+			loadDuties: function() {
+				var that = this;
+				window.axios.get('/api/duties/?org_id=' + this.orgId).then(function (response) {
+					that.duties = response.data.data;
+				});
+			},
+			openCustomModal: function(day) {
+				this.showCustomModal = true;
+			},
+			closeCustomModal: function() {
+				this.showCustomModal = false;
+			},
 			renderDate: function(date) {
 				return this.$moment(date).format('ddd, MMM Do YY');
 			},
 			renderDescription: function(description) {
 				if (description==null) return null;
 				return description.replace(/(?:\r\n|\r|\n)/g, '<br>');
+			},
+			saveRosterItem: function(day, role, user) {
+				console.log(day);
+				console.log(role);
+				console.log(user);
 			}
 		}
 
