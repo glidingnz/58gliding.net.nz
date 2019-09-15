@@ -48,7 +48,7 @@
 				</template>
 				<th>Extras</th>
 			</tr>
-			<template v-for="day in results" >
+			<template v-for="(day, dayIndex) in results" >
 				<tr >
 					<td>
 						<b>{{renderDate(day.day_date)}}</b>
@@ -60,9 +60,9 @@
 						<span v-if="day.training"><span class="fa fa-check"></span> Training</span>
 						<span v-if="day.trialflights"><span class="fa fa-check"></span> Trial Flights</span>
 					</td>
-					<template v-for="duty in defaultDuties">
+					<template v-for="(duty, dutyIndex) in defaultDuties">
 						<td class="no-wrap">
-							<!-- <roster-select-pilot :member="null" :day="day" :duty="duty"></roster-select-pilot> -->
+							<roster-select-pilot :member="null" :day="day" :duty="duty" :tabindex="10 * (dayIndex + (results.length * dutyIndex) + 1000)"></roster-select-pilot>
 						</td>
 					</template>
 					<td>
@@ -92,8 +92,6 @@
 				showCustomModal: false
 			}
 		},
-		created: {
-		},
 		mounted() {
 			this.loadDays();
 			this.loadDuties();
@@ -119,17 +117,17 @@
 					that.results = response.data.data;
 				});
 			},
-			loadDuties: function() {
-				var that = this;
-				window.axios.get('/api/duties/?org_id=' + this.orgId).then(function (response) {
-					that.duties = response.data.data;
-				});
-			},
 			openCustomModal: function(day) {
 				this.showCustomModal = true;
 			},
 			closeCustomModal: function() {
 				this.showCustomModal = false;
+			},
+			loadDuties: function() {
+				var that = this;
+				window.axios.get('/api/duties/?org_id=' + this.orgId).then(function (response) {
+					that.duties = response.data.data;
+				});
 			},
 			renderDate: function(date) {
 				return this.$moment(date).format('ddd, MMM Do YY');

@@ -5997,7 +5997,6 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       showCustomModal: false
     };
   },
-  created: {},
   mounted: function mounted() {
     this.loadDays();
     this.loadDuties();
@@ -6023,17 +6022,17 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         that.results = response.data.data;
       });
     },
-    loadDuties: function loadDuties() {
-      var that = this;
-      window.axios.get('/api/duties/?org_id=' + this.orgId).then(function (response) {
-        that.duties = response.data.data;
-      });
-    },
     openCustomModal: function openCustomModal(day) {
       this.showCustomModal = true;
     },
     closeCustomModal: function closeCustomModal() {
       this.showCustomModal = false;
+    },
+    loadDuties: function loadDuties() {
+      var that = this;
+      window.axios.get('/api/duties/?org_id=' + this.orgId).then(function (response) {
+        that.duties = response.data.data;
+      });
     },
     renderDate: function renderDate(date) {
       return this.$moment(date).format('ddd, MMM Do YY');
@@ -6083,7 +6082,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
-  props: ['member', 'day', 'duty'],
+  props: ['member', 'day', 'duty', 'tabindex'],
   data: function data() {
     return {
       memberSearch: '',
@@ -6100,26 +6099,37 @@ __webpack_require__.r(__webpack_exports__);
       this.debouncedSave();
     },
     selectedMember: function selectedMember() {
-      this.saveMember();
+      var _this = this;
+
+      if (this.selectedMember != null) {
+        console.log(this.$refs);
+        this.$nextTick(function () {
+          return _this.$refs['cl' + _this.tabindex].focus();
+        });
+        this.saveMember();
+      }
     }
   },
   methods: {
     saveMember: function saveMember() {
       this.memberChosen = true;
+      console.log('saving');
       console.log(this.member);
       console.log(this.day);
       console.log(this.duty);
     },
     clearMember: function clearMember() {
-      this.memberChosen = false;
+      this.$emit('cleared-member');
       this.selectedMember = null;
+      this.memberChosen = false;
+      this.searchResults = [];
       this.memberSearch = '';
     },
     searchMembers: function searchMembers() {
+      console.log('CALLED searchMembers');
       var that = this;
 
       if (this.memberSearch == '') {
-        that.selectedMember = null;
         that.searchResults = [];
         return;
       }
@@ -6129,16 +6139,10 @@ __webpack_require__.r(__webpack_exports__);
           "search": this.memberSearch
         }
       }).then(function (response) {
-        that.searchResults = response.data.data; // select the first item in the list if possible
-        // if (that.searchResults==0) {
-        // 	that.selectedMember = null;
-        // } else {
-        // select the one and only member
+        that.searchResults = response.data.data; // select the one and only member
 
-        if (that.searchResults.length == 1) {
-          console.log('one person');
+        if (response.data.data.length == 1) {
           that.selectedMember = that.searchResults[0];
-          console.log(that.selectedMember);
         }
       });
     }
@@ -53472,7 +53476,7 @@ var render = function() {
           2
         ),
         _vm._v(" "),
-        _vm._l(_vm.results, function(day) {
+        _vm._l(_vm.results, function(day, dayIndex) {
           return [
             _c(
               "tr",
@@ -53521,8 +53525,26 @@ var render = function() {
                     : _vm._e()
                 ]),
                 _vm._v(" "),
-                _vm._l(_vm.defaultDuties, function(duty) {
-                  return [_c("td", { staticClass: "no-wrap" })]
+                _vm._l(_vm.defaultDuties, function(duty, dutyIndex) {
+                  return [
+                    _c(
+                      "td",
+                      { staticClass: "no-wrap" },
+                      [
+                        _c("roster-select-pilot", {
+                          attrs: {
+                            member: null,
+                            day: day,
+                            duty: duty,
+                            tabindex:
+                              10 *
+                              (dayIndex + _vm.results.length * dutyIndex + 1000)
+                          }
+                        })
+                      ],
+                      1
+                    )
+                  ]
                 }),
                 _vm._v(" "),
                 _c("td", [
@@ -53589,7 +53611,9 @@ var render = function() {
                 expression: "memberSearch"
               }
             ],
+            ref: "in" + _vm.tabindex,
             staticClass: "form-control",
+            attrs: { tabindex: _vm.tabindex },
             domProps: { value: _vm.memberSearch },
             on: {
               input: function($event) {
@@ -53619,6 +53643,7 @@ var render = function() {
                 }
               ],
               staticClass: "form-control",
+              attrs: { tabindex: _vm.tabindex + 1 },
               on: {
                 change: function($event) {
                   var $$selectedVal = Array.prototype.filter
@@ -53659,21 +53684,23 @@ var render = function() {
     _vm._v(" "),
     _vm.memberChosen && _vm.selectedMember
       ? _c("div", [
-          _vm._v(
-            "\n\t\t" +
-              _vm._s(_vm.selectedMember.first_name) +
-              " " +
-              _vm._s(_vm.selectedMember.last_name) +
-              "\n\t\t"
-          ),
           _c("button", {
-            staticClass: "btn fa fa-cross",
+            ref: "cl" + _vm.tabindex,
+            staticClass: "btn fa fa-times-circle",
+            attrs: { tabindex: _vm.tabindex + 2 },
             on: {
               click: function($event) {
                 return _vm.clearMember()
               }
             }
-          })
+          }),
+          _vm._v(
+            "\n\t\t" +
+              _vm._s(_vm.selectedMember.first_name) +
+              " " +
+              _vm._s(_vm.selectedMember.last_name) +
+              "\n\t"
+          )
         ])
       : _vm._e()
   ])
