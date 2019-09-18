@@ -1,7 +1,7 @@
 
 <template>
     <div class="list-group">
-        <a class="list-group-item" v-for="org in orgs" v-bind:href="'http://' + org.slug + '.' + getDomain() + '/'">{{org.name}}</a>
+        <a class="list-group-item" v-for="org in orgs" v-bind:href="'//' + org.slug + '.' + getDomain() + '/'">{{org.name}}</a>
     </div>
 </template>
 
