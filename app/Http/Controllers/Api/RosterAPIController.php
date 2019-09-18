@@ -35,7 +35,9 @@ class RosterAPIController extends AppBaseController
 	 */
 	public function index(Request $request)
 	{
-		$query = Roster::with('member');
+		$query = Roster::select('rosters.*')->with(['member' => function ($query) {
+			$query->select('id', 'first_name', 'last_name', 'mobile_phone');
+		}]);
 
 		// limit by organisation
 		if ($request->has('org_id')) $query->where('org_id','=',$request->input('org_id'));
@@ -53,7 +55,6 @@ class RosterAPIController extends AppBaseController
 	}
 
 
-
 	/**
 	 * Store a newly created Roster in storage.
 	 * POST /roster
@@ -66,7 +67,17 @@ class RosterAPIController extends AppBaseController
 	{
 		$input = $request->all();
 
-		$roster = $this->rosterRepository->create($input);
+		// check if we have this one already
+		if (!$roster = Roster::where('org_id', $input['org_id'])
+			->where('day_id',$input['day_id'])
+			->where('duty_id', $input['duty_id'])
+			->where('deleted_at',null)
+			->first())
+		{
+			$roster = $this->rosterRepository->create($input);
+		}
+
+		$roster = $this->rosterRepository->update($input, $roster->id);
 
 		return $this->sendResponse($roster->toArray(), 'Roster saved successfully');
 	}
