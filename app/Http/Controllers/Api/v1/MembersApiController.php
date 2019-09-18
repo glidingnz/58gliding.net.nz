@@ -36,12 +36,6 @@ class MembersApiController extends ApiController
 
 		if ($member = Member::find($id))
 		{
-			// check if the current user can edit this user. If so, they can see all details.
-			if (Gate::denies('edit-member', $member))
-			{
-				$memberUtilities->filter_view_results($member);
-			}
-
 			return $this->success($member);
 		}
 		return $this->not_found();
@@ -280,7 +274,6 @@ class MembersApiController extends ApiController
 		if ($request->input('format')=='csv' || $request->input('format')=='xls')
 		{
 			$members = $query->get();
-			$memberUtilities->filter_view_results($members);
 
 			// generate a random key to identify and download the file
 			$random_filename = randomkeys(10);

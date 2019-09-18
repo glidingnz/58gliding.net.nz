@@ -130,33 +130,44 @@ class MemberUtilities {
 	// filter out any columns that shouldn't be displayed unless you have permission
 	public function filter_view_results(&$members)
 	{
+		// Remove any sensitve data if privacy flag set on this user
+		if($members instanceof \Traversable) {
+			$iteratable_members = $members;
+		} else {
+			$iteratable_members[] = $members;
+		}
+		
+		foreach ($iteratable_members as $member) {
+			$this->filter_view_result($member);
+		}
+	}
+
+
+	public function filter_view_result(&$member)
+	{
+		// if you can edit this (i.e. yourself or you're the members club admin) allow viewing
+		if (Gate::allows('edit-member', $member)) {
+			return true;
+		}
+
 		if (Gate::allows('membership-view')) {
 			return true;
 		}
 
 		if (Gate::denies('club-admin')) {
-			$members->date_of_birth=null;
-			$members->access_level=null;
-			$members->comments=null;
-			$members->address_1=null;
-			$members->address_2=null;
+			$member->date_of_birth=null;
+			$member->access_level=null;
+			$member->comments=null;
+			$member->address_1=null;
+			$member->address_2=null;
 
-			// Remove any sensitve data if privacy flag set on this user
-			if($members instanceof \Traversable) {
-				$iteratable_members = $members;
-			} else {
-				$iteratable_members[] = $members;
-			}
-
-			foreach ($iteratable_members as $member) {
-				if ($member->privacy) {
-					$member->email = null;
-					$member->city = null;
-					$member->country = null;
-					$member->home_phone = null;
-					$member->mobile_phone = null;
-					$member->business_phone = null;
-				}
+			if ($member->privacy) {
+				$member->email = null;
+				$member->city = null;
+				$member->country = null;
+				$member->home_phone = null;
+				$member->mobile_phone = null;
+				$member->business_phone = null;
 			}
 		}
 	}

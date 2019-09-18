@@ -3,13 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Events\MemberRetrieved;
+use Illuminate\Notifications\Notifiable;
 
 class Member extends Model
 {
+	use Notifiable;
+
 	protected $table = 'gnz_member';
-	//protected $connection = 'gnz';
 	public $timestamps = false;
 
 	protected $hidden = array('password', 'salt');
 	protected $guarded = ['id'];
+
+
+	protected static function boot()
+	{
+		parent::boot();
+	}
+
 }
