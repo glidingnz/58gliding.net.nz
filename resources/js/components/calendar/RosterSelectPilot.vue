@@ -36,10 +36,8 @@
 			memberSearch: function(a, b) { this.debouncedSave() },
 			selectedMember: function() {
 				if (this.selectedMember!=null) {
-					console.log(this.$refs);
-
+					// move the focus to the close icon, so tab goes to the next item easily
 					this.$nextTick(() => this.$refs['cl' + this.tabindex].focus());
-					
 					this.saveMember();
 				}
 			}
@@ -53,7 +51,10 @@
 				console.log(this.duty);
 			},
 			clearMember: function() {
-				this.$emit('cleared-member');
+
+				// move the focus to the input box for re-searching
+				this.$nextTick(() => this.$refs['in' + this.tabindex].focus());
+
 				this.selectedMember = null;
 				this.memberChosen = false;
 				this.searchResults = [];

@@ -6102,7 +6102,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       if (this.selectedMember != null) {
-        console.log(this.$refs);
+        // move the focus to the close icon, so tab goes to the next item easily
         this.$nextTick(function () {
           return _this.$refs['cl' + _this.tabindex].focus();
         });
@@ -6119,7 +6119,12 @@ __webpack_require__.r(__webpack_exports__);
       console.log(this.duty);
     },
     clearMember: function clearMember() {
-      this.$emit('cleared-member');
+      var _this2 = this;
+
+      // move the focus to the input box for re-searching
+      this.$nextTick(function () {
+        return _this2.$refs['in' + _this2.tabindex].focus();
+      });
       this.selectedMember = null;
       this.memberChosen = false;
       this.searchResults = [];
