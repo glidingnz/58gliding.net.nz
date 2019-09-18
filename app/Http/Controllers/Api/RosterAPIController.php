@@ -35,7 +35,7 @@ class RosterAPIController extends AppBaseController
 	 */
 	public function index(Request $request)
 	{
-		$query = Roster::query();
+		$query = Roster::with('member');
 
 		// limit by organisation
 		if ($request->has('org_id')) $query->where('org_id','=',$request->input('org_id'));

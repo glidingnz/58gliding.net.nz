@@ -33,14 +33,17 @@ class Roster extends Model
 
     protected $dates = ['deleted_at'];
 
+    public function member()
+    {
+        return $this->belongsTo('App\Models\Member');
+    } 
 
     public $fillable = [
         'org_id',
         'day_id',
         'day_date',
-        'dayrole_id',
         'member_id',
-        'duty_name',
+        'duty_id',
         'helper_name',
         'helper_mobile'
     ];
@@ -55,9 +58,8 @@ class Roster extends Model
         'org_id' => 'integer',
         'day_id' => 'integer',
         'day_date' => 'date',
-        'dayrole_id' => 'integer',
         'member_id' => 'integer',
-        'duty_name' => 'string',
+        'duty_id' => 'integer',
         'helper_name' => 'string',
         'helper_mobile' => 'string'
     ];

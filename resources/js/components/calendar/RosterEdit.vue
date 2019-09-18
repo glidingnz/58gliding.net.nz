@@ -62,7 +62,7 @@
 					</td>
 					<template v-for="(duty, dutyIndex) in defaultDuties">
 						<td class="no-wrap">
-							<roster-select-pilot :member="null" :day="day" :duty="duty" :tabindex="10 * (dayIndex + (results.length * dutyIndex) + 1000)"></roster-select-pilot>
+							<roster-select-pilot :roster="roster" :day="day" :duty="duty" :tabindex="10 * (dayIndex + (results.length * dutyIndex) + 1000)" :orgId="orgId"></roster-select-pilot>
 						</td>
 					</template>
 					<td>
@@ -89,12 +89,14 @@
 			return {
 				duties: [],
 				results: [],
+				roster: [],
 				showCustomModal: false
 			}
 		},
 		mounted() {
 			this.loadDays();
 			this.loadDuties();
+			this.loadRoster();
 		},
 		computed: {
 			defaultDuties: function() {
@@ -129,18 +131,28 @@
 					that.duties = response.data.data;
 				});
 			},
+			loadRoster: function() {
+				var that = this;
+				window.axios.get('/api/roster/?org_id=' + this.orgId + '&start_date=' + this.$moment().format('YYYY-MM-DD')).then(function (response) {
+					console.log('roster loaded');
+					that.roster = response.data.data;
+				});
+			},
 			renderDate: function(date) {
 				return this.$moment(date).format('ddd, MMM Do YY');
 			},
 			renderDescription: function(description) {
 				if (description==null) return null;
 				return description.replace(/(?:\r\n|\r|\n)/g, '<br>');
-			},
-			saveRosterItem: function(day, role, user) {
-				console.log(day);
-				console.log(role);
-				console.log(user);
 			}
+			// getRosterItem: function(day_id, duty_id) {
+			// 	console.log('executed ' + day_id + ' ' + duty_id);
+			// 	var result = this.roster.filter(function(roster) {
+			// 		if (roster.day_id==day_id && roster.duty_id==duty_id) return true;
+			// 	});
+			// 	console.log(result);
+			// 	return result;
+			// }
 		}
 
 	}

@@ -11,6 +11,7 @@
 			<button class="btn fa fa-times-circle" v-on:click="clearMember()" :ref="'cl' + tabindex" :tabindex="tabindex+2"></button>
 			{{selectedMember.first_name}} {{selectedMember.last_name}}
 		</div>
+		
 	</div>
 </template>
 
@@ -20,7 +21,7 @@
 
 	export default {
 		mixins: [common],
-		props: ['member', 'day', 'duty', 'tabindex'],
+		props: ['orgId', 'roster', 'day', 'duty', 'tabindex'],
 		data() {
 			return {
 				memberSearch: '',
@@ -45,10 +46,17 @@
 		methods: {
 			saveMember: function() {
 				this.memberChosen = true;
-				console.log('saving');
-				console.log(this.member);
-				console.log(this.day);
-				console.log(this.duty);
+
+				var data = {
+					'day_id': this.day.id,
+					'day_date': this.day.day_date,
+					'org_id': this.orgId,
+					'member_id': this.selectedMember.id
+				}
+
+				window.axios.post('/api/roster', data).then(function (response) {
+					messages.$emit('success', 'Saved');
+				});
 			},
 			clearMember: function() {
 
@@ -61,7 +69,6 @@
 				this.memberSearch = '';
 			},
 			searchMembers: function() {
-				console.log('CALLED searchMembers');
 				var that = this;
 				if (this.memberSearch=='') {
 					that.searchResults = [];

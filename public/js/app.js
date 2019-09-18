@@ -5994,12 +5994,14 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     return {
       duties: [],
       results: [],
+      roster: [],
       showCustomModal: false
     };
   },
   mounted: function mounted() {
     this.loadDays();
     this.loadDuties();
+    this.loadRoster();
   },
   computed: {
     defaultDuties: function defaultDuties() {
@@ -6034,18 +6036,28 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         that.duties = response.data.data;
       });
     },
+    loadRoster: function loadRoster() {
+      var that = this;
+      window.axios.get('/api/roster/?org_id=' + this.orgId + '&start_date=' + this.$moment().format('YYYY-MM-DD')).then(function (response) {
+        console.log('roster loaded');
+        that.roster = response.data.data;
+      });
+    },
     renderDate: function renderDate(date) {
       return this.$moment(date).format('ddd, MMM Do YY');
     },
     renderDescription: function renderDescription(description) {
       if (description == null) return null;
       return description.replace(/(?:\r\n|\r|\n)/g, '<br>');
-    },
-    saveRosterItem: function saveRosterItem(day, role, user) {
-      console.log(day);
-      console.log(role);
-      console.log(user);
-    }
+    } // getRosterItem: function(day_id, duty_id) {
+    // 	console.log('executed ' + day_id + ' ' + duty_id);
+    // 	var result = this.roster.filter(function(roster) {
+    // 		if (roster.day_id==day_id && roster.duty_id==duty_id) return true;
+    // 	});
+    // 	console.log(result);
+    // 	return result;
+    // }
+
   }
 });
 
@@ -6079,10 +6091,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
-  props: ['member', 'day', 'duty', 'tabindex'],
+  props: ['orgId', 'roster', 'day', 'duty', 'tabindex'],
   data: function data() {
     return {
       memberSearch: '',
@@ -6113,10 +6126,15 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     saveMember: function saveMember() {
       this.memberChosen = true;
-      console.log('saving');
-      console.log(this.member);
-      console.log(this.day);
-      console.log(this.duty);
+      var data = {
+        'day_id': this.day.id,
+        'day_date': this.day.day_date,
+        'org_id': this.orgId,
+        'member_id': this.selectedMember.id
+      };
+      window.axios.post('/api/roster', data).then(function (response) {
+        messages.$emit('success', 'Saved');
+      });
     },
     clearMember: function clearMember() {
       var _this2 = this;
@@ -6131,7 +6149,6 @@ __webpack_require__.r(__webpack_exports__);
       this.memberSearch = '';
     },
     searchMembers: function searchMembers() {
-      console.log('CALLED searchMembers');
       var that = this;
 
       if (this.memberSearch == '') {
@@ -53538,12 +53555,15 @@ var render = function() {
                       [
                         _c("roster-select-pilot", {
                           attrs: {
-                            member: null,
+                            roster: _vm.roster,
                             day: day,
                             duty: duty,
                             tabindex:
                               10 *
-                              (dayIndex + _vm.results.length * dutyIndex + 1000)
+                              (dayIndex +
+                                _vm.results.length * dutyIndex +
+                                1000),
+                            orgId: _vm.orgId
                           }
                         })
                       ],
