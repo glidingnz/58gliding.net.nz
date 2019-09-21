@@ -53392,83 +53392,85 @@ var render = function() {
   return _c("nav", { staticClass: "nav-container container-fluid d-flex" }, [
     _c("h1", { staticClass: "mr-2" }, [_vm._v(_vm._s(_vm.title))]),
     _vm._v(" "),
-    _c("ul", { staticClass: "nav ml-auto nav-pills" }, [
-      _c(
-        "li",
-        {
-          staticClass: "nav-item",
-          class: { active: _vm.active == "calendar" }
-        },
-        [
+    _vm.Laravel.clubAdmin == true
+      ? _c("ul", { staticClass: "nav ml-auto nav-pills" }, [
           _c(
-            "a",
+            "li",
             {
-              staticClass: "nav-link",
-              class: [_vm.active == "calendar" ? "active" : ""],
-              attrs: { href: "/calendar" }
+              staticClass: "nav-item",
+              class: { active: _vm.active == "calendar" }
             },
-            [_vm._v("Calendar")]
-          )
-        ]
-      ),
-      _vm._v(" "),
-      _c(
-        "li",
-        {
-          staticClass: "nav-item",
-          class: { active: _vm.active == "edit-calendar" }
-        },
-        [
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "nav-link",
+                  class: [_vm.active == "calendar" ? "active" : ""],
+                  attrs: { href: "/calendar" }
+                },
+                [_vm._v("Calendar")]
+              )
+            ]
+          ),
+          _vm._v(" "),
           _c(
-            "a",
+            "li",
             {
-              staticClass: "nav-link",
-              class: [_vm.active == "edit-calendar" ? "active" : ""],
-              attrs: { href: "/calendar/edit" }
+              staticClass: "nav-item",
+              class: { active: _vm.active == "edit-calendar" }
             },
-            [_vm._v("Edit Flying Days")]
-          )
-        ]
-      ),
-      _vm._v(" "),
-      _c(
-        "li",
-        {
-          staticClass: "nav-item",
-          class: { active: _vm.active == "edit-roster" }
-        },
-        [
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "nav-link",
+                  class: [_vm.active == "edit-calendar" ? "active" : ""],
+                  attrs: { href: "/calendar/edit" }
+                },
+                [_vm._v("Edit Flying Days")]
+              )
+            ]
+          ),
+          _vm._v(" "),
           _c(
-            "a",
+            "li",
             {
-              staticClass: "nav-link",
-              class: [_vm.active == "edit-roster" ? "active" : ""],
-              attrs: { href: "/calendar/roster/edit" }
+              staticClass: "nav-item",
+              class: { active: _vm.active == "edit-roster" }
             },
-            [_vm._v("Edit Roster")]
-          )
-        ]
-      ),
-      _vm._v(" "),
-      _c(
-        "li",
-        {
-          staticClass: "nav-item",
-          class: { active: _vm.active == "edit-duties" }
-        },
-        [
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "nav-link",
+                  class: [_vm.active == "edit-roster" ? "active" : ""],
+                  attrs: { href: "/calendar/roster/edit" }
+                },
+                [_vm._v("Edit Roster")]
+              )
+            ]
+          ),
+          _vm._v(" "),
           _c(
-            "a",
+            "li",
             {
-              staticClass: "nav-link",
-              class: [_vm.active == "edit-duties" ? "active" : ""],
-              attrs: { href: "/calendar/duties/edit" }
+              staticClass: "nav-item",
+              class: { active: _vm.active == "edit-duties" }
             },
-            [_vm._v("Configure Duties")]
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "nav-link",
+                  class: [_vm.active == "edit-duties" ? "active" : ""],
+                  attrs: { href: "/calendar/duties/edit" }
+                },
+                [_vm._v("Configure Duties")]
+              )
+            ]
           )
-        ]
-      )
-    ])
+        ])
+      : _vm._e()
   ])
 }
 var staticRenderFns = []
@@ -67342,6 +67344,7 @@ Vue.component('passport-personal-access-tokens', __webpack_require__(/*! ./compo
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.prototype.Laravel = window.Laravel;
 var app = new Vue({
   el: '#app'
 });

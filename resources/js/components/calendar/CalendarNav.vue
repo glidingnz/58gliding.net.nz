@@ -13,7 +13,7 @@
 
 		<h1 class="mr-2">{{title}}</h1>
 
-		<ul class="nav ml-auto nav-pills">
+		<ul class="nav ml-auto nav-pills" v-if="Laravel.clubAdmin==true">
 			<li class="nav-item" v-bind:class="{ active: active=='calendar' }">
 				<a class="nav-link" v-bind:class="[active=='calendar' ? 'active' : '']" href="/calendar">Calendar</a>
 			</li>

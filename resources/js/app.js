@@ -89,6 +89,9 @@ Vue.component(
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+ Vue.prototype.Laravel = window.Laravel;
+ 
 const app = new Vue({
     el: '#app',
 });
+
