@@ -1,6 +1,7 @@
 <template>
 <div>
-	<h1><a href="/calendar/">Calendar</a> &gt; Edit Default Duties</h1>
+	
+	<calendar-nav active="edit-duties" title="Edit Duties"></calendar-nav>
 
 	<p>These are the default duties added to a day on the roster. You can add one off duties on the roster itself.</p>
 

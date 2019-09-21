@@ -5481,6 +5481,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
  //import VCalendar from 'v-calendar';
 
 
@@ -5801,6 +5803,63 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/CalendarNav.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calendar/CalendarNav.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../mixins.js */ "./resources/js/mixins.js");
+/* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
+  props: ['active', 'title'],
+  data: function data() {
+    return {};
+  },
+  methods: {}
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/DutiesEdit.vue?vue&type=script&lang=js&":
 /*!******************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calendar/DutiesEdit.vue?vue&type=script&lang=js& ***!
@@ -5810,6 +5869,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -5998,6 +6058,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+//
 //
 //
 //
@@ -7250,6 +7311,25 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 // module
 exports.push([module.i, "\n.date {\n\twhite-space: nowrap;\n}\n@media \nonly screen and (max-width: 760px),\n(min-device-width: 768px) and (max-device-width: 1024px)  {\n\n\t/* Force table to not be like tables anymore */\ntable.collapsable, .collapsable thead, .collapsable tbody, .collapsable th, .collapsable td, .collapsable tr { \n\t\tdisplay: block;\n}\ntd:nth-of-type(4):before { content: \"Day Cancelled \";\n}\n.date {\n\t\tfont-size: 130%;\n}\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/CalendarNav.vue?vue&type=style&index=0&lang=css&":
+/*!**************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calendar/CalendarNav.vue?vue&type=style&index=0&lang=css& ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.showMember .btn {\n\tpadding: 0;\n}\n.nav-container {\n\tpadding-left: 0;\n\tpadding-right: 0;\n}\n", ""]);
 
 // exports
 
@@ -45117,6 +45197,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/CalendarNav.vue?vue&type=style&index=0&lang=css&":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calendar/CalendarNav.vue?vue&type=style&index=0&lang=css& ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./CalendarNav.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/CalendarNav.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/RosterEdit.vue?vue&type=style&index=0&lang=css&":
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calendar/RosterEdit.vue?vue&type=style&index=0&lang=css& ***!
@@ -52706,96 +52816,103 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "mt-4" }, [
-    _c(
-      "table",
-      {
-        staticClass: "table table-striped table-sm collapsable calendar-table"
-      },
-      [
-        _vm._m(0),
-        _vm._v(" "),
-        _vm._l(_vm.results, function(day) {
-          return _c(
-            "tr",
-            {
-              key: day.id,
-              attrs: { row: day, "org-id": _vm.orgId },
-              on: {
-                rowupdated: function($event) {
-                  return _vm.load()
-                }
-              }
-            },
-            [
-              _c("td", [
-                _c("b", [_vm._v(_vm._s(_vm.renderDate(day.day_date)))])
-              ]),
-              _vm._v(" "),
-              _c("td", [
-                day.winching
-                  ? _c("span", [
-                      _c("span", { staticClass: "fa fa-check" }),
-                      _vm._v(" Winching")
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                day.towing
-                  ? _c("span", [
-                      _c("span", { staticClass: "fa fa-check" }),
-                      _vm._v(" Towing")
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                day.training
-                  ? _c("span", [
-                      _c("span", { staticClass: "fa fa-check" }),
-                      _vm._v(" Training")
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                day.trialflights
-                  ? _c("span", [
-                      _c("span", { staticClass: "fa fa-check" }),
-                      _vm._v(" Trial Flights")
-                    ])
-                  : _vm._e()
-              ]),
-              _vm._v(" "),
-              _c("td", [
-                day.cancelled
-                  ? _c(
-                      "div",
-                      {
-                        staticClass: "bg-danger text-white px-2 py-1 rounded-lg"
-                      },
-                      [
-                        _c("span", {
-                          staticClass: "fa fa-exclamation-circle text-white"
-                        }),
-                        _vm._v(" Day Cancelled"),
-                        day.cancelled_reason
-                          ? _c("span", [
-                              _vm._v(": " + _vm._s(day.cancelled_reason))
-                            ])
-                          : _vm._e()
-                      ]
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                _c("span", {
-                  domProps: {
-                    innerHTML: _vm._s(_vm.renderDescription(day.description))
+  return _c(
+    "div",
+    [
+      _c("calendar-nav", { attrs: { active: "calendar", title: "Calendar" } }),
+      _vm._v(" "),
+      _c(
+        "table",
+        {
+          staticClass: "table table-striped table-sm collapsable calendar-table"
+        },
+        [
+          _vm._m(0),
+          _vm._v(" "),
+          _vm._l(_vm.results, function(day) {
+            return _c(
+              "tr",
+              {
+                key: day.id,
+                attrs: { row: day, "org-id": _vm.orgId },
+                on: {
+                  rowupdated: function($event) {
+                    return _vm.load()
                   }
-                })
-              ])
-            ]
-          )
-        })
-      ],
-      2
-    )
-  ])
+                }
+              },
+              [
+                _c("td", [
+                  _c("b", [_vm._v(_vm._s(_vm.renderDate(day.day_date)))])
+                ]),
+                _vm._v(" "),
+                _c("td", [
+                  day.winching
+                    ? _c("span", [
+                        _c("span", { staticClass: "fa fa-check" }),
+                        _vm._v(" Winching")
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  day.towing
+                    ? _c("span", [
+                        _c("span", { staticClass: "fa fa-check" }),
+                        _vm._v(" Towing")
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  day.training
+                    ? _c("span", [
+                        _c("span", { staticClass: "fa fa-check" }),
+                        _vm._v(" Training")
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  day.trialflights
+                    ? _c("span", [
+                        _c("span", { staticClass: "fa fa-check" }),
+                        _vm._v(" Trial Flights")
+                      ])
+                    : _vm._e()
+                ]),
+                _vm._v(" "),
+                _c("td", [
+                  day.cancelled
+                    ? _c(
+                        "div",
+                        {
+                          staticClass:
+                            "bg-danger text-white px-2 py-1 rounded-lg"
+                        },
+                        [
+                          _c("span", {
+                            staticClass: "fa fa-exclamation-circle text-white"
+                          }),
+                          _vm._v(" Day Cancelled"),
+                          day.cancelled_reason
+                            ? _c("span", [
+                                _vm._v(": " + _vm._s(day.cancelled_reason))
+                              ])
+                            : _vm._e()
+                        ]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c("span", {
+                    domProps: {
+                      innerHTML: _vm._s(_vm.renderDescription(day.description))
+                    }
+                  })
+                ])
+              ]
+            )
+          })
+        ],
+        2
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -52835,7 +52952,9 @@ var render = function() {
   return _c(
     "div",
     [
-      _vm._m(0),
+      _c("calendar-nav", {
+        attrs: { active: "edit-calendar", title: "Edit Flying Days" }
+      }),
       _vm._v(" "),
       _c("v-date-picker", {
         attrs: {
@@ -52860,7 +52979,7 @@ var render = function() {
         "table",
         { staticClass: "table table-striped table-sm collapsable" },
         [
-          _vm._m(1),
+          _vm._m(0),
           _vm._v(" "),
           _vm._l(_vm.results, function(day) {
             return _c("edit-calendar-row", {
@@ -52881,15 +53000,6 @@ var render = function() {
   )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h1", [
-      _c("a", { attrs: { href: "/calendar/" } }, [_vm._v("Calendar")]),
-      _vm._v(" > Edit Club Calendar")
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -53264,6 +53374,110 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/CalendarNav.vue?vue&type=template&id=551ffa5f&":
+/*!***********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calendar/CalendarNav.vue?vue&type=template&id=551ffa5f& ***!
+  \***********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("nav", { staticClass: "nav-container container-fluid d-flex" }, [
+    _c("h1", { staticClass: "mr-2" }, [_vm._v(_vm._s(_vm.title))]),
+    _vm._v(" "),
+    _c("ul", { staticClass: "nav ml-auto nav-pills" }, [
+      _c(
+        "li",
+        {
+          staticClass: "nav-item",
+          class: { active: _vm.active == "calendar" }
+        },
+        [
+          _c(
+            "a",
+            {
+              staticClass: "nav-link",
+              class: [_vm.active == "calendar" ? "active" : ""],
+              attrs: { href: "/calendar" }
+            },
+            [_vm._v("Calendar")]
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "li",
+        {
+          staticClass: "nav-item",
+          class: { active: _vm.active == "edit-calendar" }
+        },
+        [
+          _c(
+            "a",
+            {
+              staticClass: "nav-link",
+              class: [_vm.active == "edit-calendar" ? "active" : ""],
+              attrs: { href: "/calendar/edit" }
+            },
+            [_vm._v("Edit Flying Days")]
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "li",
+        {
+          staticClass: "nav-item",
+          class: { active: _vm.active == "edit-roster" }
+        },
+        [
+          _c(
+            "a",
+            {
+              staticClass: "nav-link",
+              class: [_vm.active == "edit-roster" ? "active" : ""],
+              attrs: { href: "/calendar/roster/edit" }
+            },
+            [_vm._v("Edit Roster")]
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "li",
+        {
+          staticClass: "nav-item",
+          class: { active: _vm.active == "edit-duties" }
+        },
+        [
+          _c(
+            "a",
+            {
+              staticClass: "nav-link",
+              class: [_vm.active == "edit-duties" ? "active" : ""],
+              attrs: { href: "/calendar/duties/edit" }
+            },
+            [_vm._v("Configure Duties")]
+          )
+        ]
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/DutiesEdit.vue?vue&type=template&id=da6b2798&":
 /*!**********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calendar/DutiesEdit.vue?vue&type=template&id=da6b2798& ***!
@@ -53279,139 +53493,49 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _vm._m(0),
-    _vm._v(" "),
-    _c("p", [
-      _vm._v(
-        "These are the default duties added to a day on the roster. You can add one off duties on the roster itself."
-      )
-    ]),
-    _vm._v(" "),
-    _c(
-      "table",
-      { staticClass: "table table-striped" },
-      [
-        _c("tr", [
-          _c("td", [
-            _c("div", { staticClass: "d-flex" }, [
-              _c("div", { staticClass: "col-4" }, [_vm._v("Add New Duty:")]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.newDutyName,
-                    expression: "newDutyName"
-                  }
-                ],
-                staticClass: "form-control inline ml-auto",
-                attrs: { type: "text", size: "10" },
-                domProps: { value: _vm.newDutyName },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.newDutyName = $event.target.value
-                  }
-                }
-              })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("td", [
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-dark",
-                attrs: { type: "submit" },
-                on: {
-                  click: function($event) {
-                    return _vm.createDuty()
-                  }
-                }
-              },
-              [_vm._v("Add Duty")]
-            )
-          ]),
-          _vm._v(" "),
-          _c("td")
-        ]),
-        _vm._v(" "),
-        _vm._m(1),
-        _vm._v(" "),
-        _vm._l(_vm.duties, function(duty) {
-          return _c("tr", [
+  return _c(
+    "div",
+    [
+      _c("calendar-nav", {
+        attrs: { active: "edit-duties", title: "Edit Duties" }
+      }),
+      _vm._v(" "),
+      _c("p", [
+        _vm._v(
+          "These are the default duties added to a day on the roster. You can add one off duties on the roster itself."
+        )
+      ]),
+      _vm._v(" "),
+      _c(
+        "table",
+        { staticClass: "table table-striped" },
+        [
+          _c("tr", [
             _c("td", [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: duty.name,
-                    expression: "duty.name"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { type: "text" },
-                domProps: { value: duty.name },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+              _c("div", { staticClass: "d-flex" }, [
+                _c("div", { staticClass: "col-4" }, [_vm._v("Add New Duty:")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.newDutyName,
+                      expression: "newDutyName"
                     }
-                    _vm.$set(duty, "name", $event.target.value)
-                  }
-                }
-              })
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: duty.custom,
-                    expression: "duty.custom"
-                  }
-                ],
-                attrs: { type: "checkbox", id: duty.id + "_custom" },
-                domProps: {
-                  value: true,
-                  checked: Array.isArray(duty.custom)
-                    ? _vm._i(duty.custom, true) > -1
-                    : duty.custom
-                },
-                on: {
-                  change: function($event) {
-                    var $$a = duty.custom,
-                      $$el = $event.target,
-                      $$c = $$el.checked ? true : false
-                    if (Array.isArray($$a)) {
-                      var $$v = true,
-                        $$i = _vm._i($$a, $$v)
-                      if ($$el.checked) {
-                        $$i < 0 && _vm.$set(duty, "custom", $$a.concat([$$v]))
-                      } else {
-                        $$i > -1 &&
-                          _vm.$set(
-                            duty,
-                            "custom",
-                            $$a.slice(0, $$i).concat($$a.slice($$i + 1))
-                          )
+                  ],
+                  staticClass: "form-control inline ml-auto",
+                  attrs: { type: "text", size: "10" },
+                  domProps: { value: _vm.newDutyName },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
                       }
-                    } else {
-                      _vm.$set(duty, "custom", $$c)
+                      _vm.newDutyName = $event.target.value
                     }
                   }
-                }
-              }),
-              _vm._v(" "),
-              _c("label", { attrs: { for: duty.id + "_custom" } }, [
-                _vm._v("Custom")
+                })
               ])
             ]),
             _vm._v(" "),
@@ -53419,48 +53543,135 @@ var render = function() {
               _c(
                 "button",
                 {
-                  staticClass: "btn btn-outline-dark btn-sm",
+                  staticClass: "btn btn-outline-dark",
+                  attrs: { type: "submit" },
                   on: {
                     click: function($event) {
-                      return _vm.updateDuty(duty)
+                      return _vm.createDuty()
                     }
                   }
                 },
-                [_vm._v("Save")]
+                [_vm._v("Add Duty")]
               )
             ]),
             _vm._v(" "),
-            _c("td", [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-outline-dark btn-sm",
+            _c("td")
+          ]),
+          _vm._v(" "),
+          _vm._m(0),
+          _vm._v(" "),
+          _vm._l(_vm.duties, function(duty) {
+            return _c("tr", [
+              _c("td", [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: duty.name,
+                      expression: "duty.name"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { type: "text" },
+                  domProps: { value: duty.name },
                   on: {
-                    click: function($event) {
-                      return _vm.deleteDuty(duty)
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(duty, "name", $event.target.value)
                     }
                   }
-                },
-                [_vm._v("Delete")]
-              )
+                })
+              ]),
+              _vm._v(" "),
+              _c("td", [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: duty.custom,
+                      expression: "duty.custom"
+                    }
+                  ],
+                  attrs: { type: "checkbox", id: duty.id + "_custom" },
+                  domProps: {
+                    value: true,
+                    checked: Array.isArray(duty.custom)
+                      ? _vm._i(duty.custom, true) > -1
+                      : duty.custom
+                  },
+                  on: {
+                    change: function($event) {
+                      var $$a = duty.custom,
+                        $$el = $event.target,
+                        $$c = $$el.checked ? true : false
+                      if (Array.isArray($$a)) {
+                        var $$v = true,
+                          $$i = _vm._i($$a, $$v)
+                        if ($$el.checked) {
+                          $$i < 0 && _vm.$set(duty, "custom", $$a.concat([$$v]))
+                        } else {
+                          $$i > -1 &&
+                            _vm.$set(
+                              duty,
+                              "custom",
+                              $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                            )
+                        }
+                      } else {
+                        _vm.$set(duty, "custom", $$c)
+                      }
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c("label", { attrs: { for: duty.id + "_custom" } }, [
+                  _vm._v("Custom")
+                ])
+              ]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-outline-dark btn-sm",
+                    on: {
+                      click: function($event) {
+                        return _vm.updateDuty(duty)
+                      }
+                    }
+                  },
+                  [_vm._v("Save")]
+                )
+              ]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-outline-dark btn-sm",
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteDuty(duty)
+                      }
+                    }
+                  },
+                  [_vm._v("Delete")]
+                )
+              ])
             ])
-          ])
-        })
-      ],
-      2
-    )
-  ])
+          })
+        ],
+        2
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h1", [
-      _c("a", { attrs: { href: "/calendar/" } }, [_vm._v("Calendar")]),
-      _vm._v(" > Edit Default Duties")
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -53599,216 +53810,212 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _vm._m(0),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        directives: [
-          {
-            name: "show",
-            rawName: "v-show",
-            value: _vm.showCustomModal,
-            expression: "showCustomModal"
-          }
-        ],
-        staticClass: "add-custom-modal",
-        attrs: { tabindex: "0" },
-        on: {
-          click: function($event) {
-            return _vm.closeCustomModal()
-          },
-          keyup: function($event) {
-            if (
-              !$event.type.indexOf("key") &&
-              _vm._k($event.keyCode, "esc", 27, $event.key, ["Esc", "Escape"])
-            ) {
-              return null
+  return _c(
+    "div",
+    [
+      _c("calendar-nav", {
+        attrs: { active: "edit-roster", title: "Edit Roster" }
+      }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.showCustomModal,
+              expression: "showCustomModal"
             }
-            return _vm.closeCustomModal()
-          }
-        }
-      },
-      [
-        _c(
-          "div",
-          {
-            staticClass: "inner",
-            on: {
-              click: function($event) {
-                $event.stopPropagation()
-              }
-            }
-          },
-          [
-            _c("h2", [_vm._v("Add Extra Duty")]),
-            _vm._v(" "),
-            _c(
-              "select",
-              { staticClass: "form-control" },
-              _vm._l(_vm.duties, function(customDuty) {
-                return _c("option", { domProps: { value: customDuty.id } }, [
-                  _vm._v(_vm._s(customDuty.name))
-                ])
-              }),
-              0
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-outline-dark",
-                on: {
-                  click: function($event) {
-                    return _vm.closeCustomModal()
-                  }
-                }
-              },
-              [_vm._v("Cancel")]
-            )
-          ]
-        )
-      ]
-    ),
-    _vm._v(" "),
-    _c(
-      "table",
-      {
-        staticClass:
-          "edit-roster-table table table-striped table-sm collapsable"
-      },
-      [
-        _c(
-          "tr",
-          [
-            _c("th", [_vm._v("Date")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Available")]),
-            _vm._v(" "),
-            _vm._l(_vm.defaultDuties, function(duty) {
-              return [_c("th", [_vm._v(_vm._s(duty.name))])]
-            }),
-            _vm._v(" "),
-            _c("th", [_vm._v("Extras")])
           ],
-          2
-        ),
-        _vm._v(" "),
-        _vm._l(_vm.results, function(day, dayIndex) {
-          return [
-            _c(
-              "tr",
-              [
-                _c("td", [
-                  _c("b", [_vm._v(_vm._s(_vm.renderDate(day.day_date)))]),
-                  _vm._v(" "),
-                  day.description
-                    ? _c("p", {
-                        domProps: {
-                          innerHTML: _vm._s(
-                            _vm.renderDescription(day.description)
-                          )
-                        }
-                      })
-                    : _vm._e()
-                ]),
-                _vm._v(" "),
-                _c("td", [
-                  day.winching
-                    ? _c("span", [
-                        _c("span", { staticClass: "fa fa-check" }),
-                        _vm._v(" Winching")
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  day.towing
-                    ? _c("span", [
-                        _c("span", { staticClass: "fa fa-check" }),
-                        _vm._v(" Towing")
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  day.training
-                    ? _c("span", [
-                        _c("span", { staticClass: "fa fa-check" }),
-                        _vm._v(" Training")
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  day.trialflights
-                    ? _c("span", [
-                        _c("span", { staticClass: "fa fa-check" }),
-                        _vm._v(" Trial Flights")
-                      ])
-                    : _vm._e()
-                ]),
-                _vm._v(" "),
-                _vm._l(_vm.defaultDuties, function(duty, dutyIndex) {
-                  return [
-                    _c(
-                      "td",
-                      { staticClass: "no-wrap" },
-                      [
-                        _vm._l(_vm.getDaysRosters(day.id, duty.id), function(
-                          rosterItem,
-                          rosterIndex
-                        ) {
-                          return _c("roster-edit-item", {
-                            key: rosterItem.id,
-                            attrs: {
-                              roster: rosterItem,
-                              member: rosterItem.member
-                            },
-                            on: {
-                              delete: function($event) {
-                                return _vm.deleteEvent(rosterItem)
-                              }
-                            }
-                          })
-                        }),
-                        _vm._v(" "),
-                        _c("roster-add-item", {
-                          attrs: { orgId: _vm.orgId, day: day, duty: duty },
-                          on: { add: _vm.addEvent }
-                        })
-                      ],
-                      2
-                    )
-                  ]
+          staticClass: "add-custom-modal",
+          attrs: { tabindex: "0" },
+          on: {
+            click: function($event) {
+              return _vm.closeCustomModal()
+            },
+            keyup: function($event) {
+              if (
+                !$event.type.indexOf("key") &&
+                _vm._k($event.keyCode, "esc", 27, $event.key, ["Esc", "Escape"])
+              ) {
+                return null
+              }
+              return _vm.closeCustomModal()
+            }
+          }
+        },
+        [
+          _c(
+            "div",
+            {
+              staticClass: "inner",
+              on: {
+                click: function($event) {
+                  $event.stopPropagation()
+                }
+              }
+            },
+            [
+              _c("h2", [_vm._v("Add Extra Duty")]),
+              _vm._v(" "),
+              _c(
+                "select",
+                { staticClass: "form-control" },
+                _vm._l(_vm.duties, function(customDuty) {
+                  return _c("option", { domProps: { value: customDuty.id } }, [
+                    _vm._v(_vm._s(customDuty.name))
+                  ])
                 }),
-                _vm._v(" "),
-                _c("td", [
-                  _c("button", {
-                    staticClass: "btn fa fa-plus-circle",
-                    on: {
-                      click: function($event) {
-                        return _vm.openCustomModal()
-                      }
+                0
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-outline-dark",
+                  on: {
+                    click: function($event) {
+                      return _vm.closeCustomModal()
                     }
-                  })
-                ])
-              ],
-              2
-            )
-          ]
-        })
-      ],
-      2
-    )
-  ])
+                  }
+                },
+                [_vm._v("Cancel")]
+              )
+            ]
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "table",
+        {
+          staticClass:
+            "edit-roster-table table table-striped table-sm collapsable"
+        },
+        [
+          _c(
+            "tr",
+            [
+              _c("th", [_vm._v("Date")]),
+              _vm._v(" "),
+              _c("th", [_vm._v("Available")]),
+              _vm._v(" "),
+              _vm._l(_vm.defaultDuties, function(duty) {
+                return [_c("th", [_vm._v(_vm._s(duty.name))])]
+              }),
+              _vm._v(" "),
+              _c("th", [_vm._v("Extras")])
+            ],
+            2
+          ),
+          _vm._v(" "),
+          _vm._l(_vm.results, function(day, dayIndex) {
+            return [
+              _c(
+                "tr",
+                [
+                  _c("td", [
+                    _c("b", [_vm._v(_vm._s(_vm.renderDate(day.day_date)))]),
+                    _vm._v(" "),
+                    day.description
+                      ? _c("p", {
+                          domProps: {
+                            innerHTML: _vm._s(
+                              _vm.renderDescription(day.description)
+                            )
+                          }
+                        })
+                      : _vm._e()
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    day.winching
+                      ? _c("span", [
+                          _c("span", { staticClass: "fa fa-check" }),
+                          _vm._v(" Winching")
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    day.towing
+                      ? _c("span", [
+                          _c("span", { staticClass: "fa fa-check" }),
+                          _vm._v(" Towing")
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    day.training
+                      ? _c("span", [
+                          _c("span", { staticClass: "fa fa-check" }),
+                          _vm._v(" Training")
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    day.trialflights
+                      ? _c("span", [
+                          _c("span", { staticClass: "fa fa-check" }),
+                          _vm._v(" Trial Flights")
+                        ])
+                      : _vm._e()
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.defaultDuties, function(duty, dutyIndex) {
+                    return [
+                      _c(
+                        "td",
+                        { staticClass: "no-wrap" },
+                        [
+                          _vm._l(_vm.getDaysRosters(day.id, duty.id), function(
+                            rosterItem,
+                            rosterIndex
+                          ) {
+                            return _c("roster-edit-item", {
+                              key: rosterItem.id,
+                              attrs: {
+                                roster: rosterItem,
+                                member: rosterItem.member
+                              },
+                              on: {
+                                delete: function($event) {
+                                  return _vm.deleteEvent(rosterItem)
+                                }
+                              }
+                            })
+                          }),
+                          _vm._v(" "),
+                          _c("roster-add-item", {
+                            attrs: { orgId: _vm.orgId, day: day, duty: duty },
+                            on: { add: _vm.addEvent }
+                          })
+                        ],
+                        2
+                      )
+                    ]
+                  }),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("button", {
+                      staticClass: "btn fa fa-plus-circle",
+                      on: {
+                        click: function($event) {
+                          return _vm.openCustomModal()
+                        }
+                      }
+                    })
+                  ])
+                ],
+                2
+              )
+            ]
+          })
+        ],
+        2
+      )
+    ],
+    1
+  )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h1", [
-      _c("a", { attrs: { href: "/calendar/" } }, [_vm._v("Calendar")]),
-      _vm._v(" > Edit Roster")
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -67125,6 +67332,7 @@ Vue.component('edit-duties', __webpack_require__(/*! ./components/calendar/Dutie
 Vue.component('waypoints', __webpack_require__(/*! ./components/Waypoints.vue */ "./resources/js/components/Waypoints.vue")["default"]);
 Vue.component('roster-edit-item', __webpack_require__(/*! ./components/calendar/RosterEditItem.vue */ "./resources/js/components/calendar/RosterEditItem.vue")["default"]);
 Vue.component('roster-add-item', __webpack_require__(/*! ./components/calendar/RosterAddItem.vue */ "./resources/js/components/calendar/RosterAddItem.vue")["default"]);
+Vue.component('calendar-nav', __webpack_require__(/*! ./components/calendar/CalendarNav.vue */ "./resources/js/components/calendar/CalendarNav.vue")["default"]);
 Vue.component('passport-clients', __webpack_require__(/*! ./components/passport/Clients.vue */ "./resources/js/components/passport/Clients.vue")["default"]);
 Vue.component('passport-authorized-clients', __webpack_require__(/*! ./components/passport/AuthorizedClients.vue */ "./resources/js/components/passport/AuthorizedClients.vue")["default"]);
 Vue.component('passport-personal-access-tokens', __webpack_require__(/*! ./components/passport/PersonalAccessTokens.vue */ "./resources/js/components/passport/PersonalAccessTokens.vue")["default"]);
@@ -68920,6 +69128,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarEditRow_vue_vue_type_template_id_7d2f502c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarEditRow_vue_vue_type_template_id_7d2f502c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/calendar/CalendarNav.vue":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/calendar/CalendarNav.vue ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _CalendarNav_vue_vue_type_template_id_551ffa5f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CalendarNav.vue?vue&type=template&id=551ffa5f& */ "./resources/js/components/calendar/CalendarNav.vue?vue&type=template&id=551ffa5f&");
+/* harmony import */ var _CalendarNav_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CalendarNav.vue?vue&type=script&lang=js& */ "./resources/js/components/calendar/CalendarNav.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _CalendarNav_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CalendarNav.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/calendar/CalendarNav.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _CalendarNav_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _CalendarNav_vue_vue_type_template_id_551ffa5f___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _CalendarNav_vue_vue_type_template_id_551ffa5f___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/calendar/CalendarNav.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/calendar/CalendarNav.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/calendar/CalendarNav.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarNav_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./CalendarNav.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/CalendarNav.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarNav_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/calendar/CalendarNav.vue?vue&type=style&index=0&lang=css&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/calendar/CalendarNav.vue?vue&type=style&index=0&lang=css& ***!
+  \*******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarNav_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./CalendarNav.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/CalendarNav.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarNav_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarNav_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarNav_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarNav_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarNav_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/calendar/CalendarNav.vue?vue&type=template&id=551ffa5f&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/calendar/CalendarNav.vue?vue&type=template&id=551ffa5f& ***!
+  \*****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarNav_vue_vue_type_template_id_551ffa5f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./CalendarNav.vue?vue&type=template&id=551ffa5f& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calendar/CalendarNav.vue?vue&type=template&id=551ffa5f&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarNav_vue_vue_type_template_id_551ffa5f___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarNav_vue_vue_type_template_id_551ffa5f___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

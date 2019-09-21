@@ -10,8 +10,6 @@
 
 @import 'node_modules/bootstrap-vue/src/index.scss';
 
-//@import 'node_modules/v-calendar/lib/v-calendar.min.css';
-
 body {
 	padding-bottom: 20px;
 }
@@ -21,11 +19,11 @@ li.nav-messages {
 	padding-bottom: 14px;
 }
 
-.navbar-nav {
+.navbar-nav, .cal-nav {
 	flex-wrap: wrap;
 }
 
-.navbar {
+.main-nav {
 	box-shadow: 0px 10px 20px #AAA;
 	margin-bottom: 1.2em;
 	flex-wrap: wrap;

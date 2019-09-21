@@ -27,7 +27,9 @@ only screen and (max-width: 760px),
 </style>
 
 <template>
-	<div class="mt-4">
+	<div>
+
+		<calendar-nav active="calendar" title="Calendar"></calendar-nav>
 
 		<table class="table table-striped table-sm collapsable calendar-table">
 			<tr>

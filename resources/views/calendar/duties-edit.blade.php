@@ -3,10 +3,10 @@
 @section('content')
 
 
-<div class="container">
+<div class="container-fluid">
 
 	<?php if ($org) { ?>
-
+	
 		<edit-duties org-id="{{$org['id']}}"></edit-duties>
 
 	<?php } else { ?> 

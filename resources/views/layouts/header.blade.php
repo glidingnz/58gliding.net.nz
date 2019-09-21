@@ -46,7 +46,7 @@
 	</head>
 	<body>
 		<div id="app">
-			<nav class="navbar navbar-dark bg-dark navbar-expand">
+			<nav class="main-nav navbar navbar-dark bg-dark navbar-expand">
 				<a class="navbar-brand" href="{{ url('/') }}">
 					<?php if (isset($org) && $org) { ?>
 						{{$org->name}}
@@ -61,6 +61,11 @@
 					<li class="nav-item"><a class="nav-link" href="{{ url('/tracking')}}">Tracking</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/cups')}}">Waypoints</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/contests')}}">Contests</a></li>
+
+					<?php if (isset($org) && $org) { ?>
+						<li class="nav-item"><a class="nav-link" href="{{ url('/calendar')}}">Calendar</a></li>
+						<li class="nav-item"><a class="nav-link" href="{{ url('/ratings-report')}}">BFR &amp; Medicals</a></li>
+					<?php } ?>
 					
 					<li class="nav-messages"></li>
 				</ul>

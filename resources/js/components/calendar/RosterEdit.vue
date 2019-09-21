@@ -27,7 +27,8 @@
 <template>
 	<div>
 
-		<h1><a href="/calendar/">Calendar</a> &gt; Edit Roster</h1>
+		<calendar-nav active="edit-roster" title="Edit Roster"></calendar-nav>
+
 
 		<div class="add-custom-modal" v-show="showCustomModal" v-on:click="closeCustomModal()" @keyup.esc="closeCustomModal()" tabindex="0">
 			<div class="inner" v-on:click.stop="">

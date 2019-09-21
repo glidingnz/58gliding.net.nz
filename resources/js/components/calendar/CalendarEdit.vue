@@ -23,7 +23,7 @@ only screen and (max-width: 760px),
 <template>
 	<div>
 
-		<h1><a href="/calendar/">Calendar</a> &gt; Edit Club Calendar</h1>
+		<calendar-nav active="edit-calendar" title="Edit Flying Days"></calendar-nav>
 
 		<v-date-picker mode="multiple" v-model="days" @dayclick="dayClicked" :columns="$screens({ default: 1, md:2, lg: 3, xl:4 })" is-inline :min-date="new Date()" />
 

@@ -66,6 +66,7 @@ Vue.component('edit-duties', require('./components/calendar/DutiesEdit.vue').def
 Vue.component('waypoints', require('./components/Waypoints.vue').default);
 Vue.component('roster-edit-item', require('./components/calendar/RosterEditItem.vue').default);
 Vue.component('roster-add-item', require('./components/calendar/RosterAddItem.vue').default);
+Vue.component('calendar-nav', require('./components/calendar/CalendarNav.vue').default);
 
 
 Vue.component(
