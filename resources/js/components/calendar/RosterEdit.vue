@@ -77,13 +77,13 @@
 
 							<b class="d-md-none">{{duty.name}}</b>
 
-							<button v-show="getDaysRosters(day.id, duty.id).length>0" class="btn fa fa-plus-square float-right compact-btn" v-on:click="showAdd(duty, day)"></button>
+							<button v-show="getDaysRosters(day.id, duty.id).length>0" class="btn fa fa-plus-square float-right compact-btn" v-on:click="showAdd(duty, day)" :tabindex="100 * (dayIndex + (results.length * dutyIndex) + 100) + 5"></button>
 
 							<!-- list existing roster items -->
-							<roster-edit-item v-for="(rosterItem, rosterIndex) in getDaysRosters(day.id, duty.id)" v-bind:key="rosterItem.id" :roster="rosterItem" :member="rosterItem.member" v-on:delete="deleteEvent(rosterItem)"></roster-edit-item>
+							<roster-edit-item v-for="(rosterItem, rosterIndex) in getDaysRosters(day.id, duty.id)" v-bind:key="rosterItem.id" :roster="rosterItem" :member="rosterItem.member" v-on:delete="deleteEvent(rosterItem)" :tabindex="100 * (dayIndex + (results.length * dutyIndex) + 100)"></roster-edit-item>
 
 							<!-- allow adding a new one -->
-							<roster-add-item  v-show="(getDaysRosters(day.id, duty.id).length==0) || (getShowAdd(duty, day))" v-on:add="addEvent" :orgId="orgId" :day="day" :duty="duty" ></roster-add-item>
+							<roster-add-item  v-show="(getDaysRosters(day.id, duty.id).length==0) || (getShowAdd(duty, day))" v-on:add="addEvent" :orgId="orgId" :day="day" :duty="duty" :tabindex="100 * (dayIndex + (results.length * dutyIndex) + 100)"></roster-add-item>
 
 						</td>
 					</template>
@@ -192,7 +192,6 @@
 				this.roster.push(newRoster);
 				this.hideAdd(newRoster.duty_id, newRoster.day_id);
 				this.showCustomModal = false;
-
 			},
 			showAdd: function(duty, day) {
 				var key = 'a' + duty.id + '-' + day.id;

@@ -1,8 +1,8 @@
 <template>
 	<div class="selectMember">
 
-		<input v-model="memberSearch" class="form-control">
-		<select v-model="member" v-show="searchResults.length>0" class="form-control" @change="selectMember()">
+		<input v-model="memberSearch" class="form-control"  :tabindex="tabindex + 10" :ref="'add_' + tabindex">
+		<select v-model="member" v-show="searchResults.length>0"  :tabindex="tabindex + 11" class="form-control" @change="selectMember()">
 			<option :value="null">{{searchResults.length}} result{{searchResults.length==1?'':'s'}}</option>
 			<option :value="member" v-for="member in searchResults">{{member.first_name}} {{member.last_name}}</option>
 		</select>
@@ -16,7 +16,7 @@
 
 	export default {
 		mixins: [common],
-		props: ['orgId', 'day', 'duty'],
+		props: ['orgId', 'day', 'duty', 'tabindex'],
 		data() {
 			return {
 				memberSearch: '',

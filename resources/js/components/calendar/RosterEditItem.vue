@@ -2,7 +2,7 @@
 	<div class="showMember">
 		<div v-if="member">
 			<div v-if="roster!=null">
-				<button class="btn fa fa-times-circle compact-btn" v-on:click="deleteRosterItem()"></button>
+				<button class="btn fa fa-times-circle compact-btn" v-on:click="deleteRosterItem()"  :tabindex="tabindex"></button>
 				{{member.first_name}} {{member.last_name}}
 			</div>
 		</div>
@@ -15,7 +15,7 @@
 
 	export default {
 		mixins: [common],
-		props: ['roster', 'member'],
+		props: ['roster', 'member', 'tabindex'],
 		data() {
 			return {
 				memberSearch: '',

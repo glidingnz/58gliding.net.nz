@@ -5957,7 +5957,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
-  props: ['orgId', 'day', 'duty'],
+  props: ['orgId', 'day', 'duty', 'tabindex'],
   data: function data() {
     return {
       memberSearch: '',
@@ -6268,7 +6268,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
-  props: ['roster', 'member'],
+  props: ['roster', 'member', 'tabindex'],
   data: function data() {
     return {
       memberSearch: '',
@@ -53640,7 +53640,9 @@ var render = function() {
           expression: "memberSearch"
         }
       ],
+      ref: "add_" + _vm.tabindex,
       staticClass: "form-control",
+      attrs: { tabindex: _vm.tabindex + 10 },
       domProps: { value: _vm.memberSearch },
       on: {
         input: function($event) {
@@ -53670,6 +53672,7 @@ var render = function() {
           }
         ],
         staticClass: "form-control",
+        attrs: { tabindex: _vm.tabindex + 11 },
         on: {
           change: [
             function($event) {
@@ -53945,6 +53948,14 @@ var render = function() {
                             ],
                             staticClass:
                               "btn fa fa-plus-square float-right compact-btn",
+                            attrs: {
+                              tabindex:
+                                100 *
+                                  (dayIndex +
+                                    _vm.results.length * dutyIndex +
+                                    100) +
+                                5
+                            },
                             on: {
                               click: function($event) {
                                 return _vm.showAdd(duty, day)
@@ -53960,7 +53971,12 @@ var render = function() {
                               key: rosterItem.id,
                               attrs: {
                                 roster: rosterItem,
-                                member: rosterItem.member
+                                member: rosterItem.member,
+                                tabindex:
+                                  100 *
+                                  (dayIndex +
+                                    _vm.results.length * dutyIndex +
+                                    100)
                               },
                               on: {
                                 delete: function($event) {
@@ -53982,7 +53998,16 @@ var render = function() {
                                   "(getDaysRosters(day.id, duty.id).length==0) || (getShowAdd(duty, day))"
                               }
                             ],
-                            attrs: { orgId: _vm.orgId, day: day, duty: duty },
+                            attrs: {
+                              orgId: _vm.orgId,
+                              day: day,
+                              duty: duty,
+                              tabindex:
+                                100 *
+                                (dayIndex +
+                                  _vm.results.length * dutyIndex +
+                                  100)
+                            },
                             on: { add: _vm.addEvent }
                           })
                         ],
@@ -54098,6 +54123,7 @@ var render = function() {
             ? _c("div", [
                 _c("button", {
                   staticClass: "btn fa fa-times-circle compact-btn",
+                  attrs: { tabindex: _vm.tabindex },
                   on: {
                     click: function($event) {
                       return _vm.deleteRosterItem()
