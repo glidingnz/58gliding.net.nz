@@ -15,17 +15,18 @@
 			</td>
 			<td><button v-on:click="createDuty()" type="submit" class="btn btn-outline-dark">Add Duty</button></td>
 			<td></td>
+			<td></td>
 		</tr>
 		<tr>
 			<th>Duty Name</th>
-			<th>Custom?</th>
-			<th>Update</th>
+			<th>Occasional</th>
+			<th>Save</th>
 			<th>Delete</th>
 		</tr>
 		<tr v-for="duty in duties">
-			<td><input type="text" v-model="duty.name" class="form-control"></td>
+			<td><input type="text" v-model="duty.name" class="form-control" v-on:blur="updateDuty(duty)"></td>
 			<td>
-				<input type="checkbox" v-model="duty.custom" :id="duty.id + '_custom'" :value="true"> <label :for="duty.id + '_custom'">Custom</label>
+				<input type="checkbox" v-model="duty.custom" v-on:click="updateDuty(duty)" :id="duty.id + '_custom'" :value="true"> <label :for="duty.id + '_custom'">Occasional</label>
 			</td>
 			<td><button v-on:click="updateDuty(duty)" class="btn btn-outline-dark btn-sm">Save</button></td>
 			<td><button v-on:click="deleteDuty(duty)" class="btn btn-outline-dark btn-sm">Delete</button></td>

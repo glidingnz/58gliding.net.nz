@@ -13,7 +13,7 @@ only screen and (max-width: 760px),
 		display: block; 
 	}
 
-	td:nth-of-type(4):before { content: "Day Cancelled "; }
+	.calendar-table td:nth-of-type(4):before { content: "Day Cancelled "; }
 
 	.calendar-table .date {
 		font-size: 170%;
@@ -22,7 +22,6 @@ only screen and (max-width: 760px),
 	.calendar-table th {
 		display: none !important;
 	}
-
 }
 </style>
 

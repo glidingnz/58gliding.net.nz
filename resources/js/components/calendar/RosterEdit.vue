@@ -22,6 +22,10 @@
 		box-shadow: 0px 6px 15px 7px rgba(0,0,0,0.27);
 		border-radius: 10px;
 	}
+
+	.compact-btn {
+		padding: 0;
+	}
 </style>
 
 <template>
@@ -32,24 +36,31 @@
 
 		<div class="add-custom-modal" v-show="showCustomModal" v-on:click="closeCustomModal()" @keyup.esc="closeCustomModal()" tabindex="0">
 			<div class="inner" v-on:click.stop="">
-				<h2>Add Extra Duty</h2>
-				<select class="form-control" >
-					<option :value="customDuty.id" v-for="customDuty in duties">{{customDuty.name}}</option>
+				<button v-on:click="closeCustomModal()" class="btn btn-outline-dark float-right">Cancel</button>
+				<h2>Add Occasional Duty</h2>
+
+				<label>Select Duty</label>
+				<select class="form-control" v-model="customAddDuty">
+					<option :value="customDuty" v-for="customDuty in customDuties">{{customDuty.name}}</option>
 				</select>
-				<button v-on:click="closeCustomModal()" class="btn btn-outline-dark">Cancel</button>
+
+				<label>Select Member</label>
+				<roster-add-item  v-on:add="addEvent" :orgId="orgId" :day="customAddDay" :duty="customAddDuty"></roster-add-item>
+
+				
 			</div>
 		</div>
 
 		<table class="edit-roster-table table table-striped table-sm collapsable">
-			<tr>
+			<tr class="d-none d-md-table-row">
 				<th>Date</th>
 				<th>Available</th>
 				<template v-for="duty in defaultDuties">
 					<th>{{duty.name}}</th>
 				</template>
-				<th>Extras</th>
+				<th>Occasional</th>
 			</tr>
-			<template v-for="(day, dayIndex) in results" >
+			<template v-for="(day, dayIndex) in results">
 				<tr >
 					<td>
 						<b>{{renderDate(day.day_date)}}</b>
@@ -64,11 +75,12 @@
 					<template v-for="(duty, dutyIndex) in defaultDuties">
 						<td class="no-wrap">
 
-							<button v-show="getDaysRosters(day.id, duty.id).length>0" class="btn fa fa-plus float-right" v-on:click="showAdd(duty, day)"></button>
+							<b class="d-md-none">{{duty.name}}</b>
+
+							<button v-show="getDaysRosters(day.id, duty.id).length>0" class="btn fa fa-plus-square float-right compact-btn" v-on:click="showAdd(duty, day)"></button>
 
 							<!-- list existing roster items -->
 							<roster-edit-item v-for="(rosterItem, rosterIndex) in getDaysRosters(day.id, duty.id)" v-bind:key="rosterItem.id" :roster="rosterItem" :member="rosterItem.member" v-on:delete="deleteEvent(rosterItem)"></roster-edit-item>
-
 
 							<!-- allow adding a new one -->
 							<roster-add-item  v-show="(getDaysRosters(day.id, duty.id).length==0) || (getShowAdd(duty, day))" v-on:add="addEvent" :orgId="orgId" :day="day" :duty="duty" ></roster-add-item>
@@ -76,7 +88,14 @@
 						</td>
 					</template>
 					<td>
-						<button class="btn fa fa-plus-circle" v-on:click="openCustomModal()"></button>
+						<div>
+							<button class="btn compact-btn" v-on:click="openCustomModal(day)"><span class="fa fa-plus-square"></span> <span class="d-md-none">Add Occasional</span></button>
+						</div>
+
+						<template v-for="duty in customDuties">
+							<b v-show="getDaysRosters(day.id, duty.id).length>0">{{duty.name}}:</b>
+							<roster-edit-item v-for="(rosterItem, rosterIndex) in getDaysRosters(day.id, duty.id)" v-bind:key="rosterItem.id" :roster="rosterItem" :member="rosterItem.member" v-on:delete="deleteEvent(rosterItem)"></roster-edit-item>
+						</template>
 					</td>
 				</tr>
 			</template>
@@ -101,7 +120,9 @@
 				results: [],
 				roster: [],
 				showCustomModal: false,
-				showAddPanels: {}
+				showAddPanels: {},
+				customAddDay: null,
+				customAddDuty: null
 			}
 		},
 		mounted() {
@@ -131,6 +152,7 @@
 				});
 			},
 			openCustomModal: function(day) {
+				this.customAddDay = day;
 				this.showCustomModal = true;
 			},
 			closeCustomModal: function() {
@@ -145,7 +167,6 @@
 			loadRoster: function() {
 				var that = this;
 				window.axios.get('/api/roster/?org_id=' + this.orgId + '&start_date=' + this.$moment().format('YYYY-MM-DD')).then(function (response) {
-					console.log('roster loaded');
 					that.roster = response.data.data;
 				});
 			},
@@ -168,9 +189,9 @@
 				this.roster.splice(this.roster.indexOf(rosterItem), 1);
 			},
 			addEvent: function(newRoster) {
-				console.log(newRoster);
 				this.roster.push(newRoster);
 				this.hideAdd(newRoster.duty_id, newRoster.day_id);
+				this.showCustomModal = false;
 
 			},
 			showAdd: function(duty, day) {

@@ -1,25 +1,3 @@
-<style>
-.date {
-	white-space: nowrap;
-}
-
-@media 
-only screen and (max-width: 760px),
-(min-device-width: 768px) and (max-device-width: 1024px)  {
-
-	/* Force table to not be like tables anymore */
-	table.collapsable, .collapsable thead, .collapsable tbody, .collapsable th, .collapsable td, .collapsable tr { 
-		display: block; 
-	}
-
-	td:nth-of-type(4):before { content: "Day Cancelled "; }
-
-	.date {
-		font-size: 130%;
-	}
-}
-</style>
-
 <template>
 	<div>
 
@@ -29,7 +7,7 @@ only screen and (max-width: 760px),
 
 		<h2 class="mt-2">Selected Flying Days</h2>
 
-		<table class="table table-striped table-sm collapsable">
+		<table class="table table-striped table-sm collapsable calendar-table">
 			<tr>
 				<th>Date</th>
 				<th>Day Details</th>

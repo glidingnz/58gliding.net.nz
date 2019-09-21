@@ -44,11 +44,8 @@
 				}
 
 				window.axios.post('/api/roster', roster).then(function (response) {
-					console.log('creating roster item');
-					console.log(response);
-
 					if (response.data.success) {
-						messages.$emit('success', 'Saved');
+						messages.$emit('success', that.member.first_name + ' added to Roster');
 						that.$emit('add', response.data.data);
 						that.searchResults = [];
 						that.member = null;

@@ -1,14 +1,8 @@
-<style>
-	.showMember .btn {
-		padding: 0;
-	}
-</style>
-
 <template>
 	<div class="showMember">
 		<div v-if="member">
 			<div v-if="roster!=null">
-				<button class="btn fa fa-times-circle" v-on:click="deleteRosterItem()"></button>
+				<button class="btn fa fa-times-circle compact-btn" v-on:click="deleteRosterItem()"></button>
 				{{member.first_name}} {{member.last_name}}
 			</div>
 		</div>
