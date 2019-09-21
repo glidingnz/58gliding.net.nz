@@ -67,12 +67,16 @@
 
 				this.memberChosen = true;
 
+				var roster_id = null;
+				if (this.selectedRoster!=null) this.selectedRoster.id;
+
 				var data = {
 					'day_id': this.day.id,
 					'day_date': this.day.day_date,
 					'org_id': this.orgId,
 					'duty_id': this.duty.id,
-					'member_id': this.selectedMember.id
+					'member_id': this.selectedMember.id,
+					'roster_id': roster_id
 				}
 
 				window.axios.post('/api/roster', data).then(function (response) {

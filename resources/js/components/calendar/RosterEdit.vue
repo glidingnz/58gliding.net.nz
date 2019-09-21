@@ -62,7 +62,13 @@
 					</td>
 					<template v-for="(duty, dutyIndex) in defaultDuties">
 						<td class="no-wrap">
-							<roster-select-pilot :roster="roster" :day="day" :duty="duty" :tabindex="10 * (dayIndex + (results.length * dutyIndex) + 1000)" :orgId="orgId"></roster-select-pilot>
+
+							<!-- list existing roster items -->
+							<roster-edit-item v-for="(rosterItem, rosterIndex) in getDaysRosters(day.id, duty.id)" v-bind:key="rosterItem.id" :roster="rosterItem" :member="rosterItem.member" v-on:delete="deleteEvent(rosterItem)"></roster-edit-item>
+
+							<!-- allow adding a new one -->
+							<roster-add-item v-on:add="addEvent" :orgId="orgId" :day="day" :duty="duty" ></roster-add-item>
+
 						</td>
 					</template>
 					<td>
@@ -144,15 +150,21 @@
 			renderDescription: function(description) {
 				if (description==null) return null;
 				return description.replace(/(?:\r\n|\r|\n)/g, '<br>');
+			},
+			getDaysRosters: function(day_id, duty_id) {
+				var result = this.roster.filter(function(roster) {
+					if (roster.day_id==day_id && roster.duty_id==duty_id) return true;
+				});
+				return result;
+			},
+			deleteEvent: function(rosterItem) {
+				console.log(rosterItem);
+
+				this.roster.splice(this.roster.indexOf(rosterItem), 1);
+			},
+			addEvent: function(newRoster) {
+				this.roster.push(newRoster);
 			}
-			// getRosterItem: function(day_id, duty_id) {
-			// 	console.log('executed ' + day_id + ' ' + duty_id);
-			// 	var result = this.roster.filter(function(roster) {
-			// 		if (roster.day_id==day_id && roster.duty_id==duty_id) return true;
-			// 	});
-			// 	console.log(result);
-			// 	return result;
-			// }
 		}
 
 	}

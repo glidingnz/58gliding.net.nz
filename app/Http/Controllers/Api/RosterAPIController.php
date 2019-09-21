@@ -42,6 +42,12 @@ class RosterAPIController extends AppBaseController
 		// limit by organisation
 		if ($request->has('org_id')) $query->where('org_id','=',$request->input('org_id'));
 
+		// limit by day
+		if ($request->has('day_id')) $query->where('day_id','=',$request->input('day_id'));
+
+		// limit by organisation
+		if ($request->has('duty_id')) $query->where('duty_id','=',$request->input('duty_id'));
+
 		// start and end dates
 		if ($request->has('start_date')) $query->where('day_date', '>=', $request->input('start_date'));
 		if ($request->has('end_date')) $query->where('day_date', '<=', $request->input('end_date'));
@@ -67,17 +73,8 @@ class RosterAPIController extends AppBaseController
 	{
 		$input = $request->all();
 
-		// check if we have this one already
-		if (!$roster = Roster::where('org_id', $input['org_id'])
-			->where('day_id',$input['day_id'])
-			->where('duty_id', $input['duty_id'])
-			->where('deleted_at',null)
-			->first())
-		{
-			$roster = $this->rosterRepository->create($input);
-		}
-
-		$roster = $this->rosterRepository->update($input, $roster->id);
+		$roster = $this->rosterRepository->create($input);
+		$roster->member; // load the associated member details and return them too
 
 		return $this->sendResponse($roster->toArray(), 'Roster saved successfully');
 	}
@@ -92,10 +89,13 @@ class RosterAPIController extends AppBaseController
 	 */
 	public function show($id)
 	{
-		/** @var Roster $roster */
-		$roster = $this->rosterRepository->find($id);
+		$roster = Roster::select('rosters.*')
+			->with(['member' => function ($query) {
+				$query->select('id', 'first_name', 'last_name', 'mobile_phone');
+			}])
+			->where('rosters.id', $id)->first();
 
-		if (empty($roster)) {
+		if (!$roster) {
 			return $this->sendError('Roster not found');
 		}
 

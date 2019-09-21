@@ -65,6 +65,8 @@ Vue.component('autosize-textarea', require('./components/widgets/AutosizeTextare
 Vue.component('edit-duties', require('./components/calendar/DutiesEdit.vue').default);
 Vue.component('waypoints', require('./components/Waypoints.vue').default);
 Vue.component('roster-select-pilot', require('./components/calendar/RosterSelectPilot.vue').default);
+Vue.component('roster-edit-item', require('./components/calendar/RosterEditItem.vue').default);
+Vue.component('roster-add-item', require('./components/calendar/RosterAddItem.vue').default);
 
 
 Vue.component(
