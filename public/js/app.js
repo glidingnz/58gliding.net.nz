@@ -6143,6 +6143,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
  //import VCalendar from 'v-calendar';
 
 
@@ -6155,7 +6158,8 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       duties: [],
       results: [],
       roster: [],
-      showCustomModal: false
+      showCustomModal: false,
+      showAddPanels: {}
     };
   },
   mounted: function mounted() {
@@ -6221,7 +6225,21 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       this.roster.splice(this.roster.indexOf(rosterItem), 1);
     },
     addEvent: function addEvent(newRoster) {
+      console.log(newRoster);
       this.roster.push(newRoster);
+      this.hideAdd(newRoster.duty_id, newRoster.day_id);
+    },
+    showAdd: function showAdd(duty, day) {
+      var key = 'a' + duty.id + '-' + day.id;
+      this.$set(this.showAddPanels, key, true);
+    },
+    hideAdd: function hideAdd(duty_id, day_id) {
+      var key = 'a' + duty_id + '-' + day_id;
+      this.$set(this.showAddPanels, key, false);
+    },
+    getShowAdd: function getShowAdd(duty, day) {
+      var key = 'a' + duty.id + '-' + day.id;
+      return this.showAddPanels[key];
     }
   }
 });
@@ -53967,6 +53985,26 @@ var render = function() {
                         "td",
                         { staticClass: "no-wrap" },
                         [
+                          _c("button", {
+                            directives: [
+                              {
+                                name: "show",
+                                rawName: "v-show",
+                                value:
+                                  _vm.getDaysRosters(day.id, duty.id).length >
+                                  0,
+                                expression:
+                                  "getDaysRosters(day.id, duty.id).length>0"
+                              }
+                            ],
+                            staticClass: "btn fa fa-plus float-right",
+                            on: {
+                              click: function($event) {
+                                return _vm.showAdd(duty, day)
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
                           _vm._l(_vm.getDaysRosters(day.id, duty.id), function(
                             rosterItem,
                             rosterIndex
@@ -53986,6 +54024,17 @@ var render = function() {
                           }),
                           _vm._v(" "),
                           _c("roster-add-item", {
+                            directives: [
+                              {
+                                name: "show",
+                                rawName: "v-show",
+                                value:
+                                  _vm.getDaysRosters(day.id, duty.id).length ==
+                                    0 || _vm.getShowAdd(duty, day),
+                                expression:
+                                  "(getDaysRosters(day.id, duty.id).length==0) || (getShowAdd(duty, day))"
+                              }
+                            ],
                             attrs: { orgId: _vm.orgId, day: day, duty: duty },
                             on: { add: _vm.addEvent }
                           })

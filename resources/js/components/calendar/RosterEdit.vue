@@ -64,11 +64,14 @@
 					<template v-for="(duty, dutyIndex) in defaultDuties">
 						<td class="no-wrap">
 
+							<button v-show="getDaysRosters(day.id, duty.id).length>0" class="btn fa fa-plus float-right" v-on:click="showAdd(duty, day)"></button>
+
 							<!-- list existing roster items -->
 							<roster-edit-item v-for="(rosterItem, rosterIndex) in getDaysRosters(day.id, duty.id)" v-bind:key="rosterItem.id" :roster="rosterItem" :member="rosterItem.member" v-on:delete="deleteEvent(rosterItem)"></roster-edit-item>
 
+
 							<!-- allow adding a new one -->
-							<roster-add-item v-on:add="addEvent" :orgId="orgId" :day="day" :duty="duty" ></roster-add-item>
+							<roster-add-item  v-show="(getDaysRosters(day.id, duty.id).length==0) || (getShowAdd(duty, day))" v-on:add="addEvent" :orgId="orgId" :day="day" :duty="duty" ></roster-add-item>
 
 						</td>
 					</template>
@@ -97,7 +100,8 @@
 				duties: [],
 				results: [],
 				roster: [],
-				showCustomModal: false
+				showCustomModal: false,
+				showAddPanels: {}
 			}
 		},
 		mounted() {
@@ -164,7 +168,22 @@
 				this.roster.splice(this.roster.indexOf(rosterItem), 1);
 			},
 			addEvent: function(newRoster) {
+				console.log(newRoster);
 				this.roster.push(newRoster);
+				this.hideAdd(newRoster.duty_id, newRoster.day_id);
+
+			},
+			showAdd: function(duty, day) {
+				var key = 'a' + duty.id + '-' + day.id;
+				this.$set(this.showAddPanels, key, true);
+			},
+			hideAdd: function(duty_id, day_id) {
+				var key = 'a' + duty_id + '-' + day_id;
+				this.$set(this.showAddPanels, key, false);
+			},
+			getShowAdd: function(duty, day) {
+				var key = 'a' + duty.id + '-' + day.id;
+				return this.showAddPanels[key];
 			}
 		}
 
