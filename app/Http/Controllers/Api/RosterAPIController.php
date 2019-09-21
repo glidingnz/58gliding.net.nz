@@ -9,6 +9,7 @@ use App\Repositories\RosterRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use Response;
+use Gate;
 
 /**
  * Class RosterController
@@ -71,6 +72,11 @@ class RosterAPIController extends AppBaseController
 	 */
 	public function store(CreateRosterAPIRequest $request)
 	{
+		// check we have permission
+		if (Gate::denies('club-admin')) {
+			return $this->denied();
+		}
+
 		$input = $request->all();
 
 		$roster = $this->rosterRepository->create($input);
@@ -113,6 +119,11 @@ class RosterAPIController extends AppBaseController
 	 */
 	public function update($id, UpdateRosterAPIRequest $request)
 	{
+		// check we have permission
+		if (Gate::denies('club-admin')) {
+			return $this->denied();
+		}
+
 		$input = $request->all();
 
 		/** @var Roster $roster */
@@ -139,6 +150,11 @@ class RosterAPIController extends AppBaseController
 	 */
 	public function destroy($id)
 	{
+		// check we have permission
+		if (Gate::denies('club-admin')) {
+			return $this->denied();
+		}
+
 		/** @var Roster $roster */
 		$roster = $this->rosterRepository->find($id);
 
