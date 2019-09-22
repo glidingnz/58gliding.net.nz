@@ -5482,6 +5482,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
  //import VCalendar from 'v-calendar';
 
 
@@ -5491,7 +5510,8 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
   props: ['orgId'],
   data: function data() {
     return {
-      results: []
+      results: [],
+      showCustomModal: false
     };
   },
   mounted: function mounted() {
@@ -5513,6 +5533,12 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     renderDescription: function renderDescription(description) {
       if (description == null) return null;
       return description.replace(/(?:\r\n|\r|\n)/g, '<br>');
+    },
+    openCustomModal: function openCustomModal() {
+      this.showCustomModal = true;
+    },
+    closeCustomModal: function closeCustomModal() {
+      this.showCustomModal = false;
     }
   }
 });
@@ -6033,26 +6059,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -7337,7 +7343,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.edit-roster-table .no-wrap {\n\twhite-space: nowrap !important;\n}\n.add-custom-modal {\n\twidth: 100%;\n\theight: 100%;\n\tposition: fixed;\n\ttop: 0;\n\tleft: 0;\n\tbackground-color: rgba(0,0,0,0.7);\n}\n.add-custom-modal .inner {\n\twidth: 80%;\n\tmax-width: 500px;\n\theight: 50%;\n\tmargin: 10% auto 0 auto;\n\tbackground-color: #EEE;\n\tpadding: 20px; \n\tbox-shadow: 0px 6px 15px 7px rgba(0,0,0,0.27);\n\tborder-radius: 10px;\n}\n.compact-btn {\n\tpadding: 0;\n}\n", ""]);
+exports.push([module.i, "\n.edit-roster-table .no-wrap {\n\twhite-space: nowrap !important;\n}\n.compact-btn {\n\tpadding: 0;\n}\n", ""]);
 
 // exports
 
@@ -52732,6 +52738,119 @@ var render = function() {
       _c("calendar-nav", { attrs: { active: "calendar", title: "Calendar" } }),
       _vm._v(" "),
       _c(
+        "div",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.showCustomModal,
+              expression: "showCustomModal"
+            }
+          ],
+          staticClass: "add-custom-modal",
+          attrs: { tabindex: "0" },
+          on: {
+            click: function($event) {
+              return _vm.closeCustomModal()
+            },
+            keyup: function($event) {
+              if (
+                !$event.type.indexOf("key") &&
+                _vm._k($event.keyCode, "esc", 27, $event.key, ["Esc", "Escape"])
+              ) {
+                return null
+              }
+              return _vm.closeCustomModal()
+            }
+          }
+        },
+        [
+          _c(
+            "div",
+            {
+              staticClass: "inner",
+              on: {
+                click: function($event) {
+                  $event.stopPropagation()
+                }
+              }
+            },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-outline-dark float-right",
+                  on: {
+                    click: function($event) {
+                      return _vm.closeCustomModal()
+                    }
+                  }
+                },
+                [_vm._v("Cancel")]
+              ),
+              _vm._v(" "),
+              _c("h2", [_vm._v("Add Occasional Duty")]),
+              _vm._v(" "),
+              _c("label", [_vm._v("Select Duty")]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.customAddDuty,
+                      expression: "customAddDuty"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.customAddDuty = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    }
+                  }
+                },
+                _vm._l(_vm.customDuties, function(customDuty) {
+                  return _c("option", { domProps: { value: customDuty } }, [
+                    _vm._v(_vm._s(customDuty.name))
+                  ])
+                }),
+                0
+              ),
+              _vm._v(" "),
+              _c("label", [_vm._v("Select Member")]),
+              _vm._v(" "),
+              _c("roster-add-item", {
+                attrs: {
+                  orgId: _vm.orgId,
+                  day: _vm.customAddDay,
+                  duty: _vm.customAddDuty
+                },
+                on: { add: _vm.addEvent }
+              })
+            ],
+            1
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c("button", { on: { click: _vm.openCustomModal } }, [
+        _vm._v("Add Event")
+      ]),
+      _vm._v(" "),
+      _c(
         "table",
         {
           staticClass: "table table-striped table-sm collapsable calendar-table"
@@ -52834,7 +52953,9 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("th", [_vm._v("Available")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Notes")])
+      _c("th", [_vm._v("Notess")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Events ")])
     ])
   }
 ]

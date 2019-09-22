@@ -24,6 +24,7 @@ Route::group(['namespace' => 'Api', 'middleware' => 'UseApiGuard'], function()
 	Route::post('/days/deactivate',  'DayAPIController@deactivate');
 	Route::resource('duties', 'DutyAPIController');
 	Route::resource('roster', 'RosterAPIController');
+	Route::resource('event', 'EventsAPIController');
 });
 
 Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()

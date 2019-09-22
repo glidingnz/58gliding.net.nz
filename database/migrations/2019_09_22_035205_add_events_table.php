@@ -28,8 +28,10 @@ class AddEventsTable extends Migration
 				$table->string('email')->nullable();
 				$table->string('instagram')->nullable();
 				$table->string('facebook')->nullable();
-				$table->date('start')->nullable();
-				$table->date('end')->nullable();
+				$table->date('start_date')->nullable();
+				$table->date('end_date')->nullable();
+				$table->time('start_time')->nullable();
+				$table->time('end_time')->nullable();
 				$table->date('earlybird')->nullable();
 				$table->integer('practice_days')->nullable();
 				$table->text('terms')->nullable();
@@ -37,6 +39,7 @@ class AddEventsTable extends Migration
 				$table->decimal('cost')->nullable();
 				$table->decimal('cost_earlybird')->nullable();
 				$table->timestamps();
+				$table->softDeletes();
 			});
 		}
 

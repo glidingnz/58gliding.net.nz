@@ -3,26 +3,6 @@
 		white-space: nowrap !important;
 	}
 
-	.add-custom-modal {
-		width: 100%;
-		height: 100%;
-		position: fixed;
-		top: 0;
-		left: 0;
-		background-color: rgba(0,0,0,0.7);
-	}
-	.add-custom-modal .inner {
-		width: 80%;
-		max-width: 500px;
-		height: 50%;
-		margin: 10% auto 0 auto;
-		background-color: #EEE;
-		padding: 20px;
-		-webkit-box-shadow: 0px 6px 15px 7px rgba(0,0,0,0.27); 
-		box-shadow: 0px 6px 15px 7px rgba(0,0,0,0.27);
-		border-radius: 10px;
-	}
-
 	.compact-btn {
 		padding: 0;
 	}

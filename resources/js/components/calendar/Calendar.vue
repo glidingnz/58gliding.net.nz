@@ -30,11 +30,30 @@ only screen and (max-width: 760px),
 
 		<calendar-nav active="calendar" title="Calendar"></calendar-nav>
 
+
+		<div class="add-custom-modal" v-show="showCustomModal" v-on:click="closeCustomModal()" @keyup.esc="closeCustomModal()" tabindex="0">
+			<div class="inner" v-on:click.stop="">
+				<button v-on:click="closeCustomModal()" class="btn btn-outline-dark float-right">Cancel</button>
+				<h2>Add Occasional Duty</h2>
+
+				<label>Select Duty</label>
+				<select class="form-control" v-model="customAddDuty">
+					<option :value="customDuty" v-for="customDuty in customDuties">{{customDuty.name}}</option>
+				</select>
+
+				<label>Select Member</label>
+				<roster-add-item  v-on:add="addEvent" :orgId="orgId" :day="customAddDay" :duty="customAddDuty"></roster-add-item>
+
+			</div>
+		</div>
+
+		<button v-on:click="openCustomModal">Add Event</button>
 		<table class="table table-striped table-sm collapsable calendar-table">
 			<tr>
 				<th>Date</th>
 				<th>Available</th>
-				<th>Notes</th>
+				<th>Notess</th>
+				<th>Events </th>
 			</tr>
 			<tr v-for="day in results" v-bind:key="day.id" :row="day" :org-id="orgId" v-on:rowupdated="load()">
 				<td>
@@ -71,7 +90,8 @@ only screen and (max-width: 760px),
 		props: ['orgId'],
 		data() {
 			return {
-				results: []
+				results: [],
+				showCustomModal: false
 			}
 		},
 		mounted() {
@@ -94,7 +114,13 @@ only screen and (max-width: 760px),
 			renderDescription: function(description) {
 				if (description==null) return null;
 				return description.replace(/(?:\r\n|\r|\n)/g, '<br>');
-			}
+			},
+			openCustomModal: function() {
+				this.showCustomModal = true;
+			},
+			closeCustomModal: function() {
+				this.showCustomModal = false;
+			},
 		}
 
 	}
