@@ -5501,6 +5501,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
  //import VCalendar from 'v-calendar';
 
 
@@ -5510,8 +5521,12 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
   props: ['orgId'],
   data: function data() {
     return {
-      results: [],
-      showCustomModal: false
+      days: [],
+      events: [],
+      showCustomModal: false,
+      newEventName: '',
+      newEventDate: null,
+      showNameRequired: false
     };
   },
   mounted: function mounted() {
@@ -5523,8 +5538,16 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       var that = this; // select all days from today onwards
 
       window.axios.get('/api/days?org_id=' + this.orgId + '&start_date=' + this.$moment().format('YYYY-MM-DD')).then(function (response) {
-        that.results = [];
-        that.results = response.data.data;
+        that.days = [];
+        that.days = response.data.data;
+      });
+    },
+    loadEvents: function loadEvents() {
+      var that = this; // select all events from today onwards
+
+      window.axios.get('/api/events?org_id=' + this.orgId + '&start_date=' + this.$moment().format('YYYY-MM-DD')).then(function (response) {
+        that.events = [];
+        that.events = response.data.data;
       });
     },
     renderDate: function renderDate(date) {
@@ -5534,11 +5557,35 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       if (description == null) return null;
       return description.replace(/(?:\r\n|\r|\n)/g, '<br>');
     },
-    openCustomModal: function openCustomModal() {
+    openCustomModal: function openCustomModal(day_date) {
+      var _this = this;
+
+      this.newEventDate = this.$moment(day_date).toDate();
       this.showCustomModal = true;
+      this.$nextTick(function () {
+        return _this.$refs.newName.focus();
+      });
     },
     closeCustomModal: function closeCustomModal() {
       this.showCustomModal = false;
+    },
+    addEvent: function addEvent() {
+      var that = this;
+
+      if (this.newEventName == '') {
+        messages.$emit('error', 'A name is required');
+        this.showNameRequired = true;
+      } else {
+        var data = {
+          "name": this.newEventName,
+          "start_date": this.$moment(this.newEventDate).format('YYYY-MM-DD'),
+          "org_id": this.orgId
+        };
+        window.axios.post('/api/events', data).then(function (response) {
+          messages.$emit('success', 'Event ' + that.newEventName + ' added');
+          that.closeCustomModal();
+        });
+      }
     }
   }
 });
@@ -6223,7 +6270,6 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       return result;
     },
     deleteEvent: function deleteEvent(rosterItem) {
-      console.log(rosterItem);
       this.roster.splice(this.roster.indexOf(rosterItem), 1);
     },
     addEvent: function addEvent(newRoster) {
@@ -7305,7 +7351,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.calendar-table .date {\n\twhite-space: nowrap;\n\tfont-weight: bold;\n}\n@media \nonly screen and (max-width: 760px),\n(min-device-width: 768px) and (max-device-width: 1024px)  {\n\n\t/* Force table to not be like tables anymore */\ntable.collapsable, .collapsable thead, .collapsable tbody, .collapsable th, .collapsable td, .collapsable tr { \n\t\tdisplay: block;\n}\n.calendar-table td:nth-of-type(4):before { content: \"Day Cancelled \";\n}\n.calendar-table .date {\n\t\tfont-size: 170%;\n}\n.calendar-table th {\n\t\tdisplay: none !important;\n}\n}\n", ""]);
+exports.push([module.i, "\n.calendar-table .date {\n\twhite-space: nowrap;\n\tfont-weight: bold;\n}\n@media \nonly screen and (max-width: 760px),\n(min-device-width: 768px) and (max-device-width: 1024px)  {\n\n\t/* Force table to not be like tables anymore */\ntable.collapsable, .collapsable thead, .collapsable tbody, .collapsable th, .collapsable td, .collapsable tr { \n\t\tdisplay: block;\n}\n.calendar-table .date {\n\t\tfont-size: 170%;\n}\n.calendar-table th {\n\t\tdisplay: none !important;\n}\n}\n", ""]);
 
 // exports
 
@@ -52737,118 +52783,153 @@ var render = function() {
     [
       _c("calendar-nav", { attrs: { active: "calendar", title: "Calendar" } }),
       _vm._v(" "),
-      _c(
-        "div",
-        {
-          directives: [
-            {
-              name: "show",
-              rawName: "v-show",
-              value: _vm.showCustomModal,
-              expression: "showCustomModal"
-            }
-          ],
-          staticClass: "add-custom-modal",
-          attrs: { tabindex: "0" },
-          on: {
-            click: function($event) {
-              return _vm.closeCustomModal()
-            },
-            keyup: function($event) {
-              if (
-                !$event.type.indexOf("key") &&
-                _vm._k($event.keyCode, "esc", 27, $event.key, ["Esc", "Escape"])
-              ) {
-                return null
-              }
-              return _vm.closeCustomModal()
-            }
-          }
-        },
-        [
-          _c(
+      _vm.Laravel.clubAdmin == true
+        ? _c(
             "div",
             {
-              staticClass: "inner",
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.showCustomModal,
+                  expression: "showCustomModal"
+                }
+              ],
+              staticClass: "custom-modal",
+              attrs: { tabindex: "0" },
               on: {
                 click: function($event) {
-                  $event.stopPropagation()
+                  return _vm.closeCustomModal()
+                },
+                keyup: function($event) {
+                  if (
+                    !$event.type.indexOf("key") &&
+                    _vm._k($event.keyCode, "esc", 27, $event.key, [
+                      "Esc",
+                      "Escape"
+                    ])
+                  ) {
+                    return null
+                  }
+                  return _vm.closeCustomModal()
                 }
               }
             },
             [
               _c(
-                "button",
+                "div",
                 {
-                  staticClass: "btn btn-outline-dark float-right",
+                  staticClass: "inner",
                   on: {
                     click: function($event) {
-                      return _vm.closeCustomModal()
+                      $event.stopPropagation()
                     }
                   }
                 },
-                [_vm._v("Cancel")]
-              ),
-              _vm._v(" "),
-              _c("h2", [_vm._v("Add Occasional Duty")]),
-              _vm._v(" "),
-              _c("label", [_vm._v("Select Duty")]),
-              _vm._v(" "),
-              _c(
-                "select",
-                {
-                  directives: [
+                [
+                  _c(
+                    "button",
                     {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.customAddDuty,
-                      expression: "customAddDuty"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  on: {
-                    change: function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.customAddDuty = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    }
-                  }
-                },
-                _vm._l(_vm.customDuties, function(customDuty) {
-                  return _c("option", { domProps: { value: customDuty } }, [
-                    _vm._v(_vm._s(customDuty.name))
+                      staticClass: "btn btn-outline-dark float-right",
+                      on: {
+                        click: function($event) {
+                          return _vm.closeCustomModal()
+                        }
+                      }
+                    },
+                    [_vm._v("Cancel")]
+                  ),
+                  _vm._v(" "),
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", [_vm._v("Event Name")]),
+                    _vm._v(" "),
+                    _c(
+                      "span",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.showNameRequired,
+                            expression: "showNameRequired"
+                          }
+                        ],
+                        staticClass: "error"
+                      },
+                      [_vm._v("Name is required")]
+                    ),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.newEventName,
+                          expression: "newEventName"
+                        }
+                      ],
+                      ref: "newName",
+                      staticClass: "form-control",
+                      attrs: { type: "text" },
+                      domProps: { value: _vm.newEventName },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.newEventName = $event.target.value
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "form-group" },
+                    [
+                      _c("label", [_vm._v("Event Date")]),
+                      _vm._v(" "),
+                      _c("v-date-picker", {
+                        attrs: {
+                          locale: {
+                            id: "nz",
+                            firstDayOfWeek: 2,
+                            masks: { weekdays: "WW", L: "DD/MM/YYYY" }
+                          }
+                        },
+                        model: {
+                          value: _vm.newEventDate,
+                          callback: function($$v) {
+                            _vm.newEventDate = $$v
+                          },
+                          expression: "newEventDate"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-outline-dark",
+                        on: {
+                          click: function($event) {
+                            return _vm.addEvent()
+                          }
+                        }
+                      },
+                      [_vm._v("Add Event")]
+                    )
                   ])
-                }),
-                0
-              ),
-              _vm._v(" "),
-              _c("label", [_vm._v("Select Member")]),
-              _vm._v(" "),
-              _c("roster-add-item", {
-                attrs: {
-                  orgId: _vm.orgId,
-                  day: _vm.customAddDay,
-                  duty: _vm.customAddDuty
-                },
-                on: { add: _vm.addEvent }
-              })
-            ],
-            1
+                ]
+              )
+            ]
           )
-        ]
-      ),
-      _vm._v(" "),
-      _c("button", { on: { click: _vm.openCustomModal } }, [
-        _vm._v("Add Event")
-      ]),
+        : _vm._e(),
       _vm._v(" "),
       _c(
         "table",
@@ -52856,9 +52937,19 @@ var render = function() {
           staticClass: "table table-striped table-sm collapsable calendar-table"
         },
         [
-          _vm._m(0),
+          _c("tr", [
+            _c("th", [_vm._v("Date")]),
+            _vm._v(" "),
+            _c("th", [_vm._v("Available")]),
+            _vm._v(" "),
+            _c("th", [_vm._v("Notes")]),
+            _vm._v(" "),
+            _vm.Laravel.clubAdmin == true
+              ? _c("th", { staticClass: "center" }, [_vm._v("Add Event")])
+              : _vm._e()
+          ]),
           _vm._v(" "),
-          _vm._l(_vm.results, function(day) {
+          _vm._l(_vm.days, function(day) {
             return _c(
               "tr",
               {
@@ -52932,7 +53023,24 @@ var render = function() {
                       innerHTML: _vm._s(_vm.renderDescription(day.description))
                     }
                   })
-                ])
+                ]),
+                _vm._v(" "),
+                _vm.Laravel.clubAdmin == true
+                  ? _c("td", { staticClass: "center" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn compact-btn",
+                          on: {
+                            click: function($event) {
+                              return _vm.openCustomModal(day.day_date)
+                            }
+                          }
+                        },
+                        [_c("span", { staticClass: "fa fa-plus-square" })]
+                      )
+                    ])
+                  : _vm._e()
               ]
             )
           })
@@ -52948,14 +53056,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c("th", [_vm._v("Date")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Available")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Notess")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Events ")])
+    return _c("div", { staticClass: "form-group" }, [
+      _c("h2", [_vm._v("Add Event")])
     ])
   }
 ]

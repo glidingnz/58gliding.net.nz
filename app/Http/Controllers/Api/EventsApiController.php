@@ -49,7 +49,33 @@ class EventsAPIController extends AppBaseController
 	{
 		$input = $request->all();
 
+		// create a slug if one doesn't exist
+		$slug = $request->input('slug', $request->input('name', ''));
+		$slug = simple_string(strtolower($slug));
+
+		// count the number of times this slug has already been used
+		$slug_matches = Event::where('slug', 'like', $slug . '-%')->orWhere('slug', $slug)->get();
+		// figure out the biggest
+		$biggest = 0;
+		foreach ($slug_matches AS $slug_match)
+		{
+			$biggest=1;
+			$match = preg_match("/^.*\-([0-9]*)$/", $slug_match['slug'], $matches);
+			if (sizeof($matches)>0)
+			{
+				$found = (int)$matches[1];
+				if ($found > $biggest) $biggest = $found;
+			}
+		}
+		if ($biggest>0)
+		{
+			$biggest = $biggest + 1;
+			$slug = $slug . '-' . $biggest;
+		}
+		
 		$event = Event::create($input);
+		$event->slug = $slug;
+		$event->save();
 
 		return $this->sendResponse($event->toArray(), 'Event Created');
 	}

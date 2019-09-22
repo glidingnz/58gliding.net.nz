@@ -164,8 +164,6 @@
 				return result;
 			},
 			deleteEvent: function(rosterItem) {
-				console.log(rosterItem);
-
 				this.roster.splice(this.roster.indexOf(rosterItem), 1);
 			},
 			addEvent: function(newRoster) {
