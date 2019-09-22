@@ -17,6 +17,8 @@ class AddEventsTable extends Migration
 			Schema::create('events', function (Blueprint $table) {
 				$table->increments('id');
 				$table->boolean('live')->default(false)->nullable();
+				$table->boolean('share_gnz')->default(false)->nullable();
+				$table->string('type')->nullable();
 				$table->integer('org_id')->nullable();
 				$table->string('name')->nullable();
 				$table->string('slug')->nullable();

@@ -90,4 +90,6 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/calendar/duties/edit', 'Apps\CalendarController@editDuties');
 	Route::get('/calendar/roster/edit', 'Apps\CalendarController@editRoster');
 
+	Route::get('/events/{slug}/edit', 'Apps\EventsController@editEvent');
+
 });

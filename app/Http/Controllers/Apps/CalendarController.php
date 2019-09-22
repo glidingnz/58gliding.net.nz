@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Models\Day;
+use App\Models\Event;
 
 class CalendarController extends Controller
 {

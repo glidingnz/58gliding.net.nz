@@ -29,6 +29,12 @@ class EventsAPIController extends AppBaseController
 		// limit by organisation
 		if ($request->has('org_id')) $query->where('org_id','=',$request->input('org_id'));
 
+		// needs to get start and ends correctly for time ranges
+		if ($request->has('start_date')) $query->where('end_date', '>=', $request->input('start_date'));
+		//if ($request->has('end_date')) $query->where('day_date', '<=', $request->input('end_date'));
+
+		$query->orderBy('start_date');
+
 		if ($results = $query->get())
 		{
 			return $this->success($results);
@@ -72,8 +78,11 @@ class EventsAPIController extends AppBaseController
 			$biggest = $biggest + 1;
 			$slug = $slug . '-' . $biggest;
 		}
-		
+
 		$event = Event::create($input);
+
+		// default the end date to the start date unless given otherwise
+		$event->end_date = $request->input('end_date', $request->input('start_date', null));
 		$event->slug = $slug;
 		$event->save();
 

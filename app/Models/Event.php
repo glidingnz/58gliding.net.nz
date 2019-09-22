@@ -59,7 +59,7 @@ class Event extends Model
      */
     protected $casts = [
         'org_id'=>'integer',
-        'name'=>'integer',
+        'name'=>'string',
         'slug'=>'string',
         'location'=>'string',
         'waypoint_id'=>'integer',

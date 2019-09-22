@@ -40,12 +40,11 @@ only screen and (max-width: 760px),
 				<div class="form-group">
 					<label>Event Name</label> <span class="error" v-show="showNameRequired">Name is required</span>
 					<input type="text" class="form-control" v-model="newEventName" ref="newName">
-
 				</div>
 
 				<div class="form-group">
 					<label>Event Date</label>
-					<v-date-picker v-model="newEventDate" :locale="{ id: 'nz', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }"></v-date-picker>
+					<v-date-picker v-model="newEventDate" :locale="{ id: 'nz', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
 				</div>
 
 				<div class="form-group">
@@ -75,14 +74,33 @@ only screen and (max-width: 760px),
 					<span v-if="day.trialflights"><span class="fa fa-check"></span> Trial Flights</span>
 				</td>
 				<td>
-					<div v-if="day.cancelled" class="bg-danger text-white px-2 py-1 rounded-lg">
+					<div v-if="day.cancelled" class="bg-danger text-white px-2 py-1 mb-1 rounded-lg">
 						<span class="fa fa-exclamation-circle text-white"></span> Day Cancelled<span v-if="day.cancelled_reason">: {{day.cancelled_reason}}</span>
 					</div>
+					<div v-for="event in dayEvents(day.day_date)"  class=" success">
+						<span class="fa fa-calendar-alt"></span> {{event.name}}</span>
+					</div>
 					<span v-html="renderDescription(day.description)"></span>
+					
 				</td>
 				<td class="center" v-if="Laravel.clubAdmin==true">
 					<button class="btn compact-btn" v-on:click="openCustomModal(day.day_date)"><span class="fa fa-plus-square"></span></button>
 				</td>
+			</tr>
+		</table>
+
+		<h2>Upcoming Events</h2>
+
+		<table class="table table-striped table-sm collapsable calendar-table">
+			<tr>
+				<th>Event Name</th>
+				<th>Start Date</th>
+				<th>End Date</th>
+			</tr>
+			<tr v-for="event in events">
+				<td>{{event.name}}</td>
+				<td>{{formatDate(event.start_date)}}</td>
+				<td>{{formatDate(event.end_date)}}</td>
 			</tr>
 		</table>
 
@@ -111,6 +129,7 @@ only screen and (max-width: 760px),
 		},
 		mounted() {
 			this.load();
+			this.loadEvents();
 		},
 		watch: {
 		},
@@ -146,6 +165,13 @@ only screen and (max-width: 760px),
 			closeCustomModal: function() {
 				this.showCustomModal = false;
 			},
+			dayEvents: function(day) {
+				var that = this;
+				var events = this.events.filter(function(event) {
+					if (that.$moment(day).isBetween(event.start_date, event.end_date, 'day', '[]')) return true;
+				});
+				return events;
+			},
 			addEvent: function() {
 				var that = this;
 				if (this.newEventName=='') {
@@ -162,6 +188,7 @@ only screen and (max-width: 760px),
 					window.axios.post('/api/events', data).then(function (response) {
 						messages.$emit('success', 'Event ' + that.newEventName + ' added');
 						that.closeCustomModal();
+						that.loadEvents();
 					});
 				}
 
