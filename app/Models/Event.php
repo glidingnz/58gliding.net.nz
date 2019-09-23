@@ -24,6 +24,10 @@ class Event extends Model
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
+    public function org()
+    {
+        return $this->belongsTo('App\Models\Org');
+    }
 
     protected $dates = ['deleted_at','start_date','end_date','earlybird'];
 

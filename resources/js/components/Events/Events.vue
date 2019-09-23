@@ -5,6 +5,8 @@
 
 		<h1 class="mr-auto">Events</h1>
 
+		<add-event-panel :org-id="orgId" :show="showAddPanel" @closeModal="showAddPanel=false" @eventAdded="eventAdded"></add-event-panel>
+
 		<div class="btn-group ml-auto mr-2 " role="group" v-model="show">
 			<button type="button" class="btn" v-bind:class="[ show=='national' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='national'">National Events</button>
 			<button type="button" class="btn" v-bind:class="[ show=='orgs' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='orgs'">Club Events:</button>
@@ -13,25 +15,29 @@
 		<org-selector :org-id="orgId" v-on:orgSelected="orgSelected" class="mr-2" :disabled="show!='orgs'"></org-selector>
 
 		<div  v-if="Laravel.clubAdmin==true">
-			<button class="btn btn-outline-dark">Add Event</button>
+			<button class="btn btn-outline-dark" v-on:click="showAddPanel=true">Add Event</button>
 		</div>
 
 	</nav>
 
-	<table class="table table-striped table-sm collapsable calendar-table">
+	<table v-show="events.length>0" class="table table-striped table-sm collapsable calendar-table">
 		<tr>
 			<th>Event Name</th>
-			<th>Start Date</th>
-			<th>End Date</th>
+			<th>Organisation</th>
+			<th>Date</th>
 			<th>Length</th>
+			<th>Location</th>
 		</tr>
 		<tr v-for="event in events">
 			<td>{{event.name}}</td>
-			<td>{{formatDate(event.start_date)}}</td>
-			<td>{{formatDate(event.end_date)}}</td>
+			<td><span v-if="event.org">{{event.org.name}}</span></td>
+			<td>{{formatDate(event.start_date)}}<span v-if="event.start_date!=event.end_date"> - {{formatDate(event.end_date)}}</span></td>
 			<td>{{dateDiffDays(event.start_date, event.end_date)}}</td>
+			<td>{{event.location}}</td>
 		</tr>
 	</table>
+
+	<p v-show="events.length==0">No events yet!</p>
 
 </div>
 </template>
@@ -44,23 +50,52 @@ export default {
 		return {
 			events: [],
 			newDutyName: '',
-			show: 'national'
+			show: 'national',
+			selectedOrg: {},
+			showAddPanel: false
+		}
+	},
+	watch: {
+		show: function() {
+			this.load();
 		}
 	},
 	props: ['orgId', 'orgName', 'eventId'],
 	created: function() {
-		this.load();
+		// only load on created if an org is not given
+		if (!this.orgId) {
+			this.load();
+		}
 	},
 	methods: {
 		load: function() {
 			var that = this;
-			window.axios.get('/api/events/').then(function (response) {
+
+			var data = {}
+
+			// check if we have selected an org. It might be null, and thus = all orgs
+			if (this.show=='orgs') {
+				if (this.selectedOrg) {
+					data.org_id = this.selectedOrg.id;
+				}
+			}
+
+			// check if we have selected to show all national events
+			if (this.show=='national') {
+				data.national = true;
+			}
+
+			window.axios.get('/api/events/', {params: data}).then(function (response) {
 				that.events = response.data.data;
 			});
 		},
 		orgSelected: function(org) {
-			console.log('org ');
-			console.log(org);
+			this.selectedOrg = org;
+			this.show='orgs';
+			this.load();
+		},
+		eventAdded: function(event) {
+			this.load();
 		}
 	}
 }

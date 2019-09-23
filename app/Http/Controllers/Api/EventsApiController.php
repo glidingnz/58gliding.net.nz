@@ -24,10 +24,18 @@ class EventsAPIController extends AppBaseController
 	 */
 	public function index(Request $request)
 	{
-		$query = Event::query();
+		$query = Event::query()->with('org');
 
 		// limit by organisation
 		if ($request->has('org_id')) $query->where('org_id','=',$request->input('org_id'));
+
+		if ($request->has('national'))
+		{
+			$query->where(function ($query) use ($request) {
+				$query->where('share_gnz','=',(boolean)$request->input('national', true));
+				$query->orWhereNull('org_id');
+			});
+		}
 
 		// needs to get start and ends correctly for time ranges
 		if ($request->has('start_date')) $query->where('end_date', '>=', $request->input('start_date'));

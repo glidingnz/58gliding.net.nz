@@ -68,6 +68,7 @@ Vue.component('roster-add-item', require('./components/calendar/RosterAddItem.vu
 Vue.component('calendar-nav', require('./components/calendar/CalendarNav.vue').default);
 Vue.component('edit-event', require('./components/events/EventEdit.vue').default);
 Vue.component('events', require('./components/events/Events.vue').default);
+Vue.component('add-event-panel', require('./components/events/AddEventPanel.vue').default);
 
 /** common components  */
 Vue.component('autosize-textarea', require('./components/widgets/AutosizeTextarea.vue').default);

@@ -61,6 +61,7 @@
 					<li class="nav-item"><a class="nav-link" href="{{ url('/tracking')}}">Tracking</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/cups')}}">Waypoints</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/contests')}}">Contests</a></li>
+					<li class="nav-item"><a class="nav-link" href="{{ url('/events')}}">Events</a></li>
 
 					<?php if (isset($org) && $org) { ?>
 						<li class="nav-item"><a class="nav-link" href="{{ url('/calendar')}}">Calendar</a></li>
