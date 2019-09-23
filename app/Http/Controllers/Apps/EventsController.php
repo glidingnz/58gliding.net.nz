@@ -11,7 +11,7 @@ class EventsController extends Controller
 {
 	public function index()
 	{
-		return view('calendar/calendar');
+		return view('events/events');
 	}
 
 	public function editEvent($slug)

@@ -61,13 +61,17 @@ Vue.component('flying-calendar', require('./components/calendar/Calendar.vue').d
 Vue.component('edit-calendar', require('./components/calendar/CalendarEdit.vue').default);
 Vue.component('edit-roster', require('./components/calendar/RosterEdit.vue').default);
 Vue.component('edit-calendar-row', require('./components/calendar/CalendarEditRow.vue').default);
-Vue.component('autosize-textarea', require('./components/widgets/AutosizeTextarea.vue').default);
 Vue.component('edit-duties', require('./components/calendar/DutiesEdit.vue').default);
 Vue.component('waypoints', require('./components/Waypoints.vue').default);
 Vue.component('roster-edit-item', require('./components/calendar/RosterEditItem.vue').default);
 Vue.component('roster-add-item', require('./components/calendar/RosterAddItem.vue').default);
 Vue.component('calendar-nav', require('./components/calendar/CalendarNav.vue').default);
 Vue.component('edit-event', require('./components/events/EventEdit.vue').default);
+Vue.component('events', require('./components/events/Events.vue').default);
+
+/** common components  */
+Vue.component('autosize-textarea', require('./components/widgets/AutosizeTextarea.vue').default);
+Vue.component('org-selector', require('./components/widgets/OrgSelector.vue').default);
 
 Vue.component(
 	'passport-clients',

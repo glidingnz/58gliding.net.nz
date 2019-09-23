@@ -49,6 +49,13 @@ module.exports = {
 		},
 		formatDate: function(date) {
 			return Vue.prototype.$moment(date).format('ddd Do MMM YYYY');
+		},
+		dateDiffDays: function(date1, date2) {
+			var date1 = Vue.prototype.$moment(date1);
+			var date2 = Vue.prototype.$moment(date2);
+			var days = date2.diff(date1, 'days') + 1;
+			days==1 ? day_string = 'day' : day_string = 'days';
+			return days + ' ' + day_string;
 		}
 	}
 }

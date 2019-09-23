@@ -157,6 +157,13 @@ only screen and (max-width: 760px),
 				if (description==null) return null;
 				return description.replace(/(?:\r\n|\r|\n)/g, '<br>');
 			},
+			dayEvents: function(day) {
+				var that = this;
+				var events = this.events.filter(function(event) {
+					if (that.$moment(day).isBetween(event.start_date, event.end_date, 'day', '[]')) return true;
+				});
+				return events;
+			},
 			openCustomModal: function(day_date) {
 				this.newEventDate = this.$moment(day_date).toDate();
 				this.showCustomModal = true;
@@ -164,13 +171,6 @@ only screen and (max-width: 760px),
 			},
 			closeCustomModal: function() {
 				this.showCustomModal = false;
-			},
-			dayEvents: function(day) {
-				var that = this;
-				var events = this.events.filter(function(event) {
-					if (that.$moment(day).isBetween(event.start_date, event.end_date, 'day', '[]')) return true;
-				});
-				return events;
 			},
 			addEvent: function() {
 				var that = this;
@@ -191,8 +191,6 @@ only screen and (max-width: 760px),
 						that.loadEvents();
 					});
 				}
-
-				
 			}
 		}
 
