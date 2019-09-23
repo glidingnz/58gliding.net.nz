@@ -11,7 +11,7 @@
 			<tr>
 				<th>Date</th>
 				<th>Day Details</th>
-				<th>Day Options</th>
+				<th>Available</th>
 				<th>Cancelled</th>
 			</tr>
 			<edit-calendar-row v-for="day in results" v-bind:key="day.id" :row="day" :org-id="orgId" v-on:rowupdated="rowUpdated()"></edit-calendar-row>

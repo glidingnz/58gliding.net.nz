@@ -5795,10 +5795,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 
 
 Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
@@ -53263,7 +53259,7 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("th", [_vm._v("Day Details")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Day Options")]),
+      _c("th", [_vm._v("Available")]),
       _vm._v(" "),
       _c("th", [_vm._v("Cancelled")])
     ])
@@ -53365,7 +53361,7 @@ var render = function() {
           }
         }),
         _vm._v(" "),
-        _c("label", { attrs: { for: "towing" + _vm.id } }, [_vm._v("Tows")])
+        _c("label", { attrs: { for: "towing" + _vm.id } }, [_vm._v("Tow")])
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "form-check-inline" }, [
@@ -53452,7 +53448,7 @@ var render = function() {
         }),
         _vm._v(" "),
         _c("label", { attrs: { for: "trialflights" + _vm.id } }, [
-          _vm._v("TFs")
+          _vm._v("Trial Flights")
         ])
       ]),
       _vm._v(" "),
@@ -53498,51 +53494,6 @@ var render = function() {
         _vm._v(" "),
         _c("label", { attrs: { for: "training" + _vm.id } }, [
           _vm._v("Training")
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-check-inline" }, [
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.competition,
-              expression: "competition"
-            }
-          ],
-          staticClass: "form-check-input",
-          attrs: { id: "competition" + _vm.id, type: "checkbox" },
-          domProps: {
-            checked: Array.isArray(_vm.competition)
-              ? _vm._i(_vm.competition, null) > -1
-              : _vm.competition
-          },
-          on: {
-            change: function($event) {
-              var $$a = _vm.competition,
-                $$el = $event.target,
-                $$c = $$el.checked ? true : false
-              if (Array.isArray($$a)) {
-                var $$v = null,
-                  $$i = _vm._i($$a, $$v)
-                if ($$el.checked) {
-                  $$i < 0 && (_vm.competition = $$a.concat([$$v]))
-                } else {
-                  $$i > -1 &&
-                    (_vm.competition = $$a
-                      .slice(0, $$i)
-                      .concat($$a.slice($$i + 1)))
-                }
-              } else {
-                _vm.competition = $$c
-              }
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("label", { attrs: { for: "competition" + _vm.id } }, [
-          _vm._v("Comp")
         ])
       ])
     ]),

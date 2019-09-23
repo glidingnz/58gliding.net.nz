@@ -10,7 +10,7 @@
 		<td class="align-baseline ">
 			<div class="form-check-inline">
 				<input :id="'towing'+id" type="checkbox" v-model="towing" class="form-check-input">
-				<label :for="'towing'+id">Tows</label>
+				<label :for="'towing'+id">Tow</label>
 			</div>
 			<div class="form-check-inline">
 				<input :id="'winching'+id" type="checkbox" v-model="winching" class="form-check-input">
@@ -18,15 +18,11 @@
 			</div>
 			<div class="form-check-inline">
 				<input :id="'trialflights'+id" type="checkbox" v-model="trialflights" class="form-check-input">
-				<label :for="'trialflights'+id">TFs</label>
+				<label :for="'trialflights'+id">Trial Flights</label>
 			</div>
 			<div class="form-check-inline">
 				<input :id="'training'+id" type="checkbox" v-model="training" class="form-check-input">
 				<label :for="'training'+id">Training</label>
-			</div>
-			<div class="form-check-inline">
-				<input :id="'competition'+id" type="checkbox" v-model="competition" class="form-check-input">
-				<label :for="'competition'+id">Comp</label>
 			</div>
 		</td>
 		<td class="align-middle">
