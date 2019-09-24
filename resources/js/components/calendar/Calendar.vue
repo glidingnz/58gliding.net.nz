@@ -28,39 +28,12 @@ only screen and (max-width: 760px),
 
 		<calendar-nav active="calendar" title="Calendar"></calendar-nav>
 
-		<div class="custom-modal" v-show="showCustomModal" v-on:click="closeCustomModal()" @keyup.esc="closeCustomModal()" tabindex="0" v-if="Laravel.clubAdmin==true">
-			<div class="inner" v-on:click.stop="">
-
-				<button v-on:click="closeCustomModal()" class="btn btn-outline-dark float-right">Cancel</button>
-				
-				<div class="form-group">
-					<h2>Add Event</h2>
-				</div>
-
-				<div class="form-group">
-					<label>Event Name</label> <span class="error" v-show="showNameRequired">Name is required</span>
-					<input type="text" class="form-control" v-model="newEventName" ref="newName">
-				</div>
-
-				<div class="form-group">
-					<label>Event Date</label>
-					<v-date-picker v-model="newEventDate" :locale="{ id: 'nz', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
-				</div>
-
-				<div class="form-group">
-					<button v-on:click="addEvent()" class="btn btn-outline-dark">Add Event</button>
-				</div>
-
-			</div>
-		</div>
-
 		
 		<table class="table table-striped table-sm collapsable calendar-table">
 			<tr>
 				<th>Date</th>
 				<th>Available</th>
 				<th>Notes</th>
-				<th class="center" v-if="Laravel.clubAdmin==true">Add Event</th>
 			</tr>
 			<tr v-for="day in days" v-bind:key="day.id" :row="day" :org-id="orgId" v-on:rowupdated="load()">
 				<td>
@@ -82,9 +55,6 @@ only screen and (max-width: 760px),
 					</div>
 					<span v-html="renderDescription(day.description)"></span>
 					
-				</td>
-				<td class="center" v-if="Laravel.clubAdmin==true">
-					<button class="btn compact-btn" v-on:click="openCustomModal(day.day_date)"><span class="fa fa-plus-square"></span></button>
 				</td>
 			</tr>
 		</table>
@@ -121,9 +91,6 @@ only screen and (max-width: 760px),
 			return {
 				days: [],
 				events: [],
-				showCustomModal: false,
-				newEventName: '',
-				newEventDate: null,
 				showNameRequired: false
 			}
 		},
@@ -163,34 +130,6 @@ only screen and (max-width: 760px),
 					if (that.$moment(day).isBetween(event.start_date, event.end_date, 'day', '[]')) return true;
 				});
 				return events;
-			},
-			openCustomModal: function(day_date) {
-				this.newEventDate = this.$moment(day_date).toDate();
-				this.showCustomModal = true;
-				this.$nextTick(() => this.$refs.newName.focus());
-			},
-			closeCustomModal: function() {
-				this.showCustomModal = false;
-			},
-			addEvent: function() {
-				var that = this;
-				if (this.newEventName=='') {
-					messages.$emit('error', 'A name is required');
-					this.showNameRequired = true;
-				}
-				else
-				{
-					var data = {
-						"name": this.newEventName,
-						"start_date":  this.$moment(this.newEventDate).format('YYYY-MM-DD'),
-						"org_id" : this.orgId
-					}
-					window.axios.post('/api/events', data).then(function (response) {
-						messages.$emit('success', 'Event ' + that.newEventName + ' added');
-						that.closeCustomModal();
-						that.loadEvents();
-					});
-				}
 			}
 		}
 

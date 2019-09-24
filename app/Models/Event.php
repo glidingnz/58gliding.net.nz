@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Gate;
 
 /**
- * Class Duty
+ * Class Event
  * @package App\Models
  * @version July 7, 2019, 4:09 am UTC
  *
@@ -27,6 +28,18 @@ class Event extends Model
     public function org()
     {
         return $this->belongsTo('App\Models\Org');
+    }
+
+    /**
+     * Can the current user edit this event?
+     * @return boolean true or false
+     */
+    public function getCanEditAttribute()
+    {
+        if (Gate::allows('club-admin', $this->org)) {
+            return true;
+        }
+        return false;
     }
 
     protected $dates = ['deleted_at','start_date','end_date','earlybird'];

@@ -14,7 +14,7 @@
 
 		<org-selector :org-id="orgId" v-on:orgSelected="orgSelected" class="mr-2" :disabled="show!='orgs'"></org-selector>
 
-		<div  v-if="Laravel.clubAdmin==true">
+		<div  v-if="Laravel.clubAdmin">
 			<button class="btn btn-outline-dark" v-on:click="showAddPanel=true">Add Event</button>
 		</div>
 
@@ -27,6 +27,7 @@
 			<th>Date</th>
 			<th>Length</th>
 			<th>Location</th>
+			<th>Edit</th>
 		</tr>
 		<tr v-for="event in events">
 			<td>{{event.name}}</td>
@@ -34,6 +35,7 @@
 			<td>{{formatDate(event.start_date)}}<span v-if="event.start_date!=event.end_date"> - {{formatDate(event.end_date)}}</span></td>
 			<td>{{dateDiffDays(event.start_date, event.end_date)}}</td>
 			<td>{{event.location}}</td>
+			<td><a class="btn btn-xs btn-outline-dark" :href="'/events/' + event.slug + '/edit'" v-if="event.can_edit">Edit</a></td>
 		</tr>
 	</table>
 

@@ -45,6 +45,10 @@ class EventsAPIController extends AppBaseController
 
 		if ($results = $query->get())
 		{
+			foreach ($results AS $key=>$result)
+			{
+				$results[$key]->can_edit = $result->can_edit;
+			}
 			return $this->success($results);
 		}
 		

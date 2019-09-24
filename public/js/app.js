@@ -5500,36 +5500,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
  //import VCalendar from 'v-calendar';
 
 
@@ -5541,9 +5511,6 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     return {
       days: [],
       events: [],
-      showCustomModal: false,
-      newEventName: '',
-      newEventDate: null,
       showNameRequired: false
     };
   },
@@ -5582,37 +5549,6 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         if (that.$moment(day).isBetween(event.start_date, event.end_date, 'day', '[]')) return true;
       });
       return events;
-    },
-    openCustomModal: function openCustomModal(day_date) {
-      var _this = this;
-
-      this.newEventDate = this.$moment(day_date).toDate();
-      this.showCustomModal = true;
-      this.$nextTick(function () {
-        return _this.$refs.newName.focus();
-      });
-    },
-    closeCustomModal: function closeCustomModal() {
-      this.showCustomModal = false;
-    },
-    addEvent: function addEvent() {
-      var that = this;
-
-      if (this.newEventName == '') {
-        messages.$emit('error', 'A name is required');
-        this.showNameRequired = true;
-      } else {
-        var data = {
-          "name": this.newEventName,
-          "start_date": this.$moment(this.newEventDate).format('YYYY-MM-DD'),
-          "org_id": this.orgId
-        };
-        window.axios.post('/api/events', data).then(function (response) {
-          messages.$emit('success', 'Event ' + that.newEventName + ' added');
-          that.closeCustomModal();
-          that.loadEvents();
-        });
-      }
     }
   }
 });
@@ -6488,6 +6424,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../mixins.js */ "./resources/js/mixins.js");
+/* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -6496,7 +6434,48 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
   data: function data() {
     return {
       event: [],
@@ -6512,6 +6491,8 @@ __webpack_require__.r(__webpack_exports__);
       var that = this;
       window.axios.get('/api/events/' + this.eventId).then(function (response) {
         that.event = response.data.data;
+        that.event.start_date = that.$moment(that.event.start_date).toDate();
+        that.event.end_date = that.$moment(that.event.end_date).toDate();
       });
     }
   }
@@ -6530,6 +6511,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../mixins.js */ "./resources/js/mixins.js");
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
 //
 //
 //
@@ -53179,172 +53162,13 @@ var render = function() {
     [
       _c("calendar-nav", { attrs: { active: "calendar", title: "Calendar" } }),
       _vm._v(" "),
-      _vm.Laravel.clubAdmin == true
-        ? _c(
-            "div",
-            {
-              directives: [
-                {
-                  name: "show",
-                  rawName: "v-show",
-                  value: _vm.showCustomModal,
-                  expression: "showCustomModal"
-                }
-              ],
-              staticClass: "custom-modal",
-              attrs: { tabindex: "0" },
-              on: {
-                click: function($event) {
-                  return _vm.closeCustomModal()
-                },
-                keyup: function($event) {
-                  if (
-                    !$event.type.indexOf("key") &&
-                    _vm._k($event.keyCode, "esc", 27, $event.key, [
-                      "Esc",
-                      "Escape"
-                    ])
-                  ) {
-                    return null
-                  }
-                  return _vm.closeCustomModal()
-                }
-              }
-            },
-            [
-              _c(
-                "div",
-                {
-                  staticClass: "inner",
-                  on: {
-                    click: function($event) {
-                      $event.stopPropagation()
-                    }
-                  }
-                },
-                [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-outline-dark float-right",
-                      on: {
-                        click: function($event) {
-                          return _vm.closeCustomModal()
-                        }
-                      }
-                    },
-                    [_vm._v("Cancel")]
-                  ),
-                  _vm._v(" "),
-                  _vm._m(0),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "form-group" }, [
-                    _c("label", [_vm._v("Event Name")]),
-                    _vm._v(" "),
-                    _c(
-                      "span",
-                      {
-                        directives: [
-                          {
-                            name: "show",
-                            rawName: "v-show",
-                            value: _vm.showNameRequired,
-                            expression: "showNameRequired"
-                          }
-                        ],
-                        staticClass: "error"
-                      },
-                      [_vm._v("Name is required")]
-                    ),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.newEventName,
-                          expression: "newEventName"
-                        }
-                      ],
-                      ref: "newName",
-                      staticClass: "form-control",
-                      attrs: { type: "text" },
-                      domProps: { value: _vm.newEventName },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.newEventName = $event.target.value
-                        }
-                      }
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "form-group" },
-                    [
-                      _c("label", [_vm._v("Event Date")]),
-                      _vm._v(" "),
-                      _c("v-date-picker", {
-                        attrs: {
-                          locale: {
-                            id: "nz",
-                            firstDayOfWeek: 2,
-                            masks: { weekdays: "WW", L: "DD/MM/YYYY" }
-                          },
-                          popover: { visibility: "click" }
-                        },
-                        model: {
-                          value: _vm.newEventDate,
-                          callback: function($$v) {
-                            _vm.newEventDate = $$v
-                          },
-                          expression: "newEventDate"
-                        }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "form-group" }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-outline-dark",
-                        on: {
-                          click: function($event) {
-                            return _vm.addEvent()
-                          }
-                        }
-                      },
-                      [_vm._v("Add Event")]
-                    )
-                  ])
-                ]
-              )
-            ]
-          )
-        : _vm._e(),
-      _vm._v(" "),
       _c(
         "table",
         {
           staticClass: "table table-striped table-sm collapsable calendar-table"
         },
         [
-          _c("tr", [
-            _c("th", [_vm._v("Date")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Available")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Notes")]),
-            _vm._v(" "),
-            _vm.Laravel.clubAdmin == true
-              ? _c("th", { staticClass: "center" }, [_vm._v("Add Event")])
-              : _vm._e()
-          ]),
+          _vm._m(0),
           _vm._v(" "),
           _vm._l(_vm.days, function(day) {
             return _c(
@@ -53433,24 +53257,7 @@ var render = function() {
                     })
                   ],
                   2
-                ),
-                _vm._v(" "),
-                _vm.Laravel.clubAdmin == true
-                  ? _c("td", { staticClass: "center" }, [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn compact-btn",
-                          on: {
-                            click: function($event) {
-                              return _vm.openCustomModal(day.day_date)
-                            }
-                          }
-                        },
-                        [_c("span", { staticClass: "fa fa-plus-square" })]
-                      )
-                    ])
-                  : _vm._e()
+                )
               ]
             )
           })
@@ -53489,8 +53296,12 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c("h2", [_vm._v("Add Event")])
+    return _c("tr", [
+      _c("th", [_vm._v("Date")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Available")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Notes")])
     ])
   },
   function() {
@@ -54989,11 +54800,165 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [_c("calendar-nav", { attrs: { active: "events", title: "Edit Event" } })],
-    1
-  )
+  return _c("div", [
+    _c("h1", [
+      _c("a", { attrs: { href: "/events" } }, [_vm._v("Events")]),
+      _vm._v(" » "),
+      _c("a", { attrs: { href: "/events/" + _vm.event.slug } }, [
+        _vm._v(_vm._s(_vm.event.name))
+      ]),
+      _vm._v(" » Edit")
+    ]),
+    _vm._v(" "),
+    _c("form", [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "form-group col-md-6" }, [
+          _c(
+            "label",
+            { staticClass: "col-xs-6 col-form-label", attrs: { for: "name" } },
+            [_vm._v("Name")]
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-xs-6" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.event.name,
+                  expression: "event.name"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "text", id: "name" },
+              domProps: { value: _vm.event.name },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.event, "name", $event.target.value)
+                }
+              }
+            })
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group col-md-6" }, [
+          _c(
+            "label",
+            { staticClass: "col-xs-6 col-form-label", attrs: { for: "slug" } },
+            [_vm._v("Slug")]
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-xs-6" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.event.slug,
+                  expression: "event.slug"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "text", id: "slug" },
+              domProps: { value: _vm.event.slug },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.event, "slug", $event.target.value)
+                }
+              }
+            })
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "form-group col-md-6" }, [
+          _c(
+            "label",
+            {
+              staticClass: "col-xs-6 col-form-label",
+              attrs: { for: "start_date" }
+            },
+            [_vm._v("Start Date")]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "col-xs-6" },
+            [
+              _c("v-date-picker", {
+                attrs: {
+                  locale: {
+                    id: "start_date",
+                    firstDayOfWeek: 2,
+                    masks: { weekdays: "WW", L: "DD/MM/YYYY" }
+                  },
+                  popover: { visibility: "click" }
+                },
+                model: {
+                  value: _vm.event.start_date,
+                  callback: function($$v) {
+                    _vm.$set(_vm.event, "start_date", $$v)
+                  },
+                  expression: "event.start_date"
+                }
+              })
+            ],
+            1
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group col-md-6" }, [
+          _c(
+            "label",
+            {
+              staticClass: "col-xs-6 col-form-label",
+              attrs: { for: "start_date" }
+            },
+            [
+              _vm._v(
+                "End Date " +
+                  _vm._s(
+                    _vm.dateDiffDays(_vm.event.start_date, _vm.event.end_date)
+                  )
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "col-xs-6" },
+            [
+              _c("v-date-picker", {
+                attrs: {
+                  locale: {
+                    id: "end_date",
+                    firstDayOfWeek: 2,
+                    masks: { weekdays: "WW", L: "DD/MM/YYYY" }
+                  },
+                  popover: { visibility: "click" }
+                },
+                model: {
+                  value: _vm.event.end_date,
+                  callback: function($$v) {
+                    _vm.$set(_vm.event, "end_date", $$v)
+                  },
+                  expression: "event.end_date"
+                }
+              })
+            ],
+            1
+          )
+        ])
+      ])
+    ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -55090,7 +55055,7 @@ var render = function() {
           on: { orgSelected: _vm.orgSelected }
         }),
         _vm._v(" "),
-        _vm.Laravel.clubAdmin == true
+        _vm.Laravel.clubAdmin
           ? _c("div", [
               _c(
                 "button",
@@ -55149,7 +55114,20 @@ var render = function() {
               _vm._v(_vm._s(_vm.dateDiffDays(event.start_date, event.end_date)))
             ]),
             _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(event.location))])
+            _c("td", [_vm._v(_vm._s(event.location))]),
+            _vm._v(" "),
+            _c("td", [
+              event.can_edit
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-xs btn-outline-dark",
+                      attrs: { href: "/events/" + event.slug + "/edit" }
+                    },
+                    [_vm._v("Edit")]
+                  )
+                : _vm._e()
+            ])
           ])
         })
       ],
@@ -55186,7 +55164,9 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("th", [_vm._v("Length")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Location")])
+      _c("th", [_vm._v("Location")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Edit")])
     ])
   }
 ]
