@@ -24,7 +24,7 @@ class AddEventsTable extends Migration
 				$table->string('slug')->nullable();
 				$table->string('location')->nullable();
 				$table->integer('waypoint_id')->nullable();
-				$table->integer('organiser_user_id')->nullable();
+				$table->integer('organiser_member_id')->nullable();
 				$table->integer('creator_user_id')->nullable();
 				$table->string('website')->nullable();
 				$table->string('email')->nullable();

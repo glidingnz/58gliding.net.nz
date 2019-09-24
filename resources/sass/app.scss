@@ -36,6 +36,12 @@ li.nav-messages {
 .success { color: #0A0; }
 .note { color: #3C8DBC; }
 
+.error-badge { background-color: #A00; color: #FFF; font-size: 100%; font-weight: normal; }
+.danger-badge { background-color: #A00; color: #FFF; font-size: 100%; font-weight: normal; }
+.warning-badge { background-color: #DC9200; color: #FFF; font-size: 100%; font-weight: normal; }
+.success-badge { background-color: #0A0; color: #FFF; font-size: 100%; font-weight: normal; }
+.note-badge { background-color: #3C8DBC; color: #FFF; font-size: 100%; font-weight: normal; }
+
 .clickable {
 	cursor: pointer;
 }

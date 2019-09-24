@@ -73,6 +73,7 @@ Vue.component('add-event-panel', require('./components/events/AddEventPanel.vue'
 /** common components  */
 Vue.component('autosize-textarea', require('./components/widgets/AutosizeTextarea.vue').default);
 Vue.component('org-selector', require('./components/widgets/OrgSelector.vue').default);
+Vue.component('member-selector', require('./components/widgets/MemberSelector.vue').default);
 
 Vue.component(
 	'passport-clients',
