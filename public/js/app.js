@@ -55211,6 +55211,11 @@ var render = function() {
                     },
                     popover: { visibility: "click" }
                   },
+                  on: {
+                    input: function($event) {
+                      return _vm.save()
+                    }
+                  },
                   model: {
                     value: _vm.event.start_date,
                     callback: function($$v) {
@@ -55318,6 +55323,11 @@ var render = function() {
                         masks: { weekdays: "WW", L: "DD/MM/YYYY" }
                       },
                       popover: { visibility: "click" }
+                    },
+                    on: {
+                      input: function($event) {
+                        return _vm.save()
+                      }
                     },
                     model: {
                       value: _vm.event.end_date,
