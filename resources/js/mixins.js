@@ -56,6 +56,14 @@ module.exports = {
 			var days = date2.diff(date1, 'days') + 1;
 			days==1 ? day_string = 'day' : day_string = 'days';
 			return days + ' ' + day_string;
+		},
+		slug: function(slug) {
+			var regex = /[^a-z0-9]/g;
+			var regex_replace_multiple_dashes = /-+/g;
+			return slug.toLowerCase().replace(regex, '-').replace(regex_replace_multiple_dashes, '-');
+		},
+		apiDateFormat: function(date) {
+			return Vue.prototype.$moment(date).format('YYYY-MM-DD');
 		}
 	}
 }

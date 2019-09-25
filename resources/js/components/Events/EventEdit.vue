@@ -3,36 +3,63 @@
 	
 	<h1><a href="/events">Events</a> » <a :href="'/events/' + event.slug">{{event.name}}</a> » Edit</h1>
 
-	<form>
+	<form @change="save">
 		<div class="row">
 
 			<div class="form-group col-md-6">
 				<label for="name" class="col-xs-6 col-form-label">Name</label>
 				<div class="col-xs-6">
-					<input type="text" class="form-control" id="name"  v-model="event.name">
+					<input type="text" class="form-control" id="name" v-model.lazy="event.name">
 				</div>
 			</div>
 
-			<div class="form-group col-md-6">
-				<label for="slug" class="col-xs-6 col-form-label">Slug (web page address)</label>
-				<div class="col-xs-6 form-inline">
-					/events/<input type="text" class="form-control inline" id="slug" v-model="event.slug">
+			<div class="col-md-6 row">
+
+				<div class="form-group col-sm-6">
+					<label for="slug" class="col-form-label">Slug</label>
+					<input type="text" class="form-control" id="slug" v-on:change="event.slug = slug(event.slug)" v-model="event.slug">
+
 				</div>
+
+				<div class="form-group col-sm-6">
+					<label for="event_type" class="col-xs-6 col-form-label">Event Type</label>
+					<div class="col-xs-6">
+						<div class="form-inline">
+							<select v-model="event.type" id="event_type" class="form-control">
+								<option :value="null">Select a type of event...</option>
+								<option value="competition">Competition</option>
+								<option value="training">Training</option>
+								<option value="xcountry">Cross Country Course</option>
+								<option value="dinner">Dinner</option>
+								<option value="working-bee">Working Bee</option>
+								<option value="cadets">Cadets</option>
+								<option value="school-group">School Group</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
 			</div>
 
 		</div>
 		<div class="row">
 
-			<div class="form-group col-md-3">
-				<label for="start_date" class="col-xs-6 col-form-label">Start Date</label>
-				<div class="col-xs-3">
-					<v-date-picker v-model="event.start_date" :locale="{ id: 'start_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
-				</div>
-			</div>
-			<div class="form-group col-md-3">
-				<label for="start_date" class="col-xs-6 col-form-label">End Date ({{dateDiffDays(event.start_date, event.end_date)}})</label>
-				<div class="col-xs-3">
-					<v-date-picker v-model="event.end_date" :locale="{ id: 'end_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
+			<div class="col-md-6">
+				<div class="row">
+					<div class="form-group col-6">
+						<label for="start_date" class="col-form-label">Start Date</label>
+						<v-date-picker id="start_date" v-model="event.start_date" :locale="{ id: 'start_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
+					</div>
+
+					<div class="form-group col-6">
+						<label for="end_date_checkbox" class="col-form-label">
+							<input type="checkbox" id="end_date_checkbox" v-model="hasEndDate">
+							End Date <span  v-show="hasEndDate">({{dateDiffDays(event.start_date, event.end_date)}})</span>
+						</label>
+						<div v-show="hasEndDate">
+							<v-date-picker v-model="event.end_date" :locale="{ id: 'end_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -45,25 +72,58 @@
 
 		</div>
 
+
 		<div class="row">
 
 			<div class="form-group col-md-6">
-				<label for="event_type" class="col-xs-6 col-form-label">Event Type</label>
+				<label for="website" class="col-xs-6 col-form-label">Website e.g. http://gliding.co.nz/</label>
+				<div class="col-xs-6 flex">
+					<input class="form-control" id="website" type="text" v-model="event.website">
+				</div>
+			</div>
+			<div class="form-group col-md-3">
+				<label for="start_date" class="col-xs-3 col-form-label">Facebook e.g glidingnewzealand</label>
 				<div class="col-xs-6">
-					
-					<select v-model="event.type" id="event_type" class="form-control">
-						<option :value="null">Select a type of event...</option>
-						<option value="competition">Competition</option>
-						<option value="training">Training</option>
-						<option value="xcountry">Cross Country Course</option>
-						<option value="dinner">Dinner</option>
-						<option value="working-bee">Working Bee</option>
-						<option value="cadets">Cadets</option>
-						<option value="school-group">School Group</option>
-					</select>
+					<input class="form-control" id="website" type="text" v-model="event.website">
+				</div>
+			</div>
+			<div class="form-group col-md-3">
+				<label for="start_date" class="col-xs-3 col-form-label">Instagram e.g. glidingnz</label>
+				<div class="col-xs-6">
+					<input class="form-control" id="website" type="text" v-model="event.website">
+				</div>
+			</div>
+
+		</div>
+
+
+
+		<div class="row">
+
+			<div class="form-group col-md-6">
+				<label for="details" class="col-xs-6 col-form-label">Details (Markdown available)</label>
+				<div class="col-xs-6">
+					<autosize-textarea>
+						<textarea type="text" class="form-control" id="details" v-model="event.details" rows="3"></textarea>
+					</autosize-textarea>
+				</div>
+			</div>
+			<div class="form-group col-md-6">
+				<label for="start_date" class="col-xs-6 col-form-label">Page Preview</label>
+				<div class="col-xs-6">
+
+					<div class="card">
+						<div v-if="event.details" class="card-body" v-html="compiledMarkdown"></div>
+						<div v-if="!event.details" class="card-body" >&lt;-- Type some text!</div>
+					</div>
 
 				</div>
 			</div>
+
+		</div>
+
+
+		<div class="row">
 
 			<div class="form-group col-md-6">
 				<label for="organiser" class="col-xs-6 col-form-label">Organiser</label>
@@ -75,30 +135,6 @@
 			</div>
 
 		</div>
-
-		<div class="row">
-
-			<div class="form-group col-md-6">
-				<label for="details" class="col-xs-6 col-form-label">Details (Markdown available)</label>
-				<div class="col-xs-6">
-					<autosize-textarea>
-						<textarea type="text" class="form-control" id="details" v-model="event.details" rows="5"></textarea>
-					</autosize-textarea>
-				</div>
-			</div>
-			<div class="form-group col-md-6">
-				<label for="start_date" class="col-xs-6 col-form-label" v-show="event.details">Page Preview</label>
-				<div class="col-xs-6">
-
-					<div class="card" v-if="event.details">
-						<div class="card-body" v-html="compiledMarkdown"></div>
-					</div>
-
-				</div>
-			</div>
-
-		</div>
-
 
 
 	</form>
@@ -115,12 +151,15 @@ export default {
 	data: function() {
 		return {
 			event: [],
-			newDutyName: ''
+			newDutyName: '',
+			hasEndDate: false
 		}
 	},
 	props: ['orgId', 'eventId'],
 	created: function() {
 		this.load();
+		if (this.event.start_date == this.event.end_date) this.hasEndDate=false;
+		else this.hasEndDate=true;
 	},
 	computed: {
 		compiledMarkdown: function () {
@@ -137,9 +176,15 @@ export default {
 			});
 		},
 		save: function() {
-			window.axios.post('/api/events/' + this.eventId).then(function (response) {
-				that.event = response.data.data;
-				messages.$emit('success', 'Event ' + that.newEventName + ' Updated');
+			var that = this;
+
+			// shallow copy the object so we can alter the dates
+			let event = Object.assign({}, this.event);
+			event.start_date = this.apiDateFormat(event.start_date);
+			event.end_date = this.apiDateFormat(event.end_date);
+
+			window.axios.put('/api/events/' + this.eventId, event).then(function (response) {
+				messages.$emit('success', 'Event ' + that.event.name + ' Updated');
 			});
 		}
 	}

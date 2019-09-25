@@ -141,7 +141,8 @@ class EventsAPIController extends AppBaseController
 			return $this->sendError('Event not found');
 		}
 
-		$event->update($input, $id);
+		$event->fill($input);
+		$event->save();
 
 		return $this->sendResponse($event->toArray(), 'Event updated successfully');
 	}
