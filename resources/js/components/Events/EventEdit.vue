@@ -3,7 +3,7 @@
 	
 	<h1><a href="/events">Events</a> » <a :href="'/events/' + event.slug">{{event.name}}</a> » Edit</h1>
 
-	<form @change="save">
+	<form @submit="save">
 		<div class="row">
 
 			<div class="form-group col-md-6">
@@ -17,7 +17,7 @@
 
 				<div class="form-group col-sm-6">
 					<label for="slug" class="col-form-label">Slug</label>
-					<input type="text" class="form-control" id="slug" v-on:change="event.slug = slug(event.slug)" v-model="event.slug">
+					<input type="text" class="form-control" id="slug" v-on:change="event.slug = slug(event.slug)" v-model.lazy="event.slug">
 
 				</div>
 
@@ -48,7 +48,7 @@
 				<div class="row">
 					<div class="form-group col-6">
 						<label for="start_date" class="col-form-label">Start Date</label>
-						<v-date-picker id="start_date" v-model="event.start_date" :locale="{ id: 'start_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }" @input="save()"></v-date-picker>
+						<v-date-picker id="start_date" v-model="event.start_date" :locale="{ id: 'start_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
 					</div>
 
 					<div class="form-group col-6">
@@ -57,7 +57,7 @@
 							End Date <span  v-show="hasEndDate">({{dateDiffDays(event.start_date, event.end_date)}})</span>
 						</label>
 						<div v-show="hasEndDate">
-							<v-date-picker v-model="event.end_date" :locale="{ id: 'end_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }" @input="save()"></v-date-picker>
+							<v-date-picker v-model="event.end_date" :locale="{ id: 'end_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
 						</div>
 					</div>
 				</div>
@@ -82,15 +82,15 @@
 				</div>
 			</div>
 			<div class="form-group col-md-3">
-				<label for="start_date" class="col-xs-3 col-form-label">Facebook e.g glidingnewzealand</label>
+				<label for="facebook" class="col-xs-3 col-form-label">Facebook e.g glidingnewzealand</label>
 				<div class="col-xs-6">
-					<input class="form-control" id="website" type="text" v-model="event.website">
+					<input class="form-control" id="facebook" type="text" v-model="event.facebook">
 				</div>
 			</div>
 			<div class="form-group col-md-3">
-				<label for="start_date" class="col-xs-3 col-form-label">Instagram e.g. glidingnz</label>
+				<label for="instagram" class="col-xs-3 col-form-label">Instagram e.g. glidingnz</label>
 				<div class="col-xs-6">
-					<input class="form-control" id="website" type="text" v-model="event.website">
+					<input class="form-control" id="instagram" type="text" v-model="event.instagram">
 				</div>
 			</div>
 
@@ -129,11 +129,13 @@
 				<label for="organiser" class="col-xs-6 col-form-label">Organiser</label>
 				<div class="col-xs-6">
 					
-					<member-selector :org-id="orgId" :member-id="event.organiser_member_id"></member-selector>
-
+					<member-selector :org-id="orgId" :member-id="event.organiser_member_id" @selected="selectedMember"></member-selector>
 				</div>
 			</div>
 
+			<div class="form-group col-md-6">
+				<input type="submit" value="Save Changes" class="btn btn-primary">
+			</div>
 		</div>
 
 
@@ -175,8 +177,9 @@ export default {
 				that.event.end_date = that.$moment(that.event.end_date).toDate();
 			});
 		},
-		save: function() {
+		save: function(e) {
 			var that = this;
+			console.log(this.event.type);
 
 			// shallow copy the object so we can alter the dates
 			let event = Object.assign({}, this.event);
@@ -186,6 +189,14 @@ export default {
 			window.axios.put('/api/events/' + this.eventId, event).then(function (response) {
 				messages.$emit('success', 'Event ' + that.event.name + ' Updated');
 			});
+			e.preventDefault();
+		},
+		selectedMember: function(member)
+		{
+			console.log('selected member');
+			console.log(member);
+			Vue.set(this.event, 'organiser_member_id', member.id);
+			//this.event.organiser_member_id = member.id;
 		}
 	}
 }

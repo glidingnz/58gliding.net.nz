@@ -6571,6 +6571,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked.js");
@@ -6605,8 +6607,9 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
         that.event.end_date = that.$moment(that.event.end_date).toDate();
       });
     },
-    save: function save() {
-      var that = this; // shallow copy the object so we can alter the dates
+    save: function save(e) {
+      var that = this;
+      console.log(this.event.type); // shallow copy the object so we can alter the dates
 
       var event = Object.assign({}, this.event);
       event.start_date = this.apiDateFormat(event.start_date);
@@ -6614,6 +6617,12 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
       window.axios.put('/api/events/' + this.eventId, event).then(function (response) {
         messages.$emit('success', 'Event ' + that.event.name + ' Updated');
       });
+      e.preventDefault();
+    },
+    selectedMember: function selectedMember(member) {
+      console.log('selected member');
+      console.log(member);
+      Vue.set(this.event, 'organiser_member_id', member.id); //this.event.organiser_member_id = member.id;
     }
   }
 });
@@ -7588,12 +7597,13 @@ __webpack_require__.r(__webpack_exports__);
       noResults: false
     };
   },
-  created: function created() {
-    this.debouncedSave = _.debounce(this.searchMembers, 500);
-
+  mounted: function mounted() {
     if (this.memberId) {
       this.loadMember(this.memberId);
     }
+  },
+  created: function created() {
+    this.debouncedSave = _.debounce(this.searchMembers, 500);
   },
   watch: {},
   methods: {
@@ -7602,7 +7612,7 @@ __webpack_require__.r(__webpack_exports__);
       this.debouncedSave();
     },
     selectMember: function selectMember() {
-      this.$emit('memberSelected', this.selectedMember);
+      this.$emit('selected', this.selectedMember);
       this.edit = false; //this.memberSearch = this.selectedMember.first_name + ' ' + this.selectedMember.last_name;
     },
     searchMembers: function searchMembers() {
@@ -55034,7 +55044,7 @@ var render = function() {
       _vm._v(" » Edit")
     ]),
     _vm._v(" "),
-    _c("form", { on: { change: _vm.save } }, [
+    _c("form", { on: { submit: _vm.save } }, [
       _c("div", { staticClass: "row" }, [
         _c("div", { staticClass: "form-group col-md-6" }, [
           _c(
@@ -55078,24 +55088,24 @@ var render = function() {
               directives: [
                 {
                   name: "model",
-                  rawName: "v-model",
+                  rawName: "v-model.lazy",
                   value: _vm.event.slug,
-                  expression: "event.slug"
+                  expression: "event.slug",
+                  modifiers: { lazy: true }
                 }
               ],
               staticClass: "form-control",
               attrs: { type: "text", id: "slug" },
               domProps: { value: _vm.event.slug },
               on: {
-                change: function($event) {
-                  _vm.event.slug = _vm.slug(_vm.event.slug)
-                },
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
+                change: [
+                  function($event) {
+                    return _vm.$set(_vm.event, "slug", $event.target.value)
+                  },
+                  function($event) {
+                    _vm.event.slug = _vm.slug(_vm.event.slug)
                   }
-                  _vm.$set(_vm.event, "slug", $event.target.value)
-                }
+                ]
               }
             })
           ]),
@@ -55211,11 +55221,6 @@ var render = function() {
                     },
                     popover: { visibility: "click" }
                   },
-                  on: {
-                    input: function($event) {
-                      return _vm.save()
-                    }
-                  },
                   model: {
                     value: _vm.event.start_date,
                     callback: function($$v) {
@@ -55324,11 +55329,6 @@ var render = function() {
                       },
                       popover: { visibility: "click" }
                     },
-                    on: {
-                      input: function($event) {
-                        return _vm.save()
-                      }
-                    },
                     model: {
                       value: _vm.event.end_date,
                       callback: function($$v) {
@@ -55421,7 +55421,7 @@ var render = function() {
             "label",
             {
               staticClass: "col-xs-3 col-form-label",
-              attrs: { for: "start_date" }
+              attrs: { for: "facebook" }
             },
             [_vm._v("Facebook e.g glidingnewzealand")]
           ),
@@ -55432,19 +55432,19 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.event.website,
-                  expression: "event.website"
+                  value: _vm.event.facebook,
+                  expression: "event.facebook"
                 }
               ],
               staticClass: "form-control",
-              attrs: { id: "website", type: "text" },
-              domProps: { value: _vm.event.website },
+              attrs: { id: "facebook", type: "text" },
+              domProps: { value: _vm.event.facebook },
               on: {
                 input: function($event) {
                   if ($event.target.composing) {
                     return
                   }
-                  _vm.$set(_vm.event, "website", $event.target.value)
+                  _vm.$set(_vm.event, "facebook", $event.target.value)
                 }
               }
             })
@@ -55456,7 +55456,7 @@ var render = function() {
             "label",
             {
               staticClass: "col-xs-3 col-form-label",
-              attrs: { for: "start_date" }
+              attrs: { for: "instagram" }
             },
             [_vm._v("Instagram e.g. glidingnz")]
           ),
@@ -55467,19 +55467,19 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.event.website,
-                  expression: "event.website"
+                  value: _vm.event.instagram,
+                  expression: "event.instagram"
                 }
               ],
               staticClass: "form-control",
-              attrs: { id: "website", type: "text" },
-              domProps: { value: _vm.event.website },
+              attrs: { id: "instagram", type: "text" },
+              domProps: { value: _vm.event.instagram },
               on: {
                 input: function($event) {
                   if ($event.target.composing) {
                     return
                   }
-                  _vm.$set(_vm.event, "website", $event.target.value)
+                  _vm.$set(_vm.event, "instagram", $event.target.value)
                 }
               }
             })
@@ -55578,17 +55578,32 @@ var render = function() {
                 attrs: {
                   "org-id": _vm.orgId,
                   "member-id": _vm.event.organiser_member_id
-                }
+                },
+                on: { selected: _vm.selectedMember }
               })
             ],
             1
           )
-        ])
+        ]),
+        _vm._v(" "),
+        _vm._m(0)
       ])
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group col-md-6" }, [
+      _c("input", {
+        staticClass: "btn btn-primary",
+        attrs: { type: "submit", value: "Save Changes" }
+      })
+    ])
+  }
+]
 render._withStripped = true
 
 

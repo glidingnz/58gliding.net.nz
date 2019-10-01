@@ -32,11 +32,13 @@
 				noResults: false
 			}
 		},
-		created: function () {
-			this.debouncedSave = _.debounce(this.searchMembers, 500);
+		mounted() {
 			if (this.memberId) {
 				this.loadMember(this.memberId);
 			}
+		},
+		created: function () {
+			this.debouncedSave = _.debounce(this.searchMembers, 500);
 		},
 		watch: {
 			
@@ -47,7 +49,7 @@
 				this.debouncedSave() 
 			},
 			selectMember: function() {
-				this.$emit('memberSelected', this.selectedMember);
+				this.$emit('selected', this.selectedMember);
 				this.edit = false;
 				//this.memberSearch = this.selectedMember.first_name + ' ' + this.selectedMember.last_name;
 			},

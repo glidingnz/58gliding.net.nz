@@ -48,6 +48,7 @@ class Event extends Model
     public $fillable = [
         'org_id',
         'name',
+        'type',
         'slug',
         'location',
         'waypoint_id',
@@ -66,7 +67,8 @@ class Event extends Model
         'terms',
         'details',
         'cost',
-        'cost_earlybird'
+        'cost_earlybird',
+        'organiser_member_id'
     ];
 
     /**
@@ -77,6 +79,7 @@ class Event extends Model
     protected $casts = [
         'org_id'=>'integer',
         'name'=>'string',
+        'type'=>'string',
         'slug'=>'string',
         'location'=>'string',
         'waypoint_id'=>'integer',
@@ -95,7 +98,8 @@ class Event extends Model
         'terms'=>'string',
         'details'=>'string',
         'cost'=>'decimal',
-        'cost_earlybird'=>'decimal'
+        'cost_earlybird'=>'decimal',
+        'organiser_member_id'=>'integer',
     ];
 
     /**
