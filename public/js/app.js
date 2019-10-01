@@ -55662,59 +55662,56 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _c(
-        "div",
-        {
-          directives: [
-            {
-              name: "show",
-              rawName: "v-show",
-              value: _vm.showPrices,
-              expression: "showPrices"
-            }
-          ],
-          staticClass: "row"
-        },
-        [
-          _c("div", { staticClass: "col-md-6" }, [
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-6" }, [
-                _c(
-                  "label",
-                  {
-                    staticClass: "col-form-label",
-                    attrs: { for: "earlybird" }
-                  },
-                  [_vm._v("Entry Fee")]
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "form-inline" }, [
-                  _vm._v("\n\t\t\t\t\t\t\t$ "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.event.cost,
-                        expression: "event.cost"
-                      }
-                    ],
-                    staticClass: "form-control ml-2 col-4",
-                    attrs: { id: "earlybird", type: "text", size: "4" },
-                    domProps: { value: _vm.event.cost },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.$set(_vm.event, "cost", $event.target.value)
-                      }
-                    }
-                  })
-                ])
-              ]),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-6" }, [
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-6" }, [
+              _c(
+                "label",
+                { staticClass: "col-form-label", attrs: { for: "cost" } },
+                [_vm._v("Cost")]
+              ),
               _vm._v(" "),
-              _c("div", { staticClass: "col-6" }, [
+              _c("div", { staticClass: "form-inline" }, [
+                _vm._v("\n\t\t\t\t\t\t\t$ "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.event.cost,
+                      expression: "event.cost"
+                    }
+                  ],
+                  staticClass: "form-control ml-2 col-4",
+                  attrs: { id: "cost", type: "text", size: "4" },
+                  domProps: { value: _vm.event.cost },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.event, "cost", $event.target.value)
+                    }
+                  }
+                })
+              ])
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.showPrices,
+                    expression: "showPrices"
+                  }
+                ],
+                staticClass: "col-6"
+              },
+              [
                 _c(
                   "label",
                   {
@@ -55752,106 +55749,106 @@ var render = function() {
                   }),
                   _vm._v(" days\n\t\t\t\t\t\t")
                 ])
-              ])
-            ])
-          ]),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              directives: [
-                {
-                  name: "show",
-                  rawName: "v-show",
-                  value: _vm.showPrices,
-                  expression: "showPrices"
-                }
-              ],
-              staticClass: "form-group col-md-6"
-            },
-            [
-              _c("div", { staticClass: "row" }, [
-                _c("div", { staticClass: "col-6" }, [
-                  _c(
-                    "label",
-                    {
-                      staticClass: "col-form-label",
-                      attrs: { for: "earlybird" }
-                    },
-                    [_vm._v("Earlybird End Date")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "form-inline" },
-                    [
-                      _c("v-date-picker", {
-                        attrs: {
-                          id: "earlybird",
-                          locale: {
-                            id: "earlybird",
-                            firstDayOfWeek: 2,
-                            masks: { weekdays: "WW", L: "DD/MM/YYYY" }
-                          },
-                          popover: { visibility: "click" }
-                        },
-                        model: {
-                          value: _vm.event.earlybird,
-                          callback: function($$v) {
-                            _vm.$set(_vm.event, "earlybird", $$v)
-                          },
-                          expression: "event.earlybird"
-                        }
-                      })
-                    ],
-                    1
-                  )
-                ]),
+              ]
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.showPrices,
+                expression: "showPrices"
+              }
+            ],
+            staticClass: "form-group col-md-6"
+          },
+          [
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-6" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "col-form-label",
+                    attrs: { for: "earlybird" }
+                  },
+                  [_vm._v("Earlybird End Date (inclusive)")]
+                ),
                 _vm._v(" "),
-                _c("div", { staticClass: "col-6" }, [
-                  _c(
-                    "label",
-                    {
-                      staticClass: "col-form-label",
-                      attrs: { for: "cost_earlybird" }
-                    },
-                    [_vm._v("Earlybird Fee")]
-                  ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "form-inline" }, [
-                    _vm._v("\n\t\t\t\t\t\t\t$ "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.event.cost_earlybird,
-                          expression: "event.cost_earlybird"
-                        }
-                      ],
-                      staticClass: "form-control ml-2 col-4",
-                      attrs: { id: "cost_earlybird", type: "text", size: "4" },
-                      domProps: { value: _vm.event.cost_earlybird },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(
-                            _vm.event,
-                            "cost_earlybird",
-                            $event.target.value
-                          )
-                        }
+                _c(
+                  "div",
+                  { staticClass: "form-inline" },
+                  [
+                    _c("v-date-picker", {
+                      attrs: {
+                        id: "earlybird",
+                        locale: {
+                          id: "earlybird",
+                          firstDayOfWeek: 2,
+                          masks: { weekdays: "WW", L: "DD/MM/YYYY" }
+                        },
+                        popover: { visibility: "click" }
+                      },
+                      model: {
+                        value: _vm.event.earlybird,
+                        callback: function($$v) {
+                          _vm.$set(_vm.event, "earlybird", $$v)
+                        },
+                        expression: "event.earlybird"
                       }
                     })
-                  ])
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-6" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "col-form-label",
+                    attrs: { for: "cost_earlybird" }
+                  },
+                  [_vm._v("Earlybird Cost")]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-inline" }, [
+                  _vm._v("\n\t\t\t\t\t\t\t$ "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.event.cost_earlybird,
+                        expression: "event.cost_earlybird"
+                      }
+                    ],
+                    staticClass: "form-control ml-2 col-4",
+                    attrs: { id: "cost_earlybird", type: "text", size: "4" },
+                    domProps: { value: _vm.event.cost_earlybird },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(
+                          _vm.event,
+                          "cost_earlybird",
+                          $event.target.value
+                        )
+                      }
+                    }
+                  })
                 ])
               ])
-            ]
-          )
-        ]
-      ),
+            ])
+          ]
+        )
+      ]),
       _vm._v(" "),
       _c("div", { staticClass: "row" }, [
         _c("div", { staticClass: "form-group col-md-6" }, [
@@ -55960,77 +55957,84 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "form-group col-md-6" }, [
-          _c(
-            "label",
-            { staticClass: "col-xs-6 col-form-label", attrs: { for: "terms" } },
-            [_vm._v("Terms & Conditions (Markdown available)")]
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "col-xs-6" },
-            [
-              _c("autosize-textarea", [
-                _c("textarea", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.event.terms,
-                      expression: "event.terms"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "text", id: "terms", rows: "3" },
-                  domProps: { value: _vm.event.terms },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+      _vm.showPrices
+        ? _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "form-group col-md-6" }, [
+              _c(
+                "label",
+                {
+                  staticClass: "col-xs-6 col-form-label",
+                  attrs: { for: "terms" }
+                },
+                [_vm._v("Terms & Conditions (Markdown available)")]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "col-xs-6" },
+                [
+                  _c("autosize-textarea", [
+                    _c("textarea", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.event.terms,
+                          expression: "event.terms"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", id: "terms", rows: "3" },
+                      domProps: { value: _vm.event.terms },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.event, "terms", $event.target.value)
+                        }
                       }
-                      _vm.$set(_vm.event, "terms", $event.target.value)
-                    }
-                  }
-                })
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                staticClass: "btn btn-primary mt-2",
-                attrs: { type: "submit", value: "Save Changes" }
-              })
-            ],
-            1
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-group col-md-6" }, [
-          _c(
-            "label",
-            {
-              staticClass: "col-xs-6 col-form-label",
-              attrs: { for: "start_date" }
-            },
-            [_vm._v("Terms Preview")]
-          ),
-          _vm._v(" "),
-          _c("div", { staticClass: "col-xs-6" }, [
-            _c("div", { staticClass: "card" }, [
-              _vm.event.terms
-                ? _c("div", {
-                    staticClass: "card-body",
-                    domProps: { innerHTML: _vm._s(_vm.compiledTermsMarkdown) }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("input", {
+                    staticClass: "btn btn-primary mt-2",
+                    attrs: { type: "submit", value: "Save Changes" }
                   })
-                : _vm._e(),
+                ],
+                1
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group col-md-6" }, [
+              _c(
+                "label",
+                {
+                  staticClass: "col-xs-6 col-form-label",
+                  attrs: { for: "start_date" }
+                },
+                [_vm._v("Terms Preview")]
+              ),
               _vm._v(" "),
-              !_vm.event.terms
-                ? _c("div", { staticClass: "card-body" }, [_vm._v(" ")])
-                : _vm._e()
+              _c("div", { staticClass: "col-xs-6" }, [
+                _c("div", { staticClass: "card" }, [
+                  _vm.event.terms
+                    ? _c("div", {
+                        staticClass: "card-body",
+                        domProps: {
+                          innerHTML: _vm._s(_vm.compiledTermsMarkdown)
+                        }
+                      })
+                    : _vm._e(),
+                  _vm._v(" "),
+                  !_vm.event.terms
+                    ? _c("div", { staticClass: "card-body" }, [_vm._v(" ")])
+                    : _vm._e()
+                ])
+              ])
             ])
           ])
-        ])
-      ])
+        : _vm._e()
     ])
   ])
 }

@@ -103,21 +103,21 @@
 		</div>
 
 
-		<div class="row" v-show="showPrices">
+		<div class="row">
 
 			<div class="col-md-6">
 				<div class="row">
 					
 					<div class="col-6">
-						<label for="earlybird" class="col-form-label">Entry Fee</label>
+						<label for="cost" class="col-form-label">Cost</label>
 							
 						<div class="form-inline">
-							$ <input id="earlybird" type="text" class="form-control ml-2 col-4" v-model="event.cost" size="4">
+							$ <input id="cost" type="text" class="form-control ml-2 col-4" v-model="event.cost" size="4">
 						</div>
 					</div>
 
 
-					<div class="col-6">
+					<div class="col-6"  v-show="showPrices">
 						<label for="practice_days" class="col-form-label">Practice Days</label>
 							
 						<div class="form-inline">
@@ -133,7 +133,7 @@
 					
 					
 					<div class="col-6">
-						<label for="earlybird" class="col-form-label">Earlybird End Date</label>
+						<label for="earlybird" class="col-form-label">Earlybird End Date (inclusive)</label>
 							
 						<div class="form-inline">
 							<v-date-picker id="earlybird" v-model="event.earlybird" :locale="{ id: 'earlybird', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
@@ -141,7 +141,7 @@
 					</div>
 
 					<div class="col-6">
-						<label for="cost_earlybird" class="col-form-label">Earlybird Fee</label>
+						<label for="cost_earlybird" class="col-form-label">Earlybird Cost</label>
 							
 						<div class="form-inline">
 							$ <input id="cost_earlybird" type="text" class="form-control ml-2 col-4" v-model="event.cost_earlybird" size="4">
@@ -203,7 +203,7 @@
 		</div>
 
 
-		<div class="row">
+		<div class="row" v-if="showPrices">
 
 			<div class="form-group col-md-6">
 				<label for="terms" class="col-xs-6 col-form-label">Terms &amp; Conditions (Markdown available)</label>
