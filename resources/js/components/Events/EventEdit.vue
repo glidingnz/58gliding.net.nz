@@ -7,38 +7,44 @@
 		<div class="row">
 
 			<div class="form-group col-md-6">
+				<label for="share_gnz" class="float-right">
+					<input id="share_gnz" type="checkbox" v-model="event.share_gnz" :value="true">
+					Show on GNZ Calendar
+				</label>
 				<label for="name" class="col-xs-6 col-form-label">Name</label>
 				<div class="col-xs-6">
 					<input type="text" class="form-control" id="name" v-model.lazy="event.name">
 				</div>
 			</div>
 
-			<div class="col-md-6 row">
+			<div class="col-md-6">
+				<div class="row">
 
-				<div class="form-group col-sm-6">
-					<label for="slug" class="col-form-label">Slug</label>
-					<input type="text" class="form-control" id="slug" v-on:change="event.slug = slug(event.slug)" v-model.lazy="event.slug">
+					<div class="form-group col-sm-6">
+						<label for="slug" class="col-form-label">Slug</label>
+						<input type="text" class="form-control" id="slug" v-on:change="event.slug = slug(event.slug)" v-model.lazy="event.slug">
 
-				</div>
+					</div>
 
-				<div class="form-group col-sm-6">
-					<label for="event_type" class="col-xs-6 col-form-label">Event Type</label>
-					<div class="col-xs-6">
-						<div class="form-inline">
-							<select v-model="event.type" id="event_type" class="form-control">
-								<option :value="null">Select a type of event...</option>
-								<option value="competition">Competition</option>
-								<option value="training">Training</option>
-								<option value="xcountry">Cross Country Course</option>
-								<option value="dinner">Dinner</option>
-								<option value="working-bee">Working Bee</option>
-								<option value="cadets">Cadets</option>
-								<option value="school-group">School Group</option>
-							</select>
+					<div class="form-group col-sm-6">
+						<label for="event_type" class="col-xs-6 col-form-label">Event Type</label>
+						<div class="col-xs-6">
+							<div class="form-inline">
+								<select v-model="event.type" id="event_type" class="form-control">
+									<option :value="null">Select a type of event...</option>
+									<option value="competition">Competition</option>
+									<option value="training">Training</option>
+									<option value="xcountry">Cross Country Course</option>
+									<option value="dinner">Dinner</option>
+									<option value="working-bee">Working Bee</option>
+									<option value="cadets">Cadets</option>
+									<option value="school-group">School Group</option>
+								</select>
+							</div>
 						</div>
 					</div>
-				</div>
 
+				</div>
 			</div>
 
 		</div>
@@ -47,7 +53,7 @@
 			<div class="col-md-6">
 				<div class="row">
 					<div class="form-group col-6">
-						<label for="start_date" class="col-form-label">Start Date</label>
+						<label for="start_date" class="col-form-label">Start Date<span v-show="event.type=='competition'"> (Inc. Practice Days)</span></label>
 						<v-date-picker id="start_date" v-model="event.start_date" :locale="{ id: 'start_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
 					</div>
 
@@ -97,15 +103,89 @@
 		</div>
 
 
+		<div class="row" v-show="showPrices">
+
+			<div class="col-md-6">
+				<div class="row">
+					
+					<div class="col-6">
+						<label for="earlybird" class="col-form-label">Entry Fee</label>
+							
+						<div class="form-inline">
+							$ <input id="earlybird" type="text" class="form-control ml-2 col-4" v-model="event.cost" size="4">
+						</div>
+					</div>
+
+
+					<div class="col-6">
+						<label for="practice_days" class="col-form-label">Practice Days</label>
+							
+						<div class="form-inline">
+							<input id="practice_days" type="text" class="form-control mr-2" v-model="event.practice_days" size="4"> days
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="form-group col-md-6" v-show="showPrices">
+				<div class="row">
+					
+					
+					<div class="col-6">
+						<label for="earlybird" class="col-form-label">Earlybird End Date</label>
+							
+						<div class="form-inline">
+							<v-date-picker id="earlybird" v-model="event.earlybird" :locale="{ id: 'earlybird', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
+						</div>
+					</div>
+
+					<div class="col-6">
+						<label for="cost_earlybird" class="col-form-label">Earlybird Fee</label>
+							
+						<div class="form-inline">
+							$ <input id="cost_earlybird" type="text" class="form-control ml-2 col-4" v-model="event.cost_earlybird" size="4">
+						</div>
+					</div>
+				
+				</div>
+			</div>
+		</div>
+
 
 		<div class="row">
 
 			<div class="form-group col-md-6">
-				<label for="details" class="col-xs-6 col-form-label">Details (Markdown available)</label>
+				<label for="organiser" class="col-xs-6 col-form-label">Organiser</label>
+				<div class="col-xs-6">
+					
+					<member-selector v-if="event.organiser_member_id" :org-id="orgId" :member-id="event.organiser_member_id" @selected="selectedMember"></member-selector>
+
+				</div>
+			</div>
+
+			<div class="form-group col-md-6">
+
+				<div>
+					<label for="organiser" class="col-xs-6 col-form-label">&nbsp;</label>
+				</div>
+
+				<input type="submit" value="Save Changes" class="btn btn-primary">
+			</div>
+		</div>
+
+
+
+		<div class="row">
+
+			<div class="form-group col-md-6">
+				<label for="details" class="col-xs-6 col-form-label">Page Details (Markdown available)</label>
 				<div class="col-xs-6">
 					<autosize-textarea>
 						<textarea type="text" class="form-control" id="details" v-model="event.details" rows="3"></textarea>
 					</autosize-textarea>
+
+					<input type="submit" value="Save Changes" class="btn btn-primary mt-2">
 				</div>
 			</div>
 			<div class="form-group col-md-6">
@@ -114,7 +194,7 @@
 
 					<div class="card">
 						<div v-if="event.details" class="card-body" v-html="compiledMarkdown"></div>
-						<div v-if="!event.details" class="card-body" >&lt;-- Type some text!</div>
+						<div v-if="!event.details" class="card-body" >&nbsp;</div>
 					</div>
 
 				</div>
@@ -126,16 +206,26 @@
 		<div class="row">
 
 			<div class="form-group col-md-6">
-				<label for="organiser" class="col-xs-6 col-form-label">Organiser</label>
+				<label for="terms" class="col-xs-6 col-form-label">Terms &amp; Conditions (Markdown available)</label>
 				<div class="col-xs-6">
-					
-					<member-selector :org-id="orgId" :member-id="event.organiser_member_id" @selected="selectedMember"></member-selector>
+					<autosize-textarea>
+						<textarea type="text" class="form-control" id="terms" v-model="event.terms" rows="3"></textarea>
+					</autosize-textarea>
+					<input type="submit" value="Save Changes" class="btn btn-primary mt-2">
+				</div>
+			</div>
+			<div class="form-group col-md-6">
+				<label for="start_date" class="col-xs-6 col-form-label">Terms Preview</label>
+				<div class="col-xs-6">
+
+					<div class="card">
+						<div v-if="event.terms" class="card-body" v-html="compiledTermsMarkdown"></div>
+						<div v-if="!event.terms" class="card-body" >&nbsp;</div>
+					</div>
+
 				</div>
 			</div>
 
-			<div class="form-group col-md-6">
-				<input type="submit" value="Save Changes" class="btn btn-primary">
-			</div>
 		</div>
 
 
@@ -160,12 +250,23 @@ export default {
 	props: ['orgId', 'eventId'],
 	created: function() {
 		this.load();
-		if (this.event.start_date == this.event.end_date) this.hasEndDate=false;
-		else this.hasEndDate=true;
 	},
 	computed: {
 		compiledMarkdown: function () {
 			return marked(this.event.details, { sanitize: true })
+		},
+		compiledTermsMarkdown: function () {
+			return marked(this.event.terms, { sanitize: true })
+		},
+		showPrices: function() {
+			switch (this.event.type)
+			{
+				case 'competition':
+				case 'xcountry': 
+					return true;
+					break;
+			}
+			return false;
 		}
 	},
 	methods: {
@@ -175,16 +276,20 @@ export default {
 				that.event = response.data.data;
 				that.event.start_date = that.$moment(that.event.start_date).toDate();
 				that.event.end_date = that.$moment(that.event.end_date).toDate();
+				that.event.earlybird = that.$moment(that.event.earlybird).toDate();
+				if (that.event.start_date!=that.event.end_date) {
+					that.hasEndDate=true;
+				}
 			});
 		},
 		save: function(e) {
 			var that = this;
-			console.log(this.event.type);
 
 			// shallow copy the object so we can alter the dates
 			let event = Object.assign({}, this.event);
 			event.start_date = this.apiDateFormat(event.start_date);
 			event.end_date = this.apiDateFormat(event.end_date);
+			event.earlybird = this.apiDateFormat(event.earlybird);
 
 			window.axios.put('/api/events/' + this.eventId, event).then(function (response) {
 				messages.$emit('success', 'Event ' + that.event.name + ' Updated');
@@ -193,8 +298,6 @@ export default {
 		},
 		selectedMember: function(member)
 		{
-			console.log('selected member');
-			console.log(member);
 			Vue.set(this.event, 'organiser_member_id', member.id);
 			//this.event.organiser_member_id = member.id;
 		}

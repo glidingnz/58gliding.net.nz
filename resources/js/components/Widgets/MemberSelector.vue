@@ -1,18 +1,15 @@
 <template>
-	<div class="selectMember row">
+	<div class="selectMember">
 
-		<div class="col">
 			<input v-if="selectedMember && !edit" class="form-control" placeholder="" :value="selectedMember.first_name + ' ' + selectedMember.last_name" v-on:click="edit=true" v-bind:class="{'is-valid': selectedMember, 'is-invalid': noResults}">
-			<input v-model="memberSearch" v-if="!selectedMember || edit" @keydown="memberSearchType" class="form-control" placeholder="Search..." v-bind:class="{'is-valid': selectedMember, 'is-invalid': noResults}">
-		</div>
+			<input v-model="memberSearch" v-if="!selectedMember || edit" @keydown="memberSearchType" class="form-control" placeholder="Member Search..." v-bind:class="{'is-valid': selectedMember, 'is-invalid': noResults}">
 
-		<div class="col">
+
 			<span class="error" v-show="noResults">Member not found</span>
 			<select v-if="!selectedMember || edit" v-model="selectedMember" v-show="searchResults.length>0"  class="form-control" @change="selectMember()">
 				<option :value="null">{{searchResults.length}} result{{searchResults.length==1?'':'s'}}</option>
 				<option :value="member" v-for="member in searchResults">{{member.first_name}} {{member.last_name}} {{member.city}}</option>
 			</select>
-		</div>
 	</div>
 </template>
 
@@ -32,12 +29,12 @@
 				noResults: false
 			}
 		},
-		mounted() {
+		mounted: function() {
+		},
+		created: function () {
 			if (this.memberId) {
 				this.loadMember(this.memberId);
 			}
-		},
-		created: function () {
 			this.debouncedSave = _.debounce(this.searchMembers, 500);
 		},
 		watch: {
@@ -77,6 +74,7 @@
 				});
 			},
 			loadMember: function(id) {
+				var that = this;
 				// if we're given an ID, try and load it
 				window.axios.get('/api/v1/members/' + id).then(function (response) {
 					that.selectedMember = response.data.data;

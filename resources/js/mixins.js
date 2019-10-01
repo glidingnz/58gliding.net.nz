@@ -63,7 +63,9 @@ module.exports = {
 			return slug.toLowerCase().replace(regex, '-').replace(regex_replace_multiple_dashes, '-');
 		},
 		apiDateFormat: function(date) {
-			return Vue.prototype.$moment(date).format('YYYY-MM-DD');
+			var newdate = Vue.prototype.$moment(date);
+			if (newdate.isValid()) return newdate.format('YYYY-MM-DD');
+			return null;
 		}
 	}
 }

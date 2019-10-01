@@ -68,7 +68,8 @@ class Event extends Model
         'details',
         'cost',
         'cost_earlybird',
-        'organiser_member_id'
+        'organiser_member_id',
+        'share_gnz'
     ];
 
     /**
@@ -97,9 +98,10 @@ class Event extends Model
         'practice_days'=>'integer',
         'terms'=>'string',
         'details'=>'string',
-        'cost'=>'decimal',
-        'cost_earlybird'=>'decimal',
+        'cost'=>'decimal:2',
+        'cost_earlybird'=>'decimal:2',
         'organiser_member_id'=>'integer',
+        'share_gnz'=>'boolean',
     ];
 
     /**

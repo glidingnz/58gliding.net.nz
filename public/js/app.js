@@ -6573,6 +6573,96 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked.js");
@@ -6589,13 +6679,27 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
   props: ['orgId', 'eventId'],
   created: function created() {
     this.load();
-    if (this.event.start_date == this.event.end_date) this.hasEndDate = false;else this.hasEndDate = true;
   },
   computed: {
     compiledMarkdown: function compiledMarkdown() {
       return marked(this.event.details, {
         sanitize: true
       });
+    },
+    compiledTermsMarkdown: function compiledTermsMarkdown() {
+      return marked(this.event.terms, {
+        sanitize: true
+      });
+    },
+    showPrices: function showPrices() {
+      switch (this.event.type) {
+        case 'competition':
+        case 'xcountry':
+          return true;
+          break;
+      }
+
+      return false;
     }
   },
   methods: {
@@ -6605,23 +6709,26 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
         that.event = response.data.data;
         that.event.start_date = that.$moment(that.event.start_date).toDate();
         that.event.end_date = that.$moment(that.event.end_date).toDate();
+        that.event.earlybird = that.$moment(that.event.earlybird).toDate();
+
+        if (that.event.start_date != that.event.end_date) {
+          that.hasEndDate = true;
+        }
       });
     },
     save: function save(e) {
-      var that = this;
-      console.log(this.event.type); // shallow copy the object so we can alter the dates
+      var that = this; // shallow copy the object so we can alter the dates
 
       var event = Object.assign({}, this.event);
       event.start_date = this.apiDateFormat(event.start_date);
       event.end_date = this.apiDateFormat(event.end_date);
+      event.earlybird = this.apiDateFormat(event.earlybird);
       window.axios.put('/api/events/' + this.eventId, event).then(function (response) {
         messages.$emit('success', 'Event ' + that.event.name + ' Updated');
       });
       e.preventDefault();
     },
     selectedMember: function selectedMember(member) {
-      console.log('selected member');
-      console.log(member);
       Vue.set(this.event, 'organiser_member_id', member.id); //this.event.organiser_member_id = member.id;
     }
   }
@@ -6640,6 +6747,9 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../mixins.js */ "./resources/js/mixins.js");
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
 //
 //
 //
@@ -7581,9 +7691,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -7597,12 +7704,12 @@ __webpack_require__.r(__webpack_exports__);
       noResults: false
     };
   },
-  mounted: function mounted() {
+  mounted: function mounted() {},
+  created: function created() {
     if (this.memberId) {
       this.loadMember(this.memberId);
     }
-  },
-  created: function created() {
+
     this.debouncedSave = _.debounce(this.searchMembers, 500);
   },
   watch: {},
@@ -7644,7 +7751,8 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     loadMember: function loadMember(id) {
-      // if we're given an ID, try and load it
+      var that = this; // if we're given an ID, try and load it
+
       window.axios.get('/api/v1/members/' + id).then(function (response) {
         that.selectedMember = response.data.data;
       });
@@ -55049,6 +55157,55 @@ var render = function() {
         _c("div", { staticClass: "form-group col-md-6" }, [
           _c(
             "label",
+            { staticClass: "float-right", attrs: { for: "share_gnz" } },
+            [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.event.share_gnz,
+                    expression: "event.share_gnz"
+                  }
+                ],
+                attrs: { id: "share_gnz", type: "checkbox" },
+                domProps: {
+                  value: true,
+                  checked: Array.isArray(_vm.event.share_gnz)
+                    ? _vm._i(_vm.event.share_gnz, true) > -1
+                    : _vm.event.share_gnz
+                },
+                on: {
+                  change: function($event) {
+                    var $$a = _vm.event.share_gnz,
+                      $$el = $event.target,
+                      $$c = $$el.checked ? true : false
+                    if (Array.isArray($$a)) {
+                      var $$v = true,
+                        $$i = _vm._i($$a, $$v)
+                      if ($$el.checked) {
+                        $$i < 0 &&
+                          _vm.$set(_vm.event, "share_gnz", $$a.concat([$$v]))
+                      } else {
+                        $$i > -1 &&
+                          _vm.$set(
+                            _vm.event,
+                            "share_gnz",
+                            $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                          )
+                      }
+                    } else {
+                      _vm.$set(_vm.event, "share_gnz", $$c)
+                    }
+                  }
+                }
+              }),
+              _vm._v("\n\t\t\t\t\tShow on GNZ Calendar\n\t\t\t\t")
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "label",
             { staticClass: "col-xs-6 col-form-label", attrs: { for: "name" } },
             [_vm._v("Name")]
           ),
@@ -55076,119 +55233,121 @@ var render = function() {
           ])
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "col-md-6 row" }, [
-          _c("div", { staticClass: "form-group col-sm-6" }, [
-            _c(
-              "label",
-              { staticClass: "col-form-label", attrs: { for: "slug" } },
-              [_vm._v("Slug")]
-            ),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model.lazy",
-                  value: _vm.event.slug,
-                  expression: "event.slug",
-                  modifiers: { lazy: true }
-                }
-              ],
-              staticClass: "form-control",
-              attrs: { type: "text", id: "slug" },
-              domProps: { value: _vm.event.slug },
-              on: {
-                change: [
-                  function($event) {
-                    return _vm.$set(_vm.event, "slug", $event.target.value)
-                  },
-                  function($event) {
-                    _vm.event.slug = _vm.slug(_vm.event.slug)
-                  }
-                ]
-              }
-            })
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "form-group col-sm-6" }, [
-            _c(
-              "label",
-              {
-                staticClass: "col-xs-6 col-form-label",
-                attrs: { for: "event_type" }
-              },
-              [_vm._v("Event Type")]
-            ),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-xs-6" }, [
-              _c("div", { staticClass: "form-inline" }, [
-                _c(
-                  "select",
+        _c("div", { staticClass: "col-md-6" }, [
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "form-group col-sm-6" }, [
+              _c(
+                "label",
+                { staticClass: "col-form-label", attrs: { for: "slug" } },
+                [_vm._v("Slug")]
+              ),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
                   {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.event.type,
-                        expression: "event.type"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    attrs: { id: "event_type" },
-                    on: {
-                      change: function($event) {
-                        var $$selectedVal = Array.prototype.filter
-                          .call($event.target.options, function(o) {
-                            return o.selected
-                          })
-                          .map(function(o) {
-                            var val = "_value" in o ? o._value : o.value
-                            return val
-                          })
-                        _vm.$set(
-                          _vm.event,
-                          "type",
-                          $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        )
-                      }
+                    name: "model",
+                    rawName: "v-model.lazy",
+                    value: _vm.event.slug,
+                    expression: "event.slug",
+                    modifiers: { lazy: true }
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "text", id: "slug" },
+                domProps: { value: _vm.event.slug },
+                on: {
+                  change: [
+                    function($event) {
+                      return _vm.$set(_vm.event, "slug", $event.target.value)
+                    },
+                    function($event) {
+                      _vm.event.slug = _vm.slug(_vm.event.slug)
                     }
-                  },
-                  [
-                    _c("option", { domProps: { value: null } }, [
-                      _vm._v("Select a type of event...")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "competition" } }, [
-                      _vm._v("Competition")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "training" } }, [
-                      _vm._v("Training")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "xcountry" } }, [
-                      _vm._v("Cross Country Course")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "dinner" } }, [
-                      _vm._v("Dinner")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "working-bee" } }, [
-                      _vm._v("Working Bee")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "cadets" } }, [
-                      _vm._v("Cadets")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "school-group" } }, [
-                      _vm._v("School Group")
-                    ])
                   ]
-                )
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group col-sm-6" }, [
+              _c(
+                "label",
+                {
+                  staticClass: "col-xs-6 col-form-label",
+                  attrs: { for: "event_type" }
+                },
+                [_vm._v("Event Type")]
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-xs-6" }, [
+                _c("div", { staticClass: "form-inline" }, [
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.event.type,
+                          expression: "event.type"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { id: "event_type" },
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.$set(
+                            _vm.event,
+                            "type",
+                            $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          )
+                        }
+                      }
+                    },
+                    [
+                      _c("option", { domProps: { value: null } }, [
+                        _vm._v("Select a type of event...")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "competition" } }, [
+                        _vm._v("Competition")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "training" } }, [
+                        _vm._v("Training")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "xcountry" } }, [
+                        _vm._v("Cross Country Course")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "dinner" } }, [
+                        _vm._v("Dinner")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "working-bee" } }, [
+                        _vm._v("Working Bee")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "cadets" } }, [
+                        _vm._v("Cadets")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "school-group" } }, [
+                        _vm._v("School Group")
+                      ])
+                    ]
+                  )
+                ])
               ])
             ])
           ])
@@ -55208,7 +55367,23 @@ var render = function() {
                     staticClass: "col-form-label",
                     attrs: { for: "start_date" }
                   },
-                  [_vm._v("Start Date")]
+                  [
+                    _vm._v("Start Date"),
+                    _c(
+                      "span",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.event.type == "competition",
+                            expression: "event.type=='competition'"
+                          }
+                        ]
+                      },
+                      [_vm._v(" (Inc. Practice Days)")]
+                    )
+                  ]
                 ),
                 _vm._v(" "),
                 _c("v-date-picker", {
@@ -55487,6 +55662,229 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
+      _c(
+        "div",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.showPrices,
+              expression: "showPrices"
+            }
+          ],
+          staticClass: "row"
+        },
+        [
+          _c("div", { staticClass: "col-md-6" }, [
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-6" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "col-form-label",
+                    attrs: { for: "earlybird" }
+                  },
+                  [_vm._v("Entry Fee")]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-inline" }, [
+                  _vm._v("\n\t\t\t\t\t\t\t$ "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.event.cost,
+                        expression: "event.cost"
+                      }
+                    ],
+                    staticClass: "form-control ml-2 col-4",
+                    attrs: { id: "earlybird", type: "text", size: "4" },
+                    domProps: { value: _vm.event.cost },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.event, "cost", $event.target.value)
+                      }
+                    }
+                  })
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-6" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "col-form-label",
+                    attrs: { for: "practice_days" }
+                  },
+                  [_vm._v("Practice Days")]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-inline" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.event.practice_days,
+                        expression: "event.practice_days"
+                      }
+                    ],
+                    staticClass: "form-control mr-2",
+                    attrs: { id: "practice_days", type: "text", size: "4" },
+                    domProps: { value: _vm.event.practice_days },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(
+                          _vm.event,
+                          "practice_days",
+                          $event.target.value
+                        )
+                      }
+                    }
+                  }),
+                  _vm._v(" days\n\t\t\t\t\t\t")
+                ])
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.showPrices,
+                  expression: "showPrices"
+                }
+              ],
+              staticClass: "form-group col-md-6"
+            },
+            [
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-6" }, [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "col-form-label",
+                      attrs: { for: "earlybird" }
+                    },
+                    [_vm._v("Earlybird End Date")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "form-inline" },
+                    [
+                      _c("v-date-picker", {
+                        attrs: {
+                          id: "earlybird",
+                          locale: {
+                            id: "earlybird",
+                            firstDayOfWeek: 2,
+                            masks: { weekdays: "WW", L: "DD/MM/YYYY" }
+                          },
+                          popover: { visibility: "click" }
+                        },
+                        model: {
+                          value: _vm.event.earlybird,
+                          callback: function($$v) {
+                            _vm.$set(_vm.event, "earlybird", $$v)
+                          },
+                          expression: "event.earlybird"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-6" }, [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "col-form-label",
+                      attrs: { for: "cost_earlybird" }
+                    },
+                    [_vm._v("Earlybird Fee")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-inline" }, [
+                    _vm._v("\n\t\t\t\t\t\t\t$ "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.event.cost_earlybird,
+                          expression: "event.cost_earlybird"
+                        }
+                      ],
+                      staticClass: "form-control ml-2 col-4",
+                      attrs: { id: "cost_earlybird", type: "text", size: "4" },
+                      domProps: { value: _vm.event.cost_earlybird },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.event,
+                            "cost_earlybird",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    })
+                  ])
+                ])
+              ])
+            ]
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "form-group col-md-6" }, [
+          _c(
+            "label",
+            {
+              staticClass: "col-xs-6 col-form-label",
+              attrs: { for: "organiser" }
+            },
+            [_vm._v("Organiser")]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "col-xs-6" },
+            [
+              _vm.event.organiser_member_id
+                ? _c("member-selector", {
+                    attrs: {
+                      "org-id": _vm.orgId,
+                      "member-id": _vm.event.organiser_member_id
+                    },
+                    on: { selected: _vm.selectedMember }
+                  })
+                : _vm._e()
+            ],
+            1
+          )
+        ]),
+        _vm._v(" "),
+        _vm._m(0)
+      ]),
+      _vm._v(" "),
       _c("div", { staticClass: "row" }, [
         _c("div", { staticClass: "form-group col-md-6" }, [
           _c(
@@ -55495,7 +55893,7 @@ var render = function() {
               staticClass: "col-xs-6 col-form-label",
               attrs: { for: "details" }
             },
-            [_vm._v("Details (Markdown available)")]
+            [_vm._v("Page Details (Markdown available)")]
           ),
           _vm._v(" "),
           _c(
@@ -55524,7 +55922,12 @@ var render = function() {
                     }
                   }
                 })
-              ])
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                staticClass: "btn btn-primary mt-2",
+                attrs: { type: "submit", value: "Save Changes" }
+              })
             ],
             1
           )
@@ -55550,9 +55953,7 @@ var render = function() {
                 : _vm._e(),
               _vm._v(" "),
               !_vm.event.details
-                ? _c("div", { staticClass: "card-body" }, [
-                    _vm._v("<-- Type some text!")
-                  ])
+                ? _c("div", { staticClass: "card-body" }, [_vm._v(" ")])
                 : _vm._e()
             ])
           ])
@@ -55563,30 +55964,72 @@ var render = function() {
         _c("div", { staticClass: "form-group col-md-6" }, [
           _c(
             "label",
-            {
-              staticClass: "col-xs-6 col-form-label",
-              attrs: { for: "organiser" }
-            },
-            [_vm._v("Organiser")]
+            { staticClass: "col-xs-6 col-form-label", attrs: { for: "terms" } },
+            [_vm._v("Terms & Conditions (Markdown available)")]
           ),
           _vm._v(" "),
           _c(
             "div",
             { staticClass: "col-xs-6" },
             [
-              _c("member-selector", {
-                attrs: {
-                  "org-id": _vm.orgId,
-                  "member-id": _vm.event.organiser_member_id
-                },
-                on: { selected: _vm.selectedMember }
+              _c("autosize-textarea", [
+                _c("textarea", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.event.terms,
+                      expression: "event.terms"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { type: "text", id: "terms", rows: "3" },
+                  domProps: { value: _vm.event.terms },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.event, "terms", $event.target.value)
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                staticClass: "btn btn-primary mt-2",
+                attrs: { type: "submit", value: "Save Changes" }
               })
             ],
             1
           )
         ]),
         _vm._v(" "),
-        _vm._m(0)
+        _c("div", { staticClass: "form-group col-md-6" }, [
+          _c(
+            "label",
+            {
+              staticClass: "col-xs-6 col-form-label",
+              attrs: { for: "start_date" }
+            },
+            [_vm._v("Terms Preview")]
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-xs-6" }, [
+            _c("div", { staticClass: "card" }, [
+              _vm.event.terms
+                ? _c("div", {
+                    staticClass: "card-body",
+                    domProps: { innerHTML: _vm._s(_vm.compiledTermsMarkdown) }
+                  })
+                : _vm._e(),
+              _vm._v(" "),
+              !_vm.event.terms
+                ? _c("div", { staticClass: "card-body" }, [_vm._v(" ")])
+                : _vm._e()
+            ])
+          ])
+        ])
       ])
     ])
   ])
@@ -55597,6 +56040,17 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "form-group col-md-6" }, [
+      _c("div", [
+        _c(
+          "label",
+          {
+            staticClass: "col-xs-6 col-form-label",
+            attrs: { for: "organiser" }
+          },
+          [_vm._v(" ")]
+        )
+      ]),
+      _vm._v(" "),
       _c("input", {
         staticClass: "btn btn-primary",
         attrs: { type: "submit", value: "Save Changes" }
@@ -55741,7 +56195,9 @@ var render = function() {
             _c("td", [
               event.org
                 ? _c("span", [_vm._v(_vm._s(event.org.name))])
-                : _vm._e()
+                : _vm._e(),
+              _vm._v(" "),
+              event.org == null ? _c("span", [_vm._v("GNZ")]) : _vm._e()
             ]),
             _vm._v(" "),
             _c("td", [
@@ -56901,142 +57357,136 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "selectMember row" }, [
-    _c("div", { staticClass: "col" }, [
-      _vm.selectedMember && !_vm.edit
-        ? _c("input", {
-            staticClass: "form-control",
-            class: {
-              "is-valid": _vm.selectedMember,
-              "is-invalid": _vm.noResults
-            },
-            attrs: { placeholder: "" },
-            domProps: {
-              value:
-                _vm.selectedMember.first_name +
-                " " +
-                _vm.selectedMember.last_name
-            },
-            on: {
-              click: function($event) {
-                _vm.edit = true
-              }
+  return _c("div", { staticClass: "selectMember" }, [
+    _vm.selectedMember && !_vm.edit
+      ? _c("input", {
+          staticClass: "form-control",
+          class: {
+            "is-valid": _vm.selectedMember,
+            "is-invalid": _vm.noResults
+          },
+          attrs: { placeholder: "" },
+          domProps: {
+            value:
+              _vm.selectedMember.first_name + " " + _vm.selectedMember.last_name
+          },
+          on: {
+            click: function($event) {
+              _vm.edit = true
             }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      !_vm.selectedMember || _vm.edit
-        ? _c("input", {
+          }
+        })
+      : _vm._e(),
+    _vm._v(" "),
+    !_vm.selectedMember || _vm.edit
+      ? _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.memberSearch,
+              expression: "memberSearch"
+            }
+          ],
+          staticClass: "form-control",
+          class: {
+            "is-valid": _vm.selectedMember,
+            "is-invalid": _vm.noResults
+          },
+          attrs: { placeholder: "Member Search..." },
+          domProps: { value: _vm.memberSearch },
+          on: {
+            keydown: _vm.memberSearchType,
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.memberSearch = $event.target.value
+            }
+          }
+        })
+      : _vm._e(),
+    _vm._v(" "),
+    _c(
+      "span",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: _vm.noResults,
+            expression: "noResults"
+          }
+        ],
+        staticClass: "error"
+      },
+      [_vm._v("Member not found")]
+    ),
+    _vm._v(" "),
+    !_vm.selectedMember || _vm.edit
+      ? _c(
+          "select",
+          {
             directives: [
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.memberSearch,
-                expression: "memberSearch"
+                value: _vm.selectedMember,
+                expression: "selectedMember"
+              },
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.searchResults.length > 0,
+                expression: "searchResults.length>0"
               }
             ],
             staticClass: "form-control",
-            class: {
-              "is-valid": _vm.selectedMember,
-              "is-invalid": _vm.noResults
-            },
-            attrs: { placeholder: "Search..." },
-            domProps: { value: _vm.memberSearch },
             on: {
-              keydown: _vm.memberSearchType,
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.memberSearch = $event.target.value
-              }
-            }
-          })
-        : _vm._e()
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "col" }, [
-      _c(
-        "span",
-        {
-          directives: [
-            {
-              name: "show",
-              rawName: "v-show",
-              value: _vm.noResults,
-              expression: "noResults"
-            }
-          ],
-          staticClass: "error"
-        },
-        [_vm._v("Member not found")]
-      ),
-      _vm._v(" "),
-      !_vm.selectedMember || _vm.edit
-        ? _c(
-            "select",
-            {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.selectedMember,
-                  expression: "selectedMember"
+              change: [
+                function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.selectedMember = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
                 },
-                {
-                  name: "show",
-                  rawName: "v-show",
-                  value: _vm.searchResults.length > 0,
-                  expression: "searchResults.length>0"
+                function($event) {
+                  return _vm.selectMember()
                 }
-              ],
-              staticClass: "form-control",
-              on: {
-                change: [
-                  function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.selectedMember = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  },
-                  function($event) {
-                    return _vm.selectMember()
-                  }
-                ]
-              }
-            },
-            [
-              _c("option", { domProps: { value: null } }, [
+              ]
+            }
+          },
+          [
+            _c("option", { domProps: { value: null } }, [
+              _vm._v(
+                _vm._s(_vm.searchResults.length) +
+                  " result" +
+                  _vm._s(_vm.searchResults.length == 1 ? "" : "s")
+              )
+            ]),
+            _vm._v(" "),
+            _vm._l(_vm.searchResults, function(member) {
+              return _c("option", { domProps: { value: member } }, [
                 _vm._v(
-                  _vm._s(_vm.searchResults.length) +
-                    " result" +
-                    _vm._s(_vm.searchResults.length == 1 ? "" : "s")
+                  _vm._s(member.first_name) +
+                    " " +
+                    _vm._s(member.last_name) +
+                    " " +
+                    _vm._s(member.city)
                 )
-              ]),
-              _vm._v(" "),
-              _vm._l(_vm.searchResults, function(member) {
-                return _c("option", { domProps: { value: member } }, [
-                  _vm._v(
-                    _vm._s(member.first_name) +
-                      " " +
-                      _vm._s(member.last_name) +
-                      " " +
-                      _vm._s(member.city)
-                  )
-                ])
-              })
-            ],
-            2
-          )
-        : _vm._e()
-    ])
+              ])
+            })
+          ],
+          2
+        )
+      : _vm._e()
   ])
 }
 var staticRenderFns = []
@@ -72228,7 +72678,9 @@ module.exports = {
       return _slug.toLowerCase().replace(regex, '-').replace(regex_replace_multiple_dashes, '-');
     },
     apiDateFormat: function apiDateFormat(date) {
-      return Vue.prototype.$moment(date).format('YYYY-MM-DD');
+      var newdate = Vue.prototype.$moment(date);
+      if (newdate.isValid()) return newdate.format('YYYY-MM-DD');
+      return null;
     }
   }
 };
