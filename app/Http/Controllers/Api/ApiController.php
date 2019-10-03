@@ -76,6 +76,12 @@ class ApiController extends Controller
 	protected function _get_db_queries()
 	{
 		$this->data['queries']=DB::getQueryLog();
+		$this->data['queries_total']=count(DB::getQueryLog());
+		$total_time = 0;
+		foreach ($this->data['queries'] AS $query) {
+			$total_time += $query['time'];
+		}
+		$this->data['queries_time_seconds']=round($total_time/1000, 4);
 	}
 
 	public function fetch_user()
