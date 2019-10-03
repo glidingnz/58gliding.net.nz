@@ -46,7 +46,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('root', function ($user) {
 
             // check if we've already approved this
-            if (isset($user->is_root) && $user->is_root==true) return true;
+            if (isset($user->is_root)) return $user->is_root;
 
             if ($role = Role::where('slug','root')->first())
             {
@@ -58,14 +58,14 @@ class AuthServiceProvider extends ServiceProvider
                 }
             }
 
+            $user->is_root = false;
             return false;
         });
 
 
         Gate::define('admin', function ($user) {
 
-            // check if we've already approved this
-            if (isset($user->is_admin) && $user->is_admin==true) return true;
+            if (isset($user->is_admin)) return $user->is_admin;
 
             if (Gate::allows('root')) return true; // check above first!
 
@@ -77,19 +77,26 @@ class AuthServiceProvider extends ServiceProvider
                     return true;
                 }
             }
+            $user->is_admin = false;
             return false;
         });
 
         // optionally pass in a specific organisation object. Otherwise it uses the currently viewed organisation.
         Gate::define('club-admin', function ($user, $org=NULL) {
 
-            if (Gate::allows('admin')) return true; // check above first!
-
             // check if we are current in an org
             if ($org==NULL && $current_org = Request::get('_ORG'))
             {
                 $org = $current_org;
             }
+
+            $variable_name = 'is_club_admin_' . $org->id;
+
+            // check if we've already approved this
+            if (isset($user->$variable_name)) return $user->$variable_name;
+
+            if (Gate::allows('admin')) return true; // check above first!
+
 
             if (!$org) return false;
 
@@ -99,10 +106,12 @@ class AuthServiceProvider extends ServiceProvider
                 $userRole = RoleUser::where('role_id', $role->id)->where('user_id', $user->id)->where('org_id', $org->id)->first();
 
                 if ($userRole) {
+                    $user->$variable_name=true;
                     return true;
                 }
             }
 
+            $user->$variable_name=false;
             return false;
         });
 
@@ -110,13 +119,18 @@ class AuthServiceProvider extends ServiceProvider
         // optionally pass in a specific organisation object. Otherwise it uses the currently viewed organisation.
         Gate::define('club-member', function ($user, $org=NULL) {
 
-            if (Gate::allows('club-admin', $org)) return true; // check above first!
-
             // check if we are current in an org
             if ($org==NULL && $current_org = Request::get('_ORG'))
             {
                 $org = $current_org;
             }
+
+            $variable_name = 'is_club_member_' . $org->id;
+
+            // check if we've already approved this
+            if (isset($user->$variable_name)) return $user->$variable_name;
+
+            if (Gate::allows('club-admin', $org)) return true; // check above first!
 
             if (!$org) return false;
 
@@ -128,25 +142,28 @@ class AuthServiceProvider extends ServiceProvider
                 $userRole = RoleUser::where('role_id', $role->id)->where('user_id', $user->id)->where('org_id', $org->id)->first();
 
                 if ($userRole) {
-                    $user->is_club_member = true;
+                    $user->$variable_name = true;
                     return true;
                 }
 
                 // check if this user is in the GNZ DB as a member
                 $member = Member::where('club', $org->gnz_code)->where('nzga_number', $user->gnz_id)->first();
                 if ($member) {
+                    $user->variable_name = true;
                     return true;
                 }
             }
 
+            $user->$variable_name=false;
             return false;
         });
 
 
         /* only confirmed GNZ members can do certain things e.g. view other member phone numbers */
-        Gate::define('gnz-member', function ($user) {
+        Gate::define('gnz-member', function (&$user) {
+
             // check if we've already approved this
-            if (isset($user->is_gnz_member) && $user->is_gnz_member==true) return true;
+            if (isset($user->is_gnz_member)) return $user->is_gnz_member;
 
             if (Gate::allows('admin')) return true; // always allow admin access
 
@@ -159,6 +176,8 @@ class AuthServiceProvider extends ServiceProvider
                     return true;
                 }
             }
+
+            $user->is_gnz_member=false;
             return false;
         });
 
@@ -166,7 +185,7 @@ class AuthServiceProvider extends ServiceProvider
         // Only the awards officer is allowed to edit awards.
         Gate::define('edit-awards', function($user) {
             // check if we've already approved this
-            if (isset($user->can_edit_awards) && $user->can_edit_awards==true) return true;
+            if (isset($user->can_edit_awards)) return $user->can_edit_awards;
 
             if (Gate::allows('admin')) return true; // check if admin first!
 
@@ -182,13 +201,14 @@ class AuthServiceProvider extends ServiceProvider
                 }
             }
 
+            $user->can_edit_awards = false;
             return false;
         });
 
 
         // Admins and GNZ members that are coaches are allowed to edit achievements
-        Gate::define('edit-achievements', function($user) {
-            if (isset($user->can_edit_achievements) && $user->can_edit_achievements==true) return true;
+        Gate::define('edit-achievements', function(&$user) {
+            if (isset($user->can_edit_achievements)) return $user->can_edit_achievements;
 
             if (Gate::allows('admin')) return true; // check if admin first!
 
@@ -203,6 +223,7 @@ class AuthServiceProvider extends ServiceProvider
                 }
             }
 
+            $user->can_edit_achievements=false;
             return false;
         });
 
@@ -243,23 +264,25 @@ class AuthServiceProvider extends ServiceProvider
         });
 
 
-        Gate::define('membership-view', function($user) {
+        Gate::define('membership-view', function(&$user) {
+            if (isset($user->can_view_membership) && $user->can_view_membership==true) return true;
+
             if ($role = Role::where('slug','view-membership')->first())
             {
                 $userRole = RoleUser::where('role_id', $role->id)->where('user_id', $user->id)->first();
 
                 if ($userRole) {
-                    $user->can_edit_awards = true;
+                    $user->can_view_membership = true;
                     return true;
                 }
             }
             return false;
         });
 
-        Gate::define('waypoint-admin', function($user) {
+        Gate::define('waypoint-admin', function(&$user) {
 
             // check if we've already approved this
-            if (isset($user->is_admin) && $user->is_admin==true) return true;
+            if (isset($user->is_waypoint_admin)) return $user->is_waypoint_admin;
 
             if (Gate::allows('root')) return true; // check above first!
 
@@ -268,16 +291,19 @@ class AuthServiceProvider extends ServiceProvider
                 $userRole = RoleUser::where('role_id', $role->id)->where('user_id', $user->id)->first();
 
                 if ($userRole) {
+                    $user->is_waypoint_admin==true;
                     return true;
                 }
             }
+
+            $user->is_waypoint_admin==false;
             return false;
         });
 
-        Gate::define('contest-admin', function($user) {
+        Gate::define('contest-admin', function(&$user) {
 
             // check if we've already approved this
-            if (isset($user->is_admin) && $user->is_admin==true) return true;
+            if (isset($user->is_contest_admin)) return $user->is_contest_admin;
 
             if (Gate::allows('root')) return true; // check above first!
 
@@ -286,9 +312,12 @@ class AuthServiceProvider extends ServiceProvider
                 $userRole = RoleUser::where('role_id', $role->id)->where('user_id', $user->id)->first();
 
                 if ($userRole) {
+                    $user->is_contest_admin==true;
                     return true;
                 }
             }
+            
+            $user->is_contest_admin==false;
             return false;
         });
 

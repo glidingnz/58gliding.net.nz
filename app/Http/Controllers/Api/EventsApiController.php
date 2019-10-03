@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use Response;
 use App\Models\Event;
+use Auth;
 
 /**
  * Class eventsController
@@ -27,13 +28,22 @@ class EventsAPIController extends AppBaseController
 		$query = Event::query()->with('org');
 
 		// limit by organisation
-		if ($request->has('org_id')) $query->where('org_id','=',$request->input('org_id'));
+		if ($request->has('org_id'))
+		{
+			if ($request->input('org_id')!='gnz')
+			{
+				$query->where('org_id','=',$request->input('org_id'));
+			}
+			else
+			{
+				$query->whereNull('org_id');
+			}
+		}
 
 		if ($request->has('national'))
 		{
 			$query->where(function ($query) use ($request) {
 				$query->where('share_gnz','=',(boolean)$request->input('national', true));
-				$query->orWhereNull('org_id');
 			});
 		}
 
@@ -96,6 +106,7 @@ class EventsAPIController extends AppBaseController
 		// default the end date to the start date unless given otherwise
 		$event->end_date = $request->input('end_date', $request->input('start_date', null));
 		$event->slug = $slug;
+		$event->creator_user_id = Auth::user()->id;
 		$event->save();
 
 		return $this->sendResponse($event->toArray(), 'Event Created');

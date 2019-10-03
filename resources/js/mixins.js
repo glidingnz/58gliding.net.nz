@@ -50,6 +50,9 @@ module.exports = {
 		formatDate: function(date) {
 			return Vue.prototype.$moment(date).format('ddd Do MMM YYYY');
 		},
+		dateToNow: function(date) {
+			return Vue.prototype.$moment(date).fromNow();
+		},
 		dateDiffDays: function(date1, date2) {
 			var date1 = Vue.prototype.$moment(date1);
 			var date2 = Vue.prototype.$moment(date2);

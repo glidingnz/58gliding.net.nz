@@ -18,7 +18,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:api');
 
 
-Route::group(['namespace' => 'Api', 'middleware' => 'UseApiGuard'], function()
+Route::group(['namespace' => 'Api', 'middleware' => 'auth:api'], function()
 {
 	Route::resource('days', 'DayAPIController');
 	Route::post('/days/deactivate',  'DayAPIController@deactivate');

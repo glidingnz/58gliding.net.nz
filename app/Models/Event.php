@@ -5,6 +5,7 @@ namespace App\Models;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Gate;
+use Auth;
 
 /**
  * Class Event
@@ -36,9 +37,24 @@ class Event extends Model
      */
     public function getCanEditAttribute()
     {
-        if (Gate::allows('club-admin', $this->org)) {
-            return true;
+        if (Auth::user())
+        {
+            if ($this->creator_user_id == Auth::user()->id)
+            {
+                return true;
+            }
         }
+
+        // if no org, it must be a GNZ event, so check for GNZ admin
+        if (Gate::allows('admin')) return true;
+
+        return false;
+        if ($this->org!=null) {
+            if (Gate::allows('club-admin', $this->org)) {
+                return true;
+            }
+        }
+
         return false;
     }
 

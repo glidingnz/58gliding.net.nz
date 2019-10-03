@@ -8,8 +8,10 @@
 		<add-event-panel :org-id="orgId" :show="showAddPanel" @closeModal="showAddPanel=false" @eventAdded="eventAdded"></add-event-panel>
 
 		<div class="btn-group ml-auto mr-2 " role="group" v-model="show">
-			<button type="button" class="btn" v-bind:class="[ show=='national' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='national'">National Events</button>
-			<button type="button" class="btn" v-bind:class="[ show=='orgs' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='orgs'">Club Events:</button>
+			<button type="button" class="btn" v-bind:class="[ show=='all' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='all'">All</button>
+			<button type="button" class="btn" v-bind:class="[ show=='national' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='national'">National</button>
+			<button type="button" class="btn" v-bind:class="[ show=='gnz' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='gnz'">GNZ</button>
+			<button type="button" class="btn" v-bind:class="[ show=='orgs' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='orgs'">Club:</button>
 		</div>
 
 		<org-selector :org-id="orgId" v-on:orgSelected="orgSelected" class="mr-2" :disabled="show!='orgs'"></org-selector>
@@ -24,6 +26,7 @@
 		<tr>
 			<th>Event Name</th>
 			<th>Organisation</th>
+			<th>Starts</th>
 			<th>Date</th>
 			<th>Length</th>
 			<th>Location</th>
@@ -35,6 +38,7 @@
 				<span v-if="event.org">{{event.org.name}}</span>
 				<span v-if="event.org==null">GNZ</span>
 			</td>
+			<td>{{dateToNow(event.start_date)}}</td>
 			<td>{{formatDate(event.start_date)}}<span v-if="event.start_date!=event.end_date"> - {{formatDate(event.end_date)}}</span></td>
 			<td>{{dateDiffDays(event.start_date, event.end_date)}}</td>
 			<td>{{event.location}}</td>
@@ -76,7 +80,7 @@ export default {
 		load: function() {
 			var that = this;
 
-			var data = {}
+			var data = {'t':1}
 
 			// check if we have selected an org. It might be null, and thus = all orgs
 			if (this.show=='orgs') {
@@ -88,6 +92,11 @@ export default {
 			// check if we have selected to show all national events
 			if (this.show=='national') {
 				data.national = true;
+			}
+
+			// check if we have selected to show all national events
+			if (this.show=='gnz') {
+				data.org_id = 'gnz';
 			}
 
 			window.axios.get('/api/events/', {params: data}).then(function (response) {
