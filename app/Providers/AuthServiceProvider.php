@@ -89,6 +89,7 @@ class AuthServiceProvider extends ServiceProvider
 			{
 				$org = $current_org;
 			}
+			if (!$org) return false;
 
 			$variable_name = 'is_club_admin_' . $org->id;
 
@@ -124,6 +125,7 @@ class AuthServiceProvider extends ServiceProvider
 			{
 				$org = $current_org;
 			}
+			if (!$org) return false;
 
 			$variable_name = 'is_club_member_' . $org->id;
 
@@ -132,7 +134,6 @@ class AuthServiceProvider extends ServiceProvider
 
 			if (Gate::allows('club-admin', $org)) return true; // check above first!
 
-			if (!$org) return false;
 
 			// check if we're a normal club member type user
 			if ($role = Role::where('slug','club-member')->first())

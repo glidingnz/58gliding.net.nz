@@ -48,7 +48,6 @@ class Event extends Model
         // if no org, it must be a GNZ event, so check for GNZ admin
         if (Gate::allows('admin')) return true;
 
-        return false;
         if ($this->org!=null) {
             if (Gate::allows('club-admin', $this->org)) {
                 return true;
