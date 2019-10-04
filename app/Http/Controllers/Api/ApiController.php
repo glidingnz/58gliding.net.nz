@@ -8,12 +8,18 @@ use DB;
 class ApiController extends Controller
 {
 	protected $data;
+	public $timezone;
 
 	public function __construct()
 	{
 		DB::enableQueryLog();
 		$this->data['success']=false;
 		$this->data['http_code']=500;
+
+		$this->middleware(function ($request, $next) {
+			$this->timezone = new \DateTimeZone($request->input('timezone', 'Pacific/Auckland'));
+			return $next($request);
+		});
 
 		parent::__construct();
 	}

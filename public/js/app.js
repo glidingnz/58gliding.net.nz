@@ -6800,6 +6800,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -6809,11 +6815,15 @@ __webpack_require__.r(__webpack_exports__);
       newDutyName: '',
       show: 'national',
       selectedOrg: {},
-      showAddPanel: false
+      showAddPanel: false,
+      timerange: 'future'
     };
   },
   watch: {
     show: function show() {
+      this.load();
+    },
+    timerange: function timerange() {
       this.load();
     }
   },
@@ -6828,7 +6838,7 @@ __webpack_require__.r(__webpack_exports__);
     load: function load() {
       var that = this;
       var data = {
-        't': 1 // check if we have selected an org. It might be null, and thus = all orgs
+        'timerange': this.timerange // check if we have selected an org. It might be null, and thus = all orgs
 
       };
 
@@ -56116,6 +56126,58 @@ var render = function() {
           "div",
           {
             staticClass: "btn-group ml-auto mr-2 ",
+            attrs: { role: "group" },
+            model: {
+              value: _vm.timerange,
+              callback: function($$v) {
+                _vm.timerange = $$v
+              },
+              expression: "timerange"
+            }
+          },
+          [
+            _c(
+              "button",
+              {
+                staticClass: "btn",
+                class: [
+                  _vm.timerange == "past" ? "btn-secondary" : "btn-outline-dark"
+                ],
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    _vm.timerange = "past"
+                  }
+                }
+              },
+              [_vm._v("Past")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn",
+                class: [
+                  _vm.timerange == "future"
+                    ? "btn-secondary"
+                    : "btn-outline-dark"
+                ],
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    _vm.timerange = "future"
+                  }
+                }
+              },
+              [_vm._v("Future")]
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "btn-group mr-2 ",
             attrs: { role: "group" },
             model: {
               value: _vm.show,

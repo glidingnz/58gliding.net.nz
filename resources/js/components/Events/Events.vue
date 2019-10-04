@@ -7,12 +7,18 @@
 
 		<add-event-panel :org-id="orgId" :show="showAddPanel" @closeModal="showAddPanel=false" @eventAdded="eventAdded"></add-event-panel>
 
-		<div class="btn-group ml-auto mr-2 " role="group" v-model="show">
+		<div class="btn-group ml-auto mr-2 " role="group" v-model="timerange">
+			<button type="button" class="btn" v-bind:class="[ timerange=='past' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="timerange='past'">Past</button>
+			<button type="button" class="btn" v-bind:class="[ timerange=='future' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="timerange='future'">Future</button>
+		</div>
+
+		<div class="btn-group mr-2 " role="group" v-model="show">
 			<button type="button" class="btn" v-bind:class="[ show=='all' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='all'">All</button>
 			<button type="button" class="btn" v-bind:class="[ show=='national' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='national'">National</button>
 			<button type="button" class="btn" v-bind:class="[ show=='gnz' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='gnz'">GNZ</button>
 			<button type="button" class="btn" v-bind:class="[ show=='orgs' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='orgs'">Club:</button>
 		</div>
+
 
 		<org-selector :org-id="orgId" v-on:orgSelected="orgSelected" class="mr-2" :disabled="show!='orgs'"></org-selector>
 
@@ -61,11 +67,15 @@ export default {
 			newDutyName: '',
 			show: 'national',
 			selectedOrg: {},
-			showAddPanel: false
+			showAddPanel: false,
+			timerange: 'future'
 		}
 	},
 	watch: {
 		show: function() {
+			this.load();
+		},
+		timerange: function() {
 			this.load();
 		}
 	},
@@ -80,7 +90,7 @@ export default {
 		load: function() {
 			var that = this;
 
-			var data = {'t':1}
+			var data = {'timerange':this.timerange}
 
 			// check if we have selected an org. It might be null, and thus = all orgs
 			if (this.show=='orgs') {

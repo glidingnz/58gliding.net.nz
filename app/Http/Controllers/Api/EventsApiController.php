@@ -7,6 +7,7 @@ use App\Http\Controllers\AppBaseController;
 use Response;
 use App\Models\Event;
 use Auth;
+use Carbon\Carbon;
 
 /**
  * Class eventsController
@@ -46,6 +47,26 @@ class EventsAPIController extends AppBaseController
 				$query->where('share_gnz','=',(boolean)$request->input('national', true));
 			});
 		}
+
+
+		if ($request->has('timerange'))
+		{
+
+			$todaysDate = Carbon::today($this->timezone);
+			$todaysDate->setTimezone('UTC');
+
+			switch ($request->input('timerange'))
+			{
+				case 'future':
+					$query->where('start_date', '>=', $todaysDate->format('Y-m-d'));
+					break;
+				case 'past':
+					$query->where('end_date', '<', $todaysDate->format('Y-m-d'));
+					break;
+			}
+		}
+
+
 
 		// needs to get start and ends correctly for time ranges
 		if ($request->has('start_date')) $query->where('end_date', '>=', $request->input('start_date'));
