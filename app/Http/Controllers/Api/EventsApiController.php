@@ -41,10 +41,10 @@ class EventsAPIController extends AppBaseController
 			}
 		}
 
-		if ($request->has('national'))
+		if ($request->has('featured'))
 		{
 			$query->where(function ($query) use ($request) {
-				$query->where('share_gnz','=',(boolean)$request->input('national', true));
+				$query->where('featured','=',(boolean)$request->input('featured', true));
 			});
 		}
 

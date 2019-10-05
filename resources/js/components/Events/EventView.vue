@@ -1,8 +1,22 @@
 <template>
 <div>
 	
-	<h1><a href="/events">Events</a> » <a :href="'/events/' + event.slug">{{event.name}}</a> » Edit</h1>
+	<h1><a href="/events">Events</a> » {{event.name}}</h1>
 
+	<div class="row">
+		
+		<div class="col-md-6">
+			{{event.details}}
+		</div>
+
+		<div class="col-md-6">
+			zxcv
+		</div>
+
+	</div>
+
+
+<!-- 
 	<form @submit="save">
 		<div class="row">
 
@@ -219,7 +233,7 @@
 
 		</div>
 
-
+ -->
 	</form>
 
 
@@ -272,25 +286,6 @@ export default {
 					that.hasEndDate=true;
 				}
 			});
-		},
-		save: function(e) {
-			var that = this;
-
-			// shallow copy the object so we can alter the dates
-			let event = Object.assign({}, this.event);
-			event.start_date = this.apiDateFormat(event.start_date);
-			event.end_date = this.apiDateFormat(event.end_date);
-			event.earlybird = this.apiDateFormat(event.earlybird);
-
-			window.axios.put('/api/events/' + this.eventId, event).then(function (response) {
-				messages.$emit('success', 'Event ' + that.event.name + ' Updated');
-			});
-			e.preventDefault();
-		},
-		selectedMember: function(member)
-		{
-			Vue.set(this.event, 'organiser_member_id', member.id);
-			//this.event.organiser_member_id = member.id;
 		}
 	}
 }

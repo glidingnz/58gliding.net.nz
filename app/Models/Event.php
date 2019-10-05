@@ -84,7 +84,9 @@ class Event extends Model
         'cost',
         'cost_earlybird',
         'organiser_member_id',
-        'share_gnz'
+        'featured',
+        'soaringspot_api_secret',
+        'soaringspot_api_client_id',
     ];
 
     /**
@@ -116,7 +118,9 @@ class Event extends Model
         'cost'=>'decimal:2',
         'cost_earlybird'=>'decimal:2',
         'organiser_member_id'=>'integer',
-        'share_gnz'=>'boolean',
+        'featured'=>'boolean',
+        'soaringspot_api_secret'=>'string',
+        'soaringspot_api_client_id'=>'string',
     ];
 
     /**

@@ -5,7 +5,7 @@
 
 		<h1 class="mr-auto">Events</h1>
 
-		<add-event-panel :org-id="orgId" :show="showAddPanel" @closeModal="showAddPanel=false" @eventAdded="eventAdded"></add-event-panel>
+		<add-event-panel v-if="Laravel.clubAdmin==true || Laravel.admin" :org-id="orgId" :show="showAddPanel" @closeModal="showAddPanel=false" @eventAdded="eventAdded"></add-event-panel>
 
 		<div class="btn-group ml-auto mr-2 " role="group" v-model="timerange">
 			<button type="button" class="btn" v-bind:class="[ timerange=='past' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="timerange='past'">Past</button>
@@ -22,7 +22,7 @@
 
 		<org-selector :org-id="orgId" v-on:orgSelected="orgSelected" class="mr-2" :disabled="show!='orgs'"></org-selector>
 
-		<div v-if="Laravel.clubAdmin">
+		<div v-if="Laravel.clubAdmin || Laravel.admin">
 			<button class="btn btn-outline-dark" v-on:click="showAddPanel=true">Add Event</button>
 		</div>
 
@@ -31,6 +31,7 @@
 	<table v-show="events.length>0" class="table table-striped table-sm collapsable calendar-table">
 		<tr>
 			<th>Event Name</th>
+			<th>Type</th>
 			<th>Organisation</th>
 			<th>Starts</th>
 			<th>Date</th>
@@ -39,13 +40,14 @@
 			<th>Edit</th>
 		</tr>
 		<tr v-for="event in events">
-			<td>{{event.name}}</td>
+			<td><a :href="'/events/' + event.slug">{{event.name}}</a></td>
+			<td>{{formatEventType(event.type)}}</td>
 			<td>
 				<span v-if="event.org">{{event.org.name}}</span>
 				<span v-if="event.org==null">GNZ</span>
 			</td>
 			<td>{{dateToNow(event.start_date)}}</td>
-			<td>{{formatDate(event.start_date)}}<span v-if="event.start_date!=event.end_date"> - {{formatDate(event.end_date)}}</span></td>
+			<td>{{formatDate(event.start_date)}}<span v-if="event.end_date && event.start_date!=event.end_date"> - {{formatDate(event.end_date)}}</span></td>
 			<td>{{dateDiffDays(event.start_date, event.end_date)}}</td>
 			<td>{{event.location}}</td>
 			<td><a class="btn btn-xs btn-outline-dark" :href="'/events/' + event.slug + '/edit'" v-if="event.can_edit">Edit</a></td>
@@ -120,6 +122,7 @@ export default {
 		},
 		eventAdded: function(event) {
 			this.load();
+			window.location.href = "/events/" + event.slug  + "/edit";
 		}
 	}
 }

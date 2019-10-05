@@ -25,7 +25,7 @@
 <template>
 <div>
 
-	<div class="custom-modal" v-show="show" v-on:click="closeCustomModal()" @keyup.esc="closeCustomModal()" tabindex="0" v-if="Laravel.clubAdmin==true">
+	<div class="custom-modal" v-show="show" v-on:click="closeCustomModal()" @keyup.esc="closeCustomModal()" tabindex="0">
 		<div class="inner" v-on:click.stop="">
 
 			<button v-on:click="closeCustomModal()" class="btn btn-outline-dark float-right">Cancel</button>

@@ -54,6 +54,7 @@ module.exports = {
 			return Vue.prototype.$moment(date).fromNow();
 		},
 		dateDiffDays: function(date1, date2) {
+			if (date2==null || date2=='') return '';
 			var date1 = Vue.prototype.$moment(date1);
 			var date2 = Vue.prototype.$moment(date2);
 			var days = date2.diff(date1, 'days') + 1;
@@ -69,6 +70,25 @@ module.exports = {
 			var newdate = Vue.prototype.$moment(date);
 			if (newdate.isValid()) return newdate.format('YYYY-MM-DD');
 			return null;
+		},
+		eventTypes: function() {
+			return [
+				{'code': 'competition', 'name': 'Competition'},
+				{'code': 'training', 'name': 'Training'},
+				{'code': 'xcountry', 'name': 'Cross Country Course'},
+				{'code': 'dinner', 'name': 'Dinner'},
+				{'code': 'working-bee', 'name': 'Working Bee'},
+				{'code': 'cadets', 'name': 'Cadets'},
+				{'code': 'school-group', 'name': 'School Group'},
+				{'code': 'other', 'name': 'Other'}
+			]
+		},
+		formatEventType: function(event) {
+			var eventType = this.eventTypes().filter(function isBigEnough(value) {
+				if (value.code==event) return true;
+			});
+			if (eventType.length==0) return 'Other';
+			return eventType[0].name;
 		}
 	}
 }
