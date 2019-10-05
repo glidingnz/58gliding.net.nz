@@ -6813,7 +6813,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       events: [],
       newDutyName: '',
-      show: 'national',
+      show: 'featured',
       selectedOrg: {},
       showAddPanel: false,
       timerange: 'future'
@@ -6849,8 +6849,8 @@ __webpack_require__.r(__webpack_exports__);
       } // check if we have selected to show all national events
 
 
-      if (this.show == 'national') {
-        data.national = true;
+      if (this.show == 'featured') {
+        data.featured = true;
       } // check if we have selected to show all national events
 
 
@@ -56210,16 +56210,16 @@ var render = function() {
               {
                 staticClass: "btn",
                 class: [
-                  _vm.show == "national" ? "btn-secondary" : "btn-outline-dark"
+                  _vm.show == "featured" ? "btn-secondary" : "btn-outline-dark"
                 ],
                 attrs: { type: "button" },
                 on: {
                   click: function($event) {
-                    _vm.show = "national"
+                    _vm.show = "featured"
                   }
                 }
               },
-              [_vm._v("National")]
+              [_vm._v("Featured")]
             ),
             _vm._v(" "),
             _c(

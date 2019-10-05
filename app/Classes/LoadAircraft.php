@@ -71,7 +71,7 @@ class LoadAircraft
 
 	public function load_db_from_caa()
 	{
-		if ($file = file_get_contents("https://www.caa.govt.nz/assets/legacy/aircraft/AircraftRegisterExport.zip"))
+		if ($file = file_get_contents("https://www.caa.govt.nz/assets/aircraft/AircraftRegisterExport.zip"))
 		{
 			Storage::disk('local')->put('aircraft.zip', $file);
 

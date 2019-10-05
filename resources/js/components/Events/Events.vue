@@ -14,7 +14,7 @@
 
 		<div class="btn-group mr-2 " role="group" v-model="show">
 			<button type="button" class="btn" v-bind:class="[ show=='all' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='all'">All</button>
-			<button type="button" class="btn" v-bind:class="[ show=='national' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='national'">National</button>
+			<button type="button" class="btn" v-bind:class="[ show=='featured' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='featured'">Featured</button>
 			<button type="button" class="btn" v-bind:class="[ show=='gnz' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='gnz'">GNZ</button>
 			<button type="button" class="btn" v-bind:class="[ show=='orgs' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="show='orgs'">Club:</button>
 		</div>
@@ -65,7 +65,7 @@ export default {
 		return {
 			events: [],
 			newDutyName: '',
-			show: 'national',
+			show: 'featured',
 			selectedOrg: {},
 			showAddPanel: false,
 			timerange: 'future'
@@ -100,8 +100,8 @@ export default {
 			}
 
 			// check if we have selected to show all national events
-			if (this.show=='national') {
-				data.national = true;
+			if (this.show=='featured') {
+				data.featured = true;
 			}
 
 			// check if we have selected to show all national events
