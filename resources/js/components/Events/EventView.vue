@@ -1,240 +1,106 @@
+<style>
+	.event-details .card-body {
+		font-size: 120%;
+	}
+</style>
+
 <template>
 <div>
 	
+	<div class="float-right">
+		<a class="btn btn-outline-dark mr-2" :href="'/events/' + event.slug + '/edit'" v-if="event.can_edit">Edit</a>
+		<!-- <a class="btn btn-outline-dark" :href="'/events/' + event.slug + '/delete'" v-if="event.can_edit">Delete</a> -->
+	</div>
+
 	<h1><a href="/events">Events</a> » {{event.name}}</h1>
+
 
 	<div class="row">
 		
 		<div class="col-md-6">
-			{{event.details}}
+
+			<h2>{{formatStartsIn(event.start_date_moment)}}</h2>
+
+			<h2>{{event.location}}</h2>
+
+			<div v-if="event.details" v-html="compiledMarkdown"></div>
+
+
+			<div class="mt-2 mb-4">
+					<v-calendar :columns="$screens({ default: 1, lg: 2 })" :attributes='attributes' :first-day-of-week="2" :from-date="event.start_date" ref="calendar" />
+					
+			</div>
 		</div>
 
 		<div class="col-md-6">
-			zxcv
+			<div class="card event-details">
+				<div class="card-header">
+					Details
+				</div>
+				<div class="card-body">
+
+					<div class="row mb-2" v-if="event.start_date">
+						<div class="col-4 label">Date</div>
+						<div class="col-8">
+							{{formatDate(event.start_date)}}<span v-if="hasEndDate"> - {{formatDate(event.end_date)}}</span>
+						</div>
+					</div>
+					
+
+					<div class="row mb-2" v-if="event.practice_days">
+						<div class="col-4 label">Practice Days</div>
+						<div class="col-8">{{event.practice_days}}</div>
+					</div>
+
+					<div class="row mb-2">
+						<div class="col-4 label">Organisation</div>
+						<div class="col-8">
+							<span v-if="event.org">{{event.org.name}}</span>
+							<span v-if="!event.org">Gliding New Zealand</span>
+						</div>
+					</div>
+
+					<div class="row mb-2" v-if="event.location">
+						<div class="col-4 label">Location</div>
+						<div class="col-8">{{event.location}}</div>
+					</div>
+
+					<div class="row mb-2" v-if="event.cost">
+						<div class="col-4 label">Cost</div>
+						<div class="col-8">${{event.cost}}</div>
+					</div>
+
+					<div class="row mb-2" v-if="event.cost_earlybird">
+						<div class="col-4 label">Earlybird</div>
+						<div class="col-8">${{event.cost_earlybird}}<span v-if="event.earlybird"></span></div>
+					</div>
+
+					<div class="row mb-2" v-if="event.cost_earlybird">
+						<div class="col-4 label"></div>
+						<div class="col-8"><span v-if="event.earlybird">{{formatStartsIn(event.earlybird, 'Ends', 'Ended')}} ({{formatDate(event.earlybird)}})</span></div>
+					</div>
+
+					<div class="row mb-2" v-if="event.website">
+						<div class="col-4 label">Website</div>
+						<div class="col-8"><a :href="event.website">{{event.website}}</a></div>
+					</div>
+
+					<div class="row mb-2" v-if="event.facebook">
+						<div class="col-4 label">Facebook</div>
+						<div class="col-8"><a :href="'http://facebook.com/' + event.facebook">{{event.facebook}}</a></div>
+					</div>
+
+					<div class="row mb-2" v-if="event.instagram">
+						<div class="col-4 label">Instagram</div>
+						<div class="col-8"><a :href="'http://instagram.com/' + event.instagram">{{event.instagram}}</a></div>
+					</div>
+
+				</div>
+			</div>
 		</div>
 
 	</div>
 
-
-<!-- 
-	<form @submit="save">
-		<div class="row">
-
-			<div class="form-group col-md-6">
-				<label for="featured" class="float-right">
-					<input id="featured" type="checkbox" v-model="event.featured" :value="true">
-					Feature Event on GNZ Website
-				</label>
-				<label for="name" class="col-xs-6 col-form-label">Name</label>
-				<div class="col-xs-6">
-					<input type="text" class="form-control" id="name" v-model.lazy="event.name">
-				</div>
-			</div>
-
-			<div class="col-md-6">
-				<div class="row">
-
-					<div class="form-group col-sm-6">
-						<label for="slug" class="col-form-label">Slug</label>
-						<input type="text" class="form-control" id="slug" v-on:change="event.slug = slug(event.slug)" v-model.lazy="event.slug">
-
-					</div>
-
-					<div class="form-group col-sm-6">
-						<label for="event_type" class="col-xs-6 col-form-label">Event Type</label>
-						<div class="col-xs-6">
-							<div class="form-inline">
-								<select v-model="event.type" id="event_type" class="form-control">
-									<option :value="null">Select a type of event...</option>
-									<option :value="eventType.code" v-for="eventType in eventTypes()">{{eventType.name}}</option>
-								</select>
-							</div>
-						</div>
-					</div>
-
-				</div>
-			</div>
-
-		</div>
-		<div class="row">
-
-			<div class="col-md-6">
-				<div class="row">
-					<div class="form-group col-6">
-						<label for="start_date" class="col-form-label">Start Date<span v-show="event.type=='competition'"> (Inc. Practice Days)</span></label>
-						<v-date-picker id="start_date" v-model="event.start_date" :locale="{ id: 'start_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
-					</div>
-
-					<div class="form-group col-6">
-						<label for="end_date_checkbox" class="col-form-label">
-							<input type="checkbox" id="end_date_checkbox" v-model="hasEndDate">
-							End Date <span  v-show="hasEndDate">({{dateDiffDays(event.start_date, event.end_date)}})</span>
-						</label>
-						<div v-show="hasEndDate">
-							<v-date-picker v-model="event.end_date" :locale="{ id: 'end_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="form-group col-md-6">
-				<label for="location" class="col-xs-6 col-form-label">Location e.g. Matamata</label>
-				<div class="col-xs-6">
-					<input type="text" class="form-control" id="location" v-model="event.location">
-				</div>
-			</div>
-
-		</div>
-
-
-		<div class="row">
-
-			<div class="form-group col-md-6">
-				<label for="website" class="col-xs-6 col-form-label">Website e.g. http://gliding.co.nz/</label>
-				<div class="col-xs-6 flex">
-					<input class="form-control" id="website" type="text" v-model="event.website">
-				</div>
-			</div>
-			<div class="form-group col-md-3">
-				<label for="facebook" class="col-xs-3 col-form-label">Facebook e.g glidingnewzealand</label>
-				<div class="col-xs-6">
-					<input class="form-control" id="facebook" type="text" v-model="event.facebook">
-				</div>
-			</div>
-			<div class="form-group col-md-3">
-				<label for="instagram" class="col-xs-3 col-form-label">Instagram e.g. glidingnz</label>
-				<div class="col-xs-6">
-					<input class="form-control" id="instagram" type="text" v-model="event.instagram">
-				</div>
-			</div>
-
-		</div>
-
-
-		<div class="row">
-
-			<div class="col-md-6">
-				<div class="row">
-					
-					<div class="col-6">
-						<label for="cost" class="col-form-label">Cost</label>
-							
-						<div class="form-inline">
-							$ <input id="cost" type="text" class="form-control ml-2 col-4" v-model="event.cost" size="4">
-						</div>
-					</div>
-
-
-					<div class="col-6"  v-show="flyingEvent">
-						<label for="practice_days" class="col-form-label">Practice Days</label>
-							
-						<div class="form-inline">
-							<input id="practice_days" type="text" class="form-control mr-2" v-model="event.practice_days" size="4"> days
-						</div>
-					</div>
-
-				</div>
-			</div>
-
-			<div class="form-group col-md-6" v-show="flyingEvent">
-				<div class="row">
-					
-					
-					<div class="col-6">
-						<label for="earlybird" class="col-form-label">Earlybird End Date (inclusive)</label>
-							
-						<div class="form-inline">
-							<v-date-picker id="earlybird" v-model="event.earlybird" :locale="{ id: 'earlybird', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
-						</div>
-					</div>
-
-					<div class="col-6">
-						<label for="cost_earlybird" class="col-form-label">Earlybird Cost</label>
-							
-						<div class="form-inline">
-							$ <input id="cost_earlybird" type="text" class="form-control ml-2 col-4" v-model="event.cost_earlybird" size="4">
-						</div>
-					</div>
-				
-				</div>
-			</div>
-		</div>
-
-
-
-
-		<div class="row">
-
-			<div class="form-group col-md-6">
-				<label for="details" class="col-xs-6 col-form-label">Page Details (Markdown available)</label>
-				<div class="col-xs-6">
-					<autosize-textarea>
-						<textarea type="text" class="form-control" id="details" v-model="event.details" rows="3"></textarea>
-					</autosize-textarea>
-
-					<input type="submit" value="Save Changes" class="btn btn-primary mt-2">
-				</div>
-			</div>
-			<div class="form-group col-md-6">
-				<label for="start_date" class="col-xs-6 col-form-label">Page Preview</label>
-				<div class="col-xs-6">
-
-					<div class="card">
-						<div v-if="event.details" class="card-body" v-html="compiledMarkdown"></div>
-						<div v-if="!event.details" class="card-body" >&nbsp;</div>
-					</div>
-
-				</div>
-			</div>
-
-		</div>
-
-
-		<div class="row" v-if="flyingEvent">
-
-			<div class="form-group col-md-6">
-				<label for="terms" class="col-xs-6 col-form-label">Terms &amp; Conditions (Markdown available)</label>
-				<div class="col-xs-6">
-					<autosize-textarea>
-						<textarea type="text" class="form-control" id="terms" v-model="event.terms" rows="3"></textarea>
-					</autosize-textarea>
-					<input type="submit" value="Save Changes" class="btn btn-primary mt-2">
-				</div>
-			</div>
-			<div class="form-group col-md-6">
-				<label for="start_date" class="col-xs-6 col-form-label">Terms Preview</label>
-				<div class="col-xs-6">
-
-					<div class="card">
-						<div v-if="event.terms" class="card-body" v-html="compiledTermsMarkdown"></div>
-						<div v-if="!event.terms" class="card-body" >&nbsp;</div>
-					</div>
-
-				</div>
-			</div>
-
-		</div>
-
-
-		<div class="row" v-if="flyingEvent">
-
-			<div class="form-group col-md-6">
-				<label for="soaringspot_api_secret" class="col-xs-6 col-form-label">SoaringSpot API Secret</label>
-				<div class="col-xs-6">
-					<input class="form-control" id="soaringspot_api_secret" type="text" v-model="event.soaringspot_api_secret">
-				</div>
-			</div>
-			<div class="form-group col-md-6">
-				<label for="soaringspot_api_client_id" class="col-xs-6 col-form-label">SoaringSpot API Client ID</label>
-				<div class="col-xs-6">
-					<input class="form-control" id="soaringspot_api_client_id" type="text" v-model="event.soaringspot_api_client_id">
-				</div>
-			</div>
-
-		</div>
-
- -->
-	</form>
 
 
 </div>
@@ -249,12 +115,17 @@ export default {
 		return {
 			event: [],
 			newDutyName: '',
-			hasEndDate: false
+			hasEndDate: false,
+			attributes: [],
+			calendar: null
 		}
 	},
 	props: ['orgId', 'eventId'],
 	created: function() {
 		this.load();
+	},
+	mounted: function() {
+		this.calendar = this.$refs.calendar;
 	},
 	computed: {
 		compiledMarkdown: function () {
@@ -279,12 +150,85 @@ export default {
 			var that = this;
 			window.axios.get('/api/events/' + this.eventId).then(function (response) {
 				that.event = response.data.data;
-				that.event.start_date = that.$moment(that.event.start_date).toDate();
-				that.event.end_date = that.$moment(that.event.end_date).toDate();
-				that.event.earlybird = that.$moment(that.event.earlybird).toDate();
 				if (that.event.start_date!=that.event.end_date) {
 					that.hasEndDate=true;
 				}
+				that.event.start_date_moment = that.$moment(that.event.start_date);
+				if (that.event.end_date)that.event.end_date_moment = that.$moment(that.event.end_date);
+				if (that.event.earlybird) that.event.earlybird_moment = that.$moment(that.event.earlybird);
+
+				that.event.start_date = that.$moment(that.event.start_date).toDate();
+				if (that.event.end_date) that.event.end_date = that.$moment(that.event.end_date).toDate();
+				if (that.event.earlybird) that.event.earlybird = that.$moment(that.event.earlybird).toDate();
+
+				// figure out practice dates
+				var practice_days = 0;
+				if (that.event.practice_days) {
+					practice_days = that.event.practice_days;
+				}
+
+				var comp_start_date = that.$moment(that.event.start_date).add(practice_days, 'days').toDate();
+				var practice_end_date = that.$moment(that.event.start_date).add(practice_days-1, 'days').toDate();
+
+
+				if (that.event.practice_days) {
+
+					// push the actual contest days
+					that.attributes.push({
+						highlight: {
+							color: 'purple', // Red
+							fillMode: 'solid',
+						},
+						dates: [
+							{
+								'start': that.event.start_date,
+								'end': practice_end_date,
+							}
+						],
+						order: 1
+					});
+				}
+
+				// push the actual contest days
+				
+				if (that.event.end_date) {
+					var dates = [{
+							'start': that.event.start_date,
+							'end': that.event.end_date,
+						}];
+				} else {
+					var dates = [
+						that.event.start_date
+					];
+				}
+
+				that.attributes.push({
+					highlight: {
+						color: 'blue', // Red
+						fillMode: 'solid',
+					},
+					dates: dates,
+					order: 0
+				});
+
+				if (that.event.earlybird) {
+					// push the actual contest days
+					that.attributes.push({
+						highlight: {
+							color: 'red', // Red
+							fillMode: 'solid',
+						},
+						dates: [
+							that.event.earlybird
+						],
+						order: 2
+					});
+				}
+				
+
+				// move calendar to the date range
+				that.calendar.showPageRange({ from: that.event.start_date });
+				
 			});
 		}
 	}

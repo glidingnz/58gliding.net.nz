@@ -26,7 +26,7 @@ only screen and (max-width: 760px),
 <template>
 	<div>
 
-		<calendar-nav active="calendar" title="Calendar"></calendar-nav>
+		<calendar-nav active="calendar" title="Flying Calendar"></calendar-nav>
 
 		
 		<table class="table table-striped table-sm collapsable calendar-table">
@@ -51,7 +51,7 @@ only screen and (max-width: 760px),
 						<span class="fa fa-exclamation-circle text-white"></span> Day Cancelled<span v-if="day.cancelled_reason">: {{day.cancelled_reason}}</span>
 					</div>
 					<div v-for="event in dayEvents(day.day_date)"  class=" success">
-						<span class="fa fa-calendar-alt"></span> <span class="badge badge-pill success-badge">{{event.name}}</span></span>
+						<span v-html="formatEventTypeIcon(event.type)"></span> <span class="badge badge-pill success-badge">{{event.name}}</span></span>
 					</div>
 					<span v-html="renderDescription(day.description)"></span>
 					

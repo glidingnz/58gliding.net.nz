@@ -1,6 +1,6 @@
 <template>
 <div>
-	<select name="org" v-model="selectedOrg" class="form-control input-sm" :disabled="disabled ? '' : disabled">
+	<select name="org" v-model="selectedOrg" class="form-control custom-select custom-select-sm" :disabled="disabled ? '' : disabled">
 		<option v-bind:value="null">All Clubs</option>
 		<option v-for="org in orgs" v-bind:value="org">{{org.name}}</option>
 	</select>

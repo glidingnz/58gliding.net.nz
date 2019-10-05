@@ -32,7 +32,7 @@
 
 	<div class="container-fluid clearfix">
 
-		<select name="org" v-model="state.org" class="col-xs-12 col-sm-4 form-control input-sm float-right" style="width: auto; margin-bottom: 20px;">
+		<select name="org" v-model="state.org" class="col-xs-12 col-sm-4 form-control custom-select custom-select-sm float-right" style="width: auto; margin-bottom: 20px;">
 			<option v-bind:value="null">All Clubs</option>
 			<option v-for="org in orgs" v-bind:value="org.gnz_code">{{org.name}}</option>
 		</select>

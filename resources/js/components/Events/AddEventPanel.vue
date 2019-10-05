@@ -39,12 +39,18 @@
 				<input type="text" class="form-control" v-model="newEventName" ref="newName">
 			</div>
 
+
+			<div class="mr-2 " role="group">
+				<button v-for="eventType in eventTypes()" type="button" class="btn btn-xs mr-2 mb-2" v-bind:class="[ newEventType==eventType.code ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="newEventType=eventType.code">{{eventType.name}}</button>
+			</div>
+
 			<div class="form-group">
 				<label>Event Date</label>
 				<v-date-picker v-model="newEventDate" :locale="{ id: 'nz', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
 			</div>
 
-			<div class="form-group">
+
+			<div class="form-group mt-2">
 				<button v-on:click="addEvent()" class="btn btn-outline-dark">Add Event</button>
 			</div>
 
@@ -55,12 +61,15 @@
 </template>
 
 <script>
+import common from '../../mixins.js';
 export default {
+	mixins: [common],
 	data: function() {
 		return {
 			showNameRequired: false,
 			newEventName: '',
-			newEventDate: null
+			newEventDate: null,
+			newEventType: 'other'
 		}
 	},
 	props: ['orgId', 'show', 'date'],
@@ -86,6 +95,7 @@ export default {
 			{
 				var data = {
 					"name": this.newEventName,
+					"type": this.newEventType,
 					"start_date":  this.$moment(this.newEventDate).format('YYYY-MM-DD'),
 					"org_id" : this.orgId
 				}

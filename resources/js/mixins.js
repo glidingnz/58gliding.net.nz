@@ -53,6 +53,19 @@ module.exports = {
 		dateToNow: function(date) {
 			return Vue.prototype.$moment(date).fromNow();
 		},
+		dateDifferenceMoment: function(moment_date) {
+			var difference = Vue.prototype.$moment().startOf('day').diff(moment_date, 'days');
+			return difference;
+		},
+		formatStartsIn: function(date, starts='Starts', started='Started') {
+			var days_away = this.dateDifferenceMoment(date);
+			var string = '';
+			if (days_away<=0) string += starts + ' ';
+			if (days_away>0) string += started + ' ';
+			if (days_away!=0) string += this.dateToNow(date);
+			if (days_away==0) string += 'Today!'; 
+			return string;
+		},
 		dateDiffDays: function(date1, date2) {
 			if (date2==null || date2=='') return '';
 			var date1 = Vue.prototype.$moment(date1);
@@ -73,22 +86,30 @@ module.exports = {
 		},
 		eventTypes: function() {
 			return [
-				{'code': 'competition', 'name': 'Competition'},
-				{'code': 'training', 'name': 'Training'},
-				{'code': 'xcountry', 'name': 'Cross Country Course'},
-				{'code': 'dinner', 'name': 'Dinner'},
-				{'code': 'working-bee', 'name': 'Working Bee'},
-				{'code': 'cadets', 'name': 'Cadets'},
-				{'code': 'school-group', 'name': 'School Group'},
-				{'code': 'other', 'name': 'Other'}
+				{'code': 'competition', 'name': 'Competition', 'icon':'trophy', 'shortname':'Comp'},
+				{'code': 'training', 'name': 'Training', 'icon':'paper-plane', 'shortname':'Training'},
+				{'code': 'xcountry', 'name': 'Cross Country Course', 'icon':'globe-asia', 'shortname':'XCountry'},
+				{'code': 'dinner', 'name': 'Dinner', 'icon':'utensils', 'shortname':'Dinner'},
+				{'code': 'bbq', 'name': 'BBQ', 'icon':'utensils', 'shortname':'BBQ'},
+				{'code': 'working-bee', 'name': 'Working Bee', 'icon':'tractor', 'shortname':'Working Bee'},
+				{'code': 'cadets', 'name': 'Cadets', 'icon':'users', 'shortname':'Cadets'},
+				{'code': 'school-group', 'name': 'School Group', 'icon':'users', 'shortname':'School'},
+				{'code': 'other', 'name': 'Other', 'icon':'calendar-alt', 'shortname':'Other'}
 			]
 		},
 		formatEventType: function(event) {
-			var eventType = this.eventTypes().filter(function isBigEnough(value) {
+			var eventType = this.eventTypes().filter(function findEvent(value) {
 				if (value.code==event) return true;
 			});
 			if (eventType.length==0) return 'Other';
 			return eventType[0].name;
+		},
+		formatEventTypeIcon: function(event) {
+			var eventType = this.eventTypes().filter(function findEvent(value) {
+				if (value.code==event) return true;
+			});
+			if (eventType.length>0) return '<span class="fa fa-' + eventType[0].icon + '"></span>';
+			else return '<span class="fa fa-calendar-alt"></span>';
 		}
 	}
 }

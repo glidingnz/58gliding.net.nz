@@ -100,6 +100,11 @@ class EventsAPIController extends AppBaseController
 
 		// create a slug if one doesn't exist
 		$slug = $request->input('slug', $request->input('name', ''));
+
+		if ($request->has('start_date')) {
+			$slug .= '-' . Carbon::createFromFormat('Y-m-d', $request->input('start_date'))->format('M-Y');
+		}
+
 		$slug = simple_string(strtolower($slug));
 
 		// count the number of times this slug has already been used
@@ -126,6 +131,7 @@ class EventsAPIController extends AppBaseController
 
 		// default the end date to the start date unless given otherwise
 		$event->end_date = $request->input('end_date', $request->input('start_date', null));
+		$event->type = $request->input('type', $request->input('type', 'other'));
 		$event->slug = $slug;
 		$event->creator_user_id = Auth::user()->id;
 		$event->save();
@@ -144,11 +150,12 @@ class EventsAPIController extends AppBaseController
 	public function show($id)
 	{
 		/** @var events $events */
-		$event = Event::find($id);
+		$event = Event::with('org')->find($id);
 
 		if (!$event) {
 			return $this->sendError('Event not found');
 		}
+		$event->can_edit = $event->can_edit;
 
 		return $this->sendResponse($event->toArray(), 'Event retrieved successfully');
 	}

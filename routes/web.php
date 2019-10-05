@@ -62,6 +62,9 @@ Route::GET('/btraced/{rego}', 'Api\v1\TrackingApiController@btraced'); // specia
 Route::get('/api-control', 'HomeController@api_controller');
 
 Route::get('/calendar', 'Apps\CalendarController@index');
+
+
+Route::get('/events/', 'Apps\EventsController@index');
 Route::get('/events/{slug}', 'Apps\EventsController@viewEvent');
 
 Route::get('/members', 'Apps\MembersController@index');
@@ -92,6 +95,5 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/calendar/roster/edit', 'Apps\CalendarController@editRoster');
 
 	Route::get('/events/{slug}/edit', 'Apps\EventsController@editEvent');
-	Route::get('/events/', 'Apps\EventsController@index');
 
 });

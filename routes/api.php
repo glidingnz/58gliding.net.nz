@@ -24,6 +24,10 @@ Route::group(['namespace' => 'Api', 'middleware' => 'auth:api'], function()
 	Route::post('/days/deactivate',  'DayAPIController@deactivate');
 	Route::resource('duties', 'DutyAPIController');
 	Route::resource('roster', 'RosterAPIController');
+});
+
+Route::group(['namespace' => 'Api'], function()
+{
 	Route::resource('events', 'EventsAPIController');
 });
 

@@ -1891,12 +1891,10 @@ __webpack_require__.r(__webpack_exports__);
     if (this.get_url_param('type')) this.state.type = this.get_url_param('type');
     var that = this;
     History.Adapter.bind(window, 'statechange', function () {
-      //console.log('statechange triggered');
       var state = History.getState();
       that.state = state.data;
 
       if (!that.dont_reload) {
-        //console.log('reloading after statechange');
         that.loadSelected();
       }
 
@@ -5857,9 +5855,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -6311,6 +6306,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../mixins.js */ "./resources/js/mixins.js");
+/* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -6367,12 +6364,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
   data: function data() {
     return {
       showNameRequired: false,
       newEventName: '',
-      newEventDate: null
+      newEventDate: null,
+      newEventType: 'other'
     };
   },
   props: ['orgId', 'show', 'date'],
@@ -6400,6 +6406,7 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         var data = {
           "name": this.newEventName,
+          "type": this.newEventType,
           "start_date": this.$moment(this.newEventDate).format('YYYY-MM-DD'),
           "org_id": this.orgId
         };
@@ -6654,6 +6661,35 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked.js");
@@ -6664,7 +6700,8 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
     return {
       event: [],
       newDutyName: '',
-      hasEndDate: false
+      hasEndDate: false,
+      returnOnSave: false
     };
   },
   props: ['orgId', 'eventId'],
@@ -6698,13 +6735,14 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
       var that = this;
       window.axios.get('/api/events/' + this.eventId).then(function (response) {
         that.event = response.data.data;
-        that.event.start_date = that.$moment(that.event.start_date).toDate();
-        that.event.end_date = that.$moment(that.event.end_date).toDate();
-        that.event.earlybird = that.$moment(that.event.earlybird).toDate();
 
         if (that.event.start_date != that.event.end_date) {
           that.hasEndDate = true;
         }
+
+        that.event.start_date = that.$moment(that.event.start_date).toDate();
+        that.event.end_date = that.$moment(that.event.end_date).toDate();
+        that.event.earlybird = that.$moment(that.event.earlybird).toDate();
       });
     },
     save: function save(e) {
@@ -6716,6 +6754,10 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
       event.earlybird = this.apiDateFormat(event.earlybird);
       window.axios.put('/api/events/' + this.eventId, event).then(function (response) {
         messages.$emit('success', 'Event ' + that.event.name + ' Updated');
+
+        if (that.returnOnSave) {
+          window.location.href = "/events/" + event.slug;
+        }
       });
       e.preventDefault();
     },
@@ -6846,140 +6888,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked.js");
@@ -6990,12 +6898,17 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
     return {
       event: [],
       newDutyName: '',
-      hasEndDate: false
+      hasEndDate: false,
+      attributes: [],
+      calendar: null
     };
   },
   props: ['orgId', 'eventId'],
   created: function created() {
     this.load();
+  },
+  mounted: function mounted() {
+    this.calendar = this.$refs.calendar;
   },
   computed: {
     compiledMarkdown: function compiledMarkdown() {
@@ -7024,13 +6937,80 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
       var that = this;
       window.axios.get('/api/events/' + this.eventId).then(function (response) {
         that.event = response.data.data;
-        that.event.start_date = that.$moment(that.event.start_date).toDate();
-        that.event.end_date = that.$moment(that.event.end_date).toDate();
-        that.event.earlybird = that.$moment(that.event.earlybird).toDate();
 
         if (that.event.start_date != that.event.end_date) {
           that.hasEndDate = true;
         }
+
+        that.event.start_date_moment = that.$moment(that.event.start_date);
+        if (that.event.end_date) that.event.end_date_moment = that.$moment(that.event.end_date);
+        if (that.event.earlybird) that.event.earlybird_moment = that.$moment(that.event.earlybird);
+        that.event.start_date = that.$moment(that.event.start_date).toDate();
+        if (that.event.end_date) that.event.end_date = that.$moment(that.event.end_date).toDate();
+        if (that.event.earlybird) that.event.earlybird = that.$moment(that.event.earlybird).toDate(); // figure out practice dates
+
+        var practice_days = 0;
+
+        if (that.event.practice_days) {
+          practice_days = that.event.practice_days;
+        }
+
+        var comp_start_date = that.$moment(that.event.start_date).add(practice_days, 'days').toDate();
+        var practice_end_date = that.$moment(that.event.start_date).add(practice_days - 1, 'days').toDate();
+
+        if (that.event.practice_days) {
+          // push the actual contest days
+          that.attributes.push({
+            highlight: {
+              color: 'purple',
+              // Red
+              fillMode: 'solid'
+            },
+            dates: [{
+              'start': that.event.start_date,
+              'end': practice_end_date
+            }],
+            order: 1
+          });
+        } // push the actual contest days
+
+
+        if (that.event.end_date) {
+          var dates = [{
+            'start': that.event.start_date,
+            'end': that.event.end_date
+          }];
+        } else {
+          var dates = [that.event.start_date];
+        }
+
+        that.attributes.push({
+          highlight: {
+            color: 'blue',
+            // Red
+            fillMode: 'solid'
+          },
+          dates: dates,
+          order: 0
+        });
+
+        if (that.event.earlybird) {
+          // push the actual contest days
+          that.attributes.push({
+            highlight: {
+              color: 'red',
+              // Red
+              fillMode: 'solid'
+            },
+            dates: [that.event.earlybird],
+            order: 2
+          });
+        } // move calendar to the date range
+
+
+        that.calendar.showPageRange({
+          from: that.event.start_date
+        });
       });
     }
   }
@@ -7110,56 +7090,92 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
   data: function data() {
     return {
+      state: {
+        show: 'orgs',
+        type: 'all',
+        timerange: 'future'
+      },
       events: [],
       newDutyName: '',
-      show: 'featured',
       selectedOrg: {},
       showAddPanel: false,
-      timerange: 'future'
+      dont_reload: false
     };
   },
   watch: {
-    show: function show() {
-      this.load();
-    },
-    timerange: function timerange() {
-      this.load();
+    'state': {
+      handler: 'stateChanged',
+      deep: true
     }
   },
   props: ['orgId', 'orgName', 'eventId'],
   created: function created() {
     // only load on created if an org is not given
     if (!this.orgId) {
+      this.state.show = 'featured';
       this.load();
     }
+  },
+  mounted: function mounted() {
+    var that = this;
+    var State = History.getState(); // load existing GET params
+
+    if (this.get_url_param('show')) this.state.show = this.get_url_param('show');
+    if (this.get_url_param('type')) this.state.type = this.get_url_param('type');
+    if (this.get_url_param('timerange')) this.state.timerange = this.get_url_param('timerange');
+    History.Adapter.bind(window, 'statechange', function () {
+      var state = History.getState();
+      that.state = state.data;
+
+      if (!that.dont_reload) {
+        that.load();
+      }
+
+      that.dont_reload = false;
+    });
+    this.dont_reload = true; // make sure we dont do a double load on page launch
+
+    History.replaceState(this.state, null, "?show=" + this.state.show + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
+    this.load();
   },
   methods: {
     load: function load() {
       var that = this;
       var data = {
-        'timerange': this.timerange // check if we have selected an org. It might be null, and thus = all orgs
+        'timerange': this.state.timerange // check if we have selected an org. It might be null, and thus = all orgs
 
       };
 
-      if (this.show == 'orgs') {
+      if (this.state.show == 'orgs') {
         if (this.selectedOrg) {
           data.org_id = this.selectedOrg.id;
         }
       } // check if we have selected to show all national events
 
 
-      if (this.show == 'featured') {
+      if (this.state.show == 'featured') {
         data.featured = true;
       } // check if we have selected to show all national events
 
 
-      if (this.show == 'gnz') {
+      if (this.state.show == 'gnz') {
         data.org_id = 'gnz';
+      } // filter by event type
+
+
+      if (this.state.type != 'all') {
+        data.type = this.state.type;
       }
 
       window.axios.get('/api/events/', {
@@ -7170,8 +7186,10 @@ __webpack_require__.r(__webpack_exports__);
     },
     orgSelected: function orgSelected(org) {
       this.selectedOrg = org;
-      this.show = 'orgs';
       this.load();
+    },
+    stateChanged: function stateChanged() {
+      History.pushState(this.state, null, "?show=" + this.state.show + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
     },
     eventAdded: function eventAdded(event) {
       this.load();
@@ -8403,6 +8421,25 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 // module
 exports.push([module.i, "\n.custom-modal {\n\twidth: 100%;\n\theight: 100%;\n\tposition: fixed;\n\ttop: 0;\n\tleft: 0;\n\tbackground-color: rgba(0,0,0,0.7);\n\tz-index: 999;\n\toverflow: scroll;\n}\n.custom-modal .inner {\n\twidth: 80%;\n\tmax-width: 500px;\n\tmargin: 100px auto 0 auto;\n\tbackground-color: #EEE;\n\tpadding: 20px; \n\tbox-shadow: 0px 6px 15px 7px rgba(0,0,0,0.27);\n\tborder-radius: 10px;\n\toverflow: scroll;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/events/EventView.vue?vue&type=style&index=0&lang=css&":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/events/EventView.vue?vue&type=style&index=0&lang=css& ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.event-details .card-body {\n\tfont-size: 120%;\n}\n", ""]);
 
 // exports
 
@@ -46292,6 +46329,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/events/EventView.vue?vue&type=style&index=0&lang=css&":
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/events/EventView.vue?vue&type=style&index=0&lang=css& ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./EventView.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/events/EventView.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/passport/AuthorizedClients.vue?vue&type=style&index=0&id=397d14ca&scoped=true&lang=css&":
 /*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/passport/AuthorizedClients.vue?vue&type=style&index=0&id=397d14ca&scoped=true&lang=css& ***!
@@ -49992,7 +50059,8 @@ var render = function() {
               expression: "state.org"
             }
           ],
-          staticClass: "col-xs-12 col-sm-4 form-control input-sm float-right",
+          staticClass:
+            "col-xs-12 col-sm-4 form-control custom-select custom-select-sm float-right",
           staticStyle: { width: "auto", "margin-bottom": "20px" },
           attrs: { name: "org" },
           on: {
@@ -53824,7 +53892,9 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("calendar-nav", { attrs: { active: "calendar", title: "Calendar" } }),
+      _c("calendar-nav", {
+        attrs: { active: "calendar", title: "Flying Calendar" }
+      }),
       _vm._v(" "),
       _c(
         "table",
@@ -53907,7 +53977,13 @@ var render = function() {
                     _vm._v(" "),
                     _vm._l(_vm.dayEvents(day.day_date), function(event) {
                       return _c("div", { staticClass: " success" }, [
-                        _c("span", { staticClass: "fa fa-calendar-alt" }),
+                        _c("span", {
+                          domProps: {
+                            innerHTML: _vm._s(
+                              _vm.formatEventTypeIcon(event.type)
+                            )
+                          }
+                        }),
                         _vm._v(" "),
                         _c(
                           "span",
@@ -54481,25 +54557,6 @@ var render = function() {
                   attrs: { href: "/calendar/duties/edit" }
                 },
                 [_vm._v("Configure Duties")]
-              )
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "li",
-            {
-              staticClass: "nav-item",
-              class: { active: _vm.active == "events" }
-            },
-            [
-              _c(
-                "a",
-                {
-                  staticClass: "nav-link",
-                  class: [_vm.active == "events" ? "active" : ""],
-                  attrs: { href: "/events" }
-                },
-                [_vm._v("Events")]
               )
             ]
           )
@@ -55388,6 +55445,32 @@ var render = function() {
             _vm._v(" "),
             _c(
               "div",
+              { staticClass: "mr-2 ", attrs: { role: "group" } },
+              _vm._l(_vm.eventTypes(), function(eventType) {
+                return _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-xs mr-2 mb-2",
+                    class: [
+                      _vm.newEventType == eventType.code
+                        ? "btn-secondary"
+                        : "btn-outline-dark"
+                    ],
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.newEventType = eventType.code
+                      }
+                    }
+                  },
+                  [_vm._v(_vm._s(eventType.name))]
+                )
+              }),
+              0
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
               { staticClass: "form-group" },
               [
                 _c("label", [_vm._v("Event Date")]),
@@ -55413,7 +55496,7 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
+            _c("div", { staticClass: "form-group mt-2" }, [
               _c(
                 "button",
                 {
@@ -55735,6 +55818,11 @@ var render = function() {
                         : _vm.hasEndDate
                     },
                     on: {
+                      click: function($event) {
+                        _vm.hasEndDate
+                          ? (_vm.event.end_date = _vm.event.start_date)
+                          : 0
+                      },
                       change: function($event) {
                         var $$a = _vm.hasEndDate,
                           $$el = $event.target,
@@ -55822,39 +55910,131 @@ var render = function() {
           ])
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "form-group col-md-6" }, [
-          _c(
-            "label",
-            {
-              staticClass: "col-xs-6 col-form-label",
-              attrs: { for: "location" }
-            },
-            [_vm._v("Location e.g. Matamata")]
-          ),
-          _vm._v(" "),
-          _c("div", { staticClass: "col-xs-6" }, [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.event.location,
-                  expression: "event.location"
-                }
-              ],
-              staticClass: "form-control",
-              attrs: { type: "text", id: "location" },
-              domProps: { value: _vm.event.location },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
+        _c("div", { staticClass: "col-md-6" }, [
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-md-3 col-6" }, [
+              _c(
+                "label",
+                { staticClass: "col-form-label", attrs: { for: "location" } },
+                [_vm._v("Start Time")]
+              ),
+              _vm._v(" "),
+              _c("div", {}, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.event.start_time,
+                      expression: "event.start_time"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: {
+                    placeholder: "e.g. 16:30",
+                    type: "time",
+                    id: "location"
+                  },
+                  domProps: { value: _vm.event.start_time },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.event, "start_time", $event.target.value)
+                    }
                   }
-                  _vm.$set(_vm.event, "location", $event.target.value)
-                }
-              }
-            })
+                })
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-md-3 col-6" }, [
+              _c(
+                "label",
+                { staticClass: "col-form-label", attrs: { for: "location" } },
+                [_vm._v("End Time")]
+              ),
+              _vm._v(" "),
+              _c("div", {}, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.event.end_time,
+                      expression: "event.end_time"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: {
+                    placeholder: "e.g. 16:30",
+                    type: "time",
+                    id: "location"
+                  },
+                  domProps: { value: _vm.event.end_time },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.event, "end_time", $event.target.value)
+                    }
+                  }
+                })
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-md-6" }, [
+              _c(
+                "label",
+                { staticClass: "col-form-label", attrs: { for: "location" } },
+                [_vm._v("Location e.g. Matamata")]
+              ),
+              _vm._v(" "),
+              _c("div", {}, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.event.location,
+                      expression: "event.location"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { type: "text", id: "location" },
+                  domProps: { value: _vm.event.location },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.event, "location", $event.target.value)
+                    }
+                  }
+                })
+              ])
+            ])
           ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "form-group col-md-3" }, [
+          _c("input", {
+            staticClass: "btn btn-outline-dark mt-2",
+            attrs: { type: "submit", value: "Save Changes" }
+          }),
+          _vm._v(" "),
+          _c("input", {
+            staticClass: "btn btn-primary mt-2",
+            attrs: { type: "submit", value: "Save & Return" },
+            on: {
+              click: function($event) {
+                _vm.returnOnSave = true
+              }
+            }
+          })
         ])
       ]),
       _vm._v(" "),
@@ -56193,8 +56373,18 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("input", {
-                staticClass: "btn btn-primary mt-2",
+                staticClass: "btn btn-outline-dark mt-2",
                 attrs: { type: "submit", value: "Save Changes" }
+              }),
+              _vm._v(" "),
+              _c("input", {
+                staticClass: "btn btn-primary mt-2",
+                attrs: { type: "submit", value: "Save & Return" },
+                on: {
+                  click: function($event) {
+                    _vm.returnOnSave = true
+                  }
+                }
               })
             ],
             1
@@ -56269,8 +56459,18 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("input", {
-                    staticClass: "btn btn-primary mt-2",
+                    staticClass: "btn btn-outline-dark mt-2",
                     attrs: { type: "submit", value: "Save Changes" }
+                  }),
+                  _vm._v(" "),
+                  _c("input", {
+                    staticClass: "btn btn-primary mt-2",
+                    attrs: { type: "submit", value: "Save & Return" },
+                    on: {
+                      click: function($event) {
+                        _vm.returnOnSave = true
+                      }
+                    }
                   })
                 ],
                 1
@@ -56414,6 +56614,19 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _c("div", { staticClass: "float-right" }, [
+      _vm.event.can_edit
+        ? _c(
+            "a",
+            {
+              staticClass: "btn btn-outline-dark mr-2",
+              attrs: { href: "/events/" + _vm.event.slug + "/edit" }
+            },
+            [_vm._v("Edit")]
+          )
+        : _vm._e()
+    ]),
+    _vm._v(" "),
     _c("h1", [
       _c("a", { attrs: { href: "/events" } }, [_vm._v("Events")]),
       _vm._v(" » " + _vm._s(_vm.event.name))
@@ -56421,10 +56634,205 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-md-6" }, [
-        _vm._v("\n\t\t\t" + _vm._s(_vm.event.details) + "\n\t\t")
+        _c("h2", [
+          _vm._v(_vm._s(_vm.formatStartsIn(_vm.event.start_date_moment)))
+        ]),
+        _vm._v(" "),
+        _c("h2", [_vm._v(_vm._s(_vm.event.location))]),
+        _vm._v(" "),
+        _vm.event.details
+          ? _c("div", { domProps: { innerHTML: _vm._s(_vm.compiledMarkdown) } })
+          : _vm._e(),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "mt-2 mb-4" },
+          [
+            _c("v-calendar", {
+              ref: "calendar",
+              attrs: {
+                columns: _vm.$screens({ default: 1, lg: 2 }),
+                attributes: _vm.attributes,
+                "first-day-of-week": 2,
+                "from-date": _vm.event.start_date
+              }
+            })
+          ],
+          1
+        )
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-md-6" }, [_vm._v("\n\t\t\tzxcv\n\t\t")])
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("div", { staticClass: "card event-details" }, [
+          _c("div", { staticClass: "card-header" }, [
+            _vm._v("\n\t\t\t\t\tDetails\n\t\t\t\t")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _vm.event.start_date
+              ? _c("div", { staticClass: "row mb-2" }, [
+                  _c("div", { staticClass: "col-4 label" }, [_vm._v("Date")]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-8" }, [
+                    _vm._v(
+                      "\n\t\t\t\t\t\t\t" +
+                        _vm._s(_vm.formatDate(_vm.event.start_date))
+                    ),
+                    _vm.hasEndDate
+                      ? _c("span", [
+                          _vm._v(
+                            " - " + _vm._s(_vm.formatDate(_vm.event.end_date))
+                          )
+                        ])
+                      : _vm._e()
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.event.practice_days
+              ? _c("div", { staticClass: "row mb-2" }, [
+                  _c("div", { staticClass: "col-4 label" }, [
+                    _vm._v("Practice Days")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-8" }, [
+                    _vm._v(_vm._s(_vm.event.practice_days))
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _c("div", { staticClass: "row mb-2" }, [
+              _c("div", { staticClass: "col-4 label" }, [
+                _vm._v("Organisation")
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-8" }, [
+                _vm.event.org
+                  ? _c("span", [_vm._v(_vm._s(_vm.event.org.name))])
+                  : _vm._e(),
+                _vm._v(" "),
+                !_vm.event.org
+                  ? _c("span", [_vm._v("Gliding New Zealand")])
+                  : _vm._e()
+              ])
+            ]),
+            _vm._v(" "),
+            _vm.event.location
+              ? _c("div", { staticClass: "row mb-2" }, [
+                  _c("div", { staticClass: "col-4 label" }, [
+                    _vm._v("Location")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-8" }, [
+                    _vm._v(_vm._s(_vm.event.location))
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.event.cost
+              ? _c("div", { staticClass: "row mb-2" }, [
+                  _c("div", { staticClass: "col-4 label" }, [_vm._v("Cost")]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-8" }, [
+                    _vm._v("$" + _vm._s(_vm.event.cost))
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.event.cost_earlybird
+              ? _c("div", { staticClass: "row mb-2" }, [
+                  _c("div", { staticClass: "col-4 label" }, [
+                    _vm._v("Earlybird")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-8" }, [
+                    _vm._v("$" + _vm._s(_vm.event.cost_earlybird)),
+                    _vm.event.earlybird ? _c("span") : _vm._e()
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.event.cost_earlybird
+              ? _c("div", { staticClass: "row mb-2" }, [
+                  _c("div", { staticClass: "col-4 label" }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-8" }, [
+                    _vm.event.earlybird
+                      ? _c("span", [
+                          _vm._v(
+                            _vm._s(
+                              _vm.formatStartsIn(
+                                _vm.event.earlybird,
+                                "Ends",
+                                "Ended"
+                              )
+                            ) +
+                              " (" +
+                              _vm._s(_vm.formatDate(_vm.event.earlybird)) +
+                              ")"
+                          )
+                        ])
+                      : _vm._e()
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.event.website
+              ? _c("div", { staticClass: "row mb-2" }, [
+                  _c("div", { staticClass: "col-4 label" }, [
+                    _vm._v("Website")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-8" }, [
+                    _c("a", { attrs: { href: _vm.event.website } }, [
+                      _vm._v(_vm._s(_vm.event.website))
+                    ])
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.event.facebook
+              ? _c("div", { staticClass: "row mb-2" }, [
+                  _c("div", { staticClass: "col-4 label" }, [
+                    _vm._v("Facebook")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-8" }, [
+                    _c(
+                      "a",
+                      {
+                        attrs: {
+                          href: "http://facebook.com/" + _vm.event.facebook
+                        }
+                      },
+                      [_vm._v(_vm._s(_vm.event.facebook))]
+                    )
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.event.instagram
+              ? _c("div", { staticClass: "row mb-2" }, [
+                  _c("div", { staticClass: "col-4 label" }, [
+                    _vm._v("Instagram")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-8" }, [
+                    _c(
+                      "a",
+                      {
+                        attrs: {
+                          href: "http://instagram.com/" + _vm.event.instagram
+                        }
+                      },
+                      [_vm._v(_vm._s(_vm.event.instagram))]
+                    )
+                  ])
+                ])
+              : _vm._e()
+          ])
+        ])
+      ])
     ])
   ])
 }
@@ -56471,29 +56879,21 @@ var render = function() {
         _vm._v(" "),
         _c(
           "div",
-          {
-            staticClass: "btn-group ml-auto mr-2 ",
-            attrs: { role: "group" },
-            model: {
-              value: _vm.timerange,
-              callback: function($$v) {
-                _vm.timerange = $$v
-              },
-              expression: "timerange"
-            }
-          },
+          { staticClass: "btn-group ml-auto mr-2", attrs: { role: "group" } },
           [
             _c(
               "button",
               {
-                staticClass: "btn",
+                staticClass: "btn btn-sm mb-2",
                 class: [
-                  _vm.timerange == "past" ? "btn-secondary" : "btn-outline-dark"
+                  _vm.state.timerange == "past"
+                    ? "btn-secondary"
+                    : "btn-outline-dark"
                 ],
                 attrs: { type: "button" },
                 on: {
                   click: function($event) {
-                    _vm.timerange = "past"
+                    _vm.state.timerange = "past"
                   }
                 }
               },
@@ -56503,111 +56903,99 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn",
+                staticClass: "btn btn-sm mb-2",
                 class: [
-                  _vm.timerange == "future"
+                  _vm.state.timerange == "future"
                     ? "btn-secondary"
                     : "btn-outline-dark"
                 ],
                 attrs: { type: "button" },
                 on: {
                   click: function($event) {
-                    _vm.timerange = "future"
+                    _vm.state.timerange = "future"
                   }
                 }
               },
-              [_vm._v("Future")]
+              [_vm._v("Upcoming")]
             )
           ]
         ),
         _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "btn-group mr-2 ",
-            attrs: { role: "group" },
-            model: {
-              value: _vm.show,
-              callback: function($$v) {
-                _vm.show = $$v
-              },
-              expression: "show"
-            }
-          },
-          [
-            _c(
-              "button",
-              {
-                staticClass: "btn",
-                class: [
-                  _vm.show == "all" ? "btn-secondary" : "btn-outline-dark"
-                ],
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    _vm.show = "all"
-                  }
+        _c("div", { staticClass: "btn-group mr-2", attrs: { role: "group" } }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm mb-2",
+              class: [
+                _vm.state.show == "all" ? "btn-secondary" : "btn-outline-dark"
+              ],
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  _vm.state.show = "all"
                 }
-              },
-              [_vm._v("All")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn",
-                class: [
-                  _vm.show == "featured" ? "btn-secondary" : "btn-outline-dark"
-                ],
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    _vm.show = "featured"
-                  }
+              }
+            },
+            [_vm._v("All")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm mb-2",
+              class: [
+                _vm.state.show == "featured"
+                  ? "btn-secondary"
+                  : "btn-outline-dark"
+              ],
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  _vm.state.show = "featured"
                 }
-              },
-              [_vm._v("Featured")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn",
-                class: [
-                  _vm.show == "gnz" ? "btn-secondary" : "btn-outline-dark"
-                ],
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    _vm.show = "gnz"
-                  }
+              }
+            },
+            [_vm._v("Featured")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm mb-2",
+              class: [
+                _vm.state.show == "gnz" ? "btn-secondary" : "btn-outline-dark"
+              ],
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  _vm.state.show = "gnz"
                 }
-              },
-              [_vm._v("GNZ")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn",
-                class: [
-                  _vm.show == "orgs" ? "btn-secondary" : "btn-outline-dark"
-                ],
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    _vm.show = "orgs"
-                  }
+              }
+            },
+            [_vm._v("GNZ")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm mb-2",
+              class: [
+                _vm.state.show == "orgs" ? "btn-secondary" : "btn-outline-dark"
+              ],
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  _vm.state.show = "orgs"
                 }
-              },
-              [_vm._v("Club:")]
-            )
-          ]
-        ),
+              }
+            },
+            [_vm._v("Club:")]
+          )
+        ]),
         _vm._v(" "),
         _c("org-selector", {
           staticClass: "mr-2",
-          attrs: { "org-id": _vm.orgId, disabled: _vm.show != "orgs" },
+          attrs: { "org-id": _vm.orgId, disabled: _vm.state.show != "orgs" },
           on: { orgSelected: _vm.orgSelected }
         }),
         _vm._v(" "),
@@ -56616,7 +57004,7 @@ var render = function() {
               _c(
                 "button",
                 {
-                  staticClass: "btn btn-outline-dark",
+                  staticClass: "btn btn-outline-dark btn-sm mb-2",
                   on: {
                     click: function($event) {
                       _vm.showAddPanel = true
@@ -56626,7 +57014,52 @@ var render = function() {
                 [_vm._v("Add Event")]
               )
             ])
-          : _vm._e()
+          : _vm._e(),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "btn-group mr-2 ", attrs: { role: "group" } },
+          [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-sm",
+                class: [
+                  _vm.state.type == "all" ? "btn-secondary" : "btn-outline-dark"
+                ],
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    _vm.state.type = "all"
+                  }
+                }
+              },
+              [_vm._v("All")]
+            ),
+            _vm._v(" "),
+            _vm._l(_vm.eventTypes(), function(eventType) {
+              return _c(
+                "button",
+                {
+                  staticClass: "btn btn-sm",
+                  class: [
+                    _vm.state.type == eventType.code
+                      ? "btn-secondary"
+                      : "btn-outline-dark"
+                  ],
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.state.type = eventType.code
+                    }
+                  }
+                },
+                [_vm._v(_vm._s(eventType.shortname))]
+              )
+            })
+          ],
+          2
+        )
       ],
       1
     ),
@@ -56645,7 +57078,23 @@ var render = function() {
         staticClass: "table table-striped table-sm collapsable calendar-table"
       },
       [
-        _vm._m(0),
+        _c("tr", [
+          _c("th", [_vm._v("Event Name")]),
+          _vm._v(" "),
+          _c("th", [_vm._v("Type")]),
+          _vm._v(" "),
+          _c("th", [_vm._v("Organisation")]),
+          _vm._v(" "),
+          _c("th", [_vm._v("Starts")]),
+          _vm._v(" "),
+          _c("th", [_vm._v("Date")]),
+          _vm._v(" "),
+          _c("th", [_vm._v("Length")]),
+          _vm._v(" "),
+          _c("th", [_vm._v("Location")]),
+          _vm._v(" "),
+          _vm.Laravel.clubAdmin ? _c("th", [_vm._v("Edit")]) : _vm._e()
+        ]),
         _vm._v(" "),
         _vm._l(_vm.events, function(event) {
           return _c("tr", [
@@ -56655,7 +57104,14 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.formatEventType(event.type)))]),
+            _c("td", [
+              _c("span", {
+                domProps: {
+                  innerHTML: _vm._s(_vm.formatEventTypeIcon(event.type))
+                }
+              }),
+              _vm._v(" " + _vm._s(_vm.formatEventType(event.type)))
+            ]),
             _vm._v(" "),
             _c("td", [
               event.org
@@ -56682,18 +57138,20 @@ var render = function() {
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(event.location))]),
             _vm._v(" "),
-            _c("td", [
-              event.can_edit
-                ? _c(
-                    "a",
-                    {
-                      staticClass: "btn btn-xs btn-outline-dark",
-                      attrs: { href: "/events/" + event.slug + "/edit" }
-                    },
-                    [_vm._v("Edit")]
-                  )
-                : _vm._e()
-            ])
+            _vm.Laravel.clubAdmin
+              ? _c("td", [
+                  event.can_edit
+                    ? _c(
+                        "a",
+                        {
+                          staticClass: "btn btn-xs btn-outline-dark",
+                          attrs: { href: "/events/" + event.slug + "/edit" }
+                        },
+                        [_vm._v("Edit")]
+                      )
+                    : _vm._e()
+                ])
+              : _vm._e()
           ])
         })
       ],
@@ -56716,30 +57174,7 @@ var render = function() {
     )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c("th", [_vm._v("Event Name")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Type")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Organisation")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Starts")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Date")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Length")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Location")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Edit")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -57994,7 +58429,7 @@ var render = function() {
             expression: "selectedOrg"
           }
         ],
-        staticClass: "form-control input-sm",
+        staticClass: "form-control custom-select custom-select-sm",
         attrs: { name: "org", disabled: _vm.disabled ? "" : _vm.disabled },
         on: {
           change: function($event) {
@@ -72568,7 +73003,9 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _EventView_vue_vue_type_template_id_a881ded8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EventView.vue?vue&type=template&id=a881ded8& */ "./resources/js/components/events/EventView.vue?vue&type=template&id=a881ded8&");
 /* harmony import */ var _EventView_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EventView.vue?vue&type=script&lang=js& */ "./resources/js/components/events/EventView.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _EventView_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./EventView.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/events/EventView.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -72576,7 +73013,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _EventView_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _EventView_vue_vue_type_template_id_a881ded8___WEBPACK_IMPORTED_MODULE_0__["render"],
   _EventView_vue_vue_type_template_id_a881ded8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
@@ -72605,6 +73042,22 @@ component.options.__file = "resources/js/components/events/EventView.vue"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EventView_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./EventView.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/events/EventView.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EventView_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/events/EventView.vue?vue&type=style&index=0&lang=css&":
+/*!***************************************************************************************!*\
+  !*** ./resources/js/components/events/EventView.vue?vue&type=style&index=0&lang=css& ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EventView_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./EventView.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/events/EventView.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EventView_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EventView_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EventView_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EventView_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EventView_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
@@ -73210,6 +73663,21 @@ module.exports = {
     dateToNow: function dateToNow(date) {
       return Vue.prototype.$moment(date).fromNow();
     },
+    dateDifferenceMoment: function dateDifferenceMoment(moment_date) {
+      var difference = Vue.prototype.$moment().startOf('day').diff(moment_date, 'days');
+      return difference;
+    },
+    formatStartsIn: function formatStartsIn(date) {
+      var starts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'Starts';
+      var started = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'Started';
+      var days_away = this.dateDifferenceMoment(date);
+      var string = '';
+      if (days_away <= 0) string += starts + ' ';
+      if (days_away > 0) string += started + ' ';
+      if (days_away != 0) string += this.dateToNow(date);
+      if (days_away == 0) string += 'Today!';
+      return string;
+    },
     dateDiffDays: function dateDiffDays(date1, date2) {
       if (date2 == null || date2 == '') return '';
       var date1 = Vue.prototype.$moment(date1);
@@ -73231,36 +73699,63 @@ module.exports = {
     eventTypes: function eventTypes() {
       return [{
         'code': 'competition',
-        'name': 'Competition'
+        'name': 'Competition',
+        'icon': 'trophy',
+        'shortname': 'Comp'
       }, {
         'code': 'training',
-        'name': 'Training'
+        'name': 'Training',
+        'icon': 'paper-plane',
+        'shortname': 'Training'
       }, {
         'code': 'xcountry',
-        'name': 'Cross Country Course'
+        'name': 'Cross Country Course',
+        'icon': 'globe-asia',
+        'shortname': 'XCountry'
       }, {
         'code': 'dinner',
-        'name': 'Dinner'
+        'name': 'Dinner',
+        'icon': 'utensils',
+        'shortname': 'Dinner'
+      }, {
+        'code': 'bbq',
+        'name': 'BBQ',
+        'icon': 'utensils',
+        'shortname': 'BBQ'
       }, {
         'code': 'working-bee',
-        'name': 'Working Bee'
+        'name': 'Working Bee',
+        'icon': 'tractor',
+        'shortname': 'Working Bee'
       }, {
         'code': 'cadets',
-        'name': 'Cadets'
+        'name': 'Cadets',
+        'icon': 'users',
+        'shortname': 'Cadets'
       }, {
         'code': 'school-group',
-        'name': 'School Group'
+        'name': 'School Group',
+        'icon': 'users',
+        'shortname': 'School'
       }, {
         'code': 'other',
-        'name': 'Other'
+        'name': 'Other',
+        'icon': 'calendar-alt',
+        'shortname': 'Other'
       }];
     },
     formatEventType: function formatEventType(event) {
-      var eventType = this.eventTypes().filter(function isBigEnough(value) {
+      var eventType = this.eventTypes().filter(function findEvent(value) {
         if (value.code == event) return true;
       });
       if (eventType.length == 0) return 'Other';
       return eventType[0].name;
+    },
+    formatEventTypeIcon: function formatEventTypeIcon(event) {
+      var eventType = this.eventTypes().filter(function findEvent(value) {
+        if (value.code == event) return true;
+      });
+      if (eventType.length > 0) return '<span class="fa fa-' + eventType[0].icon + '"></span>';else return '<span class="fa fa-calendar-alt"></span>';
     }
   }
 };

@@ -26,9 +26,6 @@
 			<li class="nav-item" v-bind:class="{ active: active=='edit-duties' }">
 				<a class="nav-link" v-bind:class="[active=='edit-duties' ? 'active' : '']" href="/calendar/duties/edit">Configure Duties</a>
 			</li>
-			<li class="nav-item" v-bind:class="{ active: active=='events' }">
-				<a class="nav-link" v-bind:class="[active=='events' ? 'active' : '']" href="/events">Events</a>
-			</li>
 		</ul>
 
 	</nav>

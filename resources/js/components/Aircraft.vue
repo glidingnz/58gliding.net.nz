@@ -125,11 +125,9 @@
 			var that = this;
 
 			History.Adapter.bind(window, 'statechange', function() {
-				//console.log('statechange triggered');
 				var state = History.getState();
 				that.state = state.data;
 				if (!that.dont_reload) {
-					//console.log('reloading after statechange');
 					that.loadSelected();
 				}
 				that.dont_reload=false;

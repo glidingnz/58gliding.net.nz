@@ -1,6 +1,8 @@
 <template>
 <div>
 	
+
+
 	<h1><a href="/events">Events</a> » <a :href="'/events/' + event.slug">{{event.name}}</a> » Edit</h1>
 
 	<form @submit="save">
@@ -53,7 +55,7 @@
 
 					<div class="form-group col-6">
 						<label for="end_date_checkbox" class="col-form-label">
-							<input type="checkbox" id="end_date_checkbox" v-model="hasEndDate">
+							<input type="checkbox" id="end_date_checkbox" v-model="hasEndDate" v-on:click="hasEndDate ? event.end_date=event.start_date : 0">
 							End Date <span  v-show="hasEndDate">({{dateDiffDays(event.start_date, event.end_date)}})</span>
 						</label>
 						<div v-show="hasEndDate">
@@ -63,15 +65,40 @@
 				</div>
 			</div>
 
-			<div class="form-group col-md-6">
-				<label for="location" class="col-xs-6 col-form-label">Location e.g. Matamata</label>
-				<div class="col-xs-6">
-					<input type="text" class="form-control" id="location" v-model="event.location">
+			<div class="col-md-6">
+				<div class="row">
+
+					<div class="col-md-3 col-6">
+						<label for="location" class="col-form-label">Start Time</label>
+						<div class="">
+							<input placeholder="e.g. 16:30" type="time" class="form-control" id="location"  v-model="event.start_time">
+						</div>
+					</div>
+					<div class="col-md-3 col-6">
+						
+						<label for="location" class="col-form-label">End Time</label>
+						<div class="">
+							<input placeholder="e.g. 16:30" type="time" class="form-control" id="location" v-model="event.end_time">
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<label for="location" class="col-form-label">Location e.g. Matamata</label>
+						<div class="">
+							<input type="text" class="form-control" id="location" v-model="event.location">
+						</div>
+					</div>
+
 				</div>
 			</div>
-
 		</div>
 
+		<div class="row">
+			<div class="form-group col-md-3">
+				<input type="submit" value="Save Changes" class="btn btn-outline-dark mt-2">
+				<input type="submit" v-on:click="returnOnSave=true" value="Save &amp; Return" class="btn btn-primary mt-2">
+			</div>
+		</div>
 
 		<div class="row">
 
@@ -158,7 +185,8 @@
 						<textarea type="text" class="form-control" id="details" v-model="event.details" rows="3"></textarea>
 					</autosize-textarea>
 
-					<input type="submit" value="Save Changes" class="btn btn-primary mt-2">
+					<input type="submit" value="Save Changes" class="btn btn-outline-dark mt-2">
+					<input type="submit" v-on:click="returnOnSave=true" value="Save &amp; Return" class="btn btn-primary mt-2">
 				</div>
 			</div>
 			<div class="form-group col-md-6">
@@ -184,7 +212,8 @@
 					<autosize-textarea>
 						<textarea type="text" class="form-control" id="terms" v-model="event.terms" rows="3"></textarea>
 					</autosize-textarea>
-					<input type="submit" value="Save Changes" class="btn btn-primary mt-2">
+					<input type="submit" value="Save Changes" class="btn btn-outline-dark mt-2">
+					<input type="submit" v-on:click="returnOnSave=true" value="Save &amp; Return" class="btn btn-primary mt-2">
 				</div>
 			</div>
 			<div class="form-group col-md-6">
@@ -235,7 +264,8 @@ export default {
 		return {
 			event: [],
 			newDutyName: '',
-			hasEndDate: false
+			hasEndDate: false,
+			returnOnSave: false
 		}
 	},
 	props: ['orgId', 'eventId'],
@@ -265,12 +295,12 @@ export default {
 			var that = this;
 			window.axios.get('/api/events/' + this.eventId).then(function (response) {
 				that.event = response.data.data;
-				that.event.start_date = that.$moment(that.event.start_date).toDate();
-				that.event.end_date = that.$moment(that.event.end_date).toDate();
-				that.event.earlybird = that.$moment(that.event.earlybird).toDate();
 				if (that.event.start_date!=that.event.end_date) {
 					that.hasEndDate=true;
 				}
+				that.event.start_date = that.$moment(that.event.start_date).toDate();
+				that.event.end_date = that.$moment(that.event.end_date).toDate();
+				that.event.earlybird = that.$moment(that.event.earlybird).toDate();
 			});
 		},
 		save: function(e) {
@@ -284,6 +314,9 @@ export default {
 
 			window.axios.put('/api/events/' + this.eventId, event).then(function (response) {
 				messages.$emit('success', 'Event ' + that.event.name + ' Updated');
+				if (that.returnOnSave) {
+					window.location.href = "/events/" + event.slug;
+				}
 			});
 			e.preventDefault();
 		},
