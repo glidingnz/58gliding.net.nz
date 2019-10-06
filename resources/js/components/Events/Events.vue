@@ -19,7 +19,7 @@
 			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ !state.gnz ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.gnz=false">Hide</button>
 		</div>
 		
-		<span class="mt-1 mr-2">Shared From Other Clubs:</span>
+		<span class="mt-1 mr-2">Other Clubs Events:</span>
 		<div class="btn-group mr-2" role="group">
 			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.other ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.other=true">Show</button>
 			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ !state.other ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.other=false">Hide</button>

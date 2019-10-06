@@ -48,7 +48,7 @@
 		<div id="app">
 			<nav class="main-nav navbar navbar-dark bg-dark navbar-expand">
 				<a class="navbar-brand" href="{{ url('/') }}">
-					<?php if (isset($org) && $org) { ?>
+					<?php if (isset($org) && $org->slug!='gnz') { ?>
 						{{$org->name}}
 					<?php } else { ?>
 						Gliding.net.nz
@@ -63,7 +63,7 @@
 					<li class="nav-item"><a class="nav-link" href="{{ url('/contests')}}">Contests</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/events')}}">Events</a></li>
 
-					<?php if (isset($org) && $org) { ?>
+					<?php if (isset($org) && $org->slug!='gnz') { ?>
 						<li class="nav-item"><a class="nav-link" href="{{ url('/calendar')}}">Calendar</a></li>
 						<li class="nav-item"><a class="nav-link" href="{{ url('/ratings-report')}}">BFR &amp; Medicals</a></li>
 					<?php } ?>

@@ -7,8 +7,8 @@
 		<div class="row">
 			<div class="col-md-12">
 
-				<?php if (!$org) { ?><h1>Welcome to gliding.net.nz</h1><?php } ?>
-				<?php if ($org) { ?>
+				<?php if (!$org || $org->slug=='gnz') { ?><h1>Welcome to gliding.net.nz</h1><?php } ?>
+				<?php if ($org && $org->slug!='gnz') { ?>
 					<h1>{{$org->name}}</h1>
 				<?php } ?>
 
@@ -17,7 +17,7 @@
 
 	<div class="row">
 
-		<?php if (!$org) { ?>
+		<?php if ($org->slug=='gnz') { ?>
 			<div class="col-md-6">
 				<h2>New Zealand Clubs</h2>
 				<orgs-component></orgs-component>
@@ -26,7 +26,7 @@
 
 		<?php } ?>
 
-		<?php if ($org) { ?>
+		<?php if ($org && $org->slug!='gnz') { ?>
 			<div class="col-md-6">
 
 				<h2>Club Tools</h2>

@@ -19,6 +19,11 @@ class LoadOrg
 	{
 		$subdomains = explode(".",$_SERVER['HTTP_HOST']);
 		$subdomain = array_shift($subdomains);
+
+		// if the root, then it's the GNZ org
+		if (env('APP_DOMAIN')==$_SERVER['HTTP_HOST'] || $subdomain=='www') {
+			$subdomain = 'gnz';
+		}
 		
 		$org = Org::where('slug', $subdomain)->first();
 		$request->attributes->add(['_ORG' => $org]);
