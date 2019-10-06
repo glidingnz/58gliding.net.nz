@@ -33,7 +33,19 @@ class EventsAPIController extends AppBaseController
 		{
 			if ($request->input('org_id')!='gnz')
 			{
-				$query->where('org_id','=',$request->input('org_id'));
+				$query->where(function($query) use ($request) {
+					$query->where('org_id','=',$request->input('org_id'));
+
+					if ($request->input('gnz', true)==='true') {
+						$query->orWhereNull('org_id');
+					}
+
+
+					if ($request->input('other', true)==='true') {
+						$query->orWhere('featured','=', true);
+					}
+				});
+				
 			}
 			else
 			{
@@ -41,13 +53,10 @@ class EventsAPIController extends AppBaseController
 			}
 		}
 
-		if ($request->has('featured'))
-		{
-			$query->where(function ($query) use ($request) {
-				$query->where('featured','=',(boolean)$request->input('featured', true));
-			});
-		}
 
+		if ($request->input('gnz', true)==='false') {
+			$query->whereNotNull('org_id');
+		}
 
 		if ($request->has('timerange'))
 		{

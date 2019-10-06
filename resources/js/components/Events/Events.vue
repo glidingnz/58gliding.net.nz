@@ -12,14 +12,20 @@
 			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.timerange=='future' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.timerange='future'">Upcoming</button>
 		</div>
 
+		
+		<span class="mt-1 mr-2">GNZ Events:</span>
 		<div class="btn-group mr-2" role="group">
-			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.show=='all' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.show='all'">All</button>
-			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.show=='featured' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.show='featured'">Featured</button>
-			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.show=='gnz' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.show='gnz'">GNZ</button>
-			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.show=='orgs' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.show='orgs'">Club:</button>
+			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.gnz ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.gnz=true">Show</button>
+			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ !state.gnz ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.gnz=false">Hide</button>
+		</div>
+		
+		<span class="mt-1 mr-2">Shared From Other Clubs:</span>
+		<div class="btn-group mr-2" role="group">
+			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.other ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.other=true">Show</button>
+			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ !state.other ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.other=false">Hide</button>
 		</div>
 
-		<org-selector :org-id="orgId" v-on:orgSelected="orgSelected" class="mr-2" :disabled="state.show!='orgs'"></org-selector>
+		<org-selector :org-id="orgId" v-on:orgSelected="orgSelected" class="mr-2"></org-selector>
 
 		<div v-if="Laravel.clubAdmin || Laravel.admin">
 			<button class="btn btn-outline-dark btn-sm mb-2" v-on:click="showAddPanel=true">Add Event</button>
@@ -72,7 +78,8 @@ export default {
 	data: function() {
 		return {
 			state: {
-				show: 'orgs',
+				gnz: true,
+				other: true, // show other clubs or not
 				type: 'all',
 				timerange: 'future'
 			},
@@ -93,7 +100,7 @@ export default {
 	created: function() {
 		// only load on created if an org is not given
 		if (!this.orgId) {
-			this.state.show='featured';
+			//this.state.show='featured';
 			this.load();
 		}
 	},
@@ -101,10 +108,9 @@ export default {
 		var that=this;
 		var State = History.getState();
 
-
-
 		// load existing GET params
-		if (this.get_url_param('show')) this.state.show = this.get_url_param('show');
+		if (this.get_url_param('gnz')) this.state.gnz = this.get_url_param('gnz');
+		if (this.get_url_param('other')) this.state.other = this.get_url_param('other');
 		if (this.get_url_param('type')) this.state.type = this.get_url_param('type');
 		if (this.get_url_param('timerange')) this.state.timerange = this.get_url_param('timerange');
 
@@ -118,7 +124,7 @@ export default {
 		});
 
 		this.dont_reload=true; // make sure we dont do a double load on page launch
-		History.replaceState(this.state, null, "?show=" + this.state.show + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
+		History.replaceState(this.state, null, "?gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
 		this.load();
 
 	},
@@ -126,28 +132,16 @@ export default {
 		load: function() {
 			var that = this;
 
-			var data = {'timerange':this.state.timerange}
-
-			// check if we have selected an org. It might be null, and thus = all orgs
-			if (this.state.show=='orgs') {
-				if (this.selectedOrg) {
-					data.org_id = this.selectedOrg.id;
-				}
+			var data = {
+				'timerange':this.state.timerange,
+				'gnz': this.state.gnz,
+				'other': this.state.other,
+				'type': this.state.type,
 			}
 
-			// check if we have selected to show all national events
-			if (this.state.show=='featured') {
-				data.featured = true;
-			}
-
-			// check if we have selected to show all national events
-			if (this.state.show=='gnz') {
-				data.org_id = 'gnz';
-			}
-
-			// filter by event type
-			if (this.state.type!='all') {
-				data.type = this.state.type;
+			//check if we have selected an org. It might be null, and thus = all orgs
+			if (this.selectedOrg) {
+				data.org_id = this.selectedOrg.id;
 			}
 
 			window.axios.get('/api/events/', {params: data}).then(function (response) {
@@ -159,7 +153,7 @@ export default {
 			this.load();
 		},
 		stateChanged: function() {
-			History.pushState(this.state, null, "?show=" + this.state.show + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
+			History.pushState(this.state, null, "?gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
 		},
 		eventAdded: function(event) {
 			this.load();

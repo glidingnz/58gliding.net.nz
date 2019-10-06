@@ -9,7 +9,7 @@
 			<div class="form-group col-md-6">
 				<label for="featured" class="float-right">
 					<input id="featured" type="checkbox" v-model="event.featured" :value="true">
-					Feature Event on GNZ Website
+					Share to ALL other clubs
 				</label>
 				<label for="name" class="col-xs-6 col-form-label">Name</label>
 				<div class="col-xs-6">

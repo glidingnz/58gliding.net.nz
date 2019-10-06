@@ -7094,13 +7094,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
   data: function data() {
     return {
       state: {
-        show: 'orgs',
+        gnz: true,
+        other: true,
+        // show other clubs or not
         type: 'all',
         timerange: 'future'
       },
@@ -7121,7 +7129,7 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     // only load on created if an org is not given
     if (!this.orgId) {
-      this.state.show = 'featured';
+      //this.state.show='featured';
       this.load();
     }
   },
@@ -7129,7 +7137,8 @@ __webpack_require__.r(__webpack_exports__);
     var that = this;
     var State = History.getState(); // load existing GET params
 
-    if (this.get_url_param('show')) this.state.show = this.get_url_param('show');
+    if (this.get_url_param('gnz')) this.state.gnz = this.get_url_param('gnz');
+    if (this.get_url_param('other')) this.state.other = this.get_url_param('other');
     if (this.get_url_param('type')) this.state.type = this.get_url_param('type');
     if (this.get_url_param('timerange')) this.state.timerange = this.get_url_param('timerange');
     History.Adapter.bind(window, 'statechange', function () {
@@ -7144,36 +7153,22 @@ __webpack_require__.r(__webpack_exports__);
     });
     this.dont_reload = true; // make sure we dont do a double load on page launch
 
-    History.replaceState(this.state, null, "?show=" + this.state.show + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
+    History.replaceState(this.state, null, "?gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
     this.load();
   },
   methods: {
     load: function load() {
       var that = this;
       var data = {
-        'timerange': this.state.timerange // check if we have selected an org. It might be null, and thus = all orgs
+        'timerange': this.state.timerange,
+        'gnz': this.state.gnz,
+        'other': this.state.other,
+        'type': this.state.type //check if we have selected an org. It might be null, and thus = all orgs
 
       };
 
-      if (this.state.show == 'orgs') {
-        if (this.selectedOrg) {
-          data.org_id = this.selectedOrg.id;
-        }
-      } // check if we have selected to show all national events
-
-
-      if (this.state.show == 'featured') {
-        data.featured = true;
-      } // check if we have selected to show all national events
-
-
-      if (this.state.show == 'gnz') {
-        data.org_id = 'gnz';
-      } // filter by event type
-
-
-      if (this.state.type != 'all') {
-        data.type = this.state.type;
+      if (this.selectedOrg) {
+        data.org_id = this.selectedOrg.id;
       }
 
       window.axios.get('/api/events/', {
@@ -7187,7 +7182,7 @@ __webpack_require__.r(__webpack_exports__);
       this.load();
     },
     stateChanged: function stateChanged() {
-      History.pushState(this.state, null, "?show=" + this.state.show + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
+      History.pushState(this.state, null, "?gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
     },
     eventAdded: function eventAdded(event) {
       this.load();
@@ -55603,7 +55598,7 @@ var render = function() {
                   }
                 }
               }),
-              _vm._v("\n\t\t\t\t\tFeature Event on GNZ Website\n\t\t\t\t")
+              _vm._v("\n\t\t\t\t\tShare to ALL other clubs\n\t\t\t\t")
             ]
           ),
           _vm._v(" "),
@@ -56919,81 +56914,79 @@ var render = function() {
           ]
         ),
         _vm._v(" "),
+        _c("span", { staticClass: "mt-1 mr-2" }, [_vm._v("GNZ Events:")]),
+        _vm._v(" "),
         _c("div", { staticClass: "btn-group mr-2", attrs: { role: "group" } }, [
           _c(
             "button",
             {
               staticClass: "btn btn-sm mb-2",
-              class: [
-                _vm.state.show == "all" ? "btn-secondary" : "btn-outline-dark"
-              ],
+              class: [_vm.state.gnz ? "btn-secondary" : "btn-outline-dark"],
               attrs: { type: "button" },
               on: {
                 click: function($event) {
-                  _vm.state.show = "all"
+                  _vm.state.gnz = true
                 }
               }
             },
-            [_vm._v("All")]
+            [_vm._v("Show")]
           ),
           _vm._v(" "),
           _c(
             "button",
             {
               staticClass: "btn btn-sm mb-2",
-              class: [
-                _vm.state.show == "featured"
-                  ? "btn-secondary"
-                  : "btn-outline-dark"
-              ],
+              class: [!_vm.state.gnz ? "btn-secondary" : "btn-outline-dark"],
               attrs: { type: "button" },
               on: {
                 click: function($event) {
-                  _vm.state.show = "featured"
+                  _vm.state.gnz = false
                 }
               }
             },
-            [_vm._v("Featured")]
+            [_vm._v("Hide")]
+          )
+        ]),
+        _vm._v(" "),
+        _c("span", { staticClass: "mt-1 mr-2" }, [
+          _vm._v("Shared From Other Clubs:")
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "btn-group mr-2", attrs: { role: "group" } }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm mb-2",
+              class: [_vm.state.other ? "btn-secondary" : "btn-outline-dark"],
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  _vm.state.other = true
+                }
+              }
+            },
+            [_vm._v("Show")]
           ),
           _vm._v(" "),
           _c(
             "button",
             {
               staticClass: "btn btn-sm mb-2",
-              class: [
-                _vm.state.show == "gnz" ? "btn-secondary" : "btn-outline-dark"
-              ],
+              class: [!_vm.state.other ? "btn-secondary" : "btn-outline-dark"],
               attrs: { type: "button" },
               on: {
                 click: function($event) {
-                  _vm.state.show = "gnz"
+                  _vm.state.other = false
                 }
               }
             },
-            [_vm._v("GNZ")]
-          ),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-sm mb-2",
-              class: [
-                _vm.state.show == "orgs" ? "btn-secondary" : "btn-outline-dark"
-              ],
-              attrs: { type: "button" },
-              on: {
-                click: function($event) {
-                  _vm.state.show = "orgs"
-                }
-              }
-            },
-            [_vm._v("Club:")]
+            [_vm._v("Hide")]
           )
         ]),
         _vm._v(" "),
         _c("org-selector", {
           staticClass: "mr-2",
-          attrs: { "org-id": _vm.orgId, disabled: _vm.state.show != "orgs" },
+          attrs: { "org-id": _vm.orgId },
           on: { orgSelected: _vm.orgSelected }
         }),
         _vm._v(" "),
