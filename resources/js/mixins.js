@@ -94,6 +94,7 @@ module.exports = {
 				{'code': 'working-bee', 'name': 'Working Bee', 'icon':'tractor', 'shortname':'Working Bee'},
 				{'code': 'cadets', 'name': 'Cadets', 'icon':'users', 'shortname':'Cadets'},
 				{'code': 'school-group', 'name': 'School Group', 'icon':'users', 'shortname':'School'},
+				{'code': 'meeting', 'name': 'Meeting', 'icon':'handshake', 'shortname':'Meeting'},
 				{'code': 'other', 'name': 'Other', 'icon':'calendar-alt', 'shortname':'Other'}
 			]
 		},

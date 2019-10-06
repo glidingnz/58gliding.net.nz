@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use Response;
 use App\Models\Event;
+use App\Models\Org;
 use Auth;
 use Carbon\Carbon;
 
@@ -39,7 +40,6 @@ class EventsAPIController extends AppBaseController
 					if ($request->input('gnz', true)==='true') {
 						$query->orWhereNull('org_id');
 					}
-
 
 					if ($request->input('other', true)==='true') {
 						$query->orWhere('featured','=', true);
@@ -142,6 +142,11 @@ class EventsAPIController extends AppBaseController
 		$event->end_date = $request->input('end_date', $request->input('start_date', null));
 		$event->type = $request->input('type', $request->input('type', 'other'));
 		$event->slug = $slug;
+		if ($request->input('org_id')==null) {
+			$event->org_id = $slug;
+			$gnz_org = Org::where('slug', 'gnz')->first();
+			$event->org_id = $gnz_org->id;
+		}
 		$event->creator_user_id = Auth::user()->id;
 		$event->save();
 

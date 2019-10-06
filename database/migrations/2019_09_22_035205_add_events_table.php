@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Models\Org;
 
 class AddEventsTable extends Migration
 {
@@ -52,6 +53,17 @@ class AddEventsTable extends Migration
 				$table->integer('event_id')->nullable();
 			});
 		}
+
+		$org = new Org;
+		$org->name='Gliding New Zealand';
+		$org->short_name='gnz';
+		$org->slug='gnz';
+		$org->gnz_code='GNZ';
+		$org->type='org';
+		$org->website='www.gliding.co.nz';
+		$org->save();
+
+		Org::where('slug', 'manawatu')->where('gnz_code', 'GOM')->delete();
 	}
 
 	/**
@@ -69,5 +81,7 @@ class AddEventsTable extends Migration
 				$table->dropColumn('event_id');
 			});
 		}
+
+		Org::where('short_name', 'gnz')->delete();
 	}
 }

@@ -73729,6 +73729,11 @@ module.exports = {
         'icon': 'users',
         'shortname': 'School'
       }, {
+        'code': 'meeting',
+        'name': 'Meeting',
+        'icon': 'handshake',
+        'shortname': 'Meeting'
+      }, {
         'code': 'other',
         'name': 'Other',
         'icon': 'calendar-alt',
