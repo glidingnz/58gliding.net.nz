@@ -1,7 +1,5 @@
 <template>
 <div>
-	
-
 
 	<h1><a href="/events">Events</a> » <a :href="'/events/' + event.slug">{{event.name}}</a> » Edit</h1>
 

@@ -26,9 +26,11 @@ Route::group(['namespace' => 'Api', 'middleware' => 'auth:api'], function()
 	Route::resource('roster', 'RosterAPIController');
 });
 
+
 Route::group(['namespace' => 'Api'], function()
 {
 	Route::resource('events', 'EventsAPIController');
+	Route::get('/events/{event_id}/soaringspot/contests', 'SoaringSpotAPIController@contests');
 });
 
 Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()

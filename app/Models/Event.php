@@ -31,6 +31,7 @@ class Event extends Model
         return $this->belongsTo('App\Models\Org');
     }
 
+
     /**
      * Can the current user edit this event?
      * @return boolean true or false
