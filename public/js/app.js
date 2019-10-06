@@ -56961,7 +56961,7 @@ var render = function() {
         ]),
         _vm._v(" "),
         _c("span", { staticClass: "mt-1 mr-2" }, [
-          _vm._v("Other Clubs Events:")
+          _vm._v("Other Club's Shared Events:")
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "btn-group mr-2", attrs: { role: "group" } }, [
@@ -57036,6 +57036,7 @@ var render = function() {
                 on: {
                   click: function($event) {
                     _vm.state.type = "all"
+                    _vm.stateChanged()
                   }
                 }
               },
@@ -57056,6 +57057,7 @@ var render = function() {
                   on: {
                     click: function($event) {
                       _vm.state.type = eventType.code
+                      _vm.stateChanged()
                     }
                   }
                 },

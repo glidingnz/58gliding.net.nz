@@ -59,6 +59,11 @@ class EventsAPIController extends AppBaseController
 			$query->where('org_id', 'IS NOT', $gnz->id);
 		}
 
+
+		if ($request->has('type') && $request->input('type')!='all') {
+			$query->where('type', $request->input('type'));
+		}
+
 		if ($request->has('timerange'))
 		{
 

@@ -19,7 +19,7 @@
 			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ !state.gnz ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.gnz=false; stateChanged()">Hide</button>
 		</div>
 		
-		<span class="mt-1 mr-2">Other Clubs Events:</span>
+		<span class="mt-1 mr-2">Other Club's Shared Events:</span>
 		<div class="btn-group mr-2" role="group">
 			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.other ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.other=true; stateChanged()">Show</button>
 			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ !state.other ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.other=false; stateChanged()">Hide</button>
@@ -33,8 +33,8 @@
 
 
 		<div class="btn-group mr-2 " role="group">
-			<button type="button" class="btn btn-sm" v-bind:class="[ state.type=='all' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.type='all'">All</button>
-			<button v-for="eventType in eventTypes()" type="button" class="btn btn-sm" v-bind:class="[ state.type==eventType.code ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.type=eventType.code">{{eventType.shortname}}</button>
+			<button type="button" class="btn btn-sm" v-bind:class="[ state.type=='all' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.type='all';  stateChanged()">All</button>
+			<button v-for="eventType in eventTypes()" type="button" class="btn btn-sm" v-bind:class="[ state.type==eventType.code ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.type=eventType.code;  stateChanged()">{{eventType.shortname}}</button>
 		</div>
 
 
