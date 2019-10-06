@@ -8,21 +8,21 @@
 		<add-event-panel v-if="Laravel.clubAdmin==true || Laravel.admin" :org-id="orgId" :show="showAddPanel" @closeModal="showAddPanel=false" @eventAdded="eventAdded"></add-event-panel>
 
 		<div class="btn-group ml-auto mr-2" role="group">
-			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.timerange=='past' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.timerange='past'">Past</button>
-			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.timerange=='future' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.timerange='future'">Upcoming</button>
+			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.timerange=='past' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.timerange='past'; stateChanged()">Past</button>
+			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.timerange=='future' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.timerange='future'; stateChanged()">Upcoming</button>
 		</div>
 
 		
 		<span class="mt-1 mr-2">GNZ Events:</span>
 		<div class="btn-group mr-2" role="group">
-			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.gnz ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.gnz=true">Show</button>
-			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ !state.gnz ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.gnz=false">Hide</button>
+			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.gnz ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.gnz=true; stateChanged()">Show</button>
+			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ !state.gnz ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.gnz=false; stateChanged()">Hide</button>
 		</div>
 		
 		<span class="mt-1 mr-2">Other Clubs Events:</span>
 		<div class="btn-group mr-2" role="group">
-			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.other ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.other=true">Show</button>
-			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ !state.other ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.other=false">Hide</button>
+			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.other ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.other=true; stateChanged()">Show</button>
+			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ !state.other ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.other=false; stateChanged()">Hide</button>
 		</div>
 
 		<org-selector :org-id="orgId" v-on:orgSelected="orgSelected" class="mr-2"></org-selector>
@@ -68,6 +68,13 @@
 
 	<p v-show="events.length==0">No events yet!</p>
 
+	
+	<div class="form-group col-sm-6">
+		<label for="slug" class="col-form-label"><span class="fa fa-calendar-plus"></span> Add what you see above to your calendar with this iCal feed:</label>
+		<input type="text" class="form-control" v-model="ical_url">
+	</div>
+	
+
 </div>
 </template>
 
@@ -90,10 +97,9 @@ export default {
 			dont_reload: false
 		}
 	},
-	watch: {
-		'state': {
-			handler: 'stateChanged',
-			deep: true
+	computed: {
+		ical_url: function() {
+			return Laravel.BASE_URL + '/api/events' + "?ical=true&gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange + "&org_id=" + this.orgId;
 		}
 	},
 	props: ['orgId', 'orgName', 'eventId'],
@@ -109,23 +115,24 @@ export default {
 		var State = History.getState();
 
 		// load existing GET params
-		if (this.get_url_param('gnz')) this.state.gnz = this.get_url_param('gnz');
-		if (this.get_url_param('other')) this.state.other = this.get_url_param('other');
+		if (this.get_url_param('gnz')!='') {
+			if (this.get_url_param('gnz')=='true') this.state.gnz=true; else this.state.gnz=false; 
+		}
+		if (this.get_url_param('other')!='') {
+			if (this.get_url_param('other')=='true') this.state.other=true; else this.state.other=false;
+		}
 		if (this.get_url_param('type')) this.state.type = this.get_url_param('type');
 		if (this.get_url_param('timerange')) this.state.timerange = this.get_url_param('timerange');
 
 		History.Adapter.bind(window, 'statechange', function() {
 			var state = History.getState();
 			that.state = state.data;
-			if (!that.dont_reload) {
-				that.load();
-			}
-			that.dont_reload=false;
 		});
 
-		this.dont_reload=true; // make sure we dont do a double load on page launch
+		//this.dont_reload=true; // make sure we dont do a double load on page launch
+
+		// Set up the initial state in the URL
 		History.replaceState(this.state, null, "?gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
-		this.load();
 
 	},
 	methods: {
@@ -154,6 +161,7 @@ export default {
 		},
 		stateChanged: function() {
 			History.pushState(this.state, null, "?gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
+			this.load();
 		},
 		eventAdded: function(event) {
 			this.load();

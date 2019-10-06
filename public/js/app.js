@@ -7100,6 +7100,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -7119,10 +7126,9 @@ __webpack_require__.r(__webpack_exports__);
       dont_reload: false
     };
   },
-  watch: {
-    'state': {
-      handler: 'stateChanged',
-      deep: true
+  computed: {
+    ical_url: function ical_url() {
+      return Laravel.BASE_URL + '/api/events' + "?ical=true&gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange + "&org_id=" + this.orgId;
     }
   },
   props: ['orgId', 'orgName', 'eventId'],
@@ -7137,24 +7143,23 @@ __webpack_require__.r(__webpack_exports__);
     var that = this;
     var State = History.getState(); // load existing GET params
 
-    if (this.get_url_param('gnz')) this.state.gnz = this.get_url_param('gnz');
-    if (this.get_url_param('other')) this.state.other = this.get_url_param('other');
+    if (this.get_url_param('gnz') != '') {
+      if (this.get_url_param('gnz') == 'true') this.state.gnz = true;else this.state.gnz = false;
+    }
+
+    if (this.get_url_param('other') != '') {
+      if (this.get_url_param('other') == 'true') this.state.other = true;else this.state.other = false;
+    }
+
     if (this.get_url_param('type')) this.state.type = this.get_url_param('type');
     if (this.get_url_param('timerange')) this.state.timerange = this.get_url_param('timerange');
     History.Adapter.bind(window, 'statechange', function () {
       var state = History.getState();
       that.state = state.data;
-
-      if (!that.dont_reload) {
-        that.load();
-      }
-
-      that.dont_reload = false;
-    });
-    this.dont_reload = true; // make sure we dont do a double load on page launch
+    }); //this.dont_reload=true; // make sure we dont do a double load on page launch
+    // Set up the initial state in the URL
 
     History.replaceState(this.state, null, "?gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
-    this.load();
   },
   methods: {
     load: function load() {
@@ -7183,6 +7188,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     stateChanged: function stateChanged() {
       History.pushState(this.state, null, "?gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
+      this.load();
     },
     eventAdded: function eventAdded(event) {
       this.load();
@@ -55598,7 +55604,9 @@ var render = function() {
                   }
                 }
               }),
-              _vm._v("\n\t\t\t\t\tShare to ALL other clubs\n\t\t\t\t")
+              _vm._v(
+                "\n\t\t\t\t\tShare to all other clubs (e.g. Competition or Talk)\n\t\t\t\t"
+              )
             ]
           ),
           _vm._v(" "),
@@ -56887,6 +56895,7 @@ var render = function() {
                 on: {
                   click: function($event) {
                     _vm.state.timerange = "past"
+                    _vm.stateChanged()
                   }
                 }
               },
@@ -56906,6 +56915,7 @@ var render = function() {
                 on: {
                   click: function($event) {
                     _vm.state.timerange = "future"
+                    _vm.stateChanged()
                   }
                 }
               },
@@ -56926,6 +56936,7 @@ var render = function() {
               on: {
                 click: function($event) {
                   _vm.state.gnz = true
+                  _vm.stateChanged()
                 }
               }
             },
@@ -56941,6 +56952,7 @@ var render = function() {
               on: {
                 click: function($event) {
                   _vm.state.gnz = false
+                  _vm.stateChanged()
                 }
               }
             },
@@ -56962,6 +56974,7 @@ var render = function() {
               on: {
                 click: function($event) {
                   _vm.state.other = true
+                  _vm.stateChanged()
                 }
               }
             },
@@ -56977,6 +56990,7 @@ var render = function() {
               on: {
                 click: function($event) {
                   _vm.state.other = false
+                  _vm.stateChanged()
                 }
               }
             },
@@ -57162,10 +57176,50 @@ var render = function() {
         ]
       },
       [_vm._v("No events yet!")]
-    )
+    ),
+    _vm._v(" "),
+    _c("div", { staticClass: "form-group col-sm-6" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.ical_url,
+            expression: "ical_url"
+          }
+        ],
+        staticClass: "form-control",
+        attrs: { type: "text" },
+        domProps: { value: _vm.ical_url },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.ical_url = $event.target.value
+          }
+        }
+      })
+    ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticClass: "col-form-label", attrs: { for: "slug" } },
+      [
+        _c("span", { staticClass: "fa fa-calendar-plus" }),
+        _vm._v(" Add what you see above to your calendar with this iCal feed:")
+      ]
+    )
+  }
+]
 render._withStripped = true
 
 

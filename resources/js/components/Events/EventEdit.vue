@@ -9,7 +9,7 @@
 			<div class="form-group col-md-6">
 				<label for="featured" class="float-right">
 					<input id="featured" type="checkbox" v-model="event.featured" :value="true">
-					Share to ALL other clubs
+					Share to all other clubs (e.g. Competition or Talk)
 				</label>
 				<label for="name" class="col-xs-6 col-form-label">Name</label>
 				<div class="col-xs-6">

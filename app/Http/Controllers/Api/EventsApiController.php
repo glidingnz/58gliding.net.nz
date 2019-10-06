@@ -28,17 +28,18 @@ class EventsAPIController extends AppBaseController
 	public function index(Request $request)
 	{
 		$query = Event::query()->with('org');
+		$gnz = Org::where('slug', 'gnz')->first();
 
 		// limit by organisation
 		if ($request->has('org_id'))
 		{
 			if ($request->input('org_id')!='gnz')
 			{
-				$query->where(function($query) use ($request) {
+				$query->where(function($query) use ($request, $gnz) {
 					$query->where('org_id','=',$request->input('org_id'));
 
 					if ($request->input('gnz', true)==='true') {
-						$query->orWhereNull('org_id');
+						$query->orWhere('org_id', $gnz->id);
 					}
 
 					if ($request->input('other', true)==='true') {
@@ -55,7 +56,7 @@ class EventsAPIController extends AppBaseController
 
 
 		if ($request->input('gnz', true)==='false') {
-			$query->whereNotNull('org_id');
+			$query->where('org_id', 'IS NOT', $gnz->id);
 		}
 
 		if ($request->has('timerange'))
@@ -88,8 +89,18 @@ class EventsAPIController extends AppBaseController
 			foreach ($results AS $key=>$result)
 			{
 				$results[$key]->can_edit = $result->can_edit;
+
+				
 			}
-			return $this->success($results);
+			if ($request->has('ical'))
+			{
+				$this->getEventsICalObject($results);
+			}
+			else
+			{
+				return $this->success($results);
+			}
+			
 		}
 		
 		return $this->sendError('Events not found');
@@ -223,4 +234,69 @@ class EventsAPIController extends AppBaseController
 
 		return $this->sendResponse($id, 'Event deleted successfully');
 	}
+
+	/**
+		* Gets the events data from the database
+		* and populates the iCal object.
+		*
+		* @return void
+		*/
+		public function getEventsICalObject($events)
+		{
+			define('ICAL_FORMAT', 'Ymd\THis\Z');
+			define('ICAL_DATE_FORMAT', 'Ymd');
+
+			$icalObject = "BEGIN:VCALENDAR\n" .
+			"VERSION:2.0\n" .
+			"METHOD:PUBLISH\n" .
+			"PRODID:-//Charles Oduk//Tech Events//EN\n";
+
+
+			// loop over events
+			foreach ($events as $event) {
+
+				// create a URL for the summary
+				$url = env('APP_URL') . '/events/' . $event->slug;
+				$uuid = md5($event->id . $event->created_at);
+
+				// check if this is a single day event or not
+				if ($event->start_date==$event->end_date || $event->end_date==null) {
+					// single day event. Should get time as well
+					$start_date = 'DTSTART:' . date(ICAL_FORMAT, strtotime($event->start_date));
+					$end_date = 'DTEND:' . date(ICAL_FORMAT, strtotime($event->start_date));
+				}
+				else
+				{
+					$end_date_plus_one = Carbon::instance($event->end_date)->add(1, 'day')->format(ICAL_DATE_FORMAT);
+					$start_date = 'DTSTART;VALUE=DATE:' . date(ICAL_DATE_FORMAT, strtotime($event->start_date));
+					$end_date = 'DTEND;VALUE=DATE:' . $end_date_plus_one;
+					// multi day event
+				}
+
+				$icalObject .=
+				"BEGIN:VEVENT\n" .
+				"" . $start_date . "\n" .
+				"" . $end_date . "\n" .
+				"DTSTAMP:" . date(ICAL_FORMAT, strtotime($event->created_at)) . "\n" .
+				"SUMMARY:".$event->name . "\n" .
+				"UID:".$uuid . '@' . env('APP_DOMAIN') . "\n" .
+				"DESCRIPTION:" . $url . "\n" .
+				"STATUS:CONFIRMED" . "\n" .
+				"LAST-MODIFIED:" . date(ICAL_FORMAT, strtotime($event->updated_at)) . "\n" .
+				"LOCATION:" . $event->location  . "\n" .
+				"END:VEVENT\n";
+			}
+
+			// close calendar
+			$icalObject .= "END:VCALENDAR";
+
+			// Set the headers
+			header('Content-type: text/calendar; charset=utf-8');
+			header('Content-Disposition: attachment; filename="cal.ics"');
+		  
+			//$icalObject = str_replace(' ', '', $icalObject);
+
+			echo $icalObject;
+			exit();
+		}
 }

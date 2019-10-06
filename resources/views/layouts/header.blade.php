@@ -36,6 +36,7 @@
 			window.Laravel = <?php echo json_encode([
 				'csrfToken' => csrf_token(),
 				'APP_DOMAIN' => env('APP_DOMAIN'),
+				'BASE_URL' => URL::to('/'),
 				'messages' => $messages,
 				'admin' => (Auth::user()!=null && Auth::user()->can('admin')) ? true : false,
 				'clubAdmin' => (Auth::user()!=null && Auth::user()->can('club-admin')) ? true : false,
