@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Routing\Redirector;
 
 use App\Models\ContestEntry;
-use App\Grids\ContestentriesGrid;
-use App\Grids\ContestentriesGridInterface;
+use App\Grids\ContestEntriesGrid;
+use App\Grids\ContestEntriesGridInterface;
 use App\Models\Contest;
 use App\Models\ContestClass;
 use App\Models\ContestProfile;
@@ -35,13 +35,13 @@ class ContestEntriesController extends Controller
 
         if (Gate::allows('contest-admin')) {
             // Return All Contest Entries
-            return (new ContestentriesGrid(['entries' => $entries]))
+            return (new ContestEntriesGrid(['contestEntries' => $entries]))
             ->create(['query' => ContestEntry::query()->with(['contestClass','contest']), 'request' => $request])
             ->renderOn('contestEntries.index');
         }
         else {
             // Return Only Contest Entries for Logged in User
-            return (new ContestentriesGrid(['entries' => $entries]))
+            return (new ContestentriesGrid(['contestEntries' => $entries]))
             ->create(['query' => ContestEntry::query()->with(['contestClass','contest'])->where('email','=',auth()->user()->email), 'request' => $request])
             ->renderOn('contestEntries.index');
         }

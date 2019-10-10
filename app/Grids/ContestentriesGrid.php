@@ -8,14 +8,14 @@ use Leantony\Grid\Buttons\GenericButton;
 
 use Gate;
 
-class ContestentriesGrid extends Grid implements ContestentriesGridInterface
+class ContestEntriesGrid extends Grid implements ContestEntriesGridInterface
 {
     /**
     * The name of the grid
     *
     * @var string
     */
-    protected $name = 'Contestentries';
+    protected $name = 'Entries';
 
     /**
     * List of buttons to be generated on the grid
@@ -197,7 +197,7 @@ class ContestentriesGrid extends Grid implements ContestentriesGridInterface
 
         //$this->editRowButton('delete', ['position' => 99,'renderIf'=> function() {return Gate::allows('contest-admin');} ]);
 
-        $this->editRowButton('view', ['class' => 'btn btn-primary btn-sm grid-row-button']);
+        $this->editRowButton('view', ['class' => 'btn btn-primary btn-sm grid-row-button',  'url' => function ($gridName, $gridItem) {return route('contestentries.show',$gridItem->id);}]);
 
     }
 
