@@ -35,8 +35,6 @@
 					<a class="list-group-item" href="/members"><span class="fa fa-users"></span> Members</a>
 					<a class="list-group-item" href="/calendar"><span class="fa fa-calendar"></span>Calendar</a>
 				</div>
-
-				<a href="//{{env('APP_DOMAIN')}}/">Switch Club</a>
 			</div>
 		<?php } ?>
 

@@ -7107,9 +7107,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
+  props: ['orgId', 'orgName', 'eventId'],
   data: function data() {
     return {
       state: {
@@ -7123,7 +7130,8 @@ __webpack_require__.r(__webpack_exports__);
       newDutyName: '',
       selectedOrg: {},
       showAddPanel: false,
-      dont_reload: false
+      dont_reload: false,
+      showAddCalendar: false
     };
   },
   computed: {
@@ -7131,7 +7139,6 @@ __webpack_require__.r(__webpack_exports__);
       return Laravel.BASE_URL + '/api/events' + "?ical=true&gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange + "&org_id=" + this.orgId;
     }
   },
-  props: ['orgId', 'orgName', 'eventId'],
   created: function created() {
     // only load on created if an org is not given
     if (!this.orgId) {
@@ -7160,6 +7167,7 @@ __webpack_require__.r(__webpack_exports__);
     // Set up the initial state in the URL
 
     History.replaceState(this.state, null, "?gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
+    this.load();
   },
   methods: {
     load: function load() {
@@ -7169,11 +7177,14 @@ __webpack_require__.r(__webpack_exports__);
         'gnz': this.state.gnz,
         'other': this.state.other,
         'type': this.state.type //check if we have selected an org. It might be null, and thus = all orgs
+        // if (this.selectedOrg) {
+        // 	data.org_id = this.selectedOrg.id;
+        // }
 
       };
 
-      if (this.selectedOrg) {
-        data.org_id = this.selectedOrg.id;
+      if (this.orgId) {
+        data.org_id = this.orgId;
       }
 
       window.axios.get('/api/events/', {
@@ -56864,7 +56875,9 @@ var render = function() {
       "nav",
       { staticClass: "nav-container container-fluid d-flex flex-wrap" },
       [
-        _c("h1", { staticClass: "mr-auto" }, [_vm._v("Events")]),
+        _c("h1", { staticClass: "mr-auto" }, [
+          _vm._v(_vm._s(_vm.orgName) + " Events")
+        ]),
         _vm._v(" "),
         _vm.Laravel.clubAdmin == true || _vm.Laravel.admin
           ? _c("add-event-panel", {
@@ -56878,195 +56891,214 @@ var render = function() {
             })
           : _vm._e(),
         _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "btn-group ml-auto mr-2", attrs: { role: "group" } },
-          [
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-sm mb-2",
-                class: [
-                  _vm.state.timerange == "past"
-                    ? "btn-secondary"
-                    : "btn-outline-dark"
-                ],
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    _vm.state.timerange = "past"
-                    _vm.stateChanged()
-                  }
-                }
-              },
-              [_vm._v("Past")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-sm mb-2",
-                class: [
-                  _vm.state.timerange == "future"
-                    ? "btn-secondary"
-                    : "btn-outline-dark"
-                ],
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    _vm.state.timerange = "future"
-                    _vm.stateChanged()
-                  }
-                }
-              },
-              [_vm._v("Upcoming")]
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c("span", { staticClass: "mt-1 mr-2" }, [_vm._v("GNZ Events:")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "btn-group mr-2", attrs: { role: "group" } }, [
+        _c("div", [
           _c(
-            "button",
-            {
-              staticClass: "btn btn-sm mb-2",
-              class: [_vm.state.gnz ? "btn-secondary" : "btn-outline-dark"],
-              attrs: { type: "button" },
-              on: {
-                click: function($event) {
-                  _vm.state.gnz = true
-                  _vm.stateChanged()
-                }
-              }
-            },
-            [_vm._v("Show")]
-          ),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-sm mb-2",
-              class: [!_vm.state.gnz ? "btn-secondary" : "btn-outline-dark"],
-              attrs: { type: "button" },
-              on: {
-                click: function($event) {
-                  _vm.state.gnz = false
-                  _vm.stateChanged()
-                }
-              }
-            },
-            [_vm._v("Hide")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("span", { staticClass: "mt-1 mr-2" }, [
-          _vm._v("Other Club's Shared Events:")
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "btn-group mr-2", attrs: { role: "group" } }, [
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-sm mb-2",
-              class: [_vm.state.other ? "btn-secondary" : "btn-outline-dark"],
-              attrs: { type: "button" },
-              on: {
-                click: function($event) {
-                  _vm.state.other = true
-                  _vm.stateChanged()
-                }
-              }
-            },
-            [_vm._v("Show")]
-          ),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-sm mb-2",
-              class: [!_vm.state.other ? "btn-secondary" : "btn-outline-dark"],
-              attrs: { type: "button" },
-              on: {
-                click: function($event) {
-                  _vm.state.other = false
-                  _vm.stateChanged()
-                }
-              }
-            },
-            [_vm._v("Hide")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("org-selector", {
-          staticClass: "mr-2",
-          attrs: { "org-id": _vm.orgId },
-          on: { orgSelected: _vm.orgSelected }
-        }),
-        _vm._v(" "),
-        _vm.Laravel.clubAdmin || _vm.Laravel.admin
-          ? _c("div", [
+            "div",
+            { staticClass: "btn-group mr-2", attrs: { role: "group" } },
+            [
               _c(
-                "button",
-                {
-                  staticClass: "btn btn-outline-dark btn-sm mb-2",
-                  on: {
-                    click: function($event) {
-                      _vm.showAddPanel = true
-                    }
-                  }
-                },
-                [_vm._v("Add Event")]
-              )
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "btn-group mr-2 ", attrs: { role: "group" } },
-          [
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-sm",
-                class: [
-                  _vm.state.type == "all" ? "btn-secondary" : "btn-outline-dark"
-                ],
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    _vm.state.type = "all"
-                    _vm.stateChanged()
-                  }
-                }
-              },
-              [_vm._v("All")]
-            ),
-            _vm._v(" "),
-            _vm._l(_vm.eventTypes(), function(eventType) {
-              return _c(
                 "button",
                 {
                   staticClass: "btn btn-sm",
                   class: [
-                    _vm.state.type == eventType.code
+                    _vm.state.timerange == "past"
                       ? "btn-secondary"
                       : "btn-outline-dark"
                   ],
                   attrs: { type: "button" },
                   on: {
                     click: function($event) {
-                      _vm.state.type = eventType.code
+                      _vm.state.timerange = "past"
                       _vm.stateChanged()
                     }
                   }
                 },
-                [_vm._v(_vm._s(eventType.shortname))]
+                [_vm._v("Past")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-sm",
+                  class: [
+                    _vm.state.timerange == "future"
+                      ? "btn-secondary"
+                      : "btn-outline-dark"
+                  ],
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.state.timerange = "future"
+                      _vm.stateChanged()
+                    }
+                  }
+                },
+                [_vm._v("Upcoming")]
               )
-            })
-          ],
-          2
-        )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "btn-group mr-2 ", attrs: { role: "group" } },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-sm",
+                  class: [
+                    _vm.state.type == "all"
+                      ? "btn-secondary"
+                      : "btn-outline-dark"
+                  ],
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.state.type = "all"
+                      _vm.stateChanged()
+                    }
+                  }
+                },
+                [_vm._v("All Types")]
+              ),
+              _vm._v(" "),
+              _vm._l(_vm.eventTypes(), function(eventType) {
+                return eventType.filter
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-sm",
+                        class: [
+                          _vm.state.type == eventType.code
+                            ? "btn-secondary"
+                            : "btn-outline-dark"
+                        ],
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            _vm.state.type = eventType.code
+                            _vm.stateChanged()
+                          }
+                        }
+                      },
+                      [_vm._v(_vm._s(eventType.shortname))]
+                    )
+                  : _vm._e()
+              })
+            ],
+            2
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "btn-group mr-2 ml-auto", attrs: { role: "group" } },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-sm",
+                  class: [
+                    _vm.state.other ? "btn-secondary" : "btn-outline-dark"
+                  ],
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.state.other = true
+                      _vm.stateChanged()
+                    }
+                  }
+                },
+                [_vm._v("Show Shared Events")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-sm",
+                  class: [
+                    !_vm.state.other ? "btn-secondary" : "btn-outline-dark"
+                  ],
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.state.other = false
+                      _vm.stateChanged()
+                    }
+                  }
+                },
+                [_vm._v("Hide")]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.orgName != "Gliding New Zealand",
+                  expression: "orgName!='Gliding New Zealand'"
+                }
+              ],
+              staticClass: "btn-group mr-2",
+              attrs: { role: "group" }
+            },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-sm",
+                  class: [_vm.state.gnz ? "btn-secondary" : "btn-outline-dark"],
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.state.gnz = true
+                      _vm.stateChanged()
+                    }
+                  }
+                },
+                [_vm._v("Show GNZ Events")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-sm",
+                  class: [
+                    !_vm.state.gnz ? "btn-secondary" : "btn-outline-dark"
+                  ],
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.state.gnz = false
+                      _vm.stateChanged()
+                    }
+                  }
+                },
+                [_vm._v("Hide")]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _vm.Laravel.clubAdmin || _vm.Laravel.admin
+            ? _c("div", { staticClass: "btn-group" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-outline-dark btn-sm ml-auto",
+                    on: {
+                      click: function($event) {
+                        _vm.showAddPanel = true
+                      }
+                    }
+                  },
+                  [_vm._v("Add Event")]
+                )
+              ])
+            : _vm._e()
+        ])
       ],
       1
     ),
@@ -57181,47 +57213,72 @@ var render = function() {
     ),
     _vm._v(" "),
     _c("div", { staticClass: "form-group col-sm-6" }, [
-      _vm._m(0),
-      _vm._v(" "),
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.ical_url,
-            expression: "ical_url"
-          }
-        ],
-        staticClass: "form-control",
-        attrs: { type: "text" },
-        domProps: { value: _vm.ical_url },
-        on: {
-          input: function($event) {
-            if ($event.target.composing) {
-              return
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-sm btn-outline-dark",
+          on: {
+            click: function($event) {
+              _vm.showAddCalendar = !_vm.showAddCalendar
             }
-            _vm.ical_url = $event.target.value
           }
-        }
-      })
+        },
+        [
+          _c("span", { staticClass: "fa fa-calendar-plus" }),
+          _vm._v(" Add to Calendar...")
+        ]
+      ),
+      _vm._v(" "),
+      _c("div", [
+        _c(
+          "label",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.showAddCalendar,
+                expression: "showAddCalendar"
+              }
+            ],
+            staticClass: "col-form-label",
+            attrs: { for: "slug" }
+          },
+          [_vm._v("Copy/paste this iCal feed into your Calendar App:")]
+        ),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.showAddCalendar,
+              expression: "showAddCalendar"
+            },
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.ical_url,
+              expression: "ical_url"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: { type: "text" },
+          domProps: { value: _vm.ical_url },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.ical_url = $event.target.value
+            }
+          }
+        })
+      ])
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "label",
-      { staticClass: "col-form-label", attrs: { for: "slug" } },
-      [
-        _c("span", { staticClass: "fa fa-calendar-plus" }),
-        _vm._v(" Add what you see above to your calendar with this iCal feed:")
-      ]
-    )
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -73745,51 +73802,61 @@ module.exports = {
     },
     eventTypes: function eventTypes() {
       return [{
+        'filter': true,
         'code': 'competition',
         'name': 'Competition',
         'icon': 'trophy',
-        'shortname': 'Comp'
+        'shortname': 'Comps'
       }, {
+        'filter': true,
         'code': 'training',
         'name': 'Training',
         'icon': 'paper-plane',
         'shortname': 'Training'
       }, {
+        'filter': true,
         'code': 'course',
         'name': 'Course',
         'icon': 'paper-plane',
-        'shortname': 'Course'
+        'shortname': 'Courses'
       }, {
+        'filter': false,
         'code': 'dinner',
         'name': 'Dinner',
         'icon': 'utensils',
-        'shortname': 'Dinner'
+        'shortname': 'Dinners'
       }, {
+        'filter': false,
         'code': 'bbq',
         'name': 'BBQ',
         'icon': 'utensils',
-        'shortname': 'BBQ'
+        'shortname': 'BBQs'
       }, {
+        'filter': false,
         'code': 'working-bee',
         'name': 'Working Bee',
         'icon': 'tractor',
-        'shortname': 'Working Bee'
+        'shortname': 'Working Bees'
       }, {
+        'filter': false,
         'code': 'cadets',
         'name': 'Cadets',
         'icon': 'users',
         'shortname': 'Cadets'
       }, {
+        'filter': false,
         'code': 'school-group',
         'name': 'School Group',
         'icon': 'users',
-        'shortname': 'School'
+        'shortname': 'Schools'
       }, {
+        'filter': false,
         'code': 'meeting',
         'name': 'Meeting',
         'icon': 'handshake',
-        'shortname': 'Meeting'
+        'shortname': 'Meetings'
       }, {
+        'filter': false,
         'code': 'other',
         'name': 'Other',
         'icon': 'calendar-alt',

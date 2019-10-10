@@ -98,6 +98,14 @@
 
 			@yield('content')
 
+			<hr class="ml-4 mr-4 mt-4">
+
+			<div class="footer">
+				&copy; <?php echo date('Y'); ?>  <a href="http://gliding.co.nz/">Gliding New Zealand</a>
+
+				<a href="//{{env('APP_DOMAIN')}}/" class="ml-4">Switch Club</a>
+			</div>
+
 		</div>
 
 		<!-- load page specific scripts -->

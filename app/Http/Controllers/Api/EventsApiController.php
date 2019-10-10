@@ -56,7 +56,7 @@ class EventsAPIController extends AppBaseController
 
 
 		if ($request->input('gnz', true)==='false') {
-			$query->where('org_id', 'IS NOT', $gnz->id);
+			$query->where('org_id', '!=', $gnz->id);
 		}
 
 

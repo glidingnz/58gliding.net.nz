@@ -3,40 +3,43 @@
 	
 	<nav class="nav-container container-fluid d-flex flex-wrap">
 
-		<h1 class="mr-auto">Events</h1>
+		<h1 class="mr-auto">{{orgName}} Events</h1>
 
 		<add-event-panel v-if="Laravel.clubAdmin==true || Laravel.admin" :org-id="orgId" :show="showAddPanel" @closeModal="showAddPanel=false" @eventAdded="eventAdded"></add-event-panel>
 
-		<div class="btn-group ml-auto mr-2" role="group">
-			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.timerange=='past' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.timerange='past'; stateChanged()">Past</button>
-			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.timerange=='future' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.timerange='future'; stateChanged()">Upcoming</button>
+		<!-- <org-selector :org-id="orgId" v-on:orgSelected="orgSelected" class="mr-2"></org-selector> -->
+
+
+		<div>
+
+			<div class="btn-group mr-2" role="group">
+				<button type="button" class="btn btn-sm" v-bind:class="[ state.timerange=='past' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.timerange='past'; stateChanged()">Past</button>
+				<button type="button" class="btn btn-sm" v-bind:class="[ state.timerange=='future' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.timerange='future'; stateChanged()">Upcoming</button>
+			</div>
+
+			<div class="btn-group mr-2 " role="group">
+				<button type="button" class="btn btn-sm" v-bind:class="[ state.type=='all' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.type='all';  stateChanged()">All Types</button>
+				<button v-if="eventType.filter" v-for="eventType in eventTypes()" type="button" class="btn btn-sm" v-bind:class="[ state.type==eventType.code ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.type=eventType.code;  stateChanged()">{{eventType.shortname}}</button>
+			</div>
+
+
+			<div class="btn-group mr-2 ml-auto" role="group">
+				<button type="button" class="btn btn-sm" v-bind:class="[ state.other ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.other=true; stateChanged()">Show Shared Events</button>
+				<button type="button" class="btn btn-sm" v-bind:class="[ !state.other ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.other=false; stateChanged()">Hide</button>
+			</div>
+
+
+			<div class="btn-group mr-2" role="group" v-show="orgName!='Gliding New Zealand'">
+				<button type="button" class="btn btn-sm" v-bind:class="[ state.gnz ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.gnz=true; stateChanged()">Show GNZ Events</button>
+				<button type="button" class="btn btn-sm" v-bind:class="[ !state.gnz ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.gnz=false; stateChanged()">Hide</button>
+			</div>
+
+			<div class="btn-group" v-if="Laravel.clubAdmin || Laravel.admin">
+				<button class="btn btn-outline-dark btn-sm ml-auto" v-on:click="showAddPanel=true">Add Event</button>
+			</div>
 		</div>
 
 		
-		<span class="mt-1 mr-2">GNZ Events:</span>
-		<div class="btn-group mr-2" role="group">
-			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.gnz ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.gnz=true; stateChanged()">Show</button>
-			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ !state.gnz ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.gnz=false; stateChanged()">Hide</button>
-		</div>
-		
-		<span class="mt-1 mr-2">Other Club's Shared Events:</span>
-		<div class="btn-group mr-2" role="group">
-			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ state.other ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.other=true; stateChanged()">Show</button>
-			<button type="button" class="btn btn-sm mb-2" v-bind:class="[ !state.other ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.other=false; stateChanged()">Hide</button>
-		</div>
-
-		<org-selector :org-id="orgId" v-on:orgSelected="orgSelected" class="mr-2"></org-selector>
-
-		<div v-if="Laravel.clubAdmin || Laravel.admin">
-			<button class="btn btn-outline-dark btn-sm mb-2" v-on:click="showAddPanel=true">Add Event</button>
-		</div>
-
-
-		<div class="btn-group mr-2 " role="group">
-			<button type="button" class="btn btn-sm" v-bind:class="[ state.type=='all' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.type='all';  stateChanged()">All</button>
-			<button v-for="eventType in eventTypes()" type="button" class="btn btn-sm" v-bind:class="[ state.type==eventType.code ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.type=eventType.code;  stateChanged()">{{eventType.shortname}}</button>
-		</div>
-
 
 	</nav>
 
@@ -70,8 +73,11 @@
 
 	
 	<div class="form-group col-sm-6">
-		<label for="slug" class="col-form-label"><span class="fa fa-calendar-plus"></span> Add what you see above to your calendar with this iCal feed:</label>
-		<input type="text" class="form-control" v-model="ical_url">
+		<button class="btn btn-sm btn-outline-dark" v-on:click="showAddCalendar = !showAddCalendar"><span class="fa fa-calendar-plus"></span> Add to Calendar...</button>
+		<div>
+			<label v-show="showAddCalendar" for="slug" class="col-form-label">Copy/paste this iCal feed into your Calendar App:</label>
+			<input v-show="showAddCalendar" type="text" class="form-control" v-model="ical_url">
+		</div>
 	</div>
 	
 
@@ -82,6 +88,7 @@
 import common from '../../mixins.js';
 export default {
 	mixins: [common],
+	props: ['orgId', 'orgName', 'eventId'],
 	data: function() {
 		return {
 			state: {
@@ -94,7 +101,8 @@ export default {
 			newDutyName: '',
 			selectedOrg: {},
 			showAddPanel: false,
-			dont_reload: false
+			dont_reload: false,
+			showAddCalendar: false
 		}
 	},
 	computed: {
@@ -102,7 +110,6 @@ export default {
 			return Laravel.BASE_URL + '/api/events' + "?ical=true&gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange + "&org_id=" + this.orgId;
 		}
 	},
-	props: ['orgId', 'orgName', 'eventId'],
 	created: function() {
 		// only load on created if an org is not given
 		if (!this.orgId) {
@@ -134,6 +141,8 @@ export default {
 		// Set up the initial state in the URL
 		History.replaceState(this.state, null, "?gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
 
+		this.load();
+
 	},
 	methods: {
 		load: function() {
@@ -147,8 +156,11 @@ export default {
 			}
 
 			//check if we have selected an org. It might be null, and thus = all orgs
-			if (this.selectedOrg) {
-				data.org_id = this.selectedOrg.id;
+			// if (this.selectedOrg) {
+			// 	data.org_id = this.selectedOrg.id;
+			// }
+			if (this.orgId) {
+				data.org_id = this.orgId;
 			}
 
 			window.axios.get('/api/events/', {params: data}).then(function (response) {

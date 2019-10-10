@@ -86,16 +86,16 @@ module.exports = {
 		},
 		eventTypes: function() {
 			return [
-				{'code': 'competition', 'name': 'Competition', 'icon':'trophy', 'shortname':'Comp'},
-				{'code': 'training', 'name': 'Training', 'icon':'paper-plane', 'shortname':'Training'},
-				{'code': 'course', 'name': 'Course', 'icon':'paper-plane', 'shortname':'Course'},
-				{'code': 'dinner', 'name': 'Dinner', 'icon':'utensils', 'shortname':'Dinner'},
-				{'code': 'bbq', 'name': 'BBQ', 'icon':'utensils', 'shortname':'BBQ'},
-				{'code': 'working-bee', 'name': 'Working Bee', 'icon':'tractor', 'shortname':'Working Bee'},
-				{'code': 'cadets', 'name': 'Cadets', 'icon':'users', 'shortname':'Cadets'},
-				{'code': 'school-group', 'name': 'School Group', 'icon':'users', 'shortname':'School'},
-				{'code': 'meeting', 'name': 'Meeting', 'icon':'handshake', 'shortname':'Meeting'},
-				{'code': 'other', 'name': 'Other', 'icon':'calendar-alt', 'shortname':'Other'}
+				{'filter': true, 'code': 'competition', 'name': 'Competition', 'icon':'trophy', 'shortname':'Comps'},
+				{'filter': true, 'code': 'training', 'name': 'Training', 'icon':'paper-plane', 'shortname':'Training'},
+				{'filter': true, 'code': 'course', 'name': 'Course', 'icon':'paper-plane', 'shortname':'Courses'},
+				{'filter': false, 'code': 'dinner', 'name': 'Dinner', 'icon':'utensils', 'shortname':'Dinners'},
+				{'filter': false, 'code': 'bbq', 'name': 'BBQ', 'icon':'utensils', 'shortname':'BBQs'},
+				{'filter': false, 'code': 'working-bee', 'name': 'Working Bee', 'icon':'tractor', 'shortname':'Working Bees'},
+				{'filter': false, 'code': 'cadets', 'name': 'Cadets', 'icon':'users', 'shortname':'Cadets'},
+				{'filter': false, 'code': 'school-group', 'name': 'School Group', 'icon':'users', 'shortname':'Schools'},
+				{'filter': false, 'code': 'meeting', 'name': 'Meeting', 'icon':'handshake', 'shortname':'Meetings'},
+				{'filter': false, 'code': 'other', 'name': 'Other', 'icon':'calendar-alt', 'shortname':'Other'}
 			]
 		},
 		formatEventType: function(event) {
