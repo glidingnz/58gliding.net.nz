@@ -94,7 +94,7 @@ class ContestEntriesController extends Controller
         return redirect(null,500);
     }
 
-    public function update(Request $request, $id)
+    public function update(ContestEntryRequest $request, $id)
     {
         $validated = $request->validated();
 
