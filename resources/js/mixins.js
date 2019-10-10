@@ -88,7 +88,7 @@ module.exports = {
 			return [
 				{'code': 'competition', 'name': 'Competition', 'icon':'trophy', 'shortname':'Comp'},
 				{'code': 'training', 'name': 'Training', 'icon':'paper-plane', 'shortname':'Training'},
-				{'code': 'xcountry', 'name': 'Cross Country Course', 'icon':'globe-asia', 'shortname':'XCountry'},
+				{'code': 'course', 'name': 'Course', 'icon':'paper-plane', 'shortname':'Course'},
 				{'code': 'dinner', 'name': 'Dinner', 'icon':'utensils', 'shortname':'Dinner'},
 				{'code': 'bbq', 'name': 'BBQ', 'icon':'utensils', 'shortname':'BBQ'},
 				{'code': 'working-bee', 'name': 'Working Bee', 'icon':'tractor', 'shortname':'Working Bee'},

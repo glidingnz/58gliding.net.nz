@@ -40,7 +40,7 @@
 
 	</nav>
 
-	<table v-show="events.length>0" class="table table-striped table-sm collapsable calendar-table">
+	<table v-show="events.length>0" class="table  collapsable calendar-table">
 		<tr>
 			<th>Event Name</th>
 			<th>Type</th>

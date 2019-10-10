@@ -57082,7 +57082,7 @@ var render = function() {
             expression: "events.length>0"
           }
         ],
-        staticClass: "table table-striped table-sm collapsable calendar-table"
+        staticClass: "table  collapsable calendar-table"
       },
       [
         _c("tr", [
@@ -73755,10 +73755,10 @@ module.exports = {
         'icon': 'paper-plane',
         'shortname': 'Training'
       }, {
-        'code': 'xcountry',
-        'name': 'Cross Country Course',
-        'icon': 'globe-asia',
-        'shortname': 'XCountry'
+        'code': 'course',
+        'name': 'Course',
+        'icon': 'paper-plane',
+        'shortname': 'Course'
       }, {
         'code': 'dinner',
         'name': 'Dinner',
