@@ -8,7 +8,7 @@ use Leantony\Grid\Buttons\GenericButton;
 
 use Gate;
 
-class ClassesGrid extends Grid implements ClassesGridInterface
+class ContestclassesGrid extends Grid implements ContestclassesGridInterface
 {
     /**
     * The name of the grid
