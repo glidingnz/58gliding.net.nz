@@ -23,14 +23,14 @@ class ContestEntryRequest extends FormRequest
     */
     public function rules()
     {
-        return [
+
+        $rules = [
             //'contest_name'=> 'required',
             'classes_id'=> 'required',
             'first_name' => 'required',
             'last_name'  => 'required',
             'is_copilot' => 'boolean',
             'mobile' => 'required|regex:/([+(\d]{1})(([\d+() -.]){5,16})([+(\d]{1})/',
-            'email'=>'email|unique_with:entries,contest_id',
             'address_1' =>'required',
             'club' => 'required',
             'e_contact' => 'required',
@@ -41,6 +41,13 @@ class ContestEntryRequest extends FormRequest
             'wingspan' => 'required_unless:is_copilot,1',
             'declaration' => 'accepted'
         ];
+
+        if ($this->_method != 'PATCH'){
+            array_merge($rules,['email'=>'email|unique_with:entries,contest_id']);
+        }
+
+        return $rules;
+
     }
 
     public function messages(){
