@@ -7,6 +7,7 @@ use Leantony\Grid\Grid;
 use Leantony\Grid\Buttons\GenericButton;
 
 use Gate;
+use Auth;
 
 class ContestEntriesGrid extends Grid implements ContestEntriesGridInterface
 {
@@ -195,9 +196,21 @@ class ContestEntriesGrid extends Grid implements ContestEntriesGridInterface
         // call `editRowButton` to edit a row button
         // call `editButtonProperties` to do either of the above. All the edit functions accept the properties as an array
 
-        //$this->editRowButton('delete', ['position' => 99,'renderIf'=> function() {return Gate::allows('contest-admin');} ]);
+        $this->editRowButton('delete',
+            [
+                'position' => 99,
+                'renderIf'=> function($gridName, $gridItem) {return Gate::allows('contest-admin');},
+            ]
+        );
 
-        $this->editRowButton('view', ['class' => 'btn btn-primary btn-sm grid-row-button',  'url' => function ($gridName, $gridItem) {return route('contestentries.show',$gridItem->id);}]);
+        $this->editRowButton('view',
+            [
+                'class' => 'btn btn-primary btn-sm grid-row-button',
+                'name' => 'Update',
+                'url' => function ($gridName, $gridItem) {return route('contestentries.show',$gridItem->id);},
+                'renderIf'=> function($gridName, $gridItem) {return Gate::allows('contest-admin') or (@Auth::user()->email==$gridItem->email);}
+            ]
+        );
 
     }
 
