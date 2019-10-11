@@ -33,25 +33,16 @@ class EventsAPIController extends AppBaseController
 		// limit by organisation
 		if ($request->has('org_id'))
 		{
-			if ($request->input('org_id')!='gnz')
-			{
-				$query->where(function($query) use ($request, $gnz) {
-					$query->where('org_id','=',$request->input('org_id'));
+			// filter to either the selected organisation OR 'featured' events
+			$query->where(function($query) use ($request, $gnz) {
 
-					if ($request->input('gnz', true)==='true') {
-						$query->orWhere('org_id', $gnz->id);
-					}
+				$query->where('org_id','=',$request->input('org_id'));
 
-					if ($request->input('other', true)==='true') {
-						$query->orWhere('featured','=', true);
-					}
-				});
+				if ($request->input('other', true)==='true') {
+					$query->orWhere('featured','=', true);
+				}
+			});
 				
-			}
-			else
-			{
-				$query->whereNull('org_id');
-			}
 		}
 
 

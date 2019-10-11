@@ -7111,8 +7111,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -57031,57 +57029,6 @@ var render = function() {
             ]
           ),
           _vm._v(" "),
-          _c(
-            "div",
-            {
-              directives: [
-                {
-                  name: "show",
-                  rawName: "v-show",
-                  value: _vm.orgName != "Gliding New Zealand",
-                  expression: "orgName!='Gliding New Zealand'"
-                }
-              ],
-              staticClass: "btn-group mr-2",
-              attrs: { role: "group" }
-            },
-            [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-sm",
-                  class: [_vm.state.gnz ? "btn-secondary" : "btn-outline-dark"],
-                  attrs: { type: "button" },
-                  on: {
-                    click: function($event) {
-                      _vm.state.gnz = true
-                      _vm.stateChanged()
-                    }
-                  }
-                },
-                [_vm._v("Show GNZ Events")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-sm",
-                  class: [
-                    !_vm.state.gnz ? "btn-secondary" : "btn-outline-dark"
-                  ],
-                  attrs: { type: "button" },
-                  on: {
-                    click: function($event) {
-                      _vm.state.gnz = false
-                      _vm.stateChanged()
-                    }
-                  }
-                },
-                [_vm._v("Hide")]
-              )
-            ]
-          ),
-          _vm._v(" "),
           _vm.Laravel.clubAdmin || _vm.Laravel.admin
             ? _c("div", { staticClass: "btn-group" }, [
                 _c(
@@ -57094,7 +57041,10 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v("Add Event")]
+                  [
+                    _c("span", { staticClass: "fa fa-plus" }),
+                    _vm._v(" Add Event")
+                  ]
                 )
               ])
             : _vm._e()
@@ -57127,6 +57077,8 @@ var render = function() {
           _c("th", [_vm._v("Starts")]),
           _vm._v(" "),
           _c("th", [_vm._v("Date")]),
+          _vm._v(" "),
+          _c("th", [_vm._v("Start")]),
           _vm._v(" "),
           _c("th", [_vm._v("Length")]),
           _vm._v(" "),
@@ -57163,11 +57115,17 @@ var render = function() {
             _c("td", [_vm._v(_vm._s(_vm.dateToNow(event.start_date)))]),
             _vm._v(" "),
             _c("td", [
-              _vm._v(_vm._s(_vm.formatDate(event.start_date))),
+              _vm._v("\n\t\t\t\t" + _vm._s(_vm.formatDate(event.start_date))),
               event.end_date && event.start_date != event.end_date
                 ? _c("span", [
                     _vm._v(" - " + _vm._s(_vm.formatDate(event.end_date)))
                   ])
+                : _vm._e()
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              event.start_time
+                ? _c("span", [_vm._v(_vm._s(_vm.formatTime(event.start_time)))])
                 : _vm._e()
             ]),
             _vm._v(" "),
@@ -73763,6 +73721,9 @@ module.exports = {
     },
     formatDate: function formatDate(date) {
       return Vue.prototype.$moment(date).format('ddd Do MMM YYYY');
+    },
+    formatTime: function formatTime(time) {
+      return Vue.prototype.$moment(time, Vue.prototype.$moment.HTML5_FMT.TIME_SECONDS).format('h:mma');
     },
     dateToNow: function dateToNow(date) {
       return Vue.prototype.$moment(date).fromNow();

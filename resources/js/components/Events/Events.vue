@@ -28,14 +28,8 @@
 				<button type="button" class="btn btn-sm" v-bind:class="[ !state.other ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.other=false; stateChanged()">Hide</button>
 			</div>
 
-
-			<div class="btn-group mr-2" role="group" v-show="orgName!='Gliding New Zealand'">
-				<button type="button" class="btn btn-sm" v-bind:class="[ state.gnz ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.gnz=true; stateChanged()">Show GNZ Events</button>
-				<button type="button" class="btn btn-sm" v-bind:class="[ !state.gnz ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.gnz=false; stateChanged()">Hide</button>
-			</div>
-
 			<div class="btn-group" v-if="Laravel.clubAdmin || Laravel.admin">
-				<button class="btn btn-outline-dark btn-sm ml-auto" v-on:click="showAddPanel=true">Add Event</button>
+				<button class="btn btn-outline-dark btn-sm ml-auto" v-on:click="showAddPanel=true"><span class="fa fa-plus"></span> Add Event</button>
 			</div>
 		</div>
 
@@ -50,6 +44,7 @@
 			<th>Organisation</th>
 			<th>Starts</th>
 			<th>Date</th>
+			<th>Start</th>
 			<th>Length</th>
 			<th>Location</th>
 			<th v-if="Laravel.clubAdmin">Edit</th>
@@ -62,7 +57,10 @@
 				<span v-if="event.org==null">GNZ</span>
 			</td>
 			<td>{{dateToNow(event.start_date)}}</td>
-			<td>{{formatDate(event.start_date)}}<span v-if="event.end_date && event.start_date!=event.end_date"> - {{formatDate(event.end_date)}}</span></td>
+			<td>
+				{{formatDate(event.start_date)}}<span v-if="event.end_date && event.start_date!=event.end_date"> - {{formatDate(event.end_date)}}</span>
+			</td>
+			<td><span v-if="event.start_time">{{formatTime(event.start_time)}}</span></td>
 			<td>{{dateDiffDays(event.start_date, event.end_date)}}</td>
 			<td>{{event.location}}</td>
 			<td v-if="Laravel.clubAdmin"><a class="btn btn-xs btn-outline-dark" :href="'/events/' + event.slug + '/edit'" v-if="event.can_edit">Edit</a></td>
