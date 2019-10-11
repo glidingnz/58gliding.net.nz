@@ -189,7 +189,6 @@
 			</tr>
 		</table>
 	</div>
-
 </div>
 </template>
 
@@ -237,7 +236,8 @@
 			}
 		},
 		mounted() {
-			if (this.orgCode) {
+
+			if (this.orgCode && this.orgCode!='GNZ') {
 				this.state.org=this.orgCode;
 			}
 
@@ -274,13 +274,6 @@
 
 				// download it!
 				window.location.href = url;
-
-				// window.axios.get('/api/v1/members?' + this.createExportUrl(format)).then(function (response) {
-
-				// 	if (typeof response.data.data.url!='undefined') {
-				// 		window.location.href = response.data.data.url;
-				// 	}
-				// });
 			},
 			createUrl: function(obj, extras) {
 				var parts = [];

@@ -3186,7 +3186,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked.js");
@@ -3230,7 +3229,7 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
     }
   },
   mounted: function mounted() {
-    if (this.orgCode) {
+    if (this.orgCode && this.orgCode != 'GNZ') {
       this.state.org = this.orgCode;
     }
 
@@ -3264,11 +3263,7 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
       // create the url
       var url = '/api/v1/members/export/' + format + '?' + this.createExportUrl(format); // download it!
 
-      window.location.href = url; // window.axios.get('/api/v1/members?' + this.createExportUrl(format)).then(function (response) {
-      // 	if (typeof response.data.data.url!='undefined') {
-      // 		window.location.href = response.data.data.url;
-      // 	}
-      // });
+      window.location.href = url;
     },
     createUrl: function createUrl(obj, extras) {
       var parts = [];
