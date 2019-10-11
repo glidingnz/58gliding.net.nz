@@ -19,7 +19,7 @@
     <div class="col-sm-6">
         <select id="classes_id" name="classes_id" class="form-control" >
             @foreach ($contest->contestClass as $class)
-            <option {{old('classes_id', $contestEntry->classes_id)== $class['id']? 'selected':''}} value="{{$class['id']}}">
+            <option {{isset($contestEntry) ? $contestEntry->classes_id == $class['id'] ? 'selected' : '' : ''}} value="{{$class['id']}}">
                 {{$class['name']}}
             </option>
             @endforeach
