@@ -199,7 +199,7 @@ class ContestEntriesGrid extends Grid implements ContestEntriesGridInterface
         $this->editRowButton('delete',
             [
                 'position' => 99,
-                'renderIf'=> function($gridName, $gridItem) {return Gate::allows('contest-admin') or (@Auth::user()->email==$gridItem->email);},
+                'renderIf'=> function($gridName, $gridItem) {return Gate::allows('contest-admin');},
             ]
         );
 

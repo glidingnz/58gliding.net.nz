@@ -34,13 +34,13 @@ class ContestEntriesController extends Controller
         $entries = ContestEntry::class;
 
         //if (Gate::allows('contest-admin')) {
-            // Return All Contest Entries
-            return (new ContestEntriesGrid(['contestEntries' => $entries]))
-            ->create(['query' => ContestEntry::query()->with(['contestClass','contest']), 'request' => $request])
-            ->renderOn('contestEntries.index');
+        // Return All Contest Entries
+        return (new ContestEntriesGrid(['contestEntries' => $entries]))
+        ->create(['query' => ContestEntry::query()->with(['contestClass','contest']), 'request' => $request])
+        ->renderOn('contestEntries.index');
         //}
         //else {
-            // Return Only Contest Entries for Logged in User
+        // Return Only Contest Entries for Logged in User
         //    return (new ContestentriesGrid(['contestEntries' => $entries]))
         //    ->create(['query' => ContestEntry::query()->with(['contestClass','contest'])->where('email','=',auth()->user()->email), 'request' => $request])
         //    ->renderOn('contestEntries.index');
@@ -66,8 +66,14 @@ class ContestEntriesController extends Controller
 
     public function show($id, Request $request)
     {
+        //Must be logged in
+        if (!Auth::check()) return response()->json(['success' => false], 401);
+
         $contestEntry = ContestEntry::query()->findOrFail($id);
         $contest = Contest::with('contestClass')->find($contestEntry->contest_id);
+
+        //Only show own entries
+        if (!Gate::allows('contest-admin') and  Auth::user()->email!=@$contestEntry->email) return response()->json(['success' => false], 401);
 
         $modal = [
             'model' => 'Contest Entry',
@@ -83,6 +89,7 @@ class ContestEntriesController extends Controller
 
     public function store(ContestEntryRequest $request)
     {
+
         $validated = $request->validated();
 
         $contestEntry = ContestEntry::create($request->except(['_method','_token','contest_name']));
@@ -96,6 +103,7 @@ class ContestEntriesController extends Controller
 
     public function update(ContestEntryRequest $request, $id)
     {
+
         $validated = $request->validated();
 
         $status = ContestEntry::where('id',$id)->update($request->except(['_method','_token','contest_name']));
