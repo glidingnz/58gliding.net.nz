@@ -57090,7 +57090,7 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
-            _c("td", [
+            _c("td", { staticClass: "text-nowrap" }, [
               _c("span", {
                 domProps: {
                   innerHTML: _vm._s(_vm.formatEventTypeIcon(event.type))

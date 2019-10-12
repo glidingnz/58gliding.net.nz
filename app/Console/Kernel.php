@@ -24,8 +24,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->call('App\Http\Controllers\AdminController@email_address_changes')->dailyAt('23:55')->timezone('Pacific/Auckland');
+        $schedule->call('App\Http\Controllers\Api\v1\TrackingApiController@fetchSpots')->everyFiveMinutes();
     }
 
     /**

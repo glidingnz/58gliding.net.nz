@@ -51,7 +51,7 @@
 		</tr>
 		<tr v-for="event in events">
 			<td><a :href="'/events/' + event.slug">{{event.name}}</a></td>
-			<td><span v-html="formatEventTypeIcon(event.type)"></span> {{formatEventType(event.type)}}</td>
+			<td class="text-nowrap"><span v-html="formatEventTypeIcon(event.type)"></span> {{formatEventType(event.type)}}</td>
 			<td>
 				<span v-if="event.org">{{event.org.name}}</span>
 				<span v-if="event.org==null">GNZ</span>
