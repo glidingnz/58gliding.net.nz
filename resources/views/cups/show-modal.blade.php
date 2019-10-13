@@ -24,6 +24,13 @@
             placeholder="Enter Description" value="{{ isset($cup) ? $cup->description : old('description')}}">
     </div>
 </div>
+<div class="form-group row">
+    <label for="input_airspace" class="col-sm-2 col-form-label">Airspace File:</label>
+    <div class="col-sm-10">
+        <input type="text" class="form-control" id="input_airspace" name="airspace"
+            placeholder="Enter File Name" value="{{ isset($cup) ? $cup->airspace : old('airspace')}}">
+    </div>
+</div>
 <div class="panel-heading"><h5 class="panel-title">Turnpoints</h5></div>
 <div class="panel panel-primary">
     <div class="list-group pre-scrollable" id="waypoint-list">

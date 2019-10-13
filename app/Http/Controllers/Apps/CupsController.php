@@ -187,6 +187,14 @@ class CupsController extends Controller
         return Redirect::back();
 
     }
+
+    public function airspace($id) {
+        $cup = Cup::query()->findOrFail($id);
+        return NULL != $cup->airspace
+            ? response()->download(public_path('airspace/'.$cup->airspace))
+            : Redirect::back();
+    }
+
     public function destroy($id){
         if (!Gate::allows('waypoint-admin')) return response()->json(['success' => false], 401);
 
