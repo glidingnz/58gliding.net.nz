@@ -1,3 +1,16 @@
+<style>
+	.vc-grid-cell {
+		border-right: 1px solid #AAA;
+		border-bottom: 1px solid #AAA;
+	}
+	.vc-grid-cell-row-1 {
+		border-top: 1px solid #AAA;
+	}
+	.vc-grid-cell-col-1 {
+		border-left: 1px solid #AAA;
+	}
+</style>
+
 <template>
 <div>
 	
@@ -78,6 +91,13 @@
 		</div>
 	</div>
 	
+
+
+	<v-calendar :first-day-of-week="2" ref="calendar" is-expanded>
+		<template slot='day-content' scope="props">
+			<div class="day-cell">{{props.day.day}}</div>
+		</template>
+	</v-calendar>
 
 </div>
 </template>
