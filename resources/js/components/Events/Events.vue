@@ -1,19 +1,31 @@
 <style>
-	.vc-grid-cell {
+	.custom_calendar .vc-day {
 		border-right: 1px solid #AAA;
 		border-bottom: 1px solid #AAA;
+		padding: 3px;
 	}
-	.vc-grid-cell-row-1 {
+	.custom_calendar .on-top {
 		border-top: 1px solid #AAA;
 	}
-	.vc-grid-cell-col-1 {
+	.custom_calendar .on-left {
 		border-left: 1px solid #AAA;
+	}
+	.custom_calendar .event {
+		word-wrap: break-word;
+		word-break: break-all;
+	}
+	.custom_calendar .badge {
+		white-space: normal;
+		border-radius: 5px;
+		margin-top: 2px;
+		text-align: left;
+		color: #FFF;
 	}
 </style>
 
 <template>
 <div>
-	
+
 	<nav class="nav-container container-fluid d-flex flex-wrap">
 
 		<h1 class="mr-auto">{{orgName}} Events</h1>
@@ -24,6 +36,11 @@
 
 
 		<div>
+
+			<div class="btn-group mr-2" role="group">
+				<button type="button" class="btn btn-sm" v-bind:class="[ showCalendar==false ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="showCalendar=false; stateChanged()">View as List</button>
+				<button type="button" class="btn btn-sm" v-bind:class="[ showCalendar==true ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="showCalendar=true; stateChanged()">Calendar</button>
+			</div>
 
 			<div class="btn-group mr-2" role="group">
 				<button type="button" class="btn btn-sm" v-bind:class="[ state.timerange=='past' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.timerange='past'; stateChanged()">Past</button>
@@ -50,7 +67,7 @@
 
 	</nav>
 
-	<table v-show="events.length>0" class="table  collapsable calendar-table">
+	<table v-show="events.length>0 && !showCalendar" class="table  collapsable calendar-table">
 		<tr>
 			<th>Event Name</th>
 			<th>Type</th>
@@ -80,24 +97,31 @@
 		</tr>
 	</table>
 
-	<p v-show="events.length==0">No events yet!</p>
+	<p v-show="events.length==0">No events. Check your filters above.</p>
+
+
+	<v-calendar :rows="6" v-if="events.length>0 && showCalendar" class="custom_calendar" style="max-width: 100%;" :first-day-of-week="2" ref="calendar" is-expanded  :attributes='attributes'>
+		<template slot='day-content' slot-scope="props">
+			<div class="day-cell">
+				{{props.day.day}}
+				<div v-for="dayEvent in props.attributesMap">
+					<span class="event badge badge-pill" :style="'background-color: ' + dayEvent.customData.colour ">
+						<span :class="'fa fa-' + dayEvent.customData.icon"></span>
+						{{dayEvent.customData.name}}
+					</span>
+				</div>
+			</div>
+		</template>
+	</v-calendar>
 
 	
-	<div class="form-group col-sm-6">
+	<div class="mt-2">
 		<button class="btn btn-sm btn-outline-dark" v-on:click="showAddCalendar = !showAddCalendar"><span class="fa fa-calendar-plus"></span> Add to Calendar...</button>
 		<div>
 			<label v-show="showAddCalendar" for="slug" class="col-form-label">Copy/paste this iCal feed into your Calendar App:</label>
 			<input v-show="showAddCalendar" type="text" class="form-control" v-model="ical_url">
 		</div>
 	</div>
-	
-
-
-	<v-calendar :first-day-of-week="2" ref="calendar" is-expanded>
-		<template slot='day-content' scope="props">
-			<div class="day-cell">{{props.day.day}}</div>
-		</template>
-	</v-calendar>
 
 </div>
 </template>
@@ -120,7 +144,9 @@ export default {
 			selectedOrg: {},
 			showAddPanel: false,
 			dont_reload: false,
-			showAddCalendar: false
+			showAddCalendar: false,
+			attributes: [],
+			showCalendar: true,
 		}
 	},
 	computed: {
@@ -183,6 +209,35 @@ export default {
 
 			window.axios.get('/api/events/', {params: data}).then(function (response) {
 				that.events = response.data.data;
+				that.attributes = [];
+
+				// setup the calendar
+				for (var i=0; i<that.events.length; i++)
+				{
+					console.log(that.events[i]);
+
+					if (that.events[i].end_date) {
+						var dates = [{
+								'start': that.events[i].start_date,
+								'end': that.events[i].end_date,
+							}];
+					} else {
+						var dates = [
+							that.events[i].start_date
+						];
+					}
+					console.log(that.getEventType(that.events[i].type));
+					that.attributes.push({
+						dates: dates,
+						customData: { 
+							name: that.events[i].name,
+							icon: that.getEventType(that.events[i].type).icon,
+							colour: that.getEventType(that.events[i].type).colour
+						},
+						order: 0
+					});
+				}
+
 			});
 		},
 		orgSelected: function(org) {

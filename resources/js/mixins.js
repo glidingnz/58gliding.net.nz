@@ -89,17 +89,23 @@ module.exports = {
 		},
 		eventTypes: function() {
 			return [
-				{'filter': true, 'code': 'competition', 'name': 'Competition', 'icon':'trophy', 'shortname':'Comps'},
-				{'filter': true, 'code': 'training', 'name': 'Training', 'icon':'paper-plane', 'shortname':'Training'},
-				{'filter': true, 'code': 'course', 'name': 'Course', 'icon':'paper-plane', 'shortname':'Courses'},
-				{'filter': false, 'code': 'dinner', 'name': 'Dinner', 'icon':'utensils', 'shortname':'Dinners'},
-				{'filter': false, 'code': 'bbq', 'name': 'BBQ', 'icon':'utensils', 'shortname':'BBQs'},
-				{'filter': false, 'code': 'working-bee', 'name': 'Working Bee', 'icon':'tractor', 'shortname':'Working Bees'},
-				{'filter': false, 'code': 'cadets', 'name': 'Cadets', 'icon':'users', 'shortname':'Cadets'},
-				{'filter': false, 'code': 'school-group', 'name': 'School Group', 'icon':'users', 'shortname':'Schools'},
-				{'filter': false, 'code': 'meeting', 'name': 'Meeting', 'icon':'handshake', 'shortname':'Meetings'},
-				{'filter': false, 'code': 'other', 'name': 'Other', 'icon':'calendar-alt', 'shortname':'Other'}
+				{'colour': '#E74A1A', 'filter': true, 'code': 'competition', 'name': 'Competition', 'icon':'trophy', 'shortname':'Comps'},
+				{'colour': '#1782AB', 'filter': true, 'code': 'training', 'name': 'Training', 'icon':'paper-plane', 'shortname':'Training'},
+				{'colour': '#E59B2B', 'filter': true, 'code': 'course', 'name': 'Course', 'icon':'paper-plane', 'shortname':'Courses'},
+				{'colour': '#2D3939', 'filter': false, 'code': 'dinner', 'name': 'Dinner', 'icon':'utensils', 'shortname':'Dinners'},
+				{'colour': '#06362B', 'filter': false, 'code': 'bbq', 'name': 'BBQ', 'icon':'utensils', 'shortname':'BBQs'},
+				{'colour': '#2E1244', 'filter': false, 'code': 'working-bee', 'name': 'Working Bee', 'icon':'tractor', 'shortname':'Working Bees'},
+				{'colour': '#14778E', 'filter': false, 'code': 'cadets', 'name': 'Cadets', 'icon':'users', 'shortname':'Cadets'},
+				{'colour': '#0C2D43', 'filter': false, 'code': 'school-group', 'name': 'School Group', 'icon':'users', 'shortname':'Schools'},
+				{'colour': '#BA0955', 'filter': false, 'code': 'meeting', 'name': 'Meeting', 'icon':'handshake', 'shortname':'Meetings'},
+				{'colour': '#92AC59', 'filter': false, 'code': 'other', 'name': 'Other', 'icon':'calendar-alt', 'shortname':'Other'}
 			]
+		},
+		getEventType(eventType) {
+			var eventType = this.eventTypes().filter(function findEvent(value) {
+				if (value.code==eventType) return true;
+			});
+			return eventType[0];
 		},
 		formatEventType: function(event) {
 			var eventType = this.eventTypes().filter(function findEvent(value) {

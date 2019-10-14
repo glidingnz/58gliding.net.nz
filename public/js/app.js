@@ -6965,7 +6965,7 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
             }],
             order: 1
           });
-        } // push the actual contest days
+        } // push the actual contest days into the calendar
 
 
         if (that.event.end_date) {
@@ -7126,6 +7126,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -7144,7 +7168,9 @@ __webpack_require__.r(__webpack_exports__);
       selectedOrg: {},
       showAddPanel: false,
       dont_reload: false,
-      showAddCalendar: false
+      showAddCalendar: false,
+      attributes: [],
+      showCalendar: true
     };
   },
   computed: {
@@ -7204,6 +7230,31 @@ __webpack_require__.r(__webpack_exports__);
         params: data
       }).then(function (response) {
         that.events = response.data.data;
+        that.attributes = []; // setup the calendar
+
+        for (var i = 0; i < that.events.length; i++) {
+          console.log(that.events[i]);
+
+          if (that.events[i].end_date) {
+            var dates = [{
+              'start': that.events[i].start_date,
+              'end': that.events[i].end_date
+            }];
+          } else {
+            var dates = [that.events[i].start_date];
+          }
+
+          console.log(that.getEventType(that.events[i].type));
+          that.attributes.push({
+            dates: dates,
+            customData: {
+              name: that.events[i].name,
+              icon: that.getEventType(that.events[i].type).icon,
+              colour: that.getEventType(that.events[i].type).colour
+            },
+            order: 0
+          });
+        }
       });
     },
     orgSelected: function orgSelected(org) {
@@ -8481,7 +8532,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.vc-grid-cell {\n\tborder-right: 1px solid #AAA;\n\tborder-bottom: 1px solid #AAA;\n}\n.vc-grid-cell-row-1 {\n\tborder-top: 1px solid #AAA;\n}\n.vc-grid-cell-col-1 {\n\tborder-left: 1px solid #AAA;\n}\n", ""]);
+exports.push([module.i, "\n.custom_calendar .vc-day {\n\tborder-right: 1px solid #AAA;\n\tborder-bottom: 1px solid #AAA;\n\tpadding: 3px;\n}\n.custom_calendar .on-top {\n\tborder-top: 1px solid #AAA;\n}\n.custom_calendar .on-left {\n\tborder-left: 1px solid #AAA;\n}\n.custom_calendar .event {\n\tword-wrap: break-word;\n\tword-break: break-all;\n}\n.custom_calendar .badge {\n\twhite-space: normal;\n\tborder-radius: 5px;\n\tmargin-top: 2px;\n\ttext-align: left;\n\tcolor: #FFF;\n}\n", ""]);
 
 // exports
 
@@ -56965,6 +57016,52 @@ var render = function() {
                   {
                     staticClass: "btn btn-sm",
                     class: [
+                      _vm.showCalendar == false
+                        ? "btn-secondary"
+                        : "btn-outline-dark"
+                    ],
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.showCalendar = false
+                        _vm.stateChanged()
+                      }
+                    }
+                  },
+                  [_vm._v("View as List")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-sm",
+                    class: [
+                      _vm.showCalendar == true
+                        ? "btn-secondary"
+                        : "btn-outline-dark"
+                    ],
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.showCalendar = true
+                        _vm.stateChanged()
+                      }
+                    }
+                  },
+                  [_vm._v("Calendar")]
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "btn-group mr-2", attrs: { role: "group" } },
+              [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-sm",
+                    class: [
                       _vm.state.timerange == "past"
                         ? "btn-secondary"
                         : "btn-outline-dark"
@@ -57129,8 +57226,8 @@ var render = function() {
             {
               name: "show",
               rawName: "v-show",
-              value: _vm.events.length > 0,
-              expression: "events.length>0"
+              value: _vm.events.length > 0 && !_vm.showCalendar,
+              expression: "events.length>0 && !showCalendar"
             }
           ],
           staticClass: "table  collapsable calendar-table"
@@ -57240,10 +57337,71 @@ var render = function() {
             }
           ]
         },
-        [_vm._v("No events yet!")]
+        [_vm._v("No events. Check your filters above.")]
       ),
       _vm._v(" "),
-      _c("div", { staticClass: "form-group col-sm-6" }, [
+      _vm.events.length > 0 && _vm.showCalendar
+        ? _c("v-calendar", {
+            ref: "calendar",
+            staticClass: "custom_calendar",
+            staticStyle: { "max-width": "100%" },
+            attrs: {
+              rows: 6,
+              "first-day-of-week": 2,
+              "is-expanded": "",
+              attributes: _vm.attributes
+            },
+            scopedSlots: _vm._u(
+              [
+                {
+                  key: "day-content",
+                  fn: function(props) {
+                    return [
+                      _c(
+                        "div",
+                        { staticClass: "day-cell" },
+                        [
+                          _vm._v(
+                            "\n\t\t\t\t" + _vm._s(props.day.day) + "\n\t\t\t\t"
+                          ),
+                          _vm._l(props.attributesMap, function(dayEvent) {
+                            return _c("div", [
+                              _c(
+                                "span",
+                                {
+                                  staticClass: "event badge badge-pill",
+                                  style:
+                                    "background-color: " +
+                                    dayEvent.customData.colour
+                                },
+                                [
+                                  _c("span", {
+                                    class: "fa fa-" + dayEvent.customData.icon
+                                  }),
+                                  _vm._v(
+                                    "\n\t\t\t\t\t\t" +
+                                      _vm._s(dayEvent.customData.name) +
+                                      "\n\t\t\t\t\t"
+                                  )
+                                ]
+                              )
+                            ])
+                          })
+                        ],
+                        2
+                      )
+                    ]
+                  }
+                }
+              ],
+              null,
+              false,
+              1720713313
+            )
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _c("div", { staticClass: "mt-2" }, [
         _c(
           "button",
           {
@@ -57306,24 +57464,7 @@ var render = function() {
             }
           })
         ])
-      ]),
-      _vm._v(" "),
-      _c("v-calendar", {
-        ref: "calendar",
-        attrs: { "first-day-of-week": 2, "is-expanded": "" },
-        scopedSlots: _vm._u([
-          {
-            key: "day-content",
-            fn: function(props) {
-              return [
-                _c("div", { staticClass: "day-cell" }, [
-                  _vm._v(_vm._s(props.day.day))
-                ])
-              ]
-            }
-          }
-        ])
-      })
+      ])
     ],
     1
   )
@@ -73873,66 +74014,82 @@ module.exports = {
     },
     eventTypes: function eventTypes() {
       return [{
+        'colour': '#E74A1A',
         'filter': true,
         'code': 'competition',
         'name': 'Competition',
         'icon': 'trophy',
         'shortname': 'Comps'
       }, {
+        'colour': '#1782AB',
         'filter': true,
         'code': 'training',
         'name': 'Training',
         'icon': 'paper-plane',
         'shortname': 'Training'
       }, {
+        'colour': '#E59B2B',
         'filter': true,
         'code': 'course',
         'name': 'Course',
         'icon': 'paper-plane',
         'shortname': 'Courses'
       }, {
+        'colour': '#2D3939',
         'filter': false,
         'code': 'dinner',
         'name': 'Dinner',
         'icon': 'utensils',
         'shortname': 'Dinners'
       }, {
+        'colour': '#06362B',
         'filter': false,
         'code': 'bbq',
         'name': 'BBQ',
         'icon': 'utensils',
         'shortname': 'BBQs'
       }, {
+        'colour': '#2E1244',
         'filter': false,
         'code': 'working-bee',
         'name': 'Working Bee',
         'icon': 'tractor',
         'shortname': 'Working Bees'
       }, {
+        'colour': '#14778E',
         'filter': false,
         'code': 'cadets',
         'name': 'Cadets',
         'icon': 'users',
         'shortname': 'Cadets'
       }, {
+        'colour': '#0C2D43',
         'filter': false,
         'code': 'school-group',
         'name': 'School Group',
         'icon': 'users',
         'shortname': 'Schools'
       }, {
+        'colour': '#BA0955',
         'filter': false,
         'code': 'meeting',
         'name': 'Meeting',
         'icon': 'handshake',
         'shortname': 'Meetings'
       }, {
+        'colour': '#92AC59',
         'filter': false,
         'code': 'other',
         'name': 'Other',
         'icon': 'calendar-alt',
         'shortname': 'Other'
       }];
+    },
+    getEventType: function getEventType(eventType) {
+      var eventType = this.eventTypes().filter(function findEvent(value) {
+        if (value.code == eventType) return true;
+      });
+      return eventType[0];
     },
     formatEventType: function formatEventType(event) {
       var eventType = this.eventTypes().filter(function findEvent(value) {

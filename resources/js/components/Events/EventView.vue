@@ -189,8 +189,7 @@ export default {
 					});
 				}
 
-				// push the actual contest days
-				
+				// push the actual contest days into the calendar
 				if (that.event.end_date) {
 					var dates = [{
 							'start': that.event.start_date,
