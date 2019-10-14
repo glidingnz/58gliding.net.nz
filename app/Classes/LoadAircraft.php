@@ -233,6 +233,7 @@ class LoadAircraft
 							{
 								case 'JS1-C 18/21':
 								case 'JS1-B "Revelation"':
+								case 'JS3':
 									$aircraft->sustainer = true;
 									$aircraft->jet = true;
 									break;
@@ -296,6 +297,7 @@ class LoadAircraft
 						case 'BNM':
 						case 'DNS':
 						case 'ERW':
+						case 'CNC':
 							$aircraft->towplane = true;
 							break;
 					}

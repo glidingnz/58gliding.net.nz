@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Models\ContestClass;
-use App\Grids\ClassesGrid;
-use App\Grids\ClassesGridInterface;
+use App\Grids\ContestClassesGrid;
+use App\Grids\ContestClassesGridInterface;
 
 use Form;
 use Gate;
@@ -18,7 +18,7 @@ class ContestClassesController extends Controller
     {
         $contests = ContestClass::class;
 
-        return (new ClassesGrid(['contests' => $contests]))
+        return (new ContestClassesGrid(['contests' => $contests]))
         ->create(['query' => ContestClass::query(), 'request' => $request])
         ->renderOn('contestClasses.index');
     }

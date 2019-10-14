@@ -19,7 +19,7 @@
     <div class="col-sm-6">
         <select id="classes_id" name="classes_id" class="form-control" >
             @foreach ($contest->contestClass as $class)
-            <option value="{{$class['id']}}">
+            <option {{isset($contestEntry) ? $contestEntry->classes_id == $class['id'] ? 'selected' : '' : ''}} value="{{$class['id']}}">
                 {{$class['name']}}
             </option>
             @endforeach
@@ -38,14 +38,14 @@
             <div class="form-group row">
                 <label for="input_first_name" class="col-sm-4 col-form-label">First Name:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_first_name" name="first_name"
+                    <input type="text" class="form-control" id="input_first_name" name="first_name" maxlength="40"
                         placeholder="First Name" value="{{ isset($contestEntry) ? $contestEntry->first_name : old('first_name')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_last_name" class="col-sm-4 col-form-label">Last Name:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_last_name" name="last_name"
+                    <input type="text" class="form-control" id="input_last_name" name="last_name" maxlength="40"
                         placeholder="Last name" value="{{ isset($contestEntry) ? $contestEntry->last_name : old('last_name')}}">
                 </div>
             </div>
@@ -60,42 +60,42 @@
             <div class="form-group row">
                 <label for="input_mobile" class="col-sm-4 col-form-label">Mobile:</label>
                 <div class="col-sm-6">
-                    <input type="tel" class="form-control" id="input_mobile" name="mobile"
+                    <input type="tel" class="form-control" id="input_mobile" name="mobile" maxlength="14"
                         placeholder="Mobile Phone No" value="{{ isset($contestEntry) ? $contestEntry->mobile : old('mobile')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_email" class="col-sm-4 col-form-label">email:</label>
                 <div class="col-sm-6">
-                    <input type="email" class="form-control" id="input_email" name="email"
+                    <input type="email" class="form-control" id="input_email" name="email" maxlength="80"
                         placeholder="Email" value="{{ isset($contestEntry) ? $contestEntry->email : (isset($email) ? $email : old('email'))}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_address_1" class="col-sm-4 col-form-label">Address:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_address_1" name="address_1"
+                    <input type="text" class="form-control" id="input_address_1" name="address_1" maxlength="100"
                         placeholder="Address Line 1" value="{{ isset($contestEntry) ? $contestEntry->address_1 : old('address_1')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_address_2" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_address_2" name="address_2"
+                    <input type="text" class="form-control" id="input_address_2" name="address_2" maxlength="100"
                         placeholder="Address Line 2" value="{{ isset($contestEntry) ? $contestEntry->address_2 : old('address_2')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_address_3" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_address_3" name="address_3"
+                    <input type="text" class="form-control" id="input_address_3" name="address_3" maxlength="100"
                         placeholder="Address Line 3" value="{{ isset($contestEntry) ? $contestEntry->address_3 : old('address_3')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_club" class="col-sm-4 col-form-label">Club:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_club" name="club"
+                    <input type="text" class="form-control" id="input_club" name="club" maxlength="80"
                         placeholder="Club" value="{{ isset($contestEntry) ? $contestEntry->club : old('club')}}">
                 </div>
             </div>
@@ -113,56 +113,56 @@
             <div class="form-group row">
                 <label for="input_e_contact" class="col-sm-4 col-form-label">Emergency Contact:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_e_contact" name="e_contact"
+                    <input type="text" class="form-control" id="input_e_contact" name="e_contact" maxlength="80"
                         placeholder="Emergency Contact Name" value="{{ isset($contestEntry) ? $contestEntry->e_contact : old('e_contact')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_e_mobile" class="col-sm-4 col-form-label">Mobile:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_e_mobile" name="e_mobile"
+                    <input type="text" class="form-control" id="input_e_mobile" name="e_mobile" maxlength="14"
                         placeholder="Emergency Contact Mobile" value="{{ isset($contestEntry) ? $contestEntry->e_mobile : old('e_mobile')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_e_phone" class="col-sm-4 col-form-label">Phone:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_address_2" name="address_2"
-                        placeholder="Emergency Contact Phone" value="{{ isset($contestEntry) ? $contestEntry->address_2 : old('address_2')}}">
+                    <input type="text" class="form-control" id="input_e_phone" name="e_phone" maxlength="14"
+                        placeholder="Emergency Contact Phone" value="{{ isset($contestEntry) ? $contestEntry->e_phone : old('e_phone')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_e_email" class="col-sm-4 col-form-label">Email</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_e_email" name="e_email"
+                    <input type="text" class="form-control" id="input_e_email" name="e_email" maxlength="80"
                         placeholder="Emergency Contact Email" value="{{ isset($contestEntry) ? $contestEntry->e_email : old('e_email')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_e_address_1" class="col-sm-4 col-form-label">Address:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_e_address_1" name="e_address_1"
+                    <input type="text" class="form-control" id="input_e_address_1" name="e_address_1" maxlength="100"
                         placeholder="Address Line 1" value="{{ isset($contestEntry) ? $contestEntry->e_address_1 : old('e_address_1')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_e_address_2" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_e_address_2" name="e_address_2"
+                    <input type="text" class="form-control" id="input_e_address_2" name="e_address_2" maxlength="100"
                         placeholder="Address Line 2" value="{{ isset($contestEntry) ? $contestEntry->e_address_2 : old('e_address_2')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_e_address_3" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_e_address_3" name="e_address_3"
+                    <input type="text" class="form-control" id="input_e_address_3" name="e_address_3" maxlength="100"
                         placeholder="Address Line 3" value="{{ isset($contestEntry) ? $contestEntry->e_address_3 : old('e_address_3')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_e_relationship" class="col-sm-4 col-form-label">Relationship</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_e_relationship" name="e_relationship"
+                    <input type="text" class="form-control" id="input_e_relationship" name="e_relationship" maxlength="80"
                         placeholder="Relationship to you" value="{{ isset($contestEntry) ? $contestEntry->e_relationship : old('e_relationship')}}">
                 </div>
             </div>
@@ -187,7 +187,7 @@
             <div class="form-group row">
                 <label for="input_type" class="col-sm-4 col-form-label">Type:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_type" name="type"
+                    <input type="text" class="form-control" id="input_type" name="type" maxlength="80"
                         placeholder="Glider Type" value="{{ isset($contestEntry) ? $contestEntry->type : old('type')}}">
                 </div>
             </div>
@@ -235,63 +235,63 @@
             <div class="form-group row">
                 <label for="input_crew_name" class="col-sm-4 col-form-label">Crew Name:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_crew_name" name="crew_name"
+                    <input type="text" class="form-control" id="input_crew_name" name="crew_name" maxlength="80"
                         placeholder="Crew Name" value="{{ isset($contestEntry) ? $contestEntry->crew_name : old('crew_name')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_c_phone" class="col-sm-4 col-form-label">Crew Phone:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_c_phone" name="c_phone"
+                    <input type="text" class="form-control" id="input_c_phone" name="c_phone" maxlength="14"
                         placeholder="Crew Phone" value="{{ isset($contestEntry) ? $contestEntry->c_phone : old('c_phone')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_car_type" class="col-sm-4 col-form-label">Car:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_car_type" name="car_type"
+                    <input type="text" class="form-control" id="input_car_type" name="car_type" maxlength="40"
                         placeholder="Car Make and Model" value="{{ isset($contestEntry) ? $contestEntry->car_type : old('car_type')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_car_color" class="col-sm-4 col-form-label">Colour:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_car_color" name="car_color"
+                    <input type="text" class="form-control" id="input_car_color" name="car_color" maxlength="20"
                         placeholder="Car Colour" value="{{ isset($contestEntry) ? $contestEntry->car_color : old('car_color')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_car_plate" class="col-sm-4 col-form-label">Number:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_car_plate" name="car_plate"
+                    <input type="text" class="form-control" id="input_car_plate" name="car_plate" maxlength="8"
                         placeholder="Car Number Plate" value="{{ isset($contestEntry) ? $contestEntry->car_plate : old('car_plate')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_trailer_type" class="col-sm-4 col-form-label">Trailer:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_trailer_type" name="trailer_type"
+                    <input type="text" class="form-control" id="input_trailer_type" name="trailer_type" maxlength="40"
                         placeholder="Trailer Make" value="{{ isset($contestEntry) ? $contestEntry->trailer_type : old('trailer_type')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_trailer_color" class="col-sm-4 col-form-label">Color:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_trailer_color" name="trailer_color"
+                    <input type="text" class="form-control" id="input_trailer_color" name="trailer_color" maxlength="20"
                         placeholder="Trailer Colour" value="{{ isset($contestEntry) ? $contestEntry->trailer_color : old('trailer_color')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_trailer_plate" class="col-sm-4 col-form-label">Number:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_trailer_plate" name="trailer_plate"
+                    <input type="text" class="form-control" id="input_trailer_plate" name="trailer_plate" maxlength="8"
                         placeholder="Trailer Number Plate" value="{{ isset($contestEntry) ? $contestEntry->trailer_plate : old('trailer_plate')}}">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="input_crew_notes" class="col-sm-4 col-form-label">Crew Notes:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="input_crew_notes" name="crew_notes"
+                    <input type="text" class="form-control" id="input_crew_notes" name="crew_notes" maxlength="140"
                         placeholder="Notes for your Crew" value="{{ isset($contestEntry) ? $contestEntry->crew_notes : old('crew_notes')}}">
                 </div>
             </div>

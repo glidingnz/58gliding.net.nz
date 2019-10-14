@@ -4,7 +4,7 @@ namespace App\Grids;
 
 use Leantony\Grid\GridInterface;
 
-interface EntriesGridInterface extends GridInterface
+interface ContestEntriesGridInterface extends GridInterface
 {
     //
 }
