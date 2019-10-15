@@ -2,6 +2,7 @@
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use App\User;
+use App\Models\Event;
 use App\Classes\LoadAircraft;
 
 class DatabaseSeeder extends Seeder
@@ -32,6 +33,9 @@ class DatabaseSeeder extends Seeder
 
 		DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 		Model::reguard();
+
+		// load a heap of events
+		factory(Event::class, 500)->create();
 
 	}
 }

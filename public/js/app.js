@@ -7158,6 +7158,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -8538,7 +8549,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.custom_calendar .vc-day {\n\tborder-right: 1px solid #AAA;\n\tborder-bottom: 1px solid #AAA;\n\tpadding: 3px;\n}\n.custom_calendar .on-top {\n\tborder-top: 1px solid #AAA;\n}\n.custom_calendar .on-left {\n\tborder-left: 1px solid #AAA;\n}\n.custom_calendar .event {\n\tword-wrap: break-word;\n\tword-break: break-all;\n}\n.custom_calendar .event-badge {\n\twhite-space: normal;\n\tborder-radius: 5px;\n\tmargin-top: 2px;\n\ttext-align: left;\n}\n.event-badge {\n\tcolor: #FFF;\n}\n", ""]);
+exports.push([module.i, "\n.custom_calendar .vc-day {\n\tborder-right: 1px solid #AAA;\n\tborder-bottom: 1px solid #AAA;\n\tpadding: 3px;\n}\n.custom_calendar .on-top {\n\tborder-top: 1px solid #AAA;\n}\n.custom_calendar .on-left {\n\tborder-left: 1px solid #AAA;\n}\n.custom_calendar .event {\n\tword-wrap: break-word;\n\tword-break: break-all;\n}\n.custom_calendar .event-badge {\n\twhite-space: normal;\n\tborder-radius: 5px;\n\tmargin-top: 2px;\n\ttext-align: left;\n}\n.event-badge {\n\tcolor: #FFF;\n}\n.day-today {\n\tbackground-color: #222;\n\tcolor: #FFF;\n\tpadding: 0px 3px;\n\tborder-radius: 3px;\n\twidth: 100%;\n\tdisplay: block;\n}\n.day-today:after {\n\tcontent: ' : Today';\n}\n", ""]);
 
 // exports
 
@@ -57384,52 +57395,64 @@ var render = function() {
                   key: "day-content",
                   fn: function(props) {
                     return [
-                      _c(
-                        "div",
-                        { staticClass: "day-cell" },
-                        [
-                          _vm._v(
-                            "\n\t\t\t\t" + _vm._s(props.day.day) + "\n\t\t\t\t"
-                          ),
-                          _vm._l(props.attributesMap, function(dayEvent) {
-                            return _c("div", [
+                      props.day.inMonth
+                        ? _c(
+                            "div",
+                            { staticClass: "day-cell" },
+                            [
                               _c(
                                 "span",
-                                {
-                                  staticClass: "event-badge badge badge-pill",
-                                  style:
-                                    "background-color: " +
-                                    dayEvent.customData.colour
-                                },
-                                [
-                                  _c("span", {
-                                    class: "fa fa-" + dayEvent.customData.icon
-                                  }),
-                                  _vm._v(" "),
+                                { class: props.day.isToday ? "day-today" : "" },
+                                [_vm._v(_vm._s(props.day.day))]
+                              ),
+                              _vm._v(" "),
+                              _vm._l(props.attributes, function(dayEvent) {
+                                return _c("div", [
                                   _c(
-                                    "a",
+                                    "span",
                                     {
-                                      attrs: {
-                                        href:
-                                          "/events/" + dayEvent.customData.slug
-                                      }
+                                      staticClass:
+                                        "event-badge badge badge-pill",
+                                      style:
+                                        "background-color: " +
+                                        dayEvent.customData.colour
                                     },
-                                    [_vm._v(_vm._s(dayEvent.customData.name))]
+                                    [
+                                      _c("span", {
+                                        class:
+                                          "fa fa-" + dayEvent.customData.icon
+                                      }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "a",
+                                        {
+                                          attrs: {
+                                            href:
+                                              "/events/" +
+                                              dayEvent.customData.slug
+                                          }
+                                        },
+                                        [
+                                          _vm._v(
+                                            _vm._s(dayEvent.customData.name)
+                                          )
+                                        ]
+                                      )
+                                    ]
                                   )
-                                ]
-                              )
-                            ])
-                          })
-                        ],
-                        2
-                      )
+                                ])
+                              })
+                            ],
+                            2
+                          )
+                        : _vm._e()
                     ]
                   }
                 }
               ],
               null,
               false,
-              3870851820
+              3347083927
             )
           })
         : _vm._e(),
@@ -74068,14 +74091,14 @@ module.exports = {
         'icon': 'paper-plane',
         'shortname': 'Courses'
       }, {
-        'colour': '#2D3939',
+        'colour': '#126587',
         'filter': false,
         'code': 'dinner',
         'name': 'Dinner',
         'icon': 'utensils',
         'shortname': 'Dinners'
       }, {
-        'colour': '#06362B',
+        'colour': '#4C9881',
         'filter': false,
         'code': 'bbq',
         'name': 'BBQ',

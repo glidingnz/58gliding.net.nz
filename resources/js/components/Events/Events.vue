@@ -23,6 +23,17 @@
 	.event-badge {
 		color: #FFF;
 	}
+	.day-today {
+		background-color: #222;
+		color: #FFF;
+		padding: 0px 3px;
+		border-radius: 3px;
+		width: 100%;
+		display: block;
+	}
+	.day-today:after {
+		content: ' : Today';
+	}
 </style>
 
 <template>
@@ -104,9 +115,9 @@
 
 	<v-calendar :rows="6" v-if="events.length>0 && showCalendar" class="custom_calendar" style="max-width: 100%;" :first-day-of-week="2" ref="calendar" is-expanded  :attributes='attributes'>
 		<template slot='day-content' slot-scope="props">
-			<div class="day-cell">
-				{{props.day.day}}
-				<div v-for="dayEvent in props.attributesMap">
+			<div class="day-cell" v-if="props.day.inMonth">
+				<span :class="props.day.isToday ? 'day-today' : ''">{{props.day.day}}</span>
+				<div v-for="dayEvent in props.attributes">
 					<span class="event-badge badge badge-pill" :style="'background-color: ' + dayEvent.customData.colour ">
 						<span :class="'fa fa-' + dayEvent.customData.icon"></span>
 						<a :href="'/events/' + dayEvent.customData.slug ">{{dayEvent.customData.name}}</a>
