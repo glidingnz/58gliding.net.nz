@@ -14,23 +14,6 @@
 		<calendar-nav active="edit-roster" title="Edit Roster"></calendar-nav>
 
 
-		<div class="add-custom-modal" v-show="showCustomModal" v-on:click="closeCustomModal()" @keyup.esc="closeCustomModal()" tabindex="0">
-			<div class="inner" v-on:click.stop="">
-				<button v-on:click="closeCustomModal()" class="btn btn-outline-dark float-right">Cancel</button>
-				<h2>Add Occasional Duty</h2>
-
-				<label>Select Duty</label>
-				<select class="form-control" v-model="customAddDuty">
-					<option :value="customDuty" v-for="customDuty in customDuties">{{customDuty.name}}</option>
-				</select>
-
-				<label>Select Member</label>
-				<roster-add-item  v-on:add="addEvent" :orgId="orgId" :day="customAddDay" :duty="customAddDuty"></roster-add-item>
-
-				
-			</div>
-		</div>
-
 		<table class="edit-roster-table table table-striped table-sm collapsable">
 			<tr class="d-none d-md-table-row">
 				<th>Date</th>
@@ -38,7 +21,6 @@
 				<template v-for="duty in defaultDuties">
 					<th>{{duty.name}}</th>
 				</template>
-				<th>Occasional</th>
 			</tr>
 			<template v-for="(day, dayIndex) in results">
 				<tr >
@@ -67,16 +49,6 @@
 
 						</td>
 					</template>
-					<td>
-						<div>
-							<button class="btn compact-btn" v-on:click="openCustomModal(day)"><span class="fa fa-plus-square"></span> <span class="d-md-none">Add Occasional</span></button>
-						</div>
-
-						<template v-for="duty in customDuties">
-							<b v-show="getDaysRosters(day.id, duty.id).length>0">{{duty.name}}:</b>
-							<roster-edit-item v-for="(rosterItem, rosterIndex) in getDaysRosters(day.id, duty.id)" v-bind:key="rosterItem.id" :roster="rosterItem" :member="rosterItem.member" v-on:delete="deleteEvent(rosterItem)"></roster-edit-item>
-						</template>
-					</td>
 				</tr>
 			</template>
 		</table>

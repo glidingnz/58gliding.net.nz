@@ -6125,34 +6125,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
  //import VCalendar from 'v-calendar';
 
 
@@ -8549,7 +8521,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.custom_calendar .vc-day {\n\tborder-right: 1px solid #AAA;\n\tborder-bottom: 1px solid #AAA;\n\tpadding: 3px;\n}\n.custom_calendar .on-top {\n\tborder-top: 1px solid #AAA;\n}\n.custom_calendar .on-left {\n\tborder-left: 1px solid #AAA;\n}\n.custom_calendar .event {\n\tword-wrap: break-word;\n\tword-break: break-all;\n}\n.custom_calendar .event-badge {\n\twhite-space: normal;\n\tborder-radius: 5px;\n\tmargin-top: 2px;\n\ttext-align: left;\n}\n.event-badge {\n\tcolor: #FFF;\n}\n.day-today {\n\tbackground-color: #222;\n\tcolor: #FFF;\n\tpadding: 0px 3px;\n\tborder-radius: 3px;\n\twidth: 100%;\n\tdisplay: block;\n}\n.day-today:after {\n\tcontent: ' : Today';\n}\n", ""]);
+exports.push([module.i, "\n.custom_calendar .vc-day {\n\tborder-right: 1px solid #AAA;\n\tborder-bottom: 1px solid #AAA;\n\tpadding: 3px;\n}\n.custom_calendar .on-top {\n\tborder-top: 1px solid #AAA;\n}\n.custom_calendar .on-left {\n\tborder-left: 1px solid #AAA;\n}\n.custom_calendar .event {\n\tword-wrap: break-word;\n\tword-break: break-all;\n}\n.custom_calendar .event-badge {\n\twhite-space: normal;\n\tborder-radius: 5px;\n\tmargin-top: 2px;\n\ttext-align: left;\n}\n.event-badge {\n\tcolor: #FFF;\n}\n.day-today {\n\tbackground-color: #222;\n\tcolor: #FFF;\n\tpadding: 0px 3px;\n\tborder-radius: 5px;\n\twidth: 100%;\n\tdisplay: block;\n}\n.day-today:after {\n\tcontent: ' : Today';\n}\n", ""]);
 
 // exports
 
@@ -55083,115 +55055,6 @@ var render = function() {
       }),
       _vm._v(" "),
       _c(
-        "div",
-        {
-          directives: [
-            {
-              name: "show",
-              rawName: "v-show",
-              value: _vm.showCustomModal,
-              expression: "showCustomModal"
-            }
-          ],
-          staticClass: "add-custom-modal",
-          attrs: { tabindex: "0" },
-          on: {
-            click: function($event) {
-              return _vm.closeCustomModal()
-            },
-            keyup: function($event) {
-              if (
-                !$event.type.indexOf("key") &&
-                _vm._k($event.keyCode, "esc", 27, $event.key, ["Esc", "Escape"])
-              ) {
-                return null
-              }
-              return _vm.closeCustomModal()
-            }
-          }
-        },
-        [
-          _c(
-            "div",
-            {
-              staticClass: "inner",
-              on: {
-                click: function($event) {
-                  $event.stopPropagation()
-                }
-              }
-            },
-            [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-outline-dark float-right",
-                  on: {
-                    click: function($event) {
-                      return _vm.closeCustomModal()
-                    }
-                  }
-                },
-                [_vm._v("Cancel")]
-              ),
-              _vm._v(" "),
-              _c("h2", [_vm._v("Add Occasional Duty")]),
-              _vm._v(" "),
-              _c("label", [_vm._v("Select Duty")]),
-              _vm._v(" "),
-              _c(
-                "select",
-                {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.customAddDuty,
-                      expression: "customAddDuty"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  on: {
-                    change: function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.customAddDuty = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    }
-                  }
-                },
-                _vm._l(_vm.customDuties, function(customDuty) {
-                  return _c("option", { domProps: { value: customDuty } }, [
-                    _vm._v(_vm._s(customDuty.name))
-                  ])
-                }),
-                0
-              ),
-              _vm._v(" "),
-              _c("label", [_vm._v("Select Member")]),
-              _vm._v(" "),
-              _c("roster-add-item", {
-                attrs: {
-                  orgId: _vm.orgId,
-                  day: _vm.customAddDay,
-                  duty: _vm.customAddDuty
-                },
-                on: { add: _vm.addEvent }
-              })
-            ],
-            1
-          )
-        ]
-      ),
-      _vm._v(" "),
-      _c(
         "table",
         {
           staticClass:
@@ -55208,9 +55071,7 @@ var render = function() {
               _vm._v(" "),
               _vm._l(_vm.defaultDuties, function(duty) {
                 return [_c("th", [_vm._v(_vm._s(duty.name))])]
-              }),
-              _vm._v(" "),
-              _c("th", [_vm._v("Occasional")])
+              })
             ],
             2
           ),
@@ -55354,74 +55215,7 @@ var render = function() {
                         2
                       )
                     ]
-                  }),
-                  _vm._v(" "),
-                  _c(
-                    "td",
-                    [
-                      _c("div", [
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn compact-btn",
-                            on: {
-                              click: function($event) {
-                                return _vm.openCustomModal(day)
-                              }
-                            }
-                          },
-                          [
-                            _c("span", { staticClass: "fa fa-plus-square" }),
-                            _vm._v(" "),
-                            _c("span", { staticClass: "d-md-none" }, [
-                              _vm._v("Add Occasional")
-                            ])
-                          ]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _vm._l(_vm.customDuties, function(duty) {
-                        return [
-                          _c(
-                            "b",
-                            {
-                              directives: [
-                                {
-                                  name: "show",
-                                  rawName: "v-show",
-                                  value:
-                                    _vm.getDaysRosters(day.id, duty.id).length >
-                                    0,
-                                  expression:
-                                    "getDaysRosters(day.id, duty.id).length>0"
-                                }
-                              ]
-                            },
-                            [_vm._v(_vm._s(duty.name) + ":")]
-                          ),
-                          _vm._v(" "),
-                          _vm._l(_vm.getDaysRosters(day.id, duty.id), function(
-                            rosterItem,
-                            rosterIndex
-                          ) {
-                            return _c("roster-edit-item", {
-                              key: rosterItem.id,
-                              attrs: {
-                                roster: rosterItem,
-                                member: rosterItem.member
-                              },
-                              on: {
-                                delete: function($event) {
-                                  return _vm.deleteEvent(rosterItem)
-                                }
-                              }
-                            })
-                          })
-                        ]
-                      })
-                    ],
-                    2
-                  )
+                  })
                 ],
                 2
               )

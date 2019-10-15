@@ -27,7 +27,7 @@
 		background-color: #222;
 		color: #FFF;
 		padding: 0px 3px;
-		border-radius: 3px;
+		border-radius: 5px;
 		width: 100%;
 		display: block;
 	}
