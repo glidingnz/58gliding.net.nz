@@ -153,7 +153,7 @@ class ContestsGrid extends Grid implements ContestsGridInterface
 
         $this->editToolbarButton('create', ['renderIf'=> function() {return Gate::allows('contest-admin');} ]);
         $this->editRowButton('delete', ['renderIf'=> function() {return Gate::allows('contest-admin');} ]);
-        $this->editRowButton('view', ['class' => 'btn btn-primary btn-sm grid-row-button']);
+        $this->editRowButton('view', ['class' => 'btn btn-outline-dark btn-sm grid-row-button']);
 
         $this->addRowButton('Enter', (new GenericButton([
             'name' => 'Enter',
