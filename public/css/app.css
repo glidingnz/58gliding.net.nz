@@ -13528,6 +13528,13 @@ th.center {
   text-align: center;
 }
 
+/* link in Bootstrap 4 badge */
+
+.badge a {
+  text-decoration: none;
+  color: #FFF;
+}
+
 /*fix for missing btn-xs in bootstrap 4, which works well in tables */
 
 .btn.btn-xs {

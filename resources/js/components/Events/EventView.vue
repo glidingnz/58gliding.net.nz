@@ -203,7 +203,6 @@ export default {
 
 				that.attributes.push({
 					highlight: {
-						color: 'blue', // Red
 						fillMode: 'solid',
 					},
 					dates: dates,

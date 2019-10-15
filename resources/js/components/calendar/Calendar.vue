@@ -26,7 +26,7 @@ only screen and (max-width: 760px),
 <template>
 	<div>
 
-		<calendar-nav active="calendar" title="Flying Calendar"></calendar-nav>
+		<calendar-nav active="calendar" title="Flying Days"></calendar-nav>
 
 		
 		<table class="table table-striped table-sm collapsable calendar-table">
@@ -50,8 +50,11 @@ only screen and (max-width: 760px),
 					<div v-if="day.cancelled" class="bg-danger text-white px-2 py-1 mb-1 rounded-lg">
 						<span class="fa fa-exclamation-circle text-white"></span> Day Cancelled<span v-if="day.cancelled_reason">: {{day.cancelled_reason}}</span>
 					</div>
-					<div v-for="event in dayEvents(day.day_date)"  class=" success">
-						<span v-html="formatEventTypeIcon(event.type)"></span> <span class="badge badge-pill success-badge">{{event.name}}</span></span>
+					<div v-for="event in dayEvents(day.day_date)">
+						<span class="event-badge badge badge-pill" :style="'background-color: ' + getEventType(event.type).colour ">
+							<span v-html="formatEventTypeIcon(event.type)"></span>
+							<a :href="'/events/' + event.slug ">{{event.name}}</a>
+						</span>
 					</div>
 					<span v-html="renderDescription(day.description)"></span>
 					
@@ -64,11 +67,16 @@ only screen and (max-width: 760px),
 		<table class="table table-striped table-sm collapsable calendar-table">
 			<tr>
 				<th>Event Name</th>
+				<th>Organisation</th>
 				<th>Start Date</th>
 				<th>End Date</th>
 			</tr>
 			<tr v-for="event in events">
 				<td>{{event.name}}</td>
+				<td>
+					<span v-if="event.org">{{event.org.name}}</span>
+					<span v-if="event.org==null">GNZ</span>
+				</td>
 				<td>{{formatDate(event.start_date)}}</td>
 				<td>{{formatDate(event.end_date)}}</td>
 			</tr>
@@ -112,7 +120,7 @@ only screen and (max-width: 760px),
 			loadEvents: function() {
 				var that = this;
 				// select all events from today onwards
-				window.axios.get('/api/events?org_id=' + this.orgId + '&start_date=' + this.$moment().format('YYYY-MM-DD')).then(function (response) {
+				window.axios.get('/api/events?org_id=' + this.orgId + '&other=true&start_date=' + this.$moment().format('YYYY-MM-DD')).then(function (response) {
 					that.events=[];
 					that.events = response.data.data;
 				});

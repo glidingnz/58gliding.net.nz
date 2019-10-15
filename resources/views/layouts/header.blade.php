@@ -69,7 +69,7 @@
 					<li class="nav-item"><a class="nav-link" href="{{ url('/events')}}">Events</a></li>
 
 					<?php if (isset($org) && $org->slug!='gnz') { ?>
-						<li class="nav-item"><a class="nav-link" href="{{ url('/calendar')}}">Calendar</a></li>
+						<li class="nav-item"><a class="nav-link" href="{{ url('/flying-days')}}">Flying Days</a></li>
 						<li class="nav-item"><a class="nav-link" href="{{ url('/ratings-report')}}">BFR &amp; Medicals</a></li>
 					<?php } ?>
 					

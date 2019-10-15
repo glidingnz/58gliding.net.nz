@@ -5493,6 +5493,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
  //import VCalendar from 'v-calendar';
 
 
@@ -5524,7 +5532,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     loadEvents: function loadEvents() {
       var that = this; // select all events from today onwards
 
-      window.axios.get('/api/events?org_id=' + this.orgId + '&start_date=' + this.$moment().format('YYYY-MM-DD')).then(function (response) {
+      window.axios.get('/api/events?org_id=' + this.orgId + '&other=true&start_date=' + this.$moment().format('YYYY-MM-DD')).then(function (response) {
         that.events = [];
         that.events = response.data.data;
       });
@@ -6979,8 +6987,6 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
 
         that.attributes.push({
           highlight: {
-            color: 'blue',
-            // Red
             fillMode: 'solid'
           },
           dates: dates,
@@ -7022,6 +7028,8 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../mixins.js */ "./resources/js/mixins.js");
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
 //
 //
 //
@@ -7233,8 +7241,6 @@ __webpack_require__.r(__webpack_exports__);
         that.attributes = []; // setup the calendar
 
         for (var i = 0; i < that.events.length; i++) {
-          console.log(that.events[i]);
-
           if (that.events[i].end_date) {
             var dates = [{
               'start': that.events[i].start_date,
@@ -7244,13 +7250,13 @@ __webpack_require__.r(__webpack_exports__);
             var dates = [that.events[i].start_date];
           }
 
-          console.log(that.getEventType(that.events[i].type));
           that.attributes.push({
             dates: dates,
             customData: {
               name: that.events[i].name,
               icon: that.getEventType(that.events[i].type).icon,
-              colour: that.getEventType(that.events[i].type).colour
+              colour: that.getEventType(that.events[i].type).colour,
+              slug: that.events[i].slug
             },
             order: 0
           });
@@ -8532,7 +8538,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.custom_calendar .vc-day {\n\tborder-right: 1px solid #AAA;\n\tborder-bottom: 1px solid #AAA;\n\tpadding: 3px;\n}\n.custom_calendar .on-top {\n\tborder-top: 1px solid #AAA;\n}\n.custom_calendar .on-left {\n\tborder-left: 1px solid #AAA;\n}\n.custom_calendar .event {\n\tword-wrap: break-word;\n\tword-break: break-all;\n}\n.custom_calendar .badge {\n\twhite-space: normal;\n\tborder-radius: 5px;\n\tmargin-top: 2px;\n\ttext-align: left;\n\tcolor: #FFF;\n}\n", ""]);
+exports.push([module.i, "\n.custom_calendar .vc-day {\n\tborder-right: 1px solid #AAA;\n\tborder-bottom: 1px solid #AAA;\n\tpadding: 3px;\n}\n.custom_calendar .on-top {\n\tborder-top: 1px solid #AAA;\n}\n.custom_calendar .on-left {\n\tborder-left: 1px solid #AAA;\n}\n.custom_calendar .event {\n\tword-wrap: break-word;\n\tword-break: break-all;\n}\n.custom_calendar .event-badge {\n\twhite-space: normal;\n\tborder-radius: 5px;\n\tmargin-top: 2px;\n\ttext-align: left;\n}\n.event-badge {\n\tcolor: #FFF;\n}\n", ""]);
 
 // exports
 
@@ -54016,7 +54022,7 @@ var render = function() {
     "div",
     [
       _c("calendar-nav", {
-        attrs: { active: "calendar", title: "Flying Calendar" }
+        attrs: { active: "calendar", title: "Flying Days" }
       }),
       _vm._v(" "),
       _c(
@@ -54099,19 +54105,30 @@ var render = function() {
                       : _vm._e(),
                     _vm._v(" "),
                     _vm._l(_vm.dayEvents(day.day_date), function(event) {
-                      return _c("div", { staticClass: " success" }, [
-                        _c("span", {
-                          domProps: {
-                            innerHTML: _vm._s(
-                              _vm.formatEventTypeIcon(event.type)
-                            )
-                          }
-                        }),
-                        _vm._v(" "),
+                      return _c("div", [
                         _c(
                           "span",
-                          { staticClass: "badge badge-pill success-badge" },
-                          [_vm._v(_vm._s(event.name))]
+                          {
+                            staticClass: "event-badge badge badge-pill",
+                            style:
+                              "background-color: " +
+                              _vm.getEventType(event.type).colour
+                          },
+                          [
+                            _c("span", {
+                              domProps: {
+                                innerHTML: _vm._s(
+                                  _vm.formatEventTypeIcon(event.type)
+                                )
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "a",
+                              { attrs: { href: "/events/" + event.slug } },
+                              [_vm._v(_vm._s(event.name))]
+                            )
+                          ]
                         )
                       ])
                     }),
@@ -54147,6 +54164,14 @@ var render = function() {
             return _c("tr", [
               _c("td", [_vm._v(_vm._s(event.name))]),
               _vm._v(" "),
+              _c("td", [
+                event.org
+                  ? _c("span", [_vm._v(_vm._s(event.org.name))])
+                  : _vm._e(),
+                _vm._v(" "),
+                event.org == null ? _c("span", [_vm._v("GNZ")]) : _vm._e()
+              ]),
+              _vm._v(" "),
               _c("td", [_vm._v(_vm._s(_vm.formatDate(event.start_date)))]),
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(_vm.formatDate(event.end_date)))])
@@ -54178,6 +54203,8 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("tr", [
       _c("th", [_vm._v("Event Name")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Organisation")]),
       _vm._v(" "),
       _c("th", [_vm._v("Start Date")]),
       _vm._v(" "),
@@ -54620,9 +54647,9 @@ var render = function() {
                 {
                   staticClass: "nav-link",
                   class: [_vm.active == "calendar" ? "active" : ""],
-                  attrs: { href: "/calendar" }
+                  attrs: { href: "/flying-days" }
                 },
-                [_vm._v("Calendar")]
+                [_vm._v("Flying Days")]
               )
             ]
           ),
@@ -54639,7 +54666,7 @@ var render = function() {
                 {
                   staticClass: "nav-link",
                   class: [_vm.active == "edit-calendar" ? "active" : ""],
-                  attrs: { href: "/calendar/edit" }
+                  attrs: { href: "/flying-days/edit" }
                 },
                 [_vm._v("Edit Flying Days")]
               )
@@ -54658,7 +54685,7 @@ var render = function() {
                 {
                   staticClass: "nav-link",
                   class: [_vm.active == "edit-roster" ? "active" : ""],
-                  attrs: { href: "/calendar/roster/edit" }
+                  attrs: { href: "/flying-days/roster/edit" }
                 },
                 [_vm._v("Edit Roster")]
               )
@@ -54677,7 +54704,7 @@ var render = function() {
                 {
                   staticClass: "nav-link",
                   class: [_vm.active == "edit-duties" ? "active" : ""],
-                  attrs: { href: "/calendar/duties/edit" }
+                  attrs: { href: "/flying-days/duties/edit" }
                 },
                 [_vm._v("Configure Duties")]
               )
@@ -57369,7 +57396,7 @@ var render = function() {
                               _c(
                                 "span",
                                 {
-                                  staticClass: "event badge badge-pill",
+                                  staticClass: "event-badge badge badge-pill",
                                   style:
                                     "background-color: " +
                                     dayEvent.customData.colour
@@ -57378,10 +57405,16 @@ var render = function() {
                                   _c("span", {
                                     class: "fa fa-" + dayEvent.customData.icon
                                   }),
-                                  _vm._v(
-                                    "\n\t\t\t\t\t\t" +
-                                      _vm._s(dayEvent.customData.name) +
-                                      "\n\t\t\t\t\t"
+                                  _vm._v(" "),
+                                  _c(
+                                    "a",
+                                    {
+                                      attrs: {
+                                        href:
+                                          "/events/" + dayEvent.customData.slug
+                                      }
+                                    },
+                                    [_vm._v(_vm._s(dayEvent.customData.name))]
                                   )
                                 ]
                               )
@@ -57396,7 +57429,7 @@ var render = function() {
               ],
               null,
               false,
-              1720713313
+              3870851820
             )
           })
         : _vm._e(),

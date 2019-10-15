@@ -15,16 +15,16 @@
 
 		<ul class="nav ml-auto nav-pills" v-if="Laravel.clubAdmin==true">
 			<li class="nav-item" v-bind:class="{ active: active=='calendar' }">
-				<a class="nav-link" v-bind:class="[active=='calendar' ? 'active' : '']" href="/calendar">Calendar</a>
+				<a class="nav-link" v-bind:class="[active=='calendar' ? 'active' : '']" href="/flying-days">Flying Days</a>
 			</li>
 			<li class="nav-item" v-bind:class="{ active: active=='edit-calendar' }">
-				<a class="nav-link" v-bind:class="[active=='edit-calendar' ? 'active' : '']"  href="/calendar/edit">Edit Flying Days</a>
+				<a class="nav-link" v-bind:class="[active=='edit-calendar' ? 'active' : '']"  href="/flying-days/edit">Edit Flying Days</a>
 			</li>
 			<li class="nav-item" v-bind:class="{ active: active=='edit-roster' }">
-				<a class="nav-link" v-bind:class="[active=='edit-roster' ? 'active' : '']"  href="/calendar/roster/edit">Edit Roster</a>
+				<a class="nav-link" v-bind:class="[active=='edit-roster' ? 'active' : '']"  href="/flying-days/roster/edit">Edit Roster</a>
 			</li>
 			<li class="nav-item" v-bind:class="{ active: active=='edit-duties' }">
-				<a class="nav-link" v-bind:class="[active=='edit-duties' ? 'active' : '']" href="/calendar/duties/edit">Configure Duties</a>
+				<a class="nav-link" v-bind:class="[active=='edit-duties' ? 'active' : '']" href="/flying-days/duties/edit">Configure Duties</a>
 			</li>
 		</ul>
 

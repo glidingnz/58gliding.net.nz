@@ -43,6 +43,7 @@ class AddEventsTable extends Migration
 				$table->decimal('cost_earlybird')->nullable();
 				$table->string('soaringspot_api_secret')->nullable();
 				$table->string('soaringspot_api_client_id')->nullable();
+				$table->integer('contest_id')->nullable();
 				$table->timestamps();
 				$table->softDeletes();
 			});

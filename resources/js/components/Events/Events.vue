@@ -14,11 +14,13 @@
 		word-wrap: break-word;
 		word-break: break-all;
 	}
-	.custom_calendar .badge {
+	.custom_calendar .event-badge {
 		white-space: normal;
 		border-radius: 5px;
 		margin-top: 2px;
 		text-align: left;
+	}
+	.event-badge {
 		color: #FFF;
 	}
 </style>
@@ -105,9 +107,9 @@
 			<div class="day-cell">
 				{{props.day.day}}
 				<div v-for="dayEvent in props.attributesMap">
-					<span class="event badge badge-pill" :style="'background-color: ' + dayEvent.customData.colour ">
+					<span class="event-badge badge badge-pill" :style="'background-color: ' + dayEvent.customData.colour ">
 						<span :class="'fa fa-' + dayEvent.customData.icon"></span>
-						{{dayEvent.customData.name}}
+						<a :href="'/events/' + dayEvent.customData.slug ">{{dayEvent.customData.name}}</a>
 					</span>
 				</div>
 			</div>
@@ -214,8 +216,6 @@ export default {
 				// setup the calendar
 				for (var i=0; i<that.events.length; i++)
 				{
-					console.log(that.events[i]);
-
 					if (that.events[i].end_date) {
 						var dates = [{
 								'start': that.events[i].start_date,
@@ -226,13 +226,13 @@ export default {
 							that.events[i].start_date
 						];
 					}
-					console.log(that.getEventType(that.events[i].type));
 					that.attributes.push({
 						dates: dates,
 						customData: { 
 							name: that.events[i].name,
 							icon: that.getEventType(that.events[i].type).icon,
-							colour: that.getEventType(that.events[i].type).colour
+							colour: that.getEventType(that.events[i].type).colour,
+							slug: that.events[i].slug
 						},
 						order: 0
 					});
