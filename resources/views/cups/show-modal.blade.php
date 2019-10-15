@@ -13,21 +13,21 @@
 <div class="form-group row">
     <label for="input_name" class="col-sm-2 col-form-label">Name:</label>
     <div class="col-sm-10">
-        <input type="text" class="form-control" id="input_name" name="name"
+        <input type="text" class="form-control" id="input_name" name="name" maxlength="80"
             placeholder="Enter name" value="{{ isset($cup) ? $cup->name : old('name')}}">
     </div>
 </div>
 <div class="form-group row">
     <label for="input_description" class="col-sm-2 col-form-label">Description:</label>
     <div class="col-sm-10">
-        <input type="text" class="form-control" id="input_description" name="description"
+        <input type="text" class="form-control" id="input_description" name="description" maxlength="140"
             placeholder="Enter Description" value="{{ isset($cup) ? $cup->description : old('description')}}">
     </div>
 </div>
 <div class="form-group row">
     <label for="input_airspace" class="col-sm-2 col-form-label">Airspace File:</label>
     <div class="col-sm-10">
-        <input type="text" class="form-control" id="input_airspace" name="airspace"
+        <input type="text" class="form-control" id="input_airspace" name="airspace" maxlength="255"
             placeholder="Enter File Name" value="{{ isset($cup) ? $cup->airspace : old('airspace')}}">
     </div>
 </div>

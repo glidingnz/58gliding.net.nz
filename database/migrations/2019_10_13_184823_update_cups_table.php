@@ -14,7 +14,7 @@ class UpdateCupsTable extends Migration
     public function up()
     {
         Schema::table('cups', function (Blueprint $table) {
-            $table->char('airspace',40)->nullable()->after('description');
+            $table->char('airspace',255)->nullable()->after('description');
         });
     }
 
