@@ -29,6 +29,7 @@ class CupsGrid extends Grid implements CupsGridInterface
         'refresh',
         'download',
         'attach',
+        'airspace',
         //'export'
     ];
 
@@ -140,7 +141,7 @@ class CupsGrid extends Grid implements CupsGridInterface
         // call `editButtonProperties` to do either of the above. All the edit functions accept the properties as an array
 
         $this->editToolbarButton('create', ['renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
-        $this->editRowButton('view', ['class' => 'btn btn-primary btn-sm grid-row-button']);
+        $this->editRowButton('view', ['class' => 'btn btn-outline-dark btn-sm grid-row-button']);
         $this->editRowButton('delete', ['position' => 99,'renderIf'=> function() {return Gate::allows('waypoint-admin');} ]);
 
         $this->addRowButton('download', (new GenericButton([
@@ -157,6 +158,23 @@ class CupsGrid extends Grid implements CupsGridInterface
             },
             'renderIf' => function ($gridName, $item) {
                 return in_array('download', $this->buttonsToGenerate);
+            }
+        ])));
+
+        $this->addRowButton('airpsace', (new GenericButton([
+            'name' => 'Airspace',
+            'icon' => 'fa-download',
+            'position' => 0,
+            'class' => 'btn btn-outline-dark btn-sm grid-row-button',
+            'showModal' => false,
+            'gridId' => $this->getId(),
+            'type' => static::$TYPE_ROW,
+            'title' => 'Airspace',
+            'url' => function($gridName, $gridItem) {
+                return route('cups.airspace',$gridItem->id);
+            },
+            'renderIf' => function ($gridName, $item) {
+                return in_array('airspace', $this->buttonsToGenerate);
             }
         ])));
 

@@ -40,6 +40,7 @@ Route::resource('/waypoints', 'Apps\WaypointsController');
 Route::match(['get','patch'],'/cups/attach/{ref}', 'Apps\CupsController@attach')->name('cups.attach');
 Route::match(['get','patch'],'/cups/detach/{ref}', 'Apps\CupsController@detach')->name('cups.detach');
 Route::get('/cups/download/{ref}', 'Apps\CupsController@download')->name('cups.download');
+Route::get('/cups/airspace/{ref}', 'Apps\CupsController@airspace')->name('cups.airspace');
 Route::resource('/cups', 'Apps\CupsController');
 
 Route::resource('/contests', 'Apps\ContestsController');
