@@ -2,6 +2,7 @@
 namespace App\Classes;
 
 use App\Models\Member;
+use App\Models\Org;
 use DateTime;
 use DB;
 use Gate;
@@ -36,11 +37,24 @@ class MemberUtilities {
 			});
 		}
 
+
+		// see if we are given an ORG ID e.g. 14
+		if ($request->has('org-id'))
+		{
+			$org = Org::where('id', $request->input('org-id'))->first();
+			$org_gnz_code = $org->gnz_code;
+		}
+
+		// see if we have an ORG code e.g. "PKO"
 		if ($request->input('org') && $request->input('org')!='null')
 		{
-			// special cases for soaring centres
+			$org_gnz_code = $request->input('org');
+		}
 
-			switch ($request->input('org'))
+		// process either of the two above
+		if (isset($org_gnz_code))
+		{
+			switch ($org_gnz_code)
 			{
 				case 'MSC':
 					$query->whereIn('club',['AKL','AAV','PKO','TPO','TGA','TRK']);
@@ -53,7 +67,7 @@ class MemberUtilities {
 					break;
 				default:
 					// for most normal clubs
-					$query->where('club','=',$request->input('org'));
+					$query->where('club','=',$org_gnz_code);
 					break;
 			}
 
