@@ -5483,6 +5483,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
  //import VCalendar from 'v-calendar';
 
 
@@ -54010,134 +54014,147 @@ var render = function() {
         attrs: { active: "calendar", title: "Flying Days" }
       }),
       _vm._v(" "),
-      _c(
-        "table",
-        {
-          staticClass: "table table-striped table-sm collapsable calendar-table"
-        },
-        [
-          _vm._m(0),
-          _vm._v(" "),
-          _vm._l(_vm.days, function(day) {
-            return _c(
-              "tr",
-              {
-                key: day.id,
-                attrs: { row: day, "org-id": _vm.orgId },
-                on: {
-                  rowupdated: function($event) {
-                    return _vm.load()
-                  }
-                }
-              },
-              [
-                _c("td", [
-                  _c("b", [_vm._v(_vm._s(_vm.renderDate(day.day_date)))])
-                ]),
-                _vm._v(" "),
-                _c("td", [
-                  day.winching
-                    ? _c("span", [
-                        _c("span", { staticClass: "fa fa-check" }),
-                        _vm._v(" Winching")
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  day.towing
-                    ? _c("span", [
-                        _c("span", { staticClass: "fa fa-check" }),
-                        _vm._v(" Towing")
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  day.training
-                    ? _c("span", [
-                        _c("span", { staticClass: "fa fa-check" }),
-                        _vm._v(" Training")
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  day.trialflights
-                    ? _c("span", [
-                        _c("span", { staticClass: "fa fa-check" }),
-                        _vm._v(" Trial Flights")
-                      ])
-                    : _vm._e()
-                ]),
-                _vm._v(" "),
-                _c(
-                  "td",
-                  [
-                    day.cancelled
-                      ? _c(
-                          "div",
-                          {
-                            staticClass:
-                              "bg-danger text-white px-2 py-1 mb-1 rounded-lg"
-                          },
-                          [
-                            _c("span", {
-                              staticClass: "fa fa-exclamation-circle text-white"
-                            }),
-                            _vm._v(" Day Cancelled"),
-                            day.cancelled_reason
-                              ? _c("span", [
-                                  _vm._v(": " + _vm._s(day.cancelled_reason))
-                                ])
-                              : _vm._e()
-                          ]
-                        )
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm._l(_vm.dayEvents(day.day_date), function(event) {
-                      return _c("div", [
-                        _c(
-                          "span",
-                          {
-                            staticClass: "event-badge badge badge-pill",
-                            style:
-                              "background-color: " +
-                              _vm.getEventType(event.type).colour
-                          },
-                          [
-                            _c("span", {
-                              domProps: {
-                                innerHTML: _vm._s(
-                                  _vm.formatEventTypeIcon(event.type)
-                                )
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c(
-                              "a",
-                              { attrs: { href: "/events/" + event.slug } },
-                              [_vm._v(_vm._s(event.name))]
-                            )
-                          ]
-                        )
-                      ])
-                    }),
-                    _vm._v(" "),
-                    _c("span", {
-                      domProps: {
-                        innerHTML: _vm._s(
-                          _vm.renderDescription(day.description)
-                        )
+      _vm.days.length > 0
+        ? _c(
+            "table",
+            {
+              staticClass:
+                "table table-striped table-sm collapsable calendar-table"
+            },
+            [
+              _vm._m(0),
+              _vm._v(" "),
+              _vm._l(_vm.days, function(day) {
+                return _c(
+                  "tr",
+                  {
+                    key: day.id,
+                    attrs: { row: day, "org-id": _vm.orgId },
+                    on: {
+                      rowupdated: function($event) {
+                        return _vm.load()
                       }
-                    })
-                  ],
-                  2
+                    }
+                  },
+                  [
+                    _c("td", [
+                      _c("b", [_vm._v(_vm._s(_vm.renderDate(day.day_date)))])
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [
+                      day.winching
+                        ? _c("span", [
+                            _c("span", { staticClass: "fa fa-check" }),
+                            _vm._v(" Winching")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      day.towing
+                        ? _c("span", [
+                            _c("span", { staticClass: "fa fa-check" }),
+                            _vm._v(" Towing")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      day.training
+                        ? _c("span", [
+                            _c("span", { staticClass: "fa fa-check" }),
+                            _vm._v(" Training")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      day.trialflights
+                        ? _c("span", [
+                            _c("span", { staticClass: "fa fa-check" }),
+                            _vm._v(" Trial Flights")
+                          ])
+                        : _vm._e()
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "td",
+                      [
+                        day.cancelled
+                          ? _c(
+                              "div",
+                              {
+                                staticClass:
+                                  "bg-danger text-white px-2 py-1 mb-1 rounded-lg"
+                              },
+                              [
+                                _c("span", {
+                                  staticClass:
+                                    "fa fa-exclamation-circle text-white"
+                                }),
+                                _vm._v(" Day Cancelled"),
+                                day.cancelled_reason
+                                  ? _c("span", [
+                                      _vm._v(
+                                        ": " + _vm._s(day.cancelled_reason)
+                                      )
+                                    ])
+                                  : _vm._e()
+                              ]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm._l(_vm.dayEvents(day.day_date), function(event) {
+                          return _c("div", [
+                            _c(
+                              "span",
+                              {
+                                staticClass: "event-badge badge badge-pill",
+                                style:
+                                  "background-color: " +
+                                  _vm.getEventType(event.type).colour
+                              },
+                              [
+                                _c("span", {
+                                  domProps: {
+                                    innerHTML: _vm._s(
+                                      _vm.formatEventTypeIcon(event.type)
+                                    )
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c(
+                                  "a",
+                                  { attrs: { href: "/events/" + event.slug } },
+                                  [_vm._v(_vm._s(event.name))]
+                                )
+                              ]
+                            )
+                          ])
+                        }),
+                        _vm._v(" "),
+                        _c("span", {
+                          domProps: {
+                            innerHTML: _vm._s(
+                              _vm.renderDescription(day.description)
+                            )
+                          }
+                        })
+                      ],
+                      2
+                    )
+                  ]
                 )
-              ]
-            )
-          })
-        ],
-        2
-      ),
-      _vm._v("\n\n\tAlso see the "),
-      _c("a", { attrs: { href: "/events" } }, [
-        _vm._v("full calendar of events")
-      ])
+              })
+            ],
+            2
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _c("p"),
+      _vm.days.length == 0
+        ? _c("div", { staticClass: "badge error-badge" }, [
+            _vm._v("No flying days set up yet")
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _c("p"),
+      _vm._v(" "),
+      _vm._m(1)
     ],
     1
   )
@@ -54153,6 +54170,17 @@ var staticRenderFns = [
       _c("th", [_vm._v("Available")]),
       _vm._v(" "),
       _c("th", [_vm._v("Notes & Events")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", [
+      _vm._v("Also see the "),
+      _c("a", { attrs: { href: "/events" } }, [
+        _vm._v("full calendar of events")
+      ])
     ])
   }
 ]

@@ -29,7 +29,7 @@ only screen and (max-width: 760px),
 		<calendar-nav active="calendar" title="Flying Days"></calendar-nav>
 
 		
-		<table class="table table-striped table-sm collapsable calendar-table">
+		<table class="table table-striped table-sm collapsable calendar-table" v-if="days.length>0">
 			<tr>
 				<th>Date</th>
 				<th>Available</th>
@@ -62,7 +62,11 @@ only screen and (max-width: 760px),
 			</tr>
 		</table>
 
-		Also see the <a href="/events">full calendar of events</a>
+		<p>
+			<div v-if="days.length==0" class="badge error-badge">No flying days set up yet</div>
+		</p>
+
+		<p>Also see the <a href="/events">full calendar of events</a></p>
 
 	</div>
 </template>
