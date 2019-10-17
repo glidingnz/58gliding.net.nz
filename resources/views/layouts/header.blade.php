@@ -61,6 +61,7 @@
 				</a>
 				<!-- Left Side Of Navbar -->
 				<ul class="navbar-nav">
+
 					<li class="nav-item"><a class="nav-link" href="{{ url('/aircraft')}}">Aircraft</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/members')}}">Members</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/tracking')}}">Tracking</a></li>
@@ -78,6 +79,19 @@
 
 				<!-- Right Side Of Navbar -->
 				<ul class="navbar-nav ml-auto">
+
+					<?php if (isset($org->website) && $org->website!='') { ?>
+						<?php if ($org->slug=='gnz') { ?>
+							<li class="nav-item">
+								<a class="nav-link" href="http://{{$org->website}}">GNZ Website</a>
+							</li>
+						<?php } else { ?>
+							<li class="nav-item">
+								<a class="nav-link" href="http://{{$org->website}}">Club Website</a>
+							</li>
+						<?php } ?>
+					<?php } ?>
+
 					<!-- Authentication Links -->
 					@if (Auth::guest())
 						<li class="nav-item"><a class="nav-link " href="{{ url('/login') }}">Login</a></li>

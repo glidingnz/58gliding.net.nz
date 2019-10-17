@@ -5,11 +5,20 @@
 <div class="container">
 
 		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-6">
 
 				<?php if (!$org || $org->slug=='gnz') { ?><h1>Welcome to gliding.net.nz</h1><?php } ?>
 				<?php if ($org && $org->slug!='gnz') { ?>
 					<h1>{{$org->name}}</h1>
+				<?php } ?>
+
+			</div>
+			<div class="col-md-6">
+				
+				<?php if (isset($org->website) && $org->website!='') { ?>
+					<h2 class="float-right">
+						<a href="http://{{$org->website}}">{{$org->website}}</a>
+					</h2>
 				<?php } ?>
 
 			</div>
