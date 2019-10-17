@@ -5483,24 +5483,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
  //import VCalendar from 'v-calendar';
 
 
@@ -5858,6 +5840,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -5879,10 +5865,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
 //
 //
 //
@@ -5987,14 +5969,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
-  props: ['orgId', 'day', 'duty', 'tabindex'],
+  props: ['orgId', 'day', 'duty', 'tabindex', 'searchAllClubs'],
   data: function data() {
     return {
       memberSearch: '',
       member: null,
+      searching: false,
       searchResults: []
     };
   },
@@ -6003,7 +5988,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   watch: {
     memberSearch: function memberSearch(a, b) {
+      this.searching = this.memberSearch != '' ? true : false;
       this.debouncedSave();
+    },
+    searchAllClubs: function searchAllClubs(a, b) {
+      this.memberSearch = '';
     }
   },
   methods: {
@@ -6035,11 +6024,18 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
+      var params = {
+        "search": this.memberSearch
+      };
+
+      if (!this.searchAllClubs) {
+        params.org_id = this.orgId;
+      }
+
       window.axios.get('/api/v1/members', {
-        params: {
-          "search": this.memberSearch
-        }
+        params: params
       }).then(function (response) {
+        that.searching = false;
         that.searchResults = response.data.data; // select the one and only member
 
         if (response.data.data.length == 1) {
@@ -6125,6 +6121,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
  //import VCalendar from 'v-calendar';
 
 
@@ -6140,7 +6143,8 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       showCustomModal: false,
       showAddPanels: {},
       customAddDay: null,
-      customAddDuty: null
+      customAddDuty: null,
+      searchAllClubs: false
     };
   },
   mounted: function mounted() {
@@ -8102,7 +8106,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
-  props: ['orgId', 'memberId'],
+  props: ['orgId', 'memberId', 'searchAll'],
   data: function data() {
     return {
       selectedMember: null,
@@ -8112,7 +8116,6 @@ __webpack_require__.r(__webpack_exports__);
       noResults: false
     };
   },
-  mounted: function mounted() {},
   created: function created() {
     if (this.memberId) {
       this.loadMember(this.memberId);
@@ -8120,7 +8123,6 @@ __webpack_require__.r(__webpack_exports__);
 
     this.debouncedSave = _.debounce(this.searchMembers, 500);
   },
-  watch: {},
   methods: {
     memberSearchType: function memberSearchType(a, b) {
       this.noResults = false;
@@ -54132,37 +54134,10 @@ var render = function() {
         ],
         2
       ),
-      _vm._v(" "),
-      _c("h2", [_vm._v("Upcoming Events")]),
-      _vm._v(" "),
-      _c(
-        "table",
-        {
-          staticClass: "table table-striped table-sm collapsable calendar-table"
-        },
-        [
-          _vm._m(1),
-          _vm._v(" "),
-          _vm._l(_vm.events, function(event) {
-            return _c("tr", [
-              _c("td", [_vm._v(_vm._s(event.name))]),
-              _vm._v(" "),
-              _c("td", [
-                event.org
-                  ? _c("span", [_vm._v(_vm._s(event.org.name))])
-                  : _vm._e(),
-                _vm._v(" "),
-                event.org == null ? _c("span", [_vm._v("GNZ")]) : _vm._e()
-              ]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(_vm.formatDate(event.start_date)))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(_vm.formatDate(event.end_date)))])
-            ])
-          })
-        ],
-        2
-      )
+      _vm._v("\n\n\tAlso see the "),
+      _c("a", { attrs: { href: "/events" } }, [
+        _vm._v("full calendar of events")
+      ])
     ],
     1
   )
@@ -54177,21 +54152,7 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("th", [_vm._v("Available")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Notes")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c("th", [_vm._v("Event Name")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Organisation")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Start Date")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("End Date")])
+      _c("th", [_vm._v("Notes & Events")])
     ])
   }
 ]
@@ -54616,85 +54577,91 @@ var render = function() {
   return _c("nav", { staticClass: "nav-container container-fluid d-flex" }, [
     _c("h1", { staticClass: "mr-2" }, [_vm._v(_vm._s(_vm.title))]),
     _vm._v(" "),
-    _vm.Laravel.clubAdmin == true
-      ? _c("ul", { staticClass: "nav ml-auto nav-pills" }, [
-          _c(
-            "li",
-            {
-              staticClass: "nav-item",
-              class: { active: _vm.active == "calendar" }
-            },
-            [
-              _c(
-                "a",
-                {
-                  staticClass: "nav-link",
-                  class: [_vm.active == "calendar" ? "active" : ""],
-                  attrs: { href: "/flying-days" }
-                },
-                [_vm._v("Flying Days")]
-              )
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "li",
-            {
-              staticClass: "nav-item",
-              class: { active: _vm.active == "edit-calendar" }
-            },
-            [
-              _c(
-                "a",
-                {
-                  staticClass: "nav-link",
-                  class: [_vm.active == "edit-calendar" ? "active" : ""],
-                  attrs: { href: "/flying-days/edit" }
-                },
-                [_vm._v("Edit Flying Days")]
-              )
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "li",
-            {
-              staticClass: "nav-item",
-              class: { active: _vm.active == "edit-roster" }
-            },
-            [
-              _c(
-                "a",
-                {
-                  staticClass: "nav-link",
-                  class: [_vm.active == "edit-roster" ? "active" : ""],
-                  attrs: { href: "/flying-days/roster/edit" }
-                },
-                [_vm._v("Edit Roster")]
-              )
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "li",
-            {
-              staticClass: "nav-item",
-              class: { active: _vm.active == "edit-duties" }
-            },
-            [
-              _c(
-                "a",
-                {
-                  staticClass: "nav-link",
-                  class: [_vm.active == "edit-duties" ? "active" : ""],
-                  attrs: { href: "/flying-days/duties/edit" }
-                },
-                [_vm._v("Configure Duties")]
-              )
-            ]
-          )
-        ])
-      : _vm._e()
+    _c("div", { staticClass: "ml-auto" }, [
+      _c("ul", { staticClass: "nav nav-pills" }, [
+        _c(
+          "li",
+          {
+            staticClass: "nav-item",
+            class: { active: _vm.active == "calendar" }
+          },
+          [
+            _c(
+              "a",
+              {
+                staticClass: "nav-link",
+                class: [_vm.active == "calendar" ? "active" : ""],
+                attrs: { href: "/flying-days" }
+              },
+              [_vm._v("Flying Days")]
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _vm.Laravel.clubAdmin == true
+          ? _c(
+              "li",
+              {
+                staticClass: "nav-item",
+                class: { active: _vm.active == "edit-calendar" }
+              },
+              [
+                _c(
+                  "a",
+                  {
+                    staticClass: "nav-link",
+                    class: [_vm.active == "edit-calendar" ? "active" : ""],
+                    attrs: { href: "/flying-days/edit" }
+                  },
+                  [_vm._v("Edit Flying Days")]
+                )
+              ]
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.Laravel.clubAdmin == true
+          ? _c(
+              "li",
+              {
+                staticClass: "nav-item",
+                class: { active: _vm.active == "edit-roster" }
+              },
+              [
+                _c(
+                  "a",
+                  {
+                    staticClass: "nav-link",
+                    class: [_vm.active == "edit-roster" ? "active" : ""],
+                    attrs: { href: "/flying-days/roster/edit" }
+                  },
+                  [_vm._v("Edit Roster")]
+                )
+              ]
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.Laravel.clubAdmin == true
+          ? _c(
+              "li",
+              {
+                staticClass: "nav-item",
+                class: { active: _vm.active == "edit-duties" }
+              },
+              [
+                _c(
+                  "a",
+                  {
+                    staticClass: "nav-link",
+                    class: [_vm.active == "edit-duties" ? "active" : ""],
+                    attrs: { href: "/flying-days/duties/edit" }
+                  },
+                  [_vm._v("Configure Duties")]
+                )
+              ]
+            )
+          : _vm._e()
+      ])
+    ])
   ])
 }
 var staticRenderFns = []
@@ -54818,56 +54785,6 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("td", [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: duty.custom,
-                      expression: "duty.custom"
-                    }
-                  ],
-                  attrs: { type: "checkbox", id: duty.id + "_custom" },
-                  domProps: {
-                    value: true,
-                    checked: Array.isArray(duty.custom)
-                      ? _vm._i(duty.custom, true) > -1
-                      : duty.custom
-                  },
-                  on: {
-                    click: function($event) {
-                      return _vm.updateDuty(duty)
-                    },
-                    change: function($event) {
-                      var $$a = duty.custom,
-                        $$el = $event.target,
-                        $$c = $$el.checked ? true : false
-                      if (Array.isArray($$a)) {
-                        var $$v = true,
-                          $$i = _vm._i($$a, $$v)
-                        if ($$el.checked) {
-                          $$i < 0 && _vm.$set(duty, "custom", $$a.concat([$$v]))
-                        } else {
-                          $$i > -1 &&
-                            _vm.$set(
-                              duty,
-                              "custom",
-                              $$a.slice(0, $$i).concat($$a.slice($$i + 1))
-                            )
-                        }
-                      } else {
-                        _vm.$set(duty, "custom", $$c)
-                      }
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _c("label", { attrs: { for: duty.id + "_custom" } }, [
-                  _vm._v("Occasional")
-                ])
-              ]),
-              _vm._v(" "),
-              _c("td", [
                 _c(
                   "button",
                   {
@@ -54912,8 +54829,6 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("tr", [
       _c("th", [_vm._v("Duty Name")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Occasional")]),
       _vm._v(" "),
       _c("th", [_vm._v("Save")]),
       _vm._v(" "),
@@ -54965,6 +54880,14 @@ var render = function() {
         }
       }
     }),
+    _vm._v(" "),
+    _vm.searchResults.length == 0 && _vm.memberSearch != "" && !_vm.searching
+      ? _c("span", { staticClass: "error" }, [_vm._v("No Results Found")])
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.searching
+      ? _c("span", { staticClass: "caption" }, [_vm._v("Searching...")])
+      : _vm._e(),
     _vm._v(" "),
     _c(
       "select",
@@ -55054,6 +54977,55 @@ var render = function() {
         attrs: { active: "edit-roster", title: "Edit Roster" }
       }),
       _vm._v(" "),
+      _c("div", { staticClass: "form-inline form-group" }, [
+        _c("label", { attrs: { for: "searchAllClubs" } }, [
+          _vm.Laravel.clubAdmin == true
+            ? _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.searchAllClubs,
+                    expression: "searchAllClubs"
+                  }
+                ],
+                staticClass: "form-control mr-1",
+                attrs: { id: "searchAllClubs", type: "checkbox" },
+                domProps: {
+                  value: true,
+                  checked: Array.isArray(_vm.searchAllClubs)
+                    ? _vm._i(_vm.searchAllClubs, true) > -1
+                    : _vm.searchAllClubs
+                },
+                on: {
+                  change: function($event) {
+                    var $$a = _vm.searchAllClubs,
+                      $$el = $event.target,
+                      $$c = $$el.checked ? true : false
+                    if (Array.isArray($$a)) {
+                      var $$v = true,
+                        $$i = _vm._i($$a, $$v)
+                      if ($$el.checked) {
+                        $$i < 0 && (_vm.searchAllClubs = $$a.concat([$$v]))
+                      } else {
+                        $$i > -1 &&
+                          (_vm.searchAllClubs = $$a
+                            .slice(0, $$i)
+                            .concat($$a.slice($$i + 1)))
+                      }
+                    } else {
+                      _vm.searchAllClubs = $$c
+                    }
+                  }
+                }
+              })
+            : _vm._e(),
+          _vm._v(
+            "\n\t\t\tSearch Members of All Clubs (Useful for multi-club tow pilots)\n\t\t"
+          )
+        ])
+      ]),
+      _vm._v(" "),
       _c(
         "table",
         {
@@ -55135,35 +55107,6 @@ var render = function() {
                             _vm._v(_vm._s(duty.name))
                           ]),
                           _vm._v(" "),
-                          _c("button", {
-                            directives: [
-                              {
-                                name: "show",
-                                rawName: "v-show",
-                                value:
-                                  _vm.getDaysRosters(day.id, duty.id).length >
-                                  0,
-                                expression:
-                                  "getDaysRosters(day.id, duty.id).length>0"
-                              }
-                            ],
-                            staticClass:
-                              "btn fa fa-plus-square float-right compact-btn",
-                            attrs: {
-                              tabindex:
-                                100 *
-                                  (dayIndex +
-                                    _vm.results.length * dutyIndex +
-                                    100) +
-                                5
-                            },
-                            on: {
-                              click: function($event) {
-                                return _vm.showAdd(duty, day)
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
                           _vm._l(_vm.getDaysRosters(day.id, duty.id), function(
                             rosterItem,
                             rosterIndex
@@ -55187,6 +55130,41 @@ var render = function() {
                             })
                           }),
                           _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value:
+                                    _vm.getDaysRosters(day.id, duty.id).length >
+                                      0 && !_vm.getShowAdd(duty, day),
+                                  expression:
+                                    "getDaysRosters(day.id, duty.id).length>0 && (!getShowAdd(duty, day))"
+                                }
+                              ],
+                              staticClass: "btn badge badge-dark",
+                              attrs: {
+                                tabindex:
+                                  100 *
+                                    (dayIndex +
+                                      _vm.results.length * dutyIndex +
+                                      100) +
+                                  5
+                              },
+                              on: {
+                                click: function($event) {
+                                  return _vm.showAdd(duty, day)
+                                }
+                              }
+                            },
+                            [
+                              _c("span", { staticClass: "fa fa-plus" }),
+                              _vm._v(" Add Another")
+                            ]
+                          ),
+                          _vm._v(" "),
                           _c("roster-add-item", {
                             directives: [
                               {
@@ -55207,7 +55185,8 @@ var render = function() {
                                 100 *
                                 (dayIndex +
                                   _vm.results.length * dutyIndex +
-                                  100)
+                                  100),
+                              "search-all-clubs": _vm.searchAllClubs
                             },
                             on: { add: _vm.addEvent }
                           })

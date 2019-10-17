@@ -19,7 +19,7 @@
 
 	export default {
 		mixins: [common],
-		props: ['orgId', 'memberId'],
+		props: ['orgId', 'memberId', 'searchAll'],
 		data() {
 			return {
 				selectedMember: null,
@@ -29,16 +29,11 @@
 				noResults: false
 			}
 		},
-		mounted: function() {
-		},
 		created: function () {
 			if (this.memberId) {
 				this.loadMember(this.memberId);
 			}
 			this.debouncedSave = _.debounce(this.searchMembers, 500);
-		},
-		watch: {
-			
 		},
 		methods: {
 			memberSearchType: function(a, b) { 

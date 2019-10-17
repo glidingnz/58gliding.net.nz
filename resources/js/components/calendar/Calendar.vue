@@ -33,7 +33,7 @@ only screen and (max-width: 760px),
 			<tr>
 				<th>Date</th>
 				<th>Available</th>
-				<th>Notes</th>
+				<th>Notes &amp; Events</th>
 			</tr>
 			<tr v-for="day in days" v-bind:key="day.id" :row="day" :org-id="orgId" v-on:rowupdated="load()">
 				<td>
@@ -62,25 +62,7 @@ only screen and (max-width: 760px),
 			</tr>
 		</table>
 
-		<h2>Upcoming Events</h2>
-
-		<table class="table table-striped table-sm collapsable calendar-table">
-			<tr>
-				<th>Event Name</th>
-				<th>Organisation</th>
-				<th>Start Date</th>
-				<th>End Date</th>
-			</tr>
-			<tr v-for="event in events">
-				<td>{{event.name}}</td>
-				<td>
-					<span v-if="event.org">{{event.org.name}}</span>
-					<span v-if="event.org==null">GNZ</span>
-				</td>
-				<td>{{formatDate(event.start_date)}}</td>
-				<td>{{formatDate(event.end_date)}}</td>
-			</tr>
-		</table>
+		Also see the <a href="/events">full calendar of events</a>
 
 	</div>
 </template>

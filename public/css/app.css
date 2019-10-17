@@ -13530,7 +13530,8 @@ th.center {
 
 /* link in Bootstrap 4 badge */
 
-.badge a {
+.badge a,
+.badge-dark:hover {
   text-decoration: none;
   color: #FFF;
 }

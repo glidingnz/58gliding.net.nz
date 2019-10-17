@@ -32,8 +32,9 @@
 				<h2>Club Tools</h2>
 				<div class="list-group app-list mb-2">
 					<a class="list-group-item" href="/ratings-report"><span class="fa fa-clipboard-check"></span> BFRs, Medicals &amp; Ratings</a>
-					<a class="list-group-item" href="/members"><span class="fa fa-users"></span> Members</a>
-					<a class="list-group-item" href="/calendar"><span class="fa fa-calendar"></span>Calendar</a>
+					<a class="list-group-item" href="/members"><span class="fa fa-users"></span> Membership List</a>
+					<a class="list-group-item" href="/events"><span class="fa fa-calendar-day"></span>Events Calendar</a>
+					<a class="list-group-item" href="/events"><span class="fa fa-calendar-alt"></span>Flying Calendar</a>
 				</div>
 			</div>
 		<?php } ?>

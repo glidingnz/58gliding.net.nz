@@ -39,9 +39,9 @@ class MemberUtilities {
 
 
 		// see if we are given an ORG ID e.g. 14
-		if ($request->has('org-id'))
+		if ($request->has('org_id'))
 		{
-			$org = Org::where('id', $request->input('org-id'))->first();
+			$org = Org::where('id', $request->input('org_id'))->first();
 			$org_gnz_code = $org->gnz_code;
 		}
 
