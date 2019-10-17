@@ -42,7 +42,6 @@ class EventsAPIController extends AppBaseController
 					$query->orWhere('featured','=', true);
 				}
 			});
-				
 		}
 
 
@@ -57,7 +56,6 @@ class EventsAPIController extends AppBaseController
 
 		if ($request->has('timerange'))
 		{
-
 			$todaysDate = Carbon::today($this->timezone);
 			$todaysDate->setTimezone('UTC');
 
@@ -85,9 +83,9 @@ class EventsAPIController extends AppBaseController
 			foreach ($results AS $key=>$result)
 			{
 				$results[$key]->can_edit = $result->can_edit;
-
-				
 			}
+
+			// check if we are outputting ical or not
 			if ($request->has('ical'))
 			{
 				$this->getEventsICalObject($results);
