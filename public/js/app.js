@@ -73892,7 +73892,7 @@ module.exports = {
         'icon': 'paper-plane',
         'shortname': 'Courses'
       }, {
-        'colour': '#EA5519',
+        'colour': '#B01A16',
         'filter': true,
         'code': 'camp',
         'name': 'Camp',
