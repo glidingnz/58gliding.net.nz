@@ -26,7 +26,7 @@
 
 	<div class="row">
 
-		<?php if ($org->slug=='gnz') { ?>
+		<?php if (isset($org->slug) && $org->slug=='gnz') { ?>
 			<div class="col-md-6">
 				<h2>New Zealand Clubs</h2>
 				<orgs-component></orgs-component>
@@ -35,7 +35,7 @@
 
 		<?php } ?>
 
-		<?php if ($org && $org->slug!='gnz') { ?>
+		<?php if ($org && isset($org->slug) && $org->slug!='gnz') { ?>
 			<div class="col-md-6">
 
 				<h2>Club Tools</h2>
