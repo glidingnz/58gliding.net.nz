@@ -73892,6 +73892,13 @@ module.exports = {
         'icon': 'paper-plane',
         'shortname': 'Courses'
       }, {
+        'colour': '#EA5519',
+        'filter': true,
+        'code': 'course',
+        'name': 'Camp',
+        'icon': 'campground',
+        'shortname': 'Camp'
+      }, {
         'colour': '#126587',
         'filter': false,
         'code': 'dinner',

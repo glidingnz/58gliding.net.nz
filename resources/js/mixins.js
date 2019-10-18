@@ -92,6 +92,7 @@ module.exports = {
 				{'colour': '#E74A1A', 'filter': true, 'code': 'competition', 'name': 'Competition', 'icon':'trophy', 'shortname':'Comps'},
 				{'colour': '#1782AB', 'filter': true, 'code': 'training', 'name': 'Training', 'icon':'paper-plane', 'shortname':'Training'},
 				{'colour': '#E59B2B', 'filter': true, 'code': 'course', 'name': 'Course', 'icon':'paper-plane', 'shortname':'Courses'},
+				{'colour': '#EA5519', 'filter': true, 'code': 'course', 'name': 'Camp', 'icon':'campground', 'shortname':'Camp'},
 				{'colour': '#126587', 'filter': false, 'code': 'dinner', 'name': 'Dinner', 'icon':'utensils', 'shortname':'Dinners'},
 				{'colour': '#4C9881', 'filter': false, 'code': 'bbq', 'name': 'BBQ', 'icon':'utensils', 'shortname':'BBQs'},
 				{'colour': '#2E1244', 'filter': false, 'code': 'working-bee', 'name': 'Working Bee', 'icon':'tractor', 'shortname':'Working Bees'},
