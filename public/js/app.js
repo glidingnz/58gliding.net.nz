@@ -73894,7 +73894,7 @@ module.exports = {
       }, {
         'colour': '#EA5519',
         'filter': true,
-        'code': 'course',
+        'code': 'camp',
         'name': 'Camp',
         'icon': 'campground',
         'shortname': 'Camp'
