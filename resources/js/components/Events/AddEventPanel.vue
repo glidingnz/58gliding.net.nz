@@ -44,9 +44,18 @@
 				<button v-for="eventType in eventTypes()" type="button" class="btn btn-xs mr-2 mb-2" v-bind:class="[ newEventType==eventType.code ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="newEventType=eventType.code">{{eventType.name}}</button>
 			</div>
 
-			<div class="form-group">
-				<label>Event Date</label>
+			<div class="form-group form-inline">
+				<label class="mr-3">Start Date</label>
 				<v-date-picker v-model="newEventDate" :locale="{ id: 'nz', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
+			</div>
+
+			<div class="form-group form-inline">
+				<label class="mr-3" for="same_day">
+					<input class="form-control mr-1" id="same_day" type="checkbox" v-model="endDate" v-on:click="endDate = !endDate; newEventEndDate=newEventDate"> 
+					End Date
+				</label>
+				<v-date-picker v-show="endDate" v-model="newEventEndDate" :locale="{ id: 'nz', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
+				<span v-show="endDate" class="ml-2">{{dateDiffDays(newEventDate, newEventEndDate)}}</span>
 			</div>
 
 
@@ -69,7 +78,9 @@ export default {
 			showNameRequired: false,
 			newEventName: '',
 			newEventDate: null,
-			newEventType: 'other'
+			newEventEndDate: null,
+			newEventType: 'other',
+			endDate: false,
 		}
 	},
 	props: ['orgId', 'show', 'date'],
@@ -97,8 +108,12 @@ export default {
 					"name": this.newEventName,
 					"type": this.newEventType,
 					"start_date":  this.$moment(this.newEventDate).format('YYYY-MM-DD'),
+					"end_date": null,
 					"org_id" : this.orgId
 				}
+				// check if we have an end date or not
+				if (this.endDate && this.newEventEndDate!='') data.end_date = this.$moment(this.newEventEndDate).format('YYYY-MM-DD');
+
 				window.axios.post('/api/events', data).then(function (response) {
 					messages.$emit('success', 'Event ' + that.newEventName + ' added');
 					that.closeCustomModal();

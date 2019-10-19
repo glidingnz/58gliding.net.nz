@@ -53,8 +53,8 @@
 
 					<div class="form-group col-6">
 						<label for="end_date_checkbox" class="col-form-label">
-							<input type="checkbox" id="end_date_checkbox" v-model="hasEndDate" v-on:click="hasEndDate ? event.end_date=event.start_date : 0">
-							End Date <span  v-show="hasEndDate">({{dateDiffDays(event.start_date, event.end_date)}})</span>
+							<input type="checkbox" id="end_date_checkbox" v-model="hasEndDate" v-on:click="event.end_date==null ? event.end_date=event.start_date : 0">
+							End Date <span v-show="hasEndDate">({{dateDiffDays(event.start_date, event.end_date)}})</span>
 						</label>
 						<div v-show="hasEndDate">
 							<v-date-picker v-model="event.end_date" :locale="{ id: 'end_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
@@ -293,11 +293,11 @@ export default {
 			var that = this;
 			window.axios.get('/api/events/' + this.eventId).then(function (response) {
 				that.event = response.data.data;
-				if (that.event.start_date!=that.event.end_date) {
+				if (that.event.start_date!=that.event.end_date && that.event.end_date) {
 					that.hasEndDate=true;
 				}
 				that.event.start_date = that.$moment(that.event.start_date).toDate();
-				that.event.end_date = that.$moment(that.event.end_date).toDate();
+				if (that.event.end_date) that.event.end_date = that.$moment(that.event.end_date).toDate();
 				that.event.earlybird = that.$moment(that.event.earlybird).toDate();
 				// if (that.event.start_time) that.event.start_time = that.$moment(that.event.start_time, "HH:mm:ss").format("HH:mm");
 				// if (that.event.end_time) that.event.end_time = that.$moment(that.event.end_time, "HH:mm:ss").format("HH:mm");

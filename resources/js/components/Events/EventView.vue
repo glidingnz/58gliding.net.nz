@@ -45,8 +45,6 @@
 							{{formatDate(event.start_date)}}<span v-if="hasEndDate"> - {{formatDate(event.end_date)}}</span>
 						</div>
 					</div>
-					
-					
 
 					<div class="row mb-2" v-if="event.start_time">
 						<div class="col-4 label">Start Time</div>

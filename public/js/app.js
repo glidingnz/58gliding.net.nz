@@ -6353,6 +6353,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -6361,7 +6370,9 @@ __webpack_require__.r(__webpack_exports__);
       showNameRequired: false,
       newEventName: '',
       newEventDate: null,
-      newEventType: 'other'
+      newEventEndDate: null,
+      newEventType: 'other',
+      endDate: false
     };
   },
   props: ['orgId', 'show', 'date'],
@@ -6391,8 +6402,11 @@ __webpack_require__.r(__webpack_exports__);
           "name": this.newEventName,
           "type": this.newEventType,
           "start_date": this.$moment(this.newEventDate).format('YYYY-MM-DD'),
-          "org_id": this.orgId
+          "end_date": null,
+          "org_id": this.orgId // check if we have an end date or not
+
         };
+        if (this.endDate && this.newEventEndDate != '') data.end_date = this.$moment(this.newEventEndDate).format('YYYY-MM-DD');
         window.axios.post('/api/events', data).then(function (response) {
           messages.$emit('success', 'Event ' + that.newEventName + ' added');
           that.closeCustomModal();
@@ -6725,12 +6739,12 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
       window.axios.get('/api/events/' + this.eventId).then(function (response) {
         that.event = response.data.data;
 
-        if (that.event.start_date != that.event.end_date) {
+        if (that.event.start_date != that.event.end_date && that.event.end_date) {
           that.hasEndDate = true;
         }
 
         that.event.start_date = that.$moment(that.event.start_date).toDate();
-        that.event.end_date = that.$moment(that.event.end_date).toDate();
+        if (that.event.end_date) that.event.end_date = that.$moment(that.event.end_date).toDate();
         that.event.earlybird = that.$moment(that.event.earlybird).toDate(); // if (that.event.start_time) that.event.start_time = that.$moment(that.event.start_time, "HH:mm:ss").format("HH:mm");
         // if (that.event.end_time) that.event.end_time = that.$moment(that.event.end_time, "HH:mm:ss").format("HH:mm");
       });
@@ -6780,8 +6794,6 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../mixins.js */ "./resources/js/mixins.js");
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
-//
-//
 //
 //
 //
@@ -55480,9 +55492,9 @@ var render = function() {
             _vm._v(" "),
             _c(
               "div",
-              { staticClass: "form-group" },
+              { staticClass: "form-group form-inline" },
               [
-                _c("label", [_vm._v("Event Date")]),
+                _c("label", { staticClass: "mr-3" }, [_vm._v("Start Date")]),
                 _vm._v(" "),
                 _c("v-date-picker", {
                   attrs: {
@@ -55501,6 +55513,111 @@ var render = function() {
                     expression: "newEventDate"
                   }
                 })
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "form-group form-inline" },
+              [
+                _c(
+                  "label",
+                  { staticClass: "mr-3", attrs: { for: "same_day" } },
+                  [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.endDate,
+                          expression: "endDate"
+                        }
+                      ],
+                      staticClass: "form-control mr-1",
+                      attrs: { id: "same_day", type: "checkbox" },
+                      domProps: {
+                        checked: Array.isArray(_vm.endDate)
+                          ? _vm._i(_vm.endDate, null) > -1
+                          : _vm.endDate
+                      },
+                      on: {
+                        click: function($event) {
+                          _vm.endDate = !_vm.endDate
+                          _vm.newEventEndDate = _vm.newEventDate
+                        },
+                        change: function($event) {
+                          var $$a = _vm.endDate,
+                            $$el = $event.target,
+                            $$c = $$el.checked ? true : false
+                          if (Array.isArray($$a)) {
+                            var $$v = null,
+                              $$i = _vm._i($$a, $$v)
+                            if ($$el.checked) {
+                              $$i < 0 && (_vm.endDate = $$a.concat([$$v]))
+                            } else {
+                              $$i > -1 &&
+                                (_vm.endDate = $$a
+                                  .slice(0, $$i)
+                                  .concat($$a.slice($$i + 1)))
+                            }
+                          } else {
+                            _vm.endDate = $$c
+                          }
+                        }
+                      }
+                    }),
+                    _vm._v(" \n\t\t\t\t\tEnd Date\n\t\t\t\t")
+                  ]
+                ),
+                _vm._v(" "),
+                _c("v-date-picker", {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.endDate,
+                      expression: "endDate"
+                    }
+                  ],
+                  attrs: {
+                    locale: {
+                      id: "nz",
+                      firstDayOfWeek: 2,
+                      masks: { weekdays: "WW", L: "DD/MM/YYYY" }
+                    },
+                    popover: { visibility: "click" }
+                  },
+                  model: {
+                    value: _vm.newEventEndDate,
+                    callback: function($$v) {
+                      _vm.newEventEndDate = $$v
+                    },
+                    expression: "newEventEndDate"
+                  }
+                }),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.endDate,
+                        expression: "endDate"
+                      }
+                    ],
+                    staticClass: "ml-2"
+                  },
+                  [
+                    _vm._v(
+                      _vm._s(
+                        _vm.dateDiffDays(_vm.newEventDate, _vm.newEventEndDate)
+                      )
+                    )
+                  ]
+                )
               ],
               1
             ),
@@ -55830,7 +55947,7 @@ var render = function() {
                     },
                     on: {
                       click: function($event) {
-                        _vm.hasEndDate
+                        _vm.event.end_date == null
                           ? (_vm.event.end_date = _vm.event.start_date)
                           : 0
                       },
@@ -73942,6 +74059,7 @@ module.exports = {
       return _slug.toLowerCase().replace(regex, '-').replace(regex_replace_multiple_dashes, '-');
     },
     apiDateFormat: function apiDateFormat(date) {
+      if (date == null) return null;
       var newdate = Vue.prototype.$moment(date);
       if (newdate.isValid()) return newdate.format('YYYY-MM-DD');
       return null;

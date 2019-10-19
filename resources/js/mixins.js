@@ -83,6 +83,7 @@ module.exports = {
 			return slug.toLowerCase().replace(regex, '-').replace(regex_replace_multiple_dashes, '-');
 		},
 		apiDateFormat: function(date) {
+			if (date==null) return null;
 			var newdate = Vue.prototype.$moment(date);
 			if (newdate.isValid()) return newdate.format('YYYY-MM-DD');
 			return null;
