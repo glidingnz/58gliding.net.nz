@@ -124,7 +124,7 @@
 
 				<a href="http://gliding.co.nz/" class="ml-4">GNZ Main Website</a>
 
-				<?php if ($org->slug!='gnz') { ?>
+				<?php if (isset($org) && $org->slug!='gnz') { ?>
 					<a class="ml-4" href="http://{{$org->website}}">{{$org->short_name}} Website</a>
 				<?php } ?>
 			</div>
