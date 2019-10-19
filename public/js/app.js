@@ -56850,7 +56850,7 @@ var render = function() {
             _vm._v(_vm._s(_vm.orgName) + " Events")
           ]),
           _vm._v(" "),
-          _vm.Laravel.clubAdmin == true || _vm.Laravel.admin
+          _vm.Laravel.clubMember == true || _vm.Laravel.admin
             ? _c("add-event-panel", {
                 attrs: { "org-id": _vm.orgId, show: _vm.showAddPanel },
                 on: {
@@ -57051,7 +57051,7 @@ var render = function() {
               ]
             ),
             _vm._v(" "),
-            _vm.Laravel.clubAdmin || _vm.Laravel.admin
+            _vm.Laravel.clubMember || _vm.Laravel.admin
               ? _c("div", { staticClass: "btn-group" }, [
                   _c(
                     "button",
@@ -57106,7 +57106,7 @@ var render = function() {
             _vm._v(" "),
             _c("th", [_vm._v("Location")]),
             _vm._v(" "),
-            _vm.Laravel.clubAdmin ? _c("th", [_vm._v("Edit")]) : _vm._e()
+            _vm.Laravel.clubMember ? _c("th", [_vm._v("Edit")]) : _vm._e()
           ]),
           _vm._v(" "),
           _vm._l(_vm.events, function(event) {
@@ -57163,7 +57163,7 @@ var render = function() {
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(event.location))]),
               _vm._v(" "),
-              _vm.Laravel.clubAdmin
+              _vm.Laravel.clubMember
                 ? _c("td", [
                     event.can_edit
                       ? _c(
