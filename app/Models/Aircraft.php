@@ -12,4 +12,12 @@ class Aircraft extends Model
 	{
 		return $this->belongsToMany('App\Models\Org', 'fleet');
 	}
+
+	/**
+	 * The roles that belong to the user.
+	 */
+	public function gaggles()
+	{
+		return $this->belongsToMany('App\Models\Gaggle');
+	}
 }
