@@ -45,7 +45,16 @@
 							{{formatDate(event.start_date)}}<span v-if="hasEndDate"> - {{formatDate(event.end_date)}}</span>
 						</div>
 					</div>
-					
+
+					<div class="row mb-2" v-if="event.start_time">
+						<div class="col-4 label">Start Time</div>
+						<div class="col-8">{{event.start_time}}</div>
+					</div>
+
+					<div class="row mb-2" v-if="event.end_time">
+						<div class="col-4 label">End Time</div>
+						<div class="col-8">{{event.end_time}}</div>
+					</div>
 
 					<div class="row mb-2" v-if="event.practice_days">
 						<div class="col-4 label">Practice Days</div>

@@ -43,7 +43,7 @@
 
 		<h1 class="mr-auto">{{orgName}} Events</h1>
 
-		<add-event-panel v-if="Laravel.clubAdmin==true || Laravel.admin" :org-id="orgId" :show="showAddPanel" @closeModal="showAddPanel=false" @eventAdded="eventAdded"></add-event-panel>
+		<add-event-panel v-if="Laravel.clubMember==true || Laravel.admin" :org-id="orgId" :show="showAddPanel" @closeModal="showAddPanel=false" @eventAdded="eventAdded"></add-event-panel>
 
 		<!-- <org-selector :org-id="orgId" v-on:orgSelected="orgSelected" class="mr-2"></org-selector> -->
 
@@ -71,7 +71,7 @@
 				<button type="button" class="btn btn-sm" v-bind:class="[ !state.other ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.other=false; stateChanged()">Hide</button>
 			</div>
 
-			<div class="btn-group" v-if="Laravel.clubAdmin || Laravel.admin">
+			<div class="btn-group" v-if="Laravel.clubMember || Laravel.admin">
 				<button class="btn btn-outline-dark btn-sm ml-auto" v-on:click="showAddPanel=true"><span class="fa fa-plus"></span> Add Event</button>
 			</div>
 		</div>
@@ -90,7 +90,7 @@
 			<th>Start</th>
 			<th>Length</th>
 			<th>Location</th>
-			<th v-if="Laravel.clubAdmin">Edit</th>
+			<th v-if="Laravel.clubMember">Edit</th>
 		</tr>
 		<tr v-for="event in events">
 			<td><a :href="getEventURL(event, orgId)">{{event.name}}</a></td>
@@ -106,7 +106,7 @@
 			<td><span v-if="event.start_time">{{formatTime(event.start_time)}}</span></td>
 			<td>{{dateDiffDays(event.start_date, event.end_date)}}</td>
 			<td>{{event.location}}</td>
-			<td v-if="Laravel.clubAdmin"><a class="btn btn-xs btn-outline-dark" :href="'/events/' + event.slug + '/edit'" v-if="event.can_edit">Edit</a></td>
+			<td v-if="Laravel.clubMember"><a class="btn btn-xs btn-outline-dark" :href="'/events/' + event.slug + '/edit'" v-if="event.can_edit">Edit</a></td>
 		</tr>
 	</table>
 

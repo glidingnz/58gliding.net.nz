@@ -6353,6 +6353,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -6361,7 +6370,9 @@ __webpack_require__.r(__webpack_exports__);
       showNameRequired: false,
       newEventName: '',
       newEventDate: null,
-      newEventType: 'other'
+      newEventEndDate: null,
+      newEventType: 'other',
+      endDate: false
     };
   },
   props: ['orgId', 'show', 'date'],
@@ -6391,8 +6402,11 @@ __webpack_require__.r(__webpack_exports__);
           "name": this.newEventName,
           "type": this.newEventType,
           "start_date": this.$moment(this.newEventDate).format('YYYY-MM-DD'),
-          "org_id": this.orgId
+          "end_date": null,
+          "org_id": this.orgId // check if we have an end date or not
+
         };
+        if (this.endDate && this.newEventEndDate != '') data.end_date = this.$moment(this.newEventEndDate).format('YYYY-MM-DD');
         window.axios.post('/api/events', data).then(function (response) {
           messages.$emit('success', 'Event ' + that.newEventName + ' added');
           that.closeCustomModal();
@@ -6416,6 +6430,14 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../mixins.js */ "./resources/js/mixins.js");
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 //
 //
 //
@@ -6717,13 +6739,14 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
       window.axios.get('/api/events/' + this.eventId).then(function (response) {
         that.event = response.data.data;
 
-        if (that.event.start_date != that.event.end_date) {
+        if (that.event.start_date != that.event.end_date && that.event.end_date) {
           that.hasEndDate = true;
         }
 
         that.event.start_date = that.$moment(that.event.start_date).toDate();
-        that.event.end_date = that.$moment(that.event.end_date).toDate();
-        that.event.earlybird = that.$moment(that.event.earlybird).toDate();
+        if (that.event.end_date) that.event.end_date = that.$moment(that.event.end_date).toDate();
+        that.event.earlybird = that.$moment(that.event.earlybird).toDate(); // if (that.event.start_time) that.event.start_time = that.$moment(that.event.start_time, "HH:mm:ss").format("HH:mm");
+        // if (that.event.end_time) that.event.end_time = that.$moment(that.event.end_time, "HH:mm:ss").format("HH:mm");
       });
     },
     save: function save(e) {
@@ -6734,10 +6757,20 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
       event.end_date = this.apiDateFormat(event.end_date);
       event.earlybird = this.apiDateFormat(event.earlybird);
       window.axios.put('/api/events/' + this.eventId, event).then(function (response) {
-        messages.$emit('success', 'Event ' + that.event.name + ' Updated');
+        messages.$emit('success', 'Event "' + that.event.name + '" Updated');
 
         if (that.returnOnSave) {
           window.location.href = "/events/" + event.slug;
+        }
+      })["catch"](function (error) {
+        var errors = Object.entries(error.response.data.errors);
+
+        for (var _i = 0, _errors = errors; _i < _errors.length; _i++) {
+          var _errors$_i = _slicedToArray(_errors[_i], 2),
+              name = _errors$_i[0],
+              _error = _errors$_i[1];
+
+          messages.$emit('error', "".concat(_error));
         }
       });
       e.preventDefault();
@@ -6761,6 +6794,15 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../mixins.js */ "./resources/js/mixins.js");
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -55450,9 +55492,9 @@ var render = function() {
             _vm._v(" "),
             _c(
               "div",
-              { staticClass: "form-group" },
+              { staticClass: "form-group form-inline" },
               [
-                _c("label", [_vm._v("Event Date")]),
+                _c("label", { staticClass: "mr-3" }, [_vm._v("Start Date")]),
                 _vm._v(" "),
                 _c("v-date-picker", {
                   attrs: {
@@ -55471,6 +55513,111 @@ var render = function() {
                     expression: "newEventDate"
                   }
                 })
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "form-group form-inline" },
+              [
+                _c(
+                  "label",
+                  { staticClass: "mr-3", attrs: { for: "same_day" } },
+                  [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.endDate,
+                          expression: "endDate"
+                        }
+                      ],
+                      staticClass: "form-control mr-1",
+                      attrs: { id: "same_day", type: "checkbox" },
+                      domProps: {
+                        checked: Array.isArray(_vm.endDate)
+                          ? _vm._i(_vm.endDate, null) > -1
+                          : _vm.endDate
+                      },
+                      on: {
+                        click: function($event) {
+                          _vm.endDate = !_vm.endDate
+                          _vm.newEventEndDate = _vm.newEventDate
+                        },
+                        change: function($event) {
+                          var $$a = _vm.endDate,
+                            $$el = $event.target,
+                            $$c = $$el.checked ? true : false
+                          if (Array.isArray($$a)) {
+                            var $$v = null,
+                              $$i = _vm._i($$a, $$v)
+                            if ($$el.checked) {
+                              $$i < 0 && (_vm.endDate = $$a.concat([$$v]))
+                            } else {
+                              $$i > -1 &&
+                                (_vm.endDate = $$a
+                                  .slice(0, $$i)
+                                  .concat($$a.slice($$i + 1)))
+                            }
+                          } else {
+                            _vm.endDate = $$c
+                          }
+                        }
+                      }
+                    }),
+                    _vm._v(" \n\t\t\t\t\tEnd Date\n\t\t\t\t")
+                  ]
+                ),
+                _vm._v(" "),
+                _c("v-date-picker", {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.endDate,
+                      expression: "endDate"
+                    }
+                  ],
+                  attrs: {
+                    locale: {
+                      id: "nz",
+                      firstDayOfWeek: 2,
+                      masks: { weekdays: "WW", L: "DD/MM/YYYY" }
+                    },
+                    popover: { visibility: "click" }
+                  },
+                  model: {
+                    value: _vm.newEventEndDate,
+                    callback: function($$v) {
+                      _vm.newEventEndDate = $$v
+                    },
+                    expression: "newEventEndDate"
+                  }
+                }),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.endDate,
+                        expression: "endDate"
+                      }
+                    ],
+                    staticClass: "ml-2"
+                  },
+                  [
+                    _vm._v(
+                      _vm._s(
+                        _vm.dateDiffDays(_vm.newEventDate, _vm.newEventEndDate)
+                      )
+                    )
+                  ]
+                )
               ],
               1
             ),
@@ -55800,7 +55947,7 @@ var render = function() {
                     },
                     on: {
                       click: function($event) {
-                        _vm.hasEndDate
+                        _vm.event.end_date == null
                           ? (_vm.event.end_date = _vm.event.start_date)
                           : 0
                       },
@@ -55911,11 +56058,7 @@ var render = function() {
                     }
                   ],
                   staticClass: "form-control",
-                  attrs: {
-                    placeholder: "e.g. 16:30",
-                    type: "time",
-                    id: "location"
-                  },
+                  attrs: { placeholder: "4:30pm or 16:00", id: "location" },
                   domProps: { value: _vm.event.start_time },
                   on: {
                     input: function($event) {
@@ -55947,11 +56090,7 @@ var render = function() {
                     }
                   ],
                   staticClass: "form-control",
-                  attrs: {
-                    placeholder: "e.g. 16:30",
-                    type: "time",
-                    id: "location"
-                  },
+                  attrs: { placeholder: "4:30pm or 16:00", id: "location" },
                   domProps: { value: _vm.event.end_time },
                   on: {
                     input: function($event) {
@@ -56670,6 +56809,30 @@ var render = function() {
                 ])
               : _vm._e(),
             _vm._v(" "),
+            _vm.event.start_time
+              ? _c("div", { staticClass: "row mb-2" }, [
+                  _c("div", { staticClass: "col-4 label" }, [
+                    _vm._v("Start Time")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-8" }, [
+                    _vm._v(_vm._s(_vm.event.start_time))
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.event.end_time
+              ? _c("div", { staticClass: "row mb-2" }, [
+                  _c("div", { staticClass: "col-4 label" }, [
+                    _vm._v("End Time")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-8" }, [
+                    _vm._v(_vm._s(_vm.event.end_time))
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
             _vm.event.practice_days
               ? _c("div", { staticClass: "row mb-2" }, [
                   _c("div", { staticClass: "col-4 label" }, [
@@ -56850,7 +57013,7 @@ var render = function() {
             _vm._v(_vm._s(_vm.orgName) + " Events")
           ]),
           _vm._v(" "),
-          _vm.Laravel.clubAdmin == true || _vm.Laravel.admin
+          _vm.Laravel.clubMember == true || _vm.Laravel.admin
             ? _c("add-event-panel", {
                 attrs: { "org-id": _vm.orgId, show: _vm.showAddPanel },
                 on: {
@@ -57051,7 +57214,7 @@ var render = function() {
               ]
             ),
             _vm._v(" "),
-            _vm.Laravel.clubAdmin || _vm.Laravel.admin
+            _vm.Laravel.clubMember || _vm.Laravel.admin
               ? _c("div", { staticClass: "btn-group" }, [
                   _c(
                     "button",
@@ -57106,7 +57269,7 @@ var render = function() {
             _vm._v(" "),
             _c("th", [_vm._v("Location")]),
             _vm._v(" "),
-            _vm.Laravel.clubAdmin ? _c("th", [_vm._v("Edit")]) : _vm._e()
+            _vm.Laravel.clubMember ? _c("th", [_vm._v("Edit")]) : _vm._e()
           ]),
           _vm._v(" "),
           _vm._l(_vm.events, function(event) {
@@ -57163,7 +57326,7 @@ var render = function() {
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(event.location))]),
               _vm._v(" "),
-              _vm.Laravel.clubAdmin
+              _vm.Laravel.clubMember
                 ? _c("td", [
                     event.can_edit
                       ? _c(
@@ -73896,13 +74059,14 @@ module.exports = {
       return _slug.toLowerCase().replace(regex, '-').replace(regex_replace_multiple_dashes, '-');
     },
     apiDateFormat: function apiDateFormat(date) {
+      if (date == null) return null;
       var newdate = Vue.prototype.$moment(date);
       if (newdate.isValid()) return newdate.format('YYYY-MM-DD');
       return null;
     },
     eventTypes: function eventTypes() {
       return [{
-        'colour': '#E74A1A',
+        'colour': '#92AC59',
         'filter': true,
         'code': 'competition',
         'name': 'Competition',
@@ -73972,7 +74136,7 @@ module.exports = {
         'icon': 'handshake',
         'shortname': 'Meetings'
       }, {
-        'colour': '#92AC59',
+        'colour': '#E74A1A',
         'filter': false,
         'code': 'other',
         'name': 'Other',
