@@ -93,7 +93,7 @@
 			<th v-if="Laravel.clubAdmin">Edit</th>
 		</tr>
 		<tr v-for="event in events">
-			<td><a :href="'/events/' + event.slug">{{event.name}}</a></td>
+			<td><a :href="getEventURL(event, orgId)">{{event.name}}</a></td>
 			<td class="text-nowrap"><span v-html="formatEventTypeIcon(event.type)"></span> {{formatEventType(event.type)}}</td>
 			<td>
 				<span v-if="event.org">{{event.org.name}}</span>
@@ -119,7 +119,7 @@
 				<div v-for="dayEvent in props.attributes">
 					<span class="event-badge badge badge-pill" :style="'background-color: ' + dayEvent.customData.colour ">
 						<span :class="'fa fa-' + dayEvent.customData.icon"></span>
-						<a :href="'/events/' + dayEvent.customData.slug ">
+						<a :href="dayEvent.customData.eventUrl">
 							<span v-if="dayEvent.customData.showOrg">({{dayEvent.customData.orgShortName}})</span>
 							{{dayEvent.customData.name}}
 						</a>
@@ -247,7 +247,8 @@ export default {
 							showOrg: false,
 							icon: that.getEventType(that.events[i].type).icon,
 							colour: that.getEventType(that.events[i].type).colour,
-							slug: that.events[i].slug
+							slug: that.events[i].slug,
+							eventUrl: that.getEventURL(that.events[i], that.orgId)
 						};
 
 					// add the organisation name and details

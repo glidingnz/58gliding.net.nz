@@ -269,12 +269,11 @@ class EventsAPIController extends AppBaseController
 			"METHOD:PUBLISH\n" .
 			"PRODID:-//Charles Oduk//Tech Events//EN\n";
 
-
 			// loop over events
 			foreach ($events as $event) {
 
-				// create a URL for the summary
-				$url = env('APP_URL') . '/events/' . $event->slug;
+
+
 				$uuid = md5($event->id . $event->created_at);
 
 				// check if this is a single day event or not
@@ -291,12 +290,29 @@ class EventsAPIController extends AppBaseController
 					// multi day event
 				}
 
+				// create a URL for the description text
+				$url = env('APP_DOMAIN') . '/events/' . $event->slug;
+
+				// create a summary from the name
+				$summary = $event->name;
+
+				// add appropriate things if this is linking directly to a specific organisation's event
+				if ($event->org)
+				{
+					$url = $event->org->slug . '.' . $url;
+					
+					if ($_SERVER['HTTPS']) $url = 'https://' . $url;
+					else $url = 'http://' . $url;
+
+					$summary = '('.$event->org->short_name.') ' . $summary;
+				}
+
 				$icalObject .=
 				"BEGIN:VEVENT\n" .
 				"" . $start_date . "\n" .
 				"" . $end_date . "\n" .
 				"DTSTAMP:" . date(ICAL_FORMAT, strtotime($event->created_at)) . "\n" .
-				"SUMMARY:".$event->name . "\n" .
+				"SUMMARY:".$summary . "\n" .
 				"UID:".$uuid . '@' . env('APP_DOMAIN') . "\n" .
 				"DESCRIPTION:" . $url . "\n" .
 				"STATUS:CONFIRMED" . "\n" .

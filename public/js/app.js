@@ -7250,7 +7250,8 @@ __webpack_require__.r(__webpack_exports__);
             showOrg: false,
             icon: that.getEventType(that.events[i].type).icon,
             colour: that.getEventType(that.events[i].type).colour,
-            slug: that.events[i].slug
+            slug: that.events[i].slug,
+            eventUrl: that.getEventURL(that.events[i], that.orgId)
           }; // add the organisation name and details
 
           if (that.events[i].org) {
@@ -57111,9 +57112,11 @@ var render = function() {
           _vm._l(_vm.events, function(event) {
             return _c("tr", [
               _c("td", [
-                _c("a", { attrs: { href: "/events/" + event.slug } }, [
-                  _vm._v(_vm._s(event.name))
-                ])
+                _c(
+                  "a",
+                  { attrs: { href: _vm.getEventURL(event, _vm.orgId) } },
+                  [_vm._v(_vm._s(event.name))]
+                )
               ]),
               _vm._v(" "),
               _c("td", { staticClass: "text-nowrap" }, [
@@ -57244,9 +57247,7 @@ var render = function() {
                                         "a",
                                         {
                                           attrs: {
-                                            href:
-                                              "/events/" +
-                                              dayEvent.customData.slug
+                                            href: dayEvent.customData.eventUrl
                                           }
                                         },
                                         [
@@ -57283,7 +57284,7 @@ var render = function() {
               ],
               null,
               false,
-              3826423493
+              3267896507
             )
           })
         : _vm._e(),
@@ -73997,6 +73998,18 @@ module.exports = {
         if (value.code == event) return true;
       });
       if (eventType.length > 0) return '<span class="fa fa-' + eventType[0].icon + '"></span>';else return '<span class="fa fa-calendar-alt"></span>';
+    },
+    // given an event and current org ID, return the URL for the event.
+    getEventURL: function getEventURL(event, currentOrgId) {
+      var eventUrl = '/events/' + event.slug; // check if we have an org or not, and if it's not the current org, use the full URL
+
+      if (event.org) {
+        if (currentOrgId != event.org.id) {
+          eventUrl = '//' + event.org.slug + '.' + window.Laravel.APP_DOMAIN + '/events/' + event.slug;
+        }
+      }
+
+      return eventUrl;
     }
   }
 };

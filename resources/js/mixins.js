@@ -121,6 +121,18 @@ module.exports = {
 			});
 			if (eventType.length>0) return '<span class="fa fa-' + eventType[0].icon + '"></span>';
 			else return '<span class="fa fa-calendar-alt"></span>';
+		},
+		// given an event and current org ID, return the URL for the event.
+		getEventURL: function(event, currentOrgId) {
+			var eventUrl = '/events/' + event.slug;
+
+			// check if we have an org or not, and if it's not the current org, use the full URL
+			if (event.org) {
+				if (currentOrgId != event.org.id) {
+					eventUrl = '//' + event.org.slug + '.' +  window.Laravel.APP_DOMAIN + '/events/' + event.slug;
+				}
+			}
+			return eventUrl;
 		}
 	}
 }
