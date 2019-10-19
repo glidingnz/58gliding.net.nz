@@ -20,7 +20,7 @@ $factory->define(App\Models\Event::class, function (Faker\Generator $faker) {
 	return [
 		'featured' => $faker->boolean(10),
 		'type' => $faker->randomElement(['competition', 'training', 'course', 'dinner', 'bbq', 'working-bee', 'cadets', 'school-group', 'meeting', 'other']),
-		'org_id' => $faker->numberBetween($min=1, $max=32),
+		'org_id' => $faker->numberBetween($min=1, $max=33),
 		'name' => $faker->sentence,
 		'slug' => str_random(10),
 		'location' => $faker->randomElement(['Matamata', 'Taupo', 'Drury', 'Wellington', 'Omarama']),

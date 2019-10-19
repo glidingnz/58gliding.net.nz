@@ -7149,6 +7149,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -7229,7 +7231,7 @@ __webpack_require__.r(__webpack_exports__);
         params: data
       }).then(function (response) {
         that.events = response.data.data;
-        that.attributes = []; // setup the calendar
+        that.attributes = []; // process the data for the calendar
 
         for (var i = 0; i < that.events.length; i++) {
           if (that.events[i].end_date) {
@@ -7239,16 +7241,31 @@ __webpack_require__.r(__webpack_exports__);
             }];
           } else {
             var dates = [that.events[i].start_date];
-          }
+          } // set up the basic custom data needed for the badges e.g. event name
+
+
+          var custom_data = {
+            name: that.events[i].name,
+            orgShortName: null,
+            showOrg: false,
+            icon: that.getEventType(that.events[i].type).icon,
+            colour: that.getEventType(that.events[i].type).colour,
+            slug: that.events[i].slug,
+            eventUrl: that.getEventURL(that.events[i], that.orgId)
+          }; // add the organisation name and details
+
+          if (that.events[i].org) {
+            custom_data.orgShortName = that.events[i].org.short_name; // save if we should be showing the org name at all. Don't bother if we're in the same org as the item.
+
+            if (that.events[i].org.id != that.orgId) {
+              custom_data.showOrg = true;
+            }
+          } // push to the array of data for the calendar
+
 
           that.attributes.push({
             dates: dates,
-            customData: {
-              name: that.events[i].name,
-              icon: that.getEventType(that.events[i].type).icon,
-              colour: that.getEventType(that.events[i].type).colour,
-              slug: that.events[i].slug
-            },
+            customData: custom_data,
             order: 0
           });
         }
@@ -57095,9 +57112,11 @@ var render = function() {
           _vm._l(_vm.events, function(event) {
             return _c("tr", [
               _c("td", [
-                _c("a", { attrs: { href: "/events/" + event.slug } }, [
-                  _vm._v(_vm._s(event.name))
-                ])
+                _c(
+                  "a",
+                  { attrs: { href: _vm.getEventURL(event, _vm.orgId) } },
+                  [_vm._v(_vm._s(event.name))]
+                )
               ]),
               _vm._v(" "),
               _c("td", { staticClass: "text-nowrap" }, [
@@ -57228,14 +57247,26 @@ var render = function() {
                                         "a",
                                         {
                                           attrs: {
-                                            href:
-                                              "/events/" +
-                                              dayEvent.customData.slug
+                                            href: dayEvent.customData.eventUrl
                                           }
                                         },
                                         [
+                                          dayEvent.customData.showOrg
+                                            ? _c("span", [
+                                                _vm._v(
+                                                  "(" +
+                                                    _vm._s(
+                                                      dayEvent.customData
+                                                        .orgShortName
+                                                    ) +
+                                                    ")"
+                                                )
+                                              ])
+                                            : _vm._e(),
                                           _vm._v(
-                                            _vm._s(dayEvent.customData.name)
+                                            "\n\t\t\t\t\t\t\t" +
+                                              _vm._s(dayEvent.customData.name) +
+                                              "\n\t\t\t\t\t\t"
                                           )
                                         ]
                                       )
@@ -57253,7 +57284,7 @@ var render = function() {
               ],
               null,
               false,
-              3347083927
+              3267896507
             )
           })
         : _vm._e(),
@@ -73892,6 +73923,13 @@ module.exports = {
         'icon': 'paper-plane',
         'shortname': 'Courses'
       }, {
+        'colour': '#B01A16',
+        'filter': true,
+        'code': 'camp',
+        'name': 'Camp',
+        'icon': 'campground',
+        'shortname': 'Camp'
+      }, {
         'colour': '#126587',
         'filter': false,
         'code': 'dinner',
@@ -73960,6 +73998,18 @@ module.exports = {
         if (value.code == event) return true;
       });
       if (eventType.length > 0) return '<span class="fa fa-' + eventType[0].icon + '"></span>';else return '<span class="fa fa-calendar-alt"></span>';
+    },
+    // given an event and current org ID, return the URL for the event.
+    getEventURL: function getEventURL(event, currentOrgId) {
+      var eventUrl = '/events/' + event.slug; // check if we have an org or not, and if it's not the current org, use the full URL
+
+      if (event.org) {
+        if (currentOrgId != event.org.id) {
+          eventUrl = '//' + event.org.slug + '.' + window.Laravel.APP_DOMAIN + '/events/' + event.slug;
+        }
+      }
+
+      return eventUrl;
     }
   }
 };

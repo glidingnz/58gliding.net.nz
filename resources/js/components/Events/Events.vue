@@ -93,7 +93,7 @@
 			<th v-if="Laravel.clubAdmin">Edit</th>
 		</tr>
 		<tr v-for="event in events">
-			<td><a :href="'/events/' + event.slug">{{event.name}}</a></td>
+			<td><a :href="getEventURL(event, orgId)">{{event.name}}</a></td>
 			<td class="text-nowrap"><span v-html="formatEventTypeIcon(event.type)"></span> {{formatEventType(event.type)}}</td>
 			<td>
 				<span v-if="event.org">{{event.org.name}}</span>
@@ -112,7 +112,6 @@
 
 	<p v-show="events.length==0">No events. Check your filters above.</p>
 
-
 	<v-calendar :rows="6" v-if="events.length>0 && showCalendar" class="custom_calendar" style="max-width: 100%;" :first-day-of-week="2" ref="calendar" is-expanded  :attributes='attributes'>
 		<template slot='day-content' slot-scope="props">
 			<div class="day-cell" v-if="props.day.inMonth">
@@ -120,7 +119,10 @@
 				<div v-for="dayEvent in props.attributes">
 					<span class="event-badge badge badge-pill" :style="'background-color: ' + dayEvent.customData.colour ">
 						<span :class="'fa fa-' + dayEvent.customData.icon"></span>
-						<a :href="'/events/' + dayEvent.customData.slug ">{{dayEvent.customData.name}}</a>
+						<a :href="dayEvent.customData.eventUrl">
+							<span v-if="dayEvent.customData.showOrg">({{dayEvent.customData.orgShortName}})</span>
+							{{dayEvent.customData.name}}
+						</a>
 					</span>
 				</div>
 			</div>
@@ -224,7 +226,7 @@ export default {
 				that.events = response.data.data;
 				that.attributes = [];
 
-				// setup the calendar
+				// process the data for the calendar
 				for (var i=0; i<that.events.length; i++)
 				{
 					if (that.events[i].end_date) {
@@ -237,14 +239,31 @@ export default {
 							that.events[i].start_date
 						];
 					}
-					that.attributes.push({
-						dates: dates,
-						customData: { 
+
+					// set up the basic custom data needed for the badges e.g. event name
+					var custom_data = { 
 							name: that.events[i].name,
+							orgShortName: null,
+							showOrg: false,
 							icon: that.getEventType(that.events[i].type).icon,
 							colour: that.getEventType(that.events[i].type).colour,
-							slug: that.events[i].slug
-						},
+							slug: that.events[i].slug,
+							eventUrl: that.getEventURL(that.events[i], that.orgId)
+						};
+
+					// add the organisation name and details
+					if (that.events[i].org) {
+						custom_data.orgShortName = that.events[i].org.short_name;
+						// save if we should be showing the org name at all. Don't bother if we're in the same org as the item.
+						if (that.events[i].org.id != that.orgId) {
+							custom_data.showOrg = true;
+						}
+					}
+
+					// push to the array of data for the calendar
+					that.attributes.push({
+						dates: dates,
+						customData: custom_data,
 						order: 0
 					});
 				}

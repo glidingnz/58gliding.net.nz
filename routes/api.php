@@ -83,7 +83,7 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 
 	Route::get('/members/export/{format}', 'MembersApiController@export');
 	
-	Route::group(['middleware' => []], function () {
+	Route::group(['middleware' => ['auth:api']], function () {
 
 		Route::get('/users',  'UsersApiController@index');
 		Route::get('/users/{userID}/roles',  'RolesApiController@user_roles');
