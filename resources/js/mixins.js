@@ -90,7 +90,7 @@ module.exports = {
 		},
 		eventTypes: function() {
 			return [
-				{'colour': '#E74A1A', 'filter': true, 'code': 'competition', 'name': 'Competition', 'icon':'trophy', 'shortname':'Comps'},
+				{'colour': '#92AC59', 'filter': true, 'code': 'competition', 'name': 'Competition', 'icon':'trophy', 'shortname':'Comps'},
 				{'colour': '#1782AB', 'filter': true, 'code': 'training', 'name': 'Training', 'icon':'paper-plane', 'shortname':'Training'},
 				{'colour': '#E59B2B', 'filter': true, 'code': 'course', 'name': 'Course', 'icon':'paper-plane', 'shortname':'Courses'},
 				{'colour': '#B01A16', 'filter': true, 'code': 'camp', 'name': 'Camp', 'icon':'campground', 'shortname':'Camp'},
@@ -100,7 +100,7 @@ module.exports = {
 				{'colour': '#14778E', 'filter': false, 'code': 'cadets', 'name': 'Cadets', 'icon':'users', 'shortname':'Cadets'},
 				{'colour': '#0C2D43', 'filter': false, 'code': 'school-group', 'name': 'School Group', 'icon':'users', 'shortname':'Schools'},
 				{'colour': '#BA0955', 'filter': false, 'code': 'meeting', 'name': 'Meeting', 'icon':'handshake', 'shortname':'Meetings'},
-				{'colour': '#92AC59', 'filter': false, 'code': 'other', 'name': 'Other', 'icon':'calendar-alt', 'shortname':'Other'}
+				{'colour': '#E74A1A', 'filter': false, 'code': 'other', 'name': 'Other', 'icon':'calendar-alt', 'shortname':'Other'}
 			]
 		},
 		getEventType(eventType) {

@@ -74066,7 +74066,7 @@ module.exports = {
     },
     eventTypes: function eventTypes() {
       return [{
-        'colour': '#E74A1A',
+        'colour': '#92AC59',
         'filter': true,
         'code': 'competition',
         'name': 'Competition',
@@ -74136,7 +74136,7 @@ module.exports = {
         'icon': 'handshake',
         'shortname': 'Meetings'
       }, {
-        'colour': '#92AC59',
+        'colour': '#E74A1A',
         'filter': false,
         'code': 'other',
         'name': 'Other',
