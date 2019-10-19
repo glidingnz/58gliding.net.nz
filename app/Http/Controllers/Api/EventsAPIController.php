@@ -7,6 +7,7 @@ use App\Http\Controllers\AppBaseController;
 use Response;
 use App\Models\Event;
 use App\Models\Org;
+use App\Rules\Time;
 use Auth;
 use Carbon\Carbon;
 
@@ -208,6 +209,19 @@ class EventsAPIController extends AppBaseController
 	{
 		$input = $request->all();
 
+		$request->validate([
+			'start_date' => 'required|date_format:Y-m-d',
+			'end_date' => 'nullable|date_format:Y-m-d',
+			'earlybird' => 'nullable|date_format:Y-m-d',
+			'start_time' => ['nullable', new Time],
+			'end_time' => ['nullable', new Time],
+			'slug' => 'required',
+			'name' => 'required',
+			'cost' => 'numeric|nullable|max:9999',
+			'cost_earlybird' => 'numeric|nullable|max:9999',
+			'practice_days' => 'numeric|nullable|max:100',
+		]);
+
 		/** @var events $events */
 		$event = Event::find($id);
 
@@ -216,6 +230,8 @@ class EventsAPIController extends AppBaseController
 		}
 
 		$event->fill($input);
+		//$event->start_time = $input['start_time'];
+		//$event->end_time = $input['end_time'];
 
 		if ($event->isDirty('slug')) {
 			$event->slug = $this->create_unique_slug($event->slug);

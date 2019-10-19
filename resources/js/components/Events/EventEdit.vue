@@ -69,14 +69,14 @@
 					<div class="col-md-3 col-6">
 						<label for="location" class="col-form-label">Start Time</label>
 						<div class="">
-							<input placeholder="e.g. 16:30" type="time" class="form-control" id="location"  v-model="event.start_time">
+							<input placeholder="4:30pm or 16:00" class="form-control" id="location"  v-model="event.start_time">
 						</div>
 					</div>
 					<div class="col-md-3 col-6">
 						
 						<label for="location" class="col-form-label">End Time</label>
 						<div class="">
-							<input placeholder="e.g. 16:30" type="time" class="form-control" id="location" v-model="event.end_time">
+							<input placeholder="4:30pm or 16:00" class="form-control" id="location" v-model="event.end_time">
 						</div>
 					</div>
 
@@ -299,6 +299,8 @@ export default {
 				that.event.start_date = that.$moment(that.event.start_date).toDate();
 				that.event.end_date = that.$moment(that.event.end_date).toDate();
 				that.event.earlybird = that.$moment(that.event.earlybird).toDate();
+				// if (that.event.start_time) that.event.start_time = that.$moment(that.event.start_time, "HH:mm:ss").format("HH:mm");
+				// if (that.event.end_time) that.event.end_time = that.$moment(that.event.end_time, "HH:mm:ss").format("HH:mm");
 			});
 		},
 		save: function(e) {
@@ -311,11 +313,18 @@ export default {
 			event.earlybird = this.apiDateFormat(event.earlybird);
 
 			window.axios.put('/api/events/' + this.eventId, event).then(function (response) {
-				messages.$emit('success', 'Event ' + that.event.name + ' Updated');
+				messages.$emit('success', 'Event "' + that.event.name + '" Updated');
 				if (that.returnOnSave) {
 					window.location.href = "/events/" + event.slug;
 				}
-			});
+			}).catch(
+				function (error) {
+					var errors = Object.entries(error.response.data.errors);
+					for (const [name, error] of errors) {
+						messages.$emit('error', `${error}`);
+					}
+				}
+			);
 			e.preventDefault();
 		},
 		selectedMember: function(member)

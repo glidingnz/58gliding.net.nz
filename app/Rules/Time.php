@@ -26,6 +26,8 @@ class Time implements Rule
 	 */
 	public function passes($attribute, $value)
 	{
+		$this->attribute = $attribute;
+
 		try {
 			Carbon::createFromFormat('H:i', $value);
 			return true;
@@ -51,6 +53,6 @@ class Time implements Rule
 	 */
 	public function message()
 	{
-		return 'Time must be in 15:00 format OR 3pm OR 3:30pm.';
+		return $this->attribute . ' must be in 15:00 format OR 3pm OR 3:30pm.';
 	}
 }
