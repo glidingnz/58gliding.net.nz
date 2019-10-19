@@ -7149,6 +7149,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -7229,7 +7231,7 @@ __webpack_require__.r(__webpack_exports__);
         params: data
       }).then(function (response) {
         that.events = response.data.data;
-        that.attributes = []; // setup the calendar
+        that.attributes = []; // process the data for the calendar
 
         for (var i = 0; i < that.events.length; i++) {
           if (that.events[i].end_date) {
@@ -7239,16 +7241,30 @@ __webpack_require__.r(__webpack_exports__);
             }];
           } else {
             var dates = [that.events[i].start_date];
-          }
+          } // set up the basic custom data needed for the badges e.g. event name
+
+
+          var custom_data = {
+            name: that.events[i].name,
+            orgShortName: null,
+            showOrg: false,
+            icon: that.getEventType(that.events[i].type).icon,
+            colour: that.getEventType(that.events[i].type).colour,
+            slug: that.events[i].slug
+          }; // add the organisation name and details
+
+          if (that.events[i].org) {
+            custom_data.orgShortName = that.events[i].org.short_name; // save if we should be showing the org name at all. Don't bother if we're in the same org as the item.
+
+            if (that.events[i].org.id != that.orgId) {
+              custom_data.showOrg = true;
+            }
+          } // push to the array of data for the calendar
+
 
           that.attributes.push({
             dates: dates,
-            customData: {
-              name: that.events[i].name,
-              icon: that.getEventType(that.events[i].type).icon,
-              colour: that.getEventType(that.events[i].type).colour,
-              slug: that.events[i].slug
-            },
+            customData: custom_data,
             order: 0
           });
         }
@@ -57234,8 +57250,22 @@ var render = function() {
                                           }
                                         },
                                         [
+                                          dayEvent.customData.showOrg
+                                            ? _c("span", [
+                                                _vm._v(
+                                                  "(" +
+                                                    _vm._s(
+                                                      dayEvent.customData
+                                                        .orgShortName
+                                                    ) +
+                                                    ")"
+                                                )
+                                              ])
+                                            : _vm._e(),
                                           _vm._v(
-                                            _vm._s(dayEvent.customData.name)
+                                            "\n\t\t\t\t\t\t\t" +
+                                              _vm._s(dayEvent.customData.name) +
+                                              "\n\t\t\t\t\t\t"
                                           )
                                         ]
                                       )
@@ -57253,7 +57283,7 @@ var render = function() {
               ],
               null,
               false,
-              3347083927
+              3826423493
             )
           })
         : _vm._e(),

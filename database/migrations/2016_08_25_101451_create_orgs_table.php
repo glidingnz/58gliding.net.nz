@@ -14,7 +14,6 @@ class CreateOrgsTable extends Migration
 	 */
 	public function up()
 	{
-		
 		Schema::create('orgs', function (Blueprint $table) {
 			$table->increments('id');
 			$table->string('name');
@@ -163,7 +162,7 @@ class CreateOrgsTable extends Migration
 
 		$org = new Org;
 		$org->name='South Canterbury Gliding Club';
-		$org->short_name='South Canterbury';
+		$org->short_name='Sth Canterbury';
 		$org->slug='sthcanterbury';
 		$org->gnz_code='SCY';
 		$org->type='club';
@@ -253,7 +252,7 @@ class CreateOrgsTable extends Migration
 
 		$org = new Org;
 		$org->name='Matamata Soaring Centre';
-		$org->short_name='msc';
+		$org->short_name='MSC';
 		$org->slug='msc';
 		$org->gnz_code='MSC';
 		$org->type='soaringcentre';
@@ -262,7 +261,7 @@ class CreateOrgsTable extends Migration
 
 		$org = new Org;
 		$org->name='Omarama Soaring Centre';
-		$org->short_name='osc';
+		$org->short_name='OSC';
 		$org->slug='osc';
 		$org->gnz_code='OSC';
 		$org->type='soaringcentre';
@@ -271,7 +270,7 @@ class CreateOrgsTable extends Migration
 
 		$org = new Org;
 		$org->name='Greytown Soaring Centre';
-		$org->short_name='gsc';
+		$org->short_name='GSC';
 		$org->slug='gsc';
 		$org->gnz_code='GSC';
 		$org->type='soaringcentre';
@@ -280,7 +279,7 @@ class CreateOrgsTable extends Migration
 
 		$org = new Org;
 		$org->name='Youth Glide New Zealand';
-		$org->short_name='youthglide';
+		$org->short_name='YouthGlide';
 		$org->slug='youthglide';
 		$org->gnz_code='';
 		$org->type='org';

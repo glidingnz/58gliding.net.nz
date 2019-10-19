@@ -8,7 +8,6 @@
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
-
 		<!-- CSRF Token -->
 		<meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -122,6 +121,12 @@
 				&copy; <?php echo date('Y'); ?>  <a href="http://gliding.co.nz/">Gliding New Zealand</a>
 
 				<a href="//{{env('APP_DOMAIN')}}/" class="ml-4">Switch Club</a>
+
+				<a href="http://gliding.co.nz/" class="ml-4">GNZ Main Website</a>
+
+				<?php if ($org->slug!='gnz') { ?>
+					<a class="ml-4" href="http://{{$org->website}}">{{$org->short_name}} Website</a>
+				<?php } ?>
 			</div>
 
 		</div>
