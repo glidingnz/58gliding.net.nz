@@ -77,7 +77,7 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/admin/users', 'AdminUsersController@index');
 	Route::get('/admin/users/{user}/roles', 'AdminUsersController@roles');
 	Route::post('/admin/import-flarm', 'AdminController@import_flarm');
-	Route::post('/admin/import-badges', 'AdminController@import_badges');
+	Route::post('/admin/import-badges', 'AdminController@import_all_member_badges');
 	Route::post('/admin/import-qgps', 'AdminController@import_qgps');
 	Route::post('/admin/sync-qgps', 'AdminController@sync_qgps');
 	Route::post('/admin/import-aircraft-from-caa', 'AdminController@import_aircraft_from_caa');

@@ -23,7 +23,6 @@
 			</div>
 		</div>
 
-
 		<div v-if="results.length==0">
 			None yet!
 		</div>

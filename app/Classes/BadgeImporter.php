@@ -10,7 +10,7 @@ class BadgeImporter
 
 	public $badges;
 
-	public function import_badges()
+	public function import_all_member_badges()
 	{
 		$this->load_badges();
 
@@ -35,7 +35,7 @@ class BadgeImporter
 	}
 
 
-	public function import_badge($member)
+	public function import_member_badges($member)
 	{
 
 		if ($member->qgp_number>0)
