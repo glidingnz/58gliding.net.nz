@@ -17,7 +17,7 @@ class BadgeImporter
 		$members = Member::all();
 		foreach ($members as $member)
 		{
-			$this->import_badge($member);
+			$this->import_member_badges($member);
 		}
 	}
 

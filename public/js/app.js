@@ -1732,24 +1732,46 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
   props: ['memberId'],
   data: function data() {
     return {
-      results: [],
+      achievements: [],
+      badges: [],
       showEdit: false
     };
   },
   mounted: function mounted() {
     this.load();
   },
+  computed: {
+    unachieved: function unachieved() {
+      var that = this;
+      return that.badges.filter(function (badge) {
+        var found = that.achievements.filter(function (achievement) {
+          return achievement.badge_id === badge.id;
+        });
+        if (found.length > 0) return false;
+        return true;
+      });
+    }
+  },
   methods: {
     load: function load() {
-      var that = this;
+      var that = this; // get all badges
+
+      window.axios.get('/api/v1/badges').then(function (response) {
+        that.badges = response.data.data;
+      }); // get this members achievements
+
       window.axios.get('/api/v1/achievements?member_id=' + this.memberId).then(function (response) {
-        that.results = response.data.data;
+        that.achievements = response.data.data;
       });
     }
   }
@@ -2200,7 +2222,7 @@ __webpack_require__.r(__webpack_exports__);
       badges: [],
       showEdit: false,
       newBadge: {
-        id: 0,
+        id: null,
         badge_number: null,
         date_awarded: null,
         member_id: this.memberId
@@ -47403,33 +47425,61 @@ var render = function() {
     _c(
       "div",
       { staticClass: "badges" },
-      _vm._l(_vm.results, function(result) {
-        return _c("div", { staticClass: "badge-panel" }, [
-          _c("img", {
-            attrs: {
-              src: "/images/badges_256/" + result.badge.slug + ".png",
-              alt: result.badge.name,
-              width: "128",
-              height: "128"
-            }
-          }),
-          _c("br"),
-          _vm._v("\n\t\t\t" + _vm._s(result.badge.name)),
-          _c("br"),
-          _vm._v(" "),
-          result.badge_number ? _c("span", [_vm._v("#")]) : _vm._e(),
-          _vm._v(
-            _vm._s(result.badge_number) +
-              " " +
-              _vm._s(result.awarded_date) +
-              "\n\t\t"
-          )
-        ])
-      }),
-      0
+      [
+        _vm._l(_vm.achievements, function(result) {
+          return _c("div", { staticClass: "badge-panel" }, [
+            _c(
+              "a",
+              {
+                attrs: {
+                  href: "/images/badges_512/" + result.badge.slug + ".png"
+                }
+              },
+              [
+                _c("img", {
+                  attrs: {
+                    src: "/images/badges_256/" + result.badge.slug + ".png",
+                    alt: result.badge.name,
+                    width: "128",
+                    height: "128"
+                  }
+                })
+              ]
+            ),
+            _c("br"),
+            _vm._v("\n\t\t\t" + _vm._s(result.badge.name)),
+            _c("br"),
+            _vm._v(" "),
+            result.badge_number ? _c("span", [_vm._v("#")]) : _vm._e(),
+            _vm._v(
+              _vm._s(result.badge_number) +
+                " " +
+                _vm._s(result.awarded_date) +
+                "\n\t\t"
+            )
+          ])
+        }),
+        _vm._v(" "),
+        _vm._l(_vm.unachieved, function(badge) {
+          return _c("div", { staticClass: "badge-panel" }, [
+            _c("img", {
+              staticStyle: { opacity: ".1" },
+              attrs: {
+                src: "/images/badges_256/" + badge.slug + ".png",
+                alt: badge.name,
+                width: "128",
+                height: "128"
+              }
+            }),
+            _c("br"),
+            _vm._v("\n\t\t\t" + _vm._s(badge.name) + "\n\t\t")
+          ])
+        })
+      ],
+      2
     ),
     _vm._v(" "),
-    _vm.results.length == 0
+    _vm.achievements.length == 0
       ? _c("div", [_vm._v("\n\t\tNone yet!\n\t")])
       : _vm._e()
   ])
@@ -47936,6 +47986,12 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _c("p", [
+      _vm._v(
+        "Note FAI achievements are added by the awards officer. All the others here you can add yourself."
+      )
+    ]),
+    _vm._v(" "),
     _c(
       "table",
       { staticClass: "table results-table table-striped" },
