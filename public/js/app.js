@@ -2950,6 +2950,144 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -49853,9 +49991,7 @@ var render = function() {
           _vm._m(0),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
-              _vm._v("Full Name")
-            ]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("Full Name")]),
             _vm._v(" "),
             _c("td", [
               _vm._v(
@@ -49869,9 +50005,7 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
-              _vm._v("Address")
-            ]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("Address")]),
             _vm._v(" "),
             _c("td", [
               _vm._v("\n\t\t\t\t\t\t" + _vm._s(_vm.results.address_1)),
@@ -49891,38 +50025,46 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
-              _vm._v("Gender")
-            ]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("Gender")]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(_vm.results.gender))])
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
-              _vm._v("Date of Birth")
-            ]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("Date of Birth")]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(_vm.results.date_of_birth))])
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
-              _vm._v("OO Number")
-            ]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("OO Number")]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(_vm.results.observer_number))])
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
-              _vm._v("Coach")
-            ]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("Coach")]),
             _vm._v(" "),
             _c("td", [
-              _vm.results.coach ? _c("div", [_vm._v("Yes")]) : _vm._e(),
-              _vm._v(" "),
-              !_vm.results.coach ? _c("div", [_vm._v("No")]) : _vm._e()
+              _c("span", {
+                domProps: {
+                  innerHTML: _vm._s(_vm.formatBoolean(_vm.results.coach))
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [_vm._v("Contest Pilot")]),
+            _vm._v(" "),
+            _c("td", [
+              _c("span", {
+                domProps: {
+                  innerHTML: _vm._s(
+                    _vm.formatBoolean(_vm.results.contest_pilot)
+                  )
+                }
+              })
             ])
           ])
         ]),
@@ -49931,9 +50073,7 @@ var render = function() {
           _vm._m(1),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
-              _vm._v("Email")
-            ]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("Email")]),
             _vm._v(" "),
             _c("td", [
               _c("a", { attrs: { href: "mailto:" + _vm.results.email } }, [
@@ -49943,23 +50083,19 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
-              _vm._v("Home Phone")
-            ]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("Home Phone")]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(_vm.results.home_phone))])
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
-              _vm._v("Mobile")
-            ]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("Mobile")]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(_vm.results.mobile_phone))])
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
+            _c("td", { staticClass: "table-label" }, [
               _vm._v("Business Phone")
             ]),
             _vm._v(" "),
@@ -49971,17 +50107,13 @@ var render = function() {
           _vm._m(2),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
-              _vm._v("QGP Number")
-            ]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("QGP Number")]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(_vm.results.qgp_number))])
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
-              _vm._v("Date of QGP")
-            ]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("Date of QGP")]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(_vm.results.date_of_qgp))])
           ])
@@ -49995,51 +50127,223 @@ var render = function() {
               _vm._v(_vm._s(_vm.results.comments))
             ])
           ])
+        ]),
+        _vm._v(" "),
+        _c("table", { staticClass: "table table-striped" }, [
+          _vm._m(4),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [_vm._v("Instructor")]),
+            _vm._v(" "),
+            _c("td", [
+              _c("span", {
+                domProps: {
+                  innerHTML: _vm._s(_vm.formatBoolean(_vm.results.instructor))
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("Instructor Rating")
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _c("span", {
+                domProps: {
+                  innerHTML: _vm._s(
+                    _vm.formatBoolean(_vm.results.instructor_rating)
+                  )
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [_vm._v("Aerotow")]),
+            _vm._v(" "),
+            _c("td", [
+              _c("span", {
+                domProps: {
+                  innerHTML: _vm._s(_vm.formatBoolean(_vm.results.aero_tow))
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [_vm._v("Winch Rating")]),
+            _vm._v(" "),
+            _c("td", [
+              _c("span", {
+                domProps: {
+                  innerHTML: _vm._s(_vm.formatBoolean(_vm.results.winch_rating))
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [_vm._v("Self Launch")]),
+            _vm._v(" "),
+            _c("td", [
+              _c("span", {
+                domProps: {
+                  innerHTML: _vm._s(_vm.formatBoolean(_vm.results.self_launch))
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("Auto Tow Instructor")
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _c("span", {
+                domProps: {
+                  innerHTML: _vm._s(_vm.formatBoolean(_vm.results.auto_tow))
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("Auto Tow Instructor")
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _c("span", {
+                domProps: {
+                  innerHTML: _vm._s(_vm.formatBoolean(_vm.results.auto_tow))
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("Aero Instructor")
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _c("span", {
+                domProps: {
+                  innerHTML: _vm._s(
+                    _vm.formatBoolean(_vm.results.aero_instructor)
+                  )
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("Advanced Aero Instructor")
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _c("span", {
+                domProps: {
+                  innerHTML: _vm._s(
+                    _vm.formatBoolean(_vm.results.advanced_aero_instructor)
+                  )
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("Instructor Trainer")
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _c("span", {
+                domProps: {
+                  innerHTML: _vm._s(
+                    _vm.formatBoolean(_vm.results.instructor_trainer)
+                  )
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [_vm._v("Tow Pilot")]),
+            _vm._v(" "),
+            _c("td", [
+              _c("span", {
+                domProps: {
+                  innerHTML: _vm._s(_vm.formatBoolean(_vm.results.tow_pilot))
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("Tow Pilot Instructor")
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _c("span", {
+                domProps: {
+                  innerHTML: _vm._s(
+                    _vm.formatBoolean(_vm.results.tow_pilot_instructor)
+                  )
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("Insttrain (OLD: for info only)")
+            ]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.insttrain))])
+          ])
         ])
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "col-sm-6 col-xs-12" }, [
         _c("table", { staticClass: "table table-striped" }, [
-          _vm._m(4),
+          _vm._m(5),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
-              _vm._v("GNZ Number")
-            ]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("GNZ Number")]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(_vm.results.nzga_number))])
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
-              _vm._v("Access Level")
-            ]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("Access Level")]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(_vm.results.access_level))])
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
-              _vm._v("Created")
-            ]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("Created")]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(_vm.results.created))])
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
-              _vm._v("Modified")
-            ]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("Modified")]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(_vm.results.modified))])
           ])
         ]),
         _vm._v(" "),
         _c("table", { staticClass: "table table-striped" }, [
-          _vm._m(5),
+          _vm._m(6),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
+            _c("td", { staticClass: "table-label" }, [
               _vm._v("Membership Type")
             ]),
             _vm._v(" "),
@@ -50047,13 +50351,13 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [_vm._v("Club")]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("Club")]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(_vm.results.club))])
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
+            _c("td", { staticClass: "table-label" }, [
               _vm._v("Date Joined / Rejoined Club")
             ]),
             _vm._v(" "),
@@ -50061,7 +50365,7 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
+            _c("td", { staticClass: "table-label" }, [
               _vm._v("Previous Clubs")
             ]),
             _vm._v(" "),
@@ -50069,7 +50373,7 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
+            _c("td", { staticClass: "table-label" }, [
               _vm._v("GNZ number of Family Member")
             ]),
             _vm._v(" "),
@@ -50077,19 +50381,143 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
-              _vm._v("Resigned")
-            ]),
+            _c("td", { staticClass: "table-label" }, [_vm._v("Resigned")]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(_vm.results.resigned))])
           ]),
           _vm._v(" "),
           _c("tr", [
-            _c("td", { staticClass: "table-label col-xs-6" }, [
+            _c("td", { staticClass: "table-label" }, [
               _vm._v("Resigned Comments")
             ]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(_vm.results.resigned_comment))])
+          ])
+        ]),
+        _vm._v(" "),
+        _c("table", { staticClass: "table table-striped" }, [
+          _vm._m(7),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [_vm._v("QGP Number")]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.qgp_number))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [_vm._v("QGP Date")]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.qgp_date))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [_vm._v("Silver Cert #")]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.silver_certificate_number))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("Silver Duration")
+            ]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.silver_duration))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("Silver Distance")
+            ]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.silver_distance))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [_vm._v("Silver Height")]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.silver_height))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [_vm._v("Gold Badge #")]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.gold_certificate_number))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [_vm._v("Gold Distance")]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.gold_distance))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [_vm._v("Gold Height")]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.gold_height))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("Diamond Distance #")
+            ]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.diamond_distance_number))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("Diamond Height #")
+            ]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.diamond_height_number))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("Diamond Height #")
+            ]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.diamond_height_number))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("Diamond Goal #")
+            ]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.diamond_goal_number))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("1000km Flight #")
+            ]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.flight_1000km_number))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("1250km Flight #")
+            ]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.flight_1250km_number))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("1500km Flight #")
+            ]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.flight_1500km_number))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label" }, [
+              _vm._v("Other FAI Awards or Diplomas")
+            ]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.results.awards))])
           ])
         ])
       ])
@@ -50132,6 +50560,14 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("tr", [
+      _c("th", { attrs: { colspan: "2" } }, [_vm._v("Ratings")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
       _c("th", { attrs: { colspan: "2" } }, [_vm._v("Account Details")])
     ])
   },
@@ -50142,6 +50578,12 @@ var staticRenderFns = [
     return _c("tr", [
       _c("th", { attrs: { colspan: "2" } }, [_vm._v("Affiliation")])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [_c("th", { attrs: { colspan: "2" } }, [_vm._v("Awards")])])
   }
 ]
 render._withStripped = true
@@ -74026,6 +74468,13 @@ module.exports = {
     },
     formatTime: function formatTime(time) {
       return Vue.prototype.$moment(time, Vue.prototype.$moment.HTML5_FMT.TIME_SECONDS).format('h:mma');
+    },
+    formatBoolean: function formatBoolean(value) {
+      if (value) {
+        return '<i class="fa fa-check success"></i>';
+      }
+
+      return '<i class="fa fa-times error"></i>';
     },
     dateToNow: function dateToNow(date) {
       return Vue.prototype.$moment(date).fromNow();
