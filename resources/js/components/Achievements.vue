@@ -15,6 +15,10 @@
 <template>
 	<div>
 
+		<div v-if="achievements.length==0">
+			<p>No achievements yet!</p>
+		</div>
+
 		<div class="badges">
 			<div v-for="result in achievements" class="badge-panel">
 				<a :href="'/images/badges_512/' + result.badge.slug + '.png'"><img v-bind:src="'/images/badges_256/' + result.badge.slug + '.png'" v-bind:alt="result.badge.name" width="128" height="128"></a><br>
@@ -25,10 +29,6 @@
 				<img v-bind:src="'/images/badges_256/' + badge.slug + '.png'" v-bind:alt="badge.name" width="128" height="128" style="opacity: .1"><br>
 				{{badge.name}}
 			</div>
-		</div>
-
-		<div v-if="achievements.length==0">
-			None yet!
 		</div>
 
 	</div>

@@ -47422,6 +47422,10 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _vm.achievements.length == 0
+      ? _c("div", [_c("p", [_vm._v("No achievements yet!")])])
+      : _vm._e(),
+    _vm._v(" "),
     _c(
       "div",
       { staticClass: "badges" },
@@ -47477,11 +47481,7 @@ var render = function() {
         })
       ],
       2
-    ),
-    _vm._v(" "),
-    _vm.achievements.length == 0
-      ? _c("div", [_vm._v("\n\t\tNone yet!\n\t")])
-      : _vm._e()
+    )
   ])
 }
 var staticRenderFns = []
