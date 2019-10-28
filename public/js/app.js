@@ -3903,6 +3903,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3922,7 +3931,8 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       // the object to store the new rating details
       peopleSearchResults: [],
       searchText: '',
-      authorising_member_id: 0
+      authorising_member_id: null,
+      files: null
     };
   },
   mounted: function mounted() {
@@ -3941,22 +3951,40 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     },
     insert: function insert() {
       var that = this;
-      this.newRating.member_id = this.memberId;
-      this.newRating.expires = this.presetExpires;
-      this.newRating.authorising_member_id = this.authorising_member_id;
+      var formData = new FormData();
+      if (this.newRating.rating_id) formData.append('rating_id', this.newRating.rating_id);
+      if (this.memberId) formData.append('member_id', this.memberId);
+      if (this.newRating.awarded) formData.append('awarded', this.newRating.awarded);
+      if (this.newRating.notes) formData.append('notes', this.newRating.notes);
+      if (this.presetExpires) formData.append('expires', this.presetExpires);
+      if (this.authorising_member_id) formData.append('authorising_member_id', this.authorising_member_id);
 
-      if (this.newRating.authorising_member_id == null) {
+      if (this.files) {
+        for (var i = 0; i < this.files.length; i++) {
+          formData.append('files[' + i + ']', this.files[i]);
+        }
+      }
+
+      console.log(formData); // this.newRating.member_id = this.memberId;
+      // this.newRating.expires = this.presetExpires;
+      // this.newRating.authorising_member_id = this.authorising_member_id;
+
+      if (!formData.has('authorising_member_id')) {
         messages.$emit('error', 'An authorising person is required');
         return false;
       }
 
-      if (this.newRating.rating_id == null) {
+      if (!formData.has('rating_id')) {
         messages.$emit('error', 'A rating is required');
         return false;
       } // create the new rating
 
 
-      window.axios.post('/api/v1/members/' + this.memberId + '/ratings', this.newRating).then(function (response) {
+      window.axios.post('/api/v1/members/' + this.memberId + '/ratings', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function (response) {
         that.getMemberRatings();
       });
     },
@@ -4010,6 +4038,9 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
           that.memberRatings[i].timeToExpire = moment__WEBPACK_IMPORTED_MODULE_1___default()(that.memberRatings[i].expires).fromNow();
         }
       });
+    },
+    onChangeFileUpload: function onChangeFileUpload() {
+      this.files = this.$refs.file.files;
     }
   }
 });
@@ -51996,6 +52027,37 @@ var render = function() {
               },
               [_vm._v("No members found")]
             ),
+            _vm._v(" "),
+            _c("div", { staticClass: "custom-file col-3" }, [
+              _c("input", {
+                ref: "file",
+                staticClass: "custom-file-input",
+                attrs: { type: "file", id: "file", multiple: "" },
+                on: {
+                  change: function($event) {
+                    return _vm.onChangeFileUpload()
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c(
+                "label",
+                { staticClass: "custom-file-label", attrs: { for: "file" } },
+                [_vm._v("Choose files")]
+              )
+            ]),
+            _vm._v(" "),
+            !_vm.files || !_vm.files.length
+              ? _c("span", [_vm._v("No files selected")])
+              : _c(
+                  "ul",
+                  _vm._l(_vm.files, function(file) {
+                    return _c("li", { key: file.name }, [
+                      _vm._v(_vm._s(file.name))
+                    ])
+                  }),
+                  0
+                ),
             _vm._v(" "),
             _c(
               "a",

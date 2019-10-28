@@ -46,6 +46,15 @@
 				</select>
 				<span v-show="peopleSearchResults.length==0" class="ml-2">No members found</span>
 
+				<div class="custom-file col-3">
+					<input type="file" class="custom-file-input" id="file" ref="file" multiple  v-on:change="onChangeFileUpload()" />
+					<label class="custom-file-label" for="file">Choose files</label>
+				</div>
+
+				<span v-if="!files || !files.length">No files selected</span>
+				<ul v-else>
+					<li v-for="file in files" :key="file.name">{{file.name}}</li>
+				</ul>
 
 				<a class="btn btn-outline-dark ml-2" v-on:click="insert()">Add Rating</a>
 			</div>
@@ -122,7 +131,8 @@
 				newRating: {}, // the object to store the new rating details
 				peopleSearchResults: [],
 				searchText: '',
-				authorising_member_id: 0
+				authorising_member_id: null,
+				files: null
 			}
 		},
 		mounted() {
@@ -143,21 +153,45 @@
 			insert: function() {
 				var that = this;
 
-				this.newRating.member_id = this.memberId;
-				this.newRating.expires = this.presetExpires;
-				this.newRating.authorising_member_id = this.authorising_member_id;
 
-				if (this.newRating.authorising_member_id==null) {
+				var formData = new FormData();
+
+				if (this.newRating.rating_id) formData.append('rating_id', this.newRating.rating_id);
+				if (this.memberId) formData.append('member_id', this.memberId);
+				if (this.newRating.awarded) formData.append('awarded', this.newRating.awarded);
+				if (this.newRating.notes) formData.append('notes', this.newRating.notes);
+				if (this.presetExpires) formData.append('expires', this.presetExpires);
+				if (this.authorising_member_id) formData.append('authorising_member_id', this.authorising_member_id);
+				if (this.files) {
+					for (var i=0; i<this.files.length; i++) {
+						formData.append('files[' + i + ']', this.files[i]);
+					}
+				}
+				
+				console.log(formData);
+
+
+				// this.newRating.member_id = this.memberId;
+				// this.newRating.expires = this.presetExpires;
+				// this.newRating.authorising_member_id = this.authorising_member_id;
+
+				if (!formData.has('authorising_member_id')) {
 					messages.$emit('error', 'An authorising person is required');
 					return false;
 				}
-				if (this.newRating.rating_id==null) {
+				if (!formData.has('rating_id')) {
 					messages.$emit('error', 'A rating is required');
 					return false;
 				}
 
 				// create the new rating
-				window.axios.post('/api/v1/members/' + this.memberId + '/ratings', this.newRating).then(function (response) {
+				window.axios.post('/api/v1/members/' + this.memberId + '/ratings', 
+					formData,
+					{
+						headers: {
+							'Content-Type': 'multipart/form-data'
+						}
+					}).then(function (response) {
 					that.getMemberRatings();
 				});
 			},
@@ -200,8 +234,7 @@
 					}
 				});
 			}, 250),
-			getMemberRatings()
-			{
+			getMemberRatings() {
 				var that = this;
 				window.axios.get('/api/v1/members/' + this.memberId + '/ratings').then(function (response) {
 					that.memberRatings = response.data.data;
@@ -213,7 +246,10 @@
 						
 					}
 				});
-			}
+			},
+			onChangeFileUpload: function() {
+				this.files = this.$refs.file.files;
+			},
 		}
 	}
 </script>

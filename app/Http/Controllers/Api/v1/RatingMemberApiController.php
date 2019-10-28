@@ -10,6 +10,7 @@ use DB;
 use DateTime;
 use App\Models\Member;
 use App\Models\Rating;
+use App\Models\Upload;
 use App\Models\RatingMember;
 use Carbon\Carbon;
 
@@ -66,7 +67,10 @@ class RatingMemberApiController extends ApiController
 	 */
 	public function get(Request $request, $member_id, $rating_id)
 	{
-		$rating_member = RatingMember::where('member_id', $member_id)->where('rating_id', $rating_id)->with(['rating', 'member'])->first();
+		$rating_member = RatingMember::where('member_id', $member_id)
+			->where('rating_id', $rating_id)
+			->with(['rating', 'member', 'uploads'])
+			->first();
 
 		if (!$rating_member)
 		{
@@ -74,7 +78,6 @@ class RatingMemberApiController extends ApiController
 		}
 
 		return $this->success($rating_member);
-
 	}
 
 
@@ -87,6 +90,8 @@ class RatingMemberApiController extends ApiController
 	 */
 	public function store(Request $request)
 	{
+		$org = $request->get('_ORG');
+
 		$user =  Auth::user();
 		// check user has permission
 		if (Gate::denies('club-admin')) return $this->denied();
@@ -95,6 +100,9 @@ class RatingMemberApiController extends ApiController
 		if (!$request->input('member_id')) return $this->error("member_id is required");
 		if (!$request->input('awarded')) return $this->error("awarded date is required");
 		if (!$request->input('authorising_member_id')) return $this->error("authorising_member_id is required");
+
+		// handle uploading the files
+		$path = $org->folder;
 
 
 
@@ -110,14 +118,14 @@ class RatingMemberApiController extends ApiController
 			return $this->error('Member not found');
 		}
 
-		$item = new RatingMember;
-		$item->expires = null;
-		$item->revoked_by = null;
+		$ratingMember = new RatingMember;
+		$ratingMember->expires = null;
+		$ratingMember->revoked_by = null;
 
 		// calculate expires date from months given if given
 		if ($request->input('expires')) {
 			if (!is_numeric($request->input('expires'))) {
-				$item->expires=null;
+				$ratingMember->expires=null;
 			}
 			else
 			{
@@ -125,23 +133,58 @@ class RatingMemberApiController extends ApiController
 				//$expires_date = DateTime::createFromFormat('Y-m-d', $request->input('awarded'));
 				$expires_date->addMonths($request->input('expires'));
 				//$expires_date->modify('+' . $request->input('expires') . ' month');
-				$item->expires = $expires_date->toDateString();
+				$ratingMember->expires = $expires_date->toDateString();
 			}
-			
 		}
 
 		$awarded = new Carbon($request->input('awarded'));
 
-		$item->rating_id=$request->input('rating_id');
-		$item->member_id=$request->input('member_id');
-		$item->awarded= $awarded->toDateString();
-		$item->notes=$request->input('notes', '');
-		$item->authorising_member_id=$request->input('authorising_member_id');
-		$item->granted_by_user_id = $user->id;
+		$ratingMember->rating_id=$request->input('rating_id');
+		$ratingMember->member_id=$request->input('member_id');
+		$ratingMember->awarded= $awarded->toDateString();
+		$ratingMember->notes=$request->input('notes', '');
+		$ratingMember->authorising_member_id=$request->input('authorising_member_id');
+		$ratingMember->granted_by_user_id = $user->id;
 
-		if ($item->save())
+		// get rating details
+		$member = Member::findOrFail($ratingMember->member_id);
+		$rating = Rating::findOrFail($ratingMember->rating_id);
+
+		// save the item if all OK!
+		if ($ratingMember->save())
 		{
-			return $this->success($item);
+			// process any files that were uploaded
+			foreach ($request->allFiles('files') AS $files)
+			{
+				$counter = 0;
+				foreach ($files as $file)
+				{
+					$filename = simple_string(strtolower($member->last_name)) . '-' . 
+								simple_string(strtolower($rating->name)) . '-' .
+								$ratingMember->id . '-' . 
+								$counter . '.' . 
+								$file->getClientOriginalExtension();
+
+					// save the file
+					$path =  $file->storeAs($org->folder . 'ratings', $filename);
+
+					// put details into database
+					$upload = new Upload();
+					$upload->user_id = $user->id; // the user that uploaded the file, not the pilot
+					$upload->org_id = $org->id;
+					$upload->filename = $filename;
+					$upload->folder = $org->folder . 'ratings';
+					$upload->slug = simple_string(strtolower($filename));
+					$upload->type = $file->getClientOriginalExtension();
+					$upload->uploadable()->associate($ratingMember);
+					$upload->save();
+
+					$counter++;
+				}
+				
+			}
+
+			return $this->success($ratingMember);
 		}
 		return $this->error('Something went wrong sorry');
 	}

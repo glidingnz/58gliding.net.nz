@@ -17,6 +17,7 @@ class LoadOrg
 	 */
 	public function handle($request, Closure $next)
 	{
+		
 		$subdomains = explode(".",$_SERVER['HTTP_HOST']);
 		$subdomain = array_shift($subdomains);
 
