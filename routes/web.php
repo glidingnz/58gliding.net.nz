@@ -47,6 +47,8 @@ Route::resource('/contests', 'Apps\ContestsController');
 Route::resource('/contestclasses', 'Apps\ContestClassesController');
 Route::match(['post','patch'],'/contestentries/savedata', 'Apps\ContestEntriesController@savedata')->name('contestentries.savedata');
 Route::match(['post','get'],'/contestentries/loaddata', 'Apps\ContestEntriesController@loaddata')->name('contestentries.loaddata');
+Route::match(['post','patch'],'/contestentries/contestentries/savedata', 'Apps\ContestEntriesController@savedata')->name('contestentries.savedata');
+Route::match(['post','get'],'/contestentries/contestentries/loaddata', 'Apps\ContestEntriesController@loaddata')->name('contestentries.loaddata');
 Route::resource('/contestentries', 'Apps\ContestEntriesController');
 
 Route::get('/tracking', 'Apps\TrackingController@index');
