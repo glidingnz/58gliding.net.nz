@@ -7,60 +7,73 @@
 <template>
 	<div>
 		<div v-if="allowsEdit">
+
+			<button class="float-right btn btn-outline-dark" v-on:click="addRating = !addRating"><span class="fa fa-plus mr-2"></span>Add Rating</button>
+
+			<div v-show="addRating">
 			<h2>Add Rating</h2>
-			<div class="form form-inline form-group">
-				<select class="form-control mr-2" name="add_rating" id="add_rating" @change="selectRating($event.target.selectedIndex)" v-model="newRating.rating_id">
-					<option v-bind:value="null">Select rating...</option>
-					<option v-for="rating in ratings" v-bind:value="rating.id">{{rating.name}}</option>
-				</select>
-				Granted Date (YYYY-MM-DD):
-				<!-- <input type="text"  value="" v-model="newRating.awarded"> -->
-				<div class="ml-2 mr-2">
-					<v-date-picker v-model="newRating.awarded" :locale="{ id: 'nz', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }"></v-date-picker>
+				<div class="form form-inline form-group">
+					<select class="form-control mr-2" name="add_rating" id="add_rating" @change="selectRating($event.target.selectedIndex)" v-model="newRating.rating_id">
+						<option v-bind:value="null">Select rating...</option>
+						<option v-for="rating in ratings" v-bind:value="rating.id">{{rating.name}}</option>
+					</select>
+					Granted Date (YYYY-MM-DD):
+					<!-- <input type="text"  value="" v-model="newRating.awarded"> -->
+					<div class="ml-2 mr-2">
+						<v-date-picker v-model="newRating.awarded" :locale="{ id: 'nz', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }"></v-date-picker>
+					</div>
+					Expires:
+					<select class="form-control ml-2 " name="expires" id="expires" v-model="presetExpires">
+						<option value="never">Never</option>
+						<option value="12">1 Year</option>
+						<option value="24">2 Years</option>
+						<option value="60">5 Years</option>
+						<option value="custom">Custom:</option>
+					</select>
+					
+					<span v-show="presetExpires=='custom'">
+						<input  type="text" class="form-control" v-model="newRating.expires" size="5"> Months
+					</span>
+
 				</div>
-				Expires:
-				<select class="form-control ml-2 " name="expires" id="expires" v-model="presetExpires">
-					<option value="never">Never</option>
-					<option value="12">1 Year</option>
-					<option value="24">2 Years</option>
-					<option value="60">5 Years</option>
-					<option value="custom">Custom:</option>
-				</select>
+
+				<div class="form-group">
+					Notes <textarea class="form-control" name="notes" id="" cols="30" rows="2" v-model="newRating.notes"></textarea>
+				</div>
 				
-				<span v-show="presetExpires=='custom'">
-					<input  type="text" class="form-control" v-model="newRating.expires" size="5"> Months
-				</span>
-
-			</div>
-
-			<div class="form-group">
-				Notes <textarea class="form-control" name="notes" id="" cols="30" rows="2" v-model="newRating.notes"></textarea>
-			</div>
-			
-			<div class="form form-inline form-group">
-				Authorised by 
-				<input class="form-control ml-2" type="search" v-on:keyup="onSearch(searchText)" v-model="searchText" placeholder="Search...">
-				<select v-show="peopleSearchResults.length!=0" class="form-control ml-2" name="peopleSearch" id="peopleSearch" v-model="authorising_member_id">
-					<option value="0">Select...</option>
-					<option v-for="person in peopleSearchResults" v-bind:value="person.id">{{person.first_name}} {{person.last_name}} {{person.nzga_number}} {{person.club}} {{person.city}}</option>
-				</select>
-				<span v-show="peopleSearchResults.length==0" class="ml-2">No members found</span>
-
-				<div class="custom-file col-3">
-					<input type="file" class="custom-file-input" id="file" ref="file" multiple  v-on:change="onChangeFileUpload()" />
-					<label class="custom-file-label" for="file">Choose files</label>
+				<div class="form-inline form-group">
+					<div class="mr-4">
+						Authorised by 
+						<input class="form-control ml-2" type="search" v-on:keyup="onSearch(searchText)" v-model="searchText" placeholder="Search...">
+						<select v-show="peopleSearchResults.length!=0" class="form-control ml-2" name="peopleSearch" id="peopleSearch" v-model="authorising_member_id">
+							<option value="0">Select...</option>
+							<option v-for="person in peopleSearchResults" v-bind:value="person.id">{{person.first_name}} {{person.last_name}} {{person.nzga_number}} {{person.club}} {{person.city}}</option>
+						</select>
+						<span v-show="peopleSearchResults.length==0" class="ml-2">No members found</span>
+					</div>
+				</div>
+				
+				<div class="form-inline form-group">
+					<label class="mr-1">Upload Files:</label>
+					<div class="custom-file col-3 mr-2">
+						<input type="file" class="custom-file-input" id="file" ref="file" multiple  v-on:change="onChangeFileUpload()" />
+						<label class="custom-file-label" for="file">Choose files</label>
+					</div>
+					
+					<span v-if="!files || !files.length">No files selected</span>
+					<ul v-else>
+						<li v-for="file in files" :key="file.name">{{file.name}}</li>
+					</ul>
 				</div>
 
-				<span v-if="!files || !files.length">No files selected</span>
-				<ul v-else>
-					<li v-for="file in files" :key="file.name">{{file.name}}</li>
-				</ul>
+				<a class="btn btn-outline-dark ml-2" v-on:click="insert()">Add Rating 
+					<span class="fa fa-spinner fa-pulse" v-show="uploading"></span>
+				</a>
 
-				<a class="btn btn-outline-dark ml-2" v-on:click="insert()">Add Rating</a>
+				<hr>
 			</div>
 
 
-			<hr>
 		</div>
 
 		<h2 v-if="allowsEdit">Ratings</h2>
@@ -132,7 +145,9 @@
 				peopleSearchResults: [],
 				searchText: '',
 				authorising_member_id: null,
-				files: null
+				files: null,
+				addRating: false,
+				uploading: false
 			}
 		},
 		mounted() {
@@ -153,7 +168,6 @@
 			insert: function() {
 				var that = this;
 
-
 				var formData = new FormData();
 
 				if (this.newRating.rating_id) formData.append('rating_id', this.newRating.rating_id);
@@ -168,8 +182,6 @@
 					}
 				}
 				
-				console.log(formData);
-
 
 				// this.newRating.member_id = this.memberId;
 				// this.newRating.expires = this.presetExpires;
@@ -184,6 +196,8 @@
 					return false;
 				}
 
+				that.uploading = true;
+
 				// create the new rating
 				window.axios.post('/api/v1/members/' + this.memberId + '/ratings', 
 					formData,
@@ -192,8 +206,20 @@
 							'Content-Type': 'multipart/form-data'
 						}
 					}).then(function (response) {
-					that.getMemberRatings();
-				});
+						messages.$emit('success', 'Rating Added');
+						that.getMemberRatings();
+						that.uploading = false;
+						that.newRating = {};
+						that.files = null;
+						that.addRating = false;
+					})
+					.catch(function (error) {
+						// handle error
+						messages.$emit('error', 'Rating not added. Error given: ' + error.response.data.error);
+						that.uploading = false;
+						console.log(error);
+						console.log(error.response.data.error);
+					});
 			},
 			selectRating: function(ratingKey)
 			{

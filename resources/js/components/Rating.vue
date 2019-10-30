@@ -9,6 +9,47 @@
 		<div v-if="allowsEdit">
 		</div>
 
+		<table class="table" v-if="rating.rating">
+			<tr>
+				<td>Rating</td>
+				<td>{{rating.rating.name}}</td>
+			</tr>
+			<tr>
+				<td>Granted</td>
+				<td>{{formatDate(rating.awarded)}}</td>
+			</tr>
+			<tr>
+				<td>Expires</td>
+				<td>
+					<span v-show="rating.expires!='0000-00-00' && rating.expires!=null">
+						<span class="fa fa-exclamation-triangle" v-if="ratingNearlyExpired(rating.expires)"></span>
+							<span class="fa fa-exclamation-circle" v-if="ratingExpired(rating.expires)"></span>
+						{{rating.timeToExpire}} ({{formatDate(rating.expires)}})
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<td>Authorised By</td>
+				<td><a v-bind:href="'/members/' + rating.authorising_member_id + '/'">{{rating.auth_firstname}} {{rating.auth_lastname}} {{rating.nzga_number}}</a></td>
+			</tr>
+			<tr>
+				<td>Added By</td>
+				<td>{{rating.first_name}} {{rating.last_name}}</td>
+			</tr>
+			<tr>
+				<td>Notes</td>
+				<td>{{rating.notes}}</td>
+			</tr>
+			<tr>
+				<td>Files</td>
+				<td>
+					<ul>
+						<li v-for="upload in rating.uploads"><a :href="'/storage' + upload.folder + '/' + upload.filename">{{upload.filename}} asdf</a></li>
+					</ul>
+				</td>
+			</tr>
+		</table>
+
 		<div v-if="loading">
 			Loading...
 		</div>
@@ -28,7 +69,7 @@
 		props: ['ratingId', 'memberId', 'allowsEdit'],
 		data() {
 			return {
-				rating: [],
+				rating: {},
 				loaded: false,
 				loading: false
 			}
