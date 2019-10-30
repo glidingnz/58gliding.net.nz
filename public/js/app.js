@@ -51883,10 +51883,7 @@ var render = function() {
                     _c(
                       "a",
                       {
-                        attrs: {
-                          href:
-                            "/storage" + upload.folder + "/" + upload.filename
-                        }
+                        attrs: { href: upload.folder + "/" + upload.filename }
                       },
                       [_vm._v(_vm._s(upload.filename) + " asdf")]
                     )

@@ -22,6 +22,13 @@ class Org extends Model
 		return $path;
 	}
 
+	public function getFilesPathAttribute()
+	{
+		$path = '/storage/' . $this->slug . '/';
+		$this->create_folder($path);
+		return $path;
+	}
+
 	public function create_folder($path)
 	{
 		if(!File::exists($path)) {

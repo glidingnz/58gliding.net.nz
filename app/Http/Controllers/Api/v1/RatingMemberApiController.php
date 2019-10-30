@@ -23,6 +23,9 @@ class RatingMemberApiController extends ApiController
 	 */
 	public function index(Request $request, $member_id)
 	{
+
+		if (Gate::denies('club-member')) return $this->denied();
+
 		// check the member exists first
 		if (!$member = Member::where('id', $member_id)->first())
 		{
@@ -104,8 +107,6 @@ class RatingMemberApiController extends ApiController
 		// handle uploading the files
 		$path = $org->folder;
 
-
-
 		// fetch the rating
 		if (!$rating = Rating::where('id', $request->input('rating_id'))->first())
 		{
@@ -173,7 +174,7 @@ class RatingMemberApiController extends ApiController
 					$upload->user_id = $user->id; // the user that uploaded the file, not the pilot
 					$upload->org_id = $org->id;
 					$upload->filename = $filename;
-					$upload->folder = $org->folder . 'ratings';
+					$upload->folder = $org->files_path . 'ratings';
 					$upload->slug = simple_string(strtolower($filename));
 					$upload->type = $file->getClientOriginalExtension();
 					$upload->uploadable()->associate($ratingMember);
