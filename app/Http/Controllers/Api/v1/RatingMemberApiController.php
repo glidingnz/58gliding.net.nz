@@ -147,47 +147,54 @@ class RatingMemberApiController extends ApiController
 		$ratingMember->authorising_member_id=$request->input('authorising_member_id');
 		$ratingMember->granted_by_user_id = $user->id;
 
-		// get rating details
-		$member = Member::findOrFail($ratingMember->member_id);
-		$rating = Rating::findOrFail($ratingMember->rating_id);
 
 		// save the item if all OK!
 		if ($ratingMember->save())
 		{
-			// process any files that were uploaded
-			foreach ($request->allFiles('files') AS $files)
-			{
-				$counter = 0;
-				foreach ($files as $file)
-				{
-					$filename = simple_string(strtolower($member->last_name)) . '-' . 
-								simple_string(strtolower($rating->name)) . '-' .
-								$ratingMember->id . '-' . 
-								$counter . '.' . 
-								$file->getClientOriginalExtension();
-
-					// save the file
-					$path =  $file->storeAs($org->folder . 'ratings', $filename);
-
-					// put details into database
-					$upload = new Upload();
-					$upload->user_id = $user->id; // the user that uploaded the file, not the pilot
-					$upload->org_id = $org->id;
-					$upload->filename = $filename;
-					$upload->folder = $org->files_path . 'ratings';
-					$upload->slug = simple_string(strtolower($filename));
-					$upload->type = $file->getClientOriginalExtension();
-					$upload->uploadable()->associate($ratingMember);
-					$upload->save();
-
-					$counter++;
-				}
-				
-			}
-
+			$this->upload_files($request, $ratingMember, $org);
 			return $this->success($ratingMember);
 		}
 		return $this->error('Something went wrong sorry');
+	}
+
+
+	public function upload_files($request, $ratingMember, $org)
+	{
+		// get rating details
+		$member = Member::findOrFail($ratingMember->member_id);
+		$rating = Rating::findOrFail($ratingMember->rating_id);
+		$user =  Auth::user();
+
+		// process any files that were uploaded
+		foreach ($request->allFiles('files') AS $files)
+		{
+			$counter = 0;
+			foreach ($files as $file)
+			{
+				$filename = simple_string(strtolower($member->last_name)) . '-' . 
+							simple_string(strtolower($rating->name)) . '-' .
+							$ratingMember->id . '-' . 
+							$counter . '.' . 
+							$file->getClientOriginalExtension();
+
+				// save the file
+				$path =  $file->storeAs($org->folder . 'ratings', $filename);
+
+				// put details into database
+				$upload = new Upload();
+				$upload->user_id = $user->id; // the user that uploaded the file, not the pilot
+				$upload->org_id = $org->id;
+				$upload->filename = $filename;
+				$upload->folder = $org->files_path . 'ratings';
+				$upload->slug = simple_string(strtolower($filename));
+				$upload->type = $file->getClientOriginalExtension();
+				$upload->uploadable()->associate($ratingMember);
+				$upload->save();
+
+				$counter++;
+			}
+			
+		}
 	}
 
 

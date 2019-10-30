@@ -44,7 +44,7 @@
 				<td>Files</td>
 				<td>
 					<ul>
-						<li v-for="upload in rating.uploads"><a :href="upload.folder + '/' + upload.filename">{{upload.filename}} asdf</a></li>
+						<li v-for="upload in rating.uploads"><a :href="upload.folder + '/' + upload.filename">{{upload.filename}}</a></li>
 					</ul>
 				</td>
 			</tr>

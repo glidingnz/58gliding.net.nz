@@ -51885,7 +51885,7 @@ var render = function() {
                       {
                         attrs: { href: upload.folder + "/" + upload.filename }
                       },
-                      [_vm._v(_vm._s(upload.filename) + " asdf")]
+                      [_vm._v(_vm._s(upload.filename))]
                     )
                   ])
                 }),
@@ -52291,9 +52291,17 @@ var render = function() {
                   ? _c("span", [_vm._v("No files selected")])
                   : _c(
                       "ul",
-                      _vm._l(_vm.files, function(file) {
+                      _vm._l(_vm.files, function(file, key) {
                         return _c("li", { key: file.name }, [
-                          _vm._v(_vm._s(file.name))
+                          _vm._v(_vm._s(file.name) + " "),
+                          _c("span", {
+                            staticClass: "fa fa-times",
+                            on: {
+                              click: function($event) {
+                                return _vm.deleteFile(key)
+                              }
+                            }
+                          })
                         ])
                       }),
                       0
