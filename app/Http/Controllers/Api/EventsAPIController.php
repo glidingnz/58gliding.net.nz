@@ -63,7 +63,7 @@ class EventsAPIController extends AppBaseController
 			switch ($request->input('timerange'))
 			{
 				case 'future':
-					$query->where('start_date', '>=', $todaysDate->format('Y-m-d'));
+					$query->where('end_date', '>=', $todaysDate->format('Y-m-d'));
 					break;
 				case 'past':
 					$query->where('end_date', '<', $todaysDate->format('Y-m-d'));
