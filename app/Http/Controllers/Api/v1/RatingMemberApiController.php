@@ -198,6 +198,9 @@ class RatingMemberApiController extends ApiController
 	}
 
 
+
+
+
 	/**
 	 * Update the specified resource in storage.
 	 *
@@ -220,6 +223,21 @@ class RatingMemberApiController extends ApiController
 	{
 		//
 	}
+
+
+	public function destroyFile(Request $request, $member_id, $rating_id, $upload_id)
+	{
+		if (Gate::denies('club-admin')) return $this->denied();
+
+		$upload = Upload::findOrFail($upload_id);
+		if ($upload->delete())
+		{
+			return $this->success('Deleted');
+		}
+		return $this->error(); 
+	}
+
+
 
 
 	public function ratingsReport(Request $request)

@@ -125,157 +125,152 @@
 
 
 <script>
-	import common from '../mixins.js';
-	import moment from 'moment';
-	import VCalendar from 'v-calendar';
-	Vue.prototype.$moment = moment;
+import common from '../mixins.js';
+import moment from 'moment';
+import VCalendar from 'v-calendar';
+Vue.prototype.$moment = moment;
 
-	export default {
-		mixins: [common],
-		props: ['memberId', 'allowsEdit'],
-		data() {
-			return {
-				ratings: [],
-				memberRatings: [],
-				loaded: false,
-				loading: false,
-				presetExpires: 'never',
-				test: '',
-				newRating: {}, // the object to store the new rating details
-				peopleSearchResults: [],
-				searchText: '',
-				authorising_member_id: null,
-				files: null,
-				addRating: false,
-				uploading: false
+export default {
+	mixins: [common],
+	props: ['memberId', 'allowsEdit'],
+	data() {
+		return {
+			ratings: [],
+			memberRatings: [],
+			loaded: false,
+			loading: false,
+			presetExpires: 'never',
+			test: '',
+			newRating: {}, // the object to store the new rating details
+			peopleSearchResults: [],
+			searchText: '',
+			authorising_member_id: null,
+			files: null,
+			addRating: false,
+			uploading: false
+		}
+	},
+	mounted() {
+		this.newRating.awarded = new Date();
+		this.load();
+	},
+	methods: {
+		load: function() {
+			var that = this;
+			window.axios.get('/api/v1/ratings').then(function (response) {
+				that.loaded = true;
+				that.ratings = response.data.data;
+				that.newRating.rating_id = null;
+			});
+
+			this.getMemberRatings();
+		},
+		insert: function() {
+			var that = this;
+
+			var formData = new FormData();
+
+			if (this.newRating.rating_id) formData.append('rating_id', this.newRating.rating_id);
+			if (this.memberId) formData.append('member_id', this.memberId);
+			if (this.newRating.awarded) formData.append('awarded', this.newRating.awarded);
+			if (this.newRating.notes) formData.append('notes', this.newRating.notes);
+			if (this.presetExpires) formData.append('expires', this.presetExpires);
+			if (this.authorising_member_id) formData.append('authorising_member_id', this.authorising_member_id);
+			if (this.files) {
+				for (var i=0; i<this.files.length; i++) {
+					formData.append('files[' + i + ']', this.files[i]);
+				}
 			}
-		},
-		mounted() {
-			this.newRating.awarded = new Date();
-			this.load();
-		},
-		methods: {
-			load: function() {
-				var that = this;
-				window.axios.get('/api/v1/ratings').then(function (response) {
-					that.loaded = true;
-					that.ratings = response.data.data;
-					that.newRating.rating_id = null;
-				});
 
-				this.getMemberRatings();
-			},
-			insert: function() {
-				var that = this;
+			if (!formData.has('authorising_member_id')) {
+				messages.$emit('error', 'An authorising person is required');
+				return false;
+			}
+			if (!formData.has('rating_id')) {
+				messages.$emit('error', 'A rating is required');
+				return false;
+			}
 
-				var formData = new FormData();
+			that.uploading = true;
 
-				if (this.newRating.rating_id) formData.append('rating_id', this.newRating.rating_id);
-				if (this.memberId) formData.append('member_id', this.memberId);
-				if (this.newRating.awarded) formData.append('awarded', this.newRating.awarded);
-				if (this.newRating.notes) formData.append('notes', this.newRating.notes);
-				if (this.presetExpires) formData.append('expires', this.presetExpires);
-				if (this.authorising_member_id) formData.append('authorising_member_id', this.authorising_member_id);
-				if (this.files) {
-					for (var i=0; i<this.files.length; i++) {
-						formData.append('files[' + i + ']', this.files[i]);
-					}
-				}
-				
-
-				// this.newRating.member_id = this.memberId;
-				// this.newRating.expires = this.presetExpires;
-				// this.newRating.authorising_member_id = this.authorising_member_id;
-
-				if (!formData.has('authorising_member_id')) {
-					messages.$emit('error', 'An authorising person is required');
-					return false;
-				}
-				if (!formData.has('rating_id')) {
-					messages.$emit('error', 'A rating is required');
-					return false;
-				}
-
-				that.uploading = true;
-
-				// create the new rating
-				window.axios.post('/api/v1/members/' + this.memberId + '/ratings', 
-					formData,
-					{
-						headers: {
-							'Content-Type': 'multipart/form-data'
-						}
-					}).then(function (response) {
-						messages.$emit('success', 'Rating Added');
-						that.getMemberRatings();
-						that.uploading = false;
-						that.newRating = {};
-						that.files = null;
-						that.addRating = false;
-					})
-					.catch(function (error) {
-						// handle error
-						messages.$emit('error', 'Rating not added. Error given: ' + error.response.data.error);
-						that.uploading = false;
-						console.log(error);
-						console.log(error.response.data.error);
-					});
-			},
-			selectRating: function(ratingKey)
-			{
-				if (ratingKey==0) return false;
-
-				//this.newRating.expires = this.ratings[ratingKey].default_expires;
-				Vue.set(this.newRating, 'expires', this.ratings[ratingKey-1].default_expires);
-
-				switch (this.ratings[ratingKey-1].default_expires)
+			// create the new rating
+			window.axios.post('/api/v1/members/' + this.memberId + '/ratings', 
+				formData,
 				{
-					case 12:
-					case 24:
-					case 60:
-						this.presetExpires = this.ratings[ratingKey-1].default_expires;
-						break;
-					case null:
-						this.presetExpires = 'never';
-						break;
-				}
-			},
-			onSearch(search)
+					headers: {
+						'Content-Type': 'multipart/form-data'
+					}
+				}).then(function (response) {
+					messages.$emit('success', 'Rating Added');
+					that.getMemberRatings();
+					that.uploading = false;
+					that.newRating = {};
+					that.files = null;
+					that.addRating = false;
+				})
+				.catch(function (error) {
+					// handle error
+					messages.$emit('error', 'Rating not added. Error given: ' + error.response.data.error);
+					that.uploading = false;
+					console.log(error);
+					console.log(error.response.data.error);
+				});
+		},
+		selectRating: function(ratingKey)
+		{
+			if (ratingKey==0) return false;
+
+			//this.newRating.expires = this.ratings[ratingKey].default_expires;
+			Vue.set(this.newRating, 'expires', this.ratings[ratingKey-1].default_expires);
+
+			switch (this.ratings[ratingKey-1].default_expires)
 			{
-				if (search=='') {
-					this.peopleSearchResults=[];
-					return true;
-				}
-				this.getPeople(search, this);
-			},
-			getPeople: _.debounce((search, vm) => {
-				window.axios.get('/api/v1/members', {params: {"search":search}}).then(function (response) {
-					vm.peopleSearchResults = response.data.data;
-
-					// select the first item in the list if possible
-					if (response.data.data.length==0) {
-						vm.authorising_member_id = null;
-					} else {
-						vm.authorising_member_id = response.data.data[0].id;
-					}
-				});
-			}, 250),
-			getMemberRatings() {
-				var that = this;
-				window.axios.get('/api/v1/members/' + this.memberId + '/ratings').then(function (response) {
-					that.memberRatings = response.data.data;
-
-					//var timeagoInstance = timeago();
-					for (var i=0; i<that.memberRatings.length; i++) {
-						//that.memberRatings[i].timeToExpire = timeagoInstance.format(that.memberRatings[i].expires);
-						that.memberRatings[i].timeToExpire = moment(that.memberRatings[i].expires).fromNow();
-						
-					}
-				});
-			},
-			onChangeFileUpload: function() {
-				this.files = this.$refs.file.files;
+				case 12:
+				case 24:
+				case 60:
+					this.presetExpires = this.ratings[ratingKey-1].default_expires;
+					break;
+				case null:
+					this.presetExpires = 'never';
+					break;
 			}
+		},
+		onSearch(search)
+		{
+			if (search=='') {
+				this.peopleSearchResults=[];
+				return true;
+			}
+			this.getPeople(search, this);
+		},
+		getPeople: _.debounce((search, vm) => {
+			window.axios.get('/api/v1/members', {params: {"search":search}}).then(function (response) {
+				vm.peopleSearchResults = response.data.data;
+
+				// select the first item in the list if possible
+				if (response.data.data.length==0) {
+					vm.authorising_member_id = null;
+				} else {
+					vm.authorising_member_id = response.data.data[0].id;
+				}
+			});
+		}, 250),
+		getMemberRatings() {
+			var that = this;
+			window.axios.get('/api/v1/members/' + this.memberId + '/ratings').then(function (response) {
+				that.memberRatings = response.data.data;
+
+				//var timeagoInstance = timeago();
+				for (var i=0; i<that.memberRatings.length; i++) {
+					//that.memberRatings[i].timeToExpire = timeagoInstance.format(that.memberRatings[i].expires);
+					that.memberRatings[i].timeToExpire = moment(that.memberRatings[i].expires).fromNow();
+					
+				}
+			});
+		},
+		onChangeFileUpload: function() {
+			this.files = this.$refs.file.files;
 		}
 	}
+}
 </script>

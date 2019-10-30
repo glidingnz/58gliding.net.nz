@@ -43,9 +43,32 @@
 			<tr>
 				<td>Files</td>
 				<td>
-					<ul>
-						<li v-for="upload in rating.uploads"><a :href="upload.folder + '/' + upload.filename">{{upload.filename}}</a></li>
+
+					<ul class="list-unstyled">
+						<li v-for="upload in rating.uploads">
+							<a :href="upload.folder + '/' + upload.filename"><span class="fa fa-file mr-2"></span>{{upload.filename}}</a>
+							<button class="ml-4 btn btn-outline-dark btn-xs" v-on:click="deleteFile(upload)" v-if="allowsEdit">Delete</button>
+						</li>
 					</ul>
+
+					
+					<div class="form-inline form-group" v-if="allowsEdit">
+						<label class="mr-1">Upload Files:</label>
+						<div class="custom-file col-3 mr-2">
+							<input type="file" class="custom-file-input" id="file" ref="file" multiple  v-on:change="onChangeFileUpload()" />
+							<label class="custom-file-label" for="file">Choose files</label>
+						</div>
+						
+						<span v-if="!files || !files.length">No files selected</span>
+						<ul v-else>
+							<li v-for="(file, key) in files" :key="file.name">{{file.name}} <span class="fa fa-times" v-on:click="deleteFile(key)"></span></li>
+						</ul>
+					</div>
+
+					<a class="btn btn-outline-dark ml-2" v-on:click="insert()">Add Rating 
+						<span class="fa fa-spinner fa-pulse" v-show="uploading"></span>
+					</a>
+
 				</td>
 			</tr>
 		</table>
@@ -70,8 +93,9 @@
 		data() {
 			return {
 				rating: {},
-				loaded: false,
-				loading: false
+				loading: false,
+				files: null,
+				uploading: false
 			}
 		},
 		mounted() {
@@ -80,11 +104,50 @@
 		methods: {
 			load: function() {
 				var that = this;
+				that.loading = true;
 				window.axios.get('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingId).then(function (response) {
-					that.loaded = true;
+					that.loading = false;
 					that.rating = response.data.data;
+					console.log(that.rating);
 				});
-			}
+			},
+			deleteFile: function(upload) {
+				var that = this;
+				window.axios.delete('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingId + '/upload/' + upload.id).then(function (response) {
+					that.load();
+				});
+			},
+			uploadFiles: function() {
+				var that = this;
+
+				var formData = new FormData();
+
+				if (this.files) {
+					for (var i=0; i<this.files.length; i++) {
+						formData.append('files[' + i + ']', this.files[i]);
+					}
+				}
+
+				that.uploading = true;
+
+				// create the new rating
+				window.axios.post('/api/v1/members/' + this.memberId + '/ratings', 
+					formData,
+					{
+						headers: {
+							'Content-Type': 'multipart/form-data'
+						}
+					}).then(function (response) {
+						messages.$emit('success', 'Files Uploaded');
+						that.files = null;
+					})
+					.catch(function (error) {
+						// handle error
+						messages.$emit('error', 'Files not uploaded. Error given: ' + error.response.data.error);
+						that.uploading = false;
+					});
+			},
+
 		}
 	}
 </script>

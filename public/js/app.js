@@ -3795,6 +3795,29 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3805,8 +3828,9 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
   data: function data() {
     return {
       rating: {},
-      loaded: false,
-      loading: false
+      loading: false,
+      files: null,
+      uploading: false
     };
   },
   mounted: function mounted() {
@@ -3815,9 +3839,42 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
   methods: {
     load: function load() {
       var that = this;
+      that.loading = true;
       window.axios.get('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingId).then(function (response) {
-        that.loaded = true;
+        that.loading = false;
         that.rating = response.data.data;
+        console.log(that.rating);
+      });
+    },
+    deleteFile: function deleteFile(upload) {
+      var that = this;
+      window.axios["delete"]('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingId + '/upload/' + upload.id).then(function (response) {
+        that.load();
+      });
+    },
+    uploadFiles: function uploadFiles() {
+      var that = this;
+      var formData = new FormData();
+
+      if (this.files) {
+        for (var i = 0; i < this.files.length; i++) {
+          formData.append('files[' + i + ']', this.files[i]);
+        }
+      }
+
+      that.uploading = true; // create the new rating
+
+      window.axios.post('/api/v1/members/' + this.memberId + '/ratings', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function (response) {
+        messages.$emit('success', 'Files Uploaded');
+        that.files = null;
+      })["catch"](function (error) {
+        // handle error
+        messages.$emit('error', 'Files not uploaded. Error given: ' + error.response.data.error);
+        that.uploading = false;
       });
     }
   }
@@ -4019,10 +4076,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         for (var i = 0; i < this.files.length; i++) {
           formData.append('files[' + i + ']', this.files[i]);
         }
-      } // this.newRating.member_id = this.memberId;
-      // this.newRating.expires = this.presetExpires;
-      // this.newRating.authorising_member_id = this.authorising_member_id;
-
+      }
 
       if (!formData.has('authorising_member_id')) {
         messages.$emit('error', 'An authorising person is required');
@@ -51878,6 +51932,7 @@ var render = function() {
             _c("td", [
               _c(
                 "ul",
+                { staticClass: "list-unstyled" },
                 _vm._l(_vm.rating.uploads, function(upload) {
                   return _c("li", [
                     _c(
@@ -51885,11 +51940,105 @@ var render = function() {
                       {
                         attrs: { href: upload.folder + "/" + upload.filename }
                       },
-                      [_vm._v(_vm._s(upload.filename))]
-                    )
+                      [
+                        _c("span", { staticClass: "fa fa-file mr-2" }),
+                        _vm._v(_vm._s(upload.filename))
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _vm.allowsEdit
+                      ? _c(
+                          "button",
+                          {
+                            staticClass: "ml-4 btn btn-outline-dark btn-xs",
+                            on: {
+                              click: function($event) {
+                                return _vm.deleteFile(upload)
+                              }
+                            }
+                          },
+                          [_vm._v("Delete")]
+                        )
+                      : _vm._e()
                   ])
                 }),
                 0
+              ),
+              _vm._v(" "),
+              _vm.allowsEdit
+                ? _c("div", { staticClass: "form-inline form-group" }, [
+                    _c("label", { staticClass: "mr-1" }, [
+                      _vm._v("Upload Files:")
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "custom-file col-3 mr-2" }, [
+                      _c("input", {
+                        ref: "file",
+                        staticClass: "custom-file-input",
+                        attrs: { type: "file", id: "file", multiple: "" },
+                        on: {
+                          change: function($event) {
+                            return _vm.onChangeFileUpload()
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "label",
+                        {
+                          staticClass: "custom-file-label",
+                          attrs: { for: "file" }
+                        },
+                        [_vm._v("Choose files")]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    !_vm.files || !_vm.files.length
+                      ? _c("span", [_vm._v("No files selected")])
+                      : _c(
+                          "ul",
+                          _vm._l(_vm.files, function(file, key) {
+                            return _c("li", { key: file.name }, [
+                              _vm._v(_vm._s(file.name) + " "),
+                              _c("span", {
+                                staticClass: "fa fa-times",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.deleteFile(key)
+                                  }
+                                }
+                              })
+                            ])
+                          }),
+                          0
+                        )
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  staticClass: "btn btn-outline-dark ml-2",
+                  on: {
+                    click: function($event) {
+                      return _vm.insert()
+                    }
+                  }
+                },
+                [
+                  _vm._v("Add Rating \n\t\t\t\t\t"),
+                  _c("span", {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.uploading,
+                        expression: "uploading"
+                      }
+                    ],
+                    staticClass: "fa fa-spinner fa-pulse"
+                  })
+                ]
               )
             ])
           ])
