@@ -3754,6 +3754,70 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3763,9 +3827,10 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
   props: ['ratingId', 'memberId', 'allowsEdit'],
   data: function data() {
     return {
-      rating: [],
-      loaded: false,
-      loading: false
+      rating: {},
+      loading: false,
+      files: null,
+      uploading: false
     };
   },
   mounted: function mounted() {
@@ -3774,10 +3839,49 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
   methods: {
     load: function load() {
       var that = this;
+      that.loading = true;
       window.axios.get('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingId).then(function (response) {
-        that.loaded = true;
+        that.loading = false;
         that.rating = response.data.data;
+        that.rating.timeToExpire = moment__WEBPACK_IMPORTED_MODULE_1___default()(that.rating.expires).fromNow();
+        console.log(that.rating);
       });
+    },
+    deleteFile: function deleteFile(upload) {
+      var that = this;
+      window.axios["delete"]('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingId + '/upload/' + upload.id).then(function (response) {
+        that.load();
+      });
+    },
+    uploadFiles: function uploadFiles() {
+      var that = this;
+      var formData = new FormData();
+
+      if (this.files) {
+        for (var i = 0; i < this.files.length; i++) {
+          formData.append('files[' + i + ']', this.files[i]);
+        }
+      }
+
+      that.uploading = true; // create the new rating
+
+      window.axios.post('/api/v1/rating-member/' + that.rating.id + '/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function (response) {
+        messages.$emit('success', 'Files Uploaded');
+        that.files = null;
+        that.load();
+        that.uploading = false;
+      })["catch"](function (error) {
+        // handle error
+        messages.$emit('error', 'Files not uploaded. Error given: ' + error.response.data.error);
+        that.uploading = false;
+      });
+    },
+    onChangeFileUpload: function onChangeFileUpload() {
+      this.files = this.$refs.file.files;
     }
   }
 });
@@ -3903,6 +4007,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3922,7 +4048,10 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       // the object to store the new rating details
       peopleSearchResults: [],
       searchText: '',
-      authorising_member_id: 0
+      authorising_member_id: null,
+      files: null,
+      addRating: false,
+      uploading: false
     };
   },
   mounted: function mounted() {
@@ -3941,23 +4070,49 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     },
     insert: function insert() {
       var that = this;
-      this.newRating.member_id = this.memberId;
-      this.newRating.expires = this.presetExpires;
-      this.newRating.authorising_member_id = this.authorising_member_id;
+      var formData = new FormData();
+      if (this.newRating.rating_id) formData.append('rating_id', this.newRating.rating_id);
+      if (this.memberId) formData.append('member_id', this.memberId);
+      if (this.newRating.awarded) formData.append('awarded', this.newRating.awarded);
+      if (this.newRating.notes) formData.append('notes', this.newRating.notes);
+      if (this.presetExpires) formData.append('expires', this.presetExpires);
+      if (this.authorising_member_id) formData.append('authorising_member_id', this.authorising_member_id);
 
-      if (this.newRating.authorising_member_id == null) {
+      if (this.files) {
+        for (var i = 0; i < this.files.length; i++) {
+          formData.append('files[' + i + ']', this.files[i]);
+        }
+      }
+
+      if (!formData.has('authorising_member_id')) {
         messages.$emit('error', 'An authorising person is required');
         return false;
       }
 
-      if (this.newRating.rating_id == null) {
+      if (!formData.has('rating_id')) {
         messages.$emit('error', 'A rating is required');
         return false;
-      } // create the new rating
+      }
 
+      that.uploading = true; // create the new rating
 
-      window.axios.post('/api/v1/members/' + this.memberId + '/ratings', this.newRating).then(function (response) {
+      window.axios.post('/api/v1/members/' + this.memberId + '/ratings', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function (response) {
+        messages.$emit('success', 'Rating Added');
         that.getMemberRatings();
+        that.uploading = false;
+        that.newRating = {};
+        that.files = null;
+        that.addRating = false;
+      })["catch"](function (error) {
+        // handle error
+        messages.$emit('error', 'Rating not added. Error given: ' + error.response.data.error);
+        that.uploading = false;
+        console.log(error);
+        console.log(error.response.data.error);
       });
     },
     selectRating: function selectRating(ratingKey) {
@@ -4003,13 +4158,15 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     getMemberRatings: function getMemberRatings() {
       var that = this;
       window.axios.get('/api/v1/members/' + this.memberId + '/ratings').then(function (response) {
-        that.memberRatings = response.data.data; //var timeagoInstance = timeago();
+        that.memberRatings = response.data.data;
 
         for (var i = 0; i < that.memberRatings.length; i++) {
-          //that.memberRatings[i].timeToExpire = timeagoInstance.format(that.memberRatings[i].expires);
           that.memberRatings[i].timeToExpire = moment__WEBPACK_IMPORTED_MODULE_1___default()(that.memberRatings[i].expires).fromNow();
         }
       });
+    },
+    onChangeFileUpload: function onChangeFileUpload() {
+      this.files = this.$refs.file.files;
     }
   }
 });
@@ -7209,8 +7366,6 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../mixins.js */ "./resources/js/mixins.js");
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
-//
-//
 //
 //
 //
@@ -51681,6 +51836,212 @@ var render = function() {
   return _c("div", [
     _vm.allowsEdit ? _c("div") : _vm._e(),
     _vm._v(" "),
+    _vm.rating.rating
+      ? _c("table", { staticClass: "table" }, [
+          _c("tr", [
+            _c("td", [_vm._v("Rating")]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.rating.rating.name))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", [_vm._v("Granted")]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.formatDate(_vm.rating.awarded)))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", [_vm._v("Expires")]),
+            _vm._v(" "),
+            _c("td", [
+              _c(
+                "span",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value:
+                        _vm.rating.expires != "0000-00-00" &&
+                        _vm.rating.expires != null,
+                      expression:
+                        "rating.expires!='0000-00-00' && rating.expires!=null"
+                    }
+                  ]
+                },
+                [
+                  _vm.ratingNearlyExpired(_vm.rating.expires)
+                    ? _c("span", { staticClass: "fa fa-exclamation-triangle" })
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.ratingExpired(_vm.rating.expires)
+                    ? _c("span", { staticClass: "fa fa-exclamation-circle" })
+                    : _vm._e(),
+                  _vm._v(
+                    "\n\t\t\t\t\t" +
+                      _vm._s(_vm.rating.timeToExpire) +
+                      " (" +
+                      _vm._s(_vm.formatDate(_vm.rating.expires)) +
+                      ")\n\t\t\t\t"
+                  )
+                ]
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", [_vm._v("Authorised By")]),
+            _vm._v(" "),
+            _c("td", [
+              _c(
+                "a",
+                {
+                  attrs: {
+                    href: "/members/" + _vm.rating.authorising_member_id + "/"
+                  }
+                },
+                [
+                  _vm._v(
+                    _vm._s(_vm.rating.auth_firstname) +
+                      " " +
+                      _vm._s(_vm.rating.auth_lastname) +
+                      " " +
+                      _vm._s(_vm.rating.nzga_number)
+                  )
+                ]
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", [_vm._v("Added By")]),
+            _vm._v(" "),
+            _c("td", [
+              _vm._v(
+                _vm._s(_vm.rating.added_firstname) +
+                  " " +
+                  _vm._s(_vm.rating.added_lastname)
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", [_vm._v("Notes")]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.rating.notes))])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", [_vm._v("Files")]),
+            _vm._v(" "),
+            _c("td", [
+              _c(
+                "ul",
+                { staticClass: "list-unstyled" },
+                _vm._l(_vm.rating.uploads, function(upload) {
+                  return _c("li", [
+                    _c(
+                      "a",
+                      {
+                        attrs: { href: upload.folder + "/" + upload.filename }
+                      },
+                      [
+                        _c("span", { staticClass: "fa fa-file mr-2" }),
+                        _vm._v(_vm._s(upload.filename))
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _vm.allowsEdit
+                      ? _c(
+                          "button",
+                          {
+                            staticClass: "ml-4 btn btn-outline-dark btn-xs",
+                            on: {
+                              click: function($event) {
+                                return _vm.deleteFile(upload)
+                              }
+                            }
+                          },
+                          [_vm._v("Delete")]
+                        )
+                      : _vm._e()
+                  ])
+                }),
+                0
+              ),
+              _vm._v(" "),
+              _vm.allowsEdit
+                ? _c("div", { staticClass: "form-inline form-group" }, [
+                    _c("label", { staticClass: "mr-1" }, [
+                      _vm._v("Upload Files:")
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "custom-file col-3 mr-2" }, [
+                      _c("input", {
+                        ref: "file",
+                        staticClass: "custom-file-input",
+                        attrs: { type: "file", id: "file", multiple: "" },
+                        on: {
+                          change: function($event) {
+                            return _vm.onChangeFileUpload()
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "label",
+                        {
+                          staticClass: "custom-file-label",
+                          attrs: { for: "file" }
+                        },
+                        [_vm._v("Choose files")]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    !_vm.files || !_vm.files.length
+                      ? _c("span", [_vm._v("No files selected")])
+                      : _c(
+                          "ul",
+                          _vm._l(_vm.files, function(file, key) {
+                            return _c("li", { key: file.name }, [
+                              _vm._v(_vm._s(file.name))
+                            ])
+                          }),
+                          0
+                        )
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  staticClass: "btn btn-outline-dark ml-2",
+                  on: {
+                    click: function($event) {
+                      return _vm.uploadFiles()
+                    }
+                  }
+                },
+                [
+                  _vm._v("Upload Files \n\t\t\t\t\t"),
+                  _c("span", {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.uploading,
+                        expression: "uploading"
+                      }
+                    ],
+                    staticClass: "fa fa-spinner fa-pulse"
+                  })
+                ]
+              )
+            ])
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _vm.loading ? _c("div", [_vm._v("\n\t\tLoading...\n\t")]) : _vm._e()
   ])
 }
@@ -51709,309 +52070,411 @@ var render = function() {
   return _c("div", [
     _vm.allowsEdit
       ? _c("div", [
-          _c("h2", [_vm._v("Add Rating")]),
-          _vm._v(" "),
-          _c("div", { staticClass: "form form-inline form-group" }, [
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.newRating.rating_id,
-                    expression: "newRating.rating_id"
-                  }
-                ],
-                staticClass: "form-control mr-2",
-                attrs: { name: "add_rating", id: "add_rating" },
-                on: {
-                  change: [
-                    function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.$set(
-                        _vm.newRating,
-                        "rating_id",
-                        $event.target.multiple
-                          ? $$selectedVal
-                          : $$selectedVal[0]
-                      )
-                    },
-                    function($event) {
-                      return _vm.selectRating($event.target.selectedIndex)
-                    }
-                  ]
+          _c(
+            "button",
+            {
+              staticClass: "float-right btn btn-outline-dark",
+              on: {
+                click: function($event) {
+                  _vm.addRating = !_vm.addRating
                 }
-              },
-              [
-                _c("option", { domProps: { value: null } }, [
-                  _vm._v("Select rating...")
-                ]),
-                _vm._v(" "),
-                _vm._l(_vm.ratings, function(rating) {
-                  return _c("option", { domProps: { value: rating.id } }, [
-                    _vm._v(_vm._s(rating.name))
-                  ])
-                })
-              ],
-              2
-            ),
-            _vm._v("\n\t\t\tGranted Date (YYYY-MM-DD):\n\t\t\t"),
-            _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "ml-2 mr-2" },
-              [
-                _c("v-date-picker", {
-                  attrs: {
-                    locale: {
-                      id: "nz",
-                      firstDayOfWeek: 2,
-                      masks: { weekdays: "WW", L: "DD/MM/YYYY" }
+              }
+            },
+            [
+              _c("span", { staticClass: "fa fa-plus mr-2" }),
+              _vm._v("Add Rating")
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.addRating,
+                  expression: "addRating"
+                }
+              ]
+            },
+            [
+              _c("h2", [_vm._v("Add Rating")]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form form-inline form-group" }, [
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.newRating.rating_id,
+                        expression: "newRating.rating_id"
+                      }
+                    ],
+                    staticClass: "form-control mr-2",
+                    attrs: { name: "add_rating", id: "add_rating" },
+                    on: {
+                      change: [
+                        function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.$set(
+                            _vm.newRating,
+                            "rating_id",
+                            $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          )
+                        },
+                        function($event) {
+                          return _vm.selectRating($event.target.selectedIndex)
+                        }
+                      ]
                     }
                   },
-                  model: {
-                    value: _vm.newRating.awarded,
-                    callback: function($$v) {
-                      _vm.$set(_vm.newRating, "awarded", $$v)
-                    },
-                    expression: "newRating.awarded"
-                  }
-                })
-              ],
-              1
-            ),
-            _vm._v("\n\t\t\tExpires:\n\t\t\t"),
-            _c(
-              "select",
-              {
-                directives: [
+                  [
+                    _c("option", { domProps: { value: null } }, [
+                      _vm._v("Select rating...")
+                    ]),
+                    _vm._v(" "),
+                    _vm._l(_vm.ratings, function(rating) {
+                      return _c("option", { domProps: { value: rating.id } }, [
+                        _vm._v(_vm._s(rating.name))
+                      ])
+                    })
+                  ],
+                  2
+                ),
+                _vm._v("\n\t\t\t\tGranted Date (YYYY-MM-DD):\n\t\t\t\t"),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "ml-2 mr-2" },
+                  [
+                    _c("v-date-picker", {
+                      attrs: {
+                        locale: {
+                          id: "nz",
+                          firstDayOfWeek: 2,
+                          masks: { weekdays: "WW", L: "DD/MM/YYYY" }
+                        }
+                      },
+                      model: {
+                        value: _vm.newRating.awarded,
+                        callback: function($$v) {
+                          _vm.$set(_vm.newRating, "awarded", $$v)
+                        },
+                        expression: "newRating.awarded"
+                      }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v("\n\t\t\t\tExpires:\n\t\t\t\t"),
+                _c(
+                  "select",
                   {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.presetExpires,
-                    expression: "presetExpires"
-                  }
-                ],
-                staticClass: "form-control ml-2 ",
-                attrs: { name: "expires", id: "expires" },
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.presetExpires = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  }
-                }
-              },
-              [
-                _c("option", { attrs: { value: "never" } }, [_vm._v("Never")]),
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.presetExpires,
+                        expression: "presetExpires"
+                      }
+                    ],
+                    staticClass: "form-control ml-2 ",
+                    attrs: { name: "expires", id: "expires" },
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.presetExpires = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
+                    }
+                  },
+                  [
+                    _c("option", { attrs: { value: "never" } }, [
+                      _vm._v("Never")
+                    ]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "12" } }, [
+                      _vm._v("1 Year")
+                    ]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "24" } }, [
+                      _vm._v("2 Years")
+                    ]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "60" } }, [
+                      _vm._v("5 Years")
+                    ]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "custom" } }, [
+                      _vm._v("Custom:")
+                    ])
+                  ]
+                ),
                 _vm._v(" "),
-                _c("option", { attrs: { value: "12" } }, [_vm._v("1 Year")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "24" } }, [_vm._v("2 Years")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "60" } }, [_vm._v("5 Years")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "custom" } }, [
-                  _vm._v("Custom:")
-                ])
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "span",
-              {
-                directives: [
+                _c(
+                  "span",
                   {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.presetExpires == "custom",
-                    expression: "presetExpires=='custom'"
-                  }
-                ]
-              },
-              [
-                _c("input", {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.presetExpires == "custom",
+                        expression: "presetExpires=='custom'"
+                      }
+                    ]
+                  },
+                  [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.newRating.expires,
+                          expression: "newRating.expires"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", size: "5" },
+                      domProps: { value: _vm.newRating.expires },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.newRating,
+                            "expires",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    }),
+                    _vm._v(" Months\n\t\t\t\t")
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-group" }, [
+                _vm._v("\n\t\t\t\tNotes "),
+                _c("textarea", {
                   directives: [
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.newRating.expires,
-                      expression: "newRating.expires"
+                      value: _vm.newRating.notes,
+                      expression: "newRating.notes"
                     }
                   ],
                   staticClass: "form-control",
-                  attrs: { type: "text", size: "5" },
-                  domProps: { value: _vm.newRating.expires },
+                  attrs: { name: "notes", id: "", cols: "30", rows: "2" },
+                  domProps: { value: _vm.newRating.notes },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.$set(_vm.newRating, "expires", $event.target.value)
+                      _vm.$set(_vm.newRating, "notes", $event.target.value)
                     }
                   }
-                }),
-                _vm._v(" Months\n\t\t\t")
-              ]
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "form-group" }, [
-            _vm._v("\n\t\t\tNotes "),
-            _c("textarea", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.newRating.notes,
-                  expression: "newRating.notes"
-                }
-              ],
-              staticClass: "form-control",
-              attrs: { name: "notes", id: "", cols: "30", rows: "2" },
-              domProps: { value: _vm.newRating.notes },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.newRating, "notes", $event.target.value)
-                }
-              }
-            })
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "form form-inline form-group" }, [
-            _vm._v("\n\t\t\tAuthorised by \n\t\t\t"),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.searchText,
-                  expression: "searchText"
-                }
-              ],
-              staticClass: "form-control ml-2",
-              attrs: { type: "search", placeholder: "Search..." },
-              domProps: { value: _vm.searchText },
-              on: {
-                keyup: function($event) {
-                  return _vm.onSearch(_vm.searchText)
-                },
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.searchText = $event.target.value
-                }
-              }
-            }),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.peopleSearchResults.length != 0,
-                    expression: "peopleSearchResults.length!=0"
-                  },
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.authorising_member_id,
-                    expression: "authorising_member_id"
-                  }
-                ],
-                staticClass: "form-control ml-2",
-                attrs: { name: "peopleSearch", id: "peopleSearch" },
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.authorising_member_id = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  }
-                }
-              },
-              [
-                _c("option", { attrs: { value: "0" } }, [_vm._v("Select...")]),
-                _vm._v(" "),
-                _vm._l(_vm.peopleSearchResults, function(person) {
-                  return _c("option", { domProps: { value: person.id } }, [
-                    _vm._v(
-                      _vm._s(person.first_name) +
-                        " " +
-                        _vm._s(person.last_name) +
-                        " " +
-                        _vm._s(person.nzga_number) +
-                        " " +
-                        _vm._s(person.club) +
-                        " " +
-                        _vm._s(person.city)
-                    )
-                  ])
                 })
-              ],
-              2
-            ),
-            _vm._v(" "),
-            _c(
-              "span",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.peopleSearchResults.length == 0,
-                    expression: "peopleSearchResults.length==0"
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-inline form-group" }, [
+                _c("div", { staticClass: "mr-4" }, [
+                  _vm._v("\n\t\t\t\t\tAuthorised by \n\t\t\t\t\t"),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.searchText,
+                        expression: "searchText"
+                      }
+                    ],
+                    staticClass: "form-control ml-2",
+                    attrs: { type: "search", placeholder: "Search..." },
+                    domProps: { value: _vm.searchText },
+                    on: {
+                      keyup: function($event) {
+                        return _vm.onSearch(_vm.searchText)
+                      },
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.searchText = $event.target.value
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.peopleSearchResults.length != 0,
+                          expression: "peopleSearchResults.length!=0"
+                        },
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.authorising_member_id,
+                          expression: "authorising_member_id"
+                        }
+                      ],
+                      staticClass: "form-control ml-2",
+                      attrs: { name: "peopleSearch", id: "peopleSearch" },
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.authorising_member_id = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
+                    },
+                    [
+                      _c("option", { attrs: { value: "0" } }, [
+                        _vm._v("Select...")
+                      ]),
+                      _vm._v(" "),
+                      _vm._l(_vm.peopleSearchResults, function(person) {
+                        return _c(
+                          "option",
+                          { domProps: { value: person.id } },
+                          [
+                            _vm._v(
+                              _vm._s(person.first_name) +
+                                " " +
+                                _vm._s(person.last_name) +
+                                " " +
+                                _vm._s(person.nzga_number) +
+                                " " +
+                                _vm._s(person.club) +
+                                " " +
+                                _vm._s(person.city)
+                            )
+                          ]
+                        )
+                      })
+                    ],
+                    2
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "span",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.peopleSearchResults.length == 0,
+                          expression: "peopleSearchResults.length==0"
+                        }
+                      ],
+                      staticClass: "ml-2"
+                    },
+                    [_vm._v("No members found")]
+                  )
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-inline form-group" }, [
+                _c("label", { staticClass: "mr-1" }, [_vm._v("Upload Files:")]),
+                _vm._v(" "),
+                _c("div", { staticClass: "custom-file col-3 mr-2" }, [
+                  _c("input", {
+                    ref: "file",
+                    staticClass: "custom-file-input",
+                    attrs: { type: "file", id: "file", multiple: "" },
+                    on: {
+                      change: function($event) {
+                        return _vm.onChangeFileUpload()
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "label",
+                    {
+                      staticClass: "custom-file-label",
+                      attrs: { for: "file" }
+                    },
+                    [_vm._v("Choose files")]
+                  )
+                ]),
+                _vm._v(" "),
+                !_vm.files || !_vm.files.length
+                  ? _c("span", [_vm._v("No files selected")])
+                  : _c(
+                      "ul",
+                      _vm._l(_vm.files, function(file, key) {
+                        return _c("li", { key: file.name }, [
+                          _vm._v(_vm._s(file.name))
+                        ])
+                      }),
+                      0
+                    )
+              ]),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  staticClass: "btn btn-outline-dark ml-2",
+                  on: {
+                    click: function($event) {
+                      return _vm.insert()
+                    }
                   }
-                ],
-                staticClass: "ml-2"
-              },
-              [_vm._v("No members found")]
-            ),
-            _vm._v(" "),
-            _c(
-              "a",
-              {
-                staticClass: "btn btn-outline-dark ml-2",
-                on: {
-                  click: function($event) {
-                    return _vm.insert()
-                  }
-                }
-              },
-              [_vm._v("Add Rating")]
-            )
-          ]),
-          _vm._v(" "),
-          _c("hr")
+                },
+                [
+                  _vm._v("Add Rating \n\t\t\t\t"),
+                  _c("span", {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.uploading,
+                        expression: "uploading"
+                      }
+                    ],
+                    staticClass: "fa fa-spinner fa-pulse"
+                  })
+                ]
+              ),
+              _vm._v(" "),
+              _c("hr")
+            ]
+          )
         ])
       : _vm._e(),
     _vm._v(" "),

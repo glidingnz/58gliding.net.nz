@@ -16,8 +16,12 @@
 		&raquo; <a href="/members/{{$member_id}}">{{$member['first_name']}} {{$member['last_name']}}</a>  &raquo; Ratings
 	</h1>
 
-	<ratings member-id="{{$member_id}}" allows-edit="{{$allows_edit}}"></ratings>
-
+	@can('club-member')
+		<ratings member-id="{{$member_id}}" allows-edit="{{$allows_edit}}"></ratings>
+	@else
+		<p class="error">Sorry, you must be a club member to view BFR & Medical Ratings.</p>
+	@endcan
+	
 </div>
 
 @endsection
