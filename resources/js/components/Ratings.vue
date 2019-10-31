@@ -92,7 +92,7 @@
 					ratingNearlyExpired(result.expires) ? 'warning' : '',
 					ratingExpired(result.expires) ? 'danger' : ''
 					]"> 
-					<td><a v-bind:href="'/members/' + memberId + '/ratings/' + result.rating_id + '/'">{{result.name}}</a></td>
+					<td><a v-bind:href="'/members/' + memberId + '/ratings/' + result.id + '/'">{{result.name}}</a></td>
 					<td>{{formatDate(result.awarded)}}</td>
 					<td>
 						<span v-show="result.expires!='0000-00-00' && result.expires!=null">

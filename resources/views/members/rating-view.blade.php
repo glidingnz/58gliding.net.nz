@@ -20,7 +20,7 @@
 
 
 	@can('club-member')
-		<rating member-id="{{$member_id}}" rating-id="{{$rating_id}}" allows-edit="{{$allows_edit}}"></rating>
+		<rating member-id="{{$member_id}}" rating-member-id="{{$rating_member_id}}" allows-edit="{{$allows_edit}}"></rating>
 	@else
 		<p class="error">Sorry, you must be a club member to view BFR & Medical Ratings.</p>
 	@endcan

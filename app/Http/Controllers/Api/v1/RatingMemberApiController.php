@@ -61,10 +61,9 @@ class RatingMemberApiController extends ApiController
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function get(Request $request, $member_id, $rating_id)
+	public function get(Request $request, $member_id, $rating_member_id)
 	{
-		$rating_member = RatingMember::where('member_id', $member_id)
-			->where('rating_id', $rating_id)
+		$rating_member = RatingMember::where('id', $rating_member_id)
 			->with(['rating', 'member', 'uploads'])
 			->first();
 
