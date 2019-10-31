@@ -260,11 +260,8 @@ export default {
 			window.axios.get('/api/v1/members/' + this.memberId + '/ratings').then(function (response) {
 				that.memberRatings = response.data.data;
 
-				//var timeagoInstance = timeago();
 				for (var i=0; i<that.memberRatings.length; i++) {
-					//that.memberRatings[i].timeToExpire = timeagoInstance.format(that.memberRatings[i].expires);
 					that.memberRatings[i].timeToExpire = moment(that.memberRatings[i].expires).fromNow();
-					
 				}
 			});
 		},

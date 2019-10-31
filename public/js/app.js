@@ -3843,6 +3843,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       window.axios.get('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingId).then(function (response) {
         that.loading = false;
         that.rating = response.data.data;
+        that.rating.timeToExpire = moment__WEBPACK_IMPORTED_MODULE_1___default()(that.rating.expires).fromNow();
         console.log(that.rating);
       });
     },
@@ -4157,10 +4158,9 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     getMemberRatings: function getMemberRatings() {
       var that = this;
       window.axios.get('/api/v1/members/' + this.memberId + '/ratings').then(function (response) {
-        that.memberRatings = response.data.data; //var timeagoInstance = timeago();
+        that.memberRatings = response.data.data;
 
         for (var i = 0; i < that.memberRatings.length; i++) {
-          //that.memberRatings[i].timeToExpire = timeagoInstance.format(that.memberRatings[i].expires);
           that.memberRatings[i].timeToExpire = moment__WEBPACK_IMPORTED_MODULE_1___default()(that.memberRatings[i].expires).fromNow();
         }
       });
@@ -51918,9 +51918,9 @@ var render = function() {
             _vm._v(" "),
             _c("td", [
               _vm._v(
-                _vm._s(_vm.rating.first_name) +
+                _vm._s(_vm.rating.added_firstname) +
                   " " +
-                  _vm._s(_vm.rating.last_name)
+                  _vm._s(_vm.rating.added_lastname)
               )
             ])
           ]),

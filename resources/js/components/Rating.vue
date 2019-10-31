@@ -34,7 +34,7 @@
 			</tr>
 			<tr>
 				<td>Added By</td>
-				<td>{{rating.first_name}} {{rating.last_name}}</td>
+				<td>{{rating.added_firstname}} {{rating.added_lastname}}</td>
 			</tr>
 			<tr>
 				<td>Notes</td>
@@ -108,6 +108,8 @@
 				window.axios.get('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingId).then(function (response) {
 					that.loading = false;
 					that.rating = response.data.data;
+					that.rating.timeToExpire = moment(that.rating.expires).fromNow();
+
 					console.log(that.rating);
 				});
 			},

@@ -11,6 +11,7 @@ use DateTime;
 use App\Models\Member;
 use App\Models\Rating;
 use App\Models\Upload;
+use App\User;
 use App\Models\RatingMember;
 use Carbon\Carbon;
 
@@ -66,6 +67,19 @@ class RatingMemberApiController extends ApiController
 			->where('rating_id', $rating_id)
 			->with(['rating', 'member', 'uploads'])
 			->first();
+
+		if ($auth_member = Member::where('id', $rating_member->authorising_member_id)->first())
+		{
+			$rating_member->auth_firstname = $auth_member->first_name;
+			$rating_member->auth_lastname = $auth_member->last_name;
+			$rating_member->nzga_number = $auth_member->nzga_number;
+		}
+
+		if ($added_user = User::where('id', $rating_member->granted_by_user_id)->first())
+		{
+			$rating_member->added_firstname = $added_user->first_name;
+			$rating_member->added_lastname = $added_user->last_name;
+		}
 
 		if (!$rating_member)
 		{
