@@ -16,7 +16,7 @@ class AddBadgeComments extends Migration
     {
         //
         Schema::table('badge_member', function ($table) {
-            $table->text('comments');
+            $table->text('comments')->nullable();
         });
 
         // fix missing GNZ code for youth

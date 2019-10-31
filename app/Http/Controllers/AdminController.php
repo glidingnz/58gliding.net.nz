@@ -41,7 +41,7 @@ class AdminController extends Controller
 	{
 		if (Gate::denies('admin')) return abort(403);
 		$badgeImporter = new BadgeImporter();
-		$badgeImporter->import_badges();
+		$badgeImporter->import_all_member_badges();
 
 		Messages::success('Badges imported');
 		return view('admin/admin');

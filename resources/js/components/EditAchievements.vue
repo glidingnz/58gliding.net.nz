@@ -1,7 +1,7 @@
-
-
 <template>
 	<div>
+
+		<p>Note FAI achievements are added by the awards officer. All the others here you can add yourself.</p>
 
 		<table class="table results-table table-striped">
 			<tr>
@@ -58,7 +58,7 @@
 				badges: [],
 				showEdit: false,
 				newBadge: {
-					id:0,
+					id:null,
 					badge_number:null,
 					date_awarded: null,
 					member_id: this.memberId

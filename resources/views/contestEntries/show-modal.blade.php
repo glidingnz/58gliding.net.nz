@@ -2,8 +2,8 @@
 <div class="form-group row">
     <div class="col-sm-12">
         <label for="load_profile" class="col-sm-6 col-form-label">Log in to be able to save your Contest Profile:</label>
-        <button type="button" class="btn btn-success" id="load_profile" onclick="loadData()"><i class="fa fa-check"></i>&nbsp;{{ 'Load Contest Profile' }}</button>
-        <button type="button" class="btn btn-primary" id="save_profile" onclick="sendData()"><i class="fa fa-save"></i>&nbsp;{{ 'Save Profile for Next Time' }}</button>
+        <button type="button" class="btn btn-success" id="load_profile" onclick="loadData()"><i class="fa fa-check"></i>&nbsp;{{ 'Use Saved Profile' }}</button>
+        <button type="button" class="btn btn-primary" id="save_profile" onclick="saveData()"><i class="fa fa-save"></i>&nbsp;{{ 'Save My Profile' }}</button>
     </div>
 </div>
 <div class="form-group row">
@@ -331,15 +331,18 @@
 
 <script type="text/javascript">
 
-    function sendData() {
+    function saveData() {
 
         $.ajax({
-            url: "savedata",
+            url: "contestentries/savedata",
             type: "POST",
             data: $('#modal_form').serialize(),
             cache: false,
             async: true,
             success: function (data) {
+                alert(data);
+            },
+            error: function (data) {
                 alert(data);
             }
         });
@@ -348,7 +351,7 @@
     function loadData() {
 
         $.ajax({
-            url: "loaddata",
+            url: "contestentries/loaddata",
             type: "POST",
             data: {},
             dataType: "json",

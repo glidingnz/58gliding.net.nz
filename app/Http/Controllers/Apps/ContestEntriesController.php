@@ -14,7 +14,7 @@ use App\Models\Contest;
 use App\Models\ContestClass;
 use App\Models\ContestProfile;
 
-Use App\Http\Requests\ContestEntryRequest;
+use App\Http\Requests\ContestEntryRequest;
 
 use Form;
 use Gate;
@@ -103,7 +103,6 @@ class ContestEntriesController extends Controller
 
     public function update(ContestEntryRequest $request, $id)
     {
-
         $validated = $request->validated();
 
         $status = ContestEntry::where('id',$id)->update($request->except(['_method','_token','contest_name']));
@@ -125,11 +124,10 @@ class ContestEntriesController extends Controller
 
     public function savedata(Request $request)
     {
-
         if(!Auth::check()) {
             return 'Cant Save Data. Not Logged In';
         }
-        $status = ContestProfile::updateOrCreate(['id'=>auth()->user()->id],$request->except(['token','contest_id','contest_name','classes_id']));
+        $status = ContestProfile::updateOrCreate(['id'=>auth()->user()->id],$request->except(['token','contest_id','contest_name','classes_id','declaration']));
         return 'Data Saved';
     }
 

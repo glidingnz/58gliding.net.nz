@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Api\ApiController;
+use App\Models\Member;
 use App\Models\BadgeMember;
+use App\Classes\BadgeImporter;
 use App\Models\Badge;
 
 use Gate;
@@ -23,15 +25,29 @@ class AchievementsApiController extends ApiController
 	public function index(Request $request)
 	{
 
+		// Get the member
+		if ($request->has('member_id'))
+		{
+			$member = Member::where('id', $request->input('member_id'))->first();
+		}
+
+		if (!isset($member)) return $this->not_found();
+
+		// ensure we have imported all existing badges from the GNZ system
+		$importer = new BadgeImporter;
+		$importer->load_badges();
+		$importer->import_member_badges($member);
+
+
 		$query = BadgeMember::query();
 		$query->with('badge');
 		$query->leftJoin('badges', 'badges.id', '=', 'badge_member.badge_id');
 
 		// Filter to member if given
-		if ($request->input('member_id'))
+		if ($request->has('member_id'))
 		{
-			$query->where(function($query) use ($request)  {
-				$query->where('member_id','=',$request->input('member_id'));
+			$query->where(function($query) use ($request, $member)  {
+				$query->where('member_id','=',$member->id);
 			});
 		}
 

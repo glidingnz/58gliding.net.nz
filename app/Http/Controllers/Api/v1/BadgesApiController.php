@@ -40,8 +40,10 @@ class BadgesApiController extends ApiController
 		if ($request->input('exclude')=='fai')
 		{
 			$query->where('type','!=','fai badges');
-			$query->where('type','!=','fai awards');
+			//$query->where('type','!=','fai awards');
 		}
+
+		$query->where('type', '!=', 'FAI Awards');
 
 		$query->orderBy('type');
 
