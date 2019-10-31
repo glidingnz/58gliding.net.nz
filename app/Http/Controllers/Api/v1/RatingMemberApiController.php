@@ -32,14 +32,6 @@ class RatingMemberApiController extends ApiController
 			return $this->error('Member not found');
 		}
 
-		// get the member's ratings
-		// $ratingQuery = RatingMember::query()->with(array(
-		// 	'member' => function($query)
-		// 	{
-		// 		$query->select('first_name');
-		// 	}), 'authorisingMember'
-		// 	)->where('member_id', $member->id);
-		//$ratingQuery = RatingMember::query()->with(array('member:first_name', 'authorisingMember:first_name'))->where('member_id', $member->id);
 		$ratingQuery = DB::table('rating_member')
 			->leftJoin('gnz_member AS authorising_member', 'authorising_member_id', '=', 'authorising_member.id')
 			->leftJoin('ratings', 'rating_id', '=', 'ratings.id')
@@ -158,6 +150,21 @@ class RatingMemberApiController extends ApiController
 	}
 
 
+	/**
+	 * Upload files for a memberRating
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return \Illuminate\Http\Response
+	 */
+	public function upload(Request $request, $rating_member_id)
+	{
+		$org = $request->get('_ORG');
+		$ratingMember = RatingMember::findOrFail($rating_member_id);
+
+		$this->upload_files($request, $ratingMember, $org);
+	}
+
+
 	public function upload_files($request, $ratingMember, $org)
 	{
 		// get rating details
@@ -171,19 +178,23 @@ class RatingMemberApiController extends ApiController
 			$counter = 0;
 			foreach ($files as $file)
 			{
+				$upload = new Upload();
+				$upload->user_id = $user->id; // the user that uploaded the file, not the pilot
+				$upload->org_id = $org->id;
+				// save into the DB so we can get the ID
+				$upload->save();
+
+
 				$filename = simple_string(strtolower($member->last_name)) . '-' . 
 							simple_string(strtolower($rating->name)) . '-' .
 							$ratingMember->id . '-' . 
-							$counter . '.' . 
+							$upload->id . '.' . 
 							$file->getClientOriginalExtension();
 
 				// save the file
 				$path =  $file->storeAs($org->folder . 'ratings', $filename);
 
 				// put details into database
-				$upload = new Upload();
-				$upload->user_id = $user->id; // the user that uploaded the file, not the pilot
-				$upload->org_id = $org->id;
 				$upload->filename = $filename;
 				$upload->folder = $org->files_path . 'ratings';
 				$upload->slug = simple_string(strtolower($filename));

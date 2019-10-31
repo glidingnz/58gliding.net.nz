@@ -61,11 +61,11 @@
 						
 						<span v-if="!files || !files.length">No files selected</span>
 						<ul v-else>
-							<li v-for="(file, key) in files" :key="file.name">{{file.name}} <span class="fa fa-times" v-on:click="deleteFile(key)"></span></li>
+							<li v-for="(file, key) in files" :key="file.name">{{file.name}}</li>
 						</ul>
 					</div>
 
-					<a class="btn btn-outline-dark ml-2" v-on:click="insert()">Add Rating 
+					<a class="btn btn-outline-dark ml-2" v-on:click="uploadFiles()">Upload Files 
 						<span class="fa fa-spinner fa-pulse" v-show="uploading"></span>
 					</a>
 
@@ -131,7 +131,7 @@
 				that.uploading = true;
 
 				// create the new rating
-				window.axios.post('/api/v1/members/' + this.memberId + '/ratings', 
+				window.axios.post('/api/v1/rating-member/'+ that.rating.id + '/upload', 
 					formData,
 					{
 						headers: {
@@ -140,6 +140,8 @@
 					}).then(function (response) {
 						messages.$emit('success', 'Files Uploaded');
 						that.files = null;
+						that.load();
+						that.uploading = false;
 					})
 					.catch(function (error) {
 						// handle error
@@ -147,6 +149,9 @@
 						that.uploading = false;
 					});
 			},
+			onChangeFileUpload: function() {
+				this.files = this.$refs.file.files;
+			}
 
 		}
 	}

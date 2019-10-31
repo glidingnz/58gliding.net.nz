@@ -3864,18 +3864,23 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
 
       that.uploading = true; // create the new rating
 
-      window.axios.post('/api/v1/members/' + this.memberId + '/ratings', formData, {
+      window.axios.post('/api/v1/rating-member/' + that.rating.id + '/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       }).then(function (response) {
         messages.$emit('success', 'Files Uploaded');
         that.files = null;
+        that.load();
+        that.uploading = false;
       })["catch"](function (error) {
         // handle error
         messages.$emit('error', 'Files not uploaded. Error given: ' + error.response.data.error);
         that.uploading = false;
       });
+    },
+    onChangeFileUpload: function onChangeFileUpload() {
+      this.files = this.$refs.file.files;
     }
   }
 });
@@ -51999,15 +52004,7 @@ var render = function() {
                           "ul",
                           _vm._l(_vm.files, function(file, key) {
                             return _c("li", { key: file.name }, [
-                              _vm._v(_vm._s(file.name) + " "),
-                              _c("span", {
-                                staticClass: "fa fa-times",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.deleteFile(key)
-                                  }
-                                }
-                              })
+                              _vm._v(_vm._s(file.name))
                             ])
                           }),
                           0
@@ -52021,12 +52018,12 @@ var render = function() {
                   staticClass: "btn btn-outline-dark ml-2",
                   on: {
                     click: function($event) {
-                      return _vm.insert()
+                      return _vm.uploadFiles()
                     }
                   }
                 },
                 [
-                  _vm._v("Add Rating \n\t\t\t\t\t"),
+                  _vm._v("Upload Files \n\t\t\t\t\t"),
                   _c("span", {
                     directives: [
                       {
@@ -52442,15 +52439,7 @@ var render = function() {
                       "ul",
                       _vm._l(_vm.files, function(file, key) {
                         return _c("li", { key: file.name }, [
-                          _vm._v(_vm._s(file.name) + " "),
-                          _c("span", {
-                            staticClass: "fa fa-times",
-                            on: {
-                              click: function($event) {
-                                return _vm.deleteFile(key)
-                              }
-                            }
-                          })
+                          _vm._v(_vm._s(file.name))
                         ])
                       }),
                       0

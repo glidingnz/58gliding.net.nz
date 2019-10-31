@@ -62,7 +62,7 @@
 					
 					<span v-if="!files || !files.length">No files selected</span>
 					<ul v-else>
-						<li v-for="(file, key) in files" :key="file.name">{{file.name}} <span class="fa fa-times" v-on:click="deleteFile(key)"></span></li>
+						<li v-for="(file, key) in files" :key="file.name">{{file.name}}</li>
 					</ul>
 				</div>
 
