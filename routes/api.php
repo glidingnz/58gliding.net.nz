@@ -102,7 +102,7 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 		Route::post('/members/{member_id}/ratings/upload',  'RolesApiController@upload');
 
 
-		Route::get('/members/{member_id}/ratings/{rating_id}',  'RatingMemberApiController@get');
+		Route::get('/members/{member_id}/ratings/{rating_member_id}',  'RatingMemberApiController@get');
 		Route::delete('/members/{member_id}/ratings/{rating_id}/upload/{upload_id}',  'RatingMemberApiController@destroyFile');
 		Route::post('/rating-member/{id}/upload',  'RatingMemberApiController@upload');
 

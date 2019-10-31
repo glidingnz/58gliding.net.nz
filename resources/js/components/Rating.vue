@@ -89,7 +89,7 @@
 
 	export default {
 		mixins: [common],
-		props: ['ratingId', 'memberId', 'allowsEdit'],
+		props: ['ratingMemberId', 'memberId', 'allowsEdit'],
 		data() {
 			return {
 				rating: {},
@@ -105,7 +105,7 @@
 			load: function() {
 				var that = this;
 				that.loading = true;
-				window.axios.get('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingId).then(function (response) {
+				window.axios.get('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingMemberId).then(function (response) {
 					that.loading = false;
 					that.rating = response.data.data;
 					that.rating.timeToExpire = moment(that.rating.expires).fromNow();
@@ -115,7 +115,7 @@
 			},
 			deleteFile: function(upload) {
 				var that = this;
-				window.axios.delete('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingId + '/upload/' + upload.id).then(function (response) {
+				window.axios.delete('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingMemberId + '/upload/' + upload.id).then(function (response) {
 					that.load();
 				});
 			},

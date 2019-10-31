@@ -89,14 +89,14 @@ class MembersController extends Controller
 	/**
 	 * View a single rating on a user
 	 */
-	public function rating(Request $request, $member_id, $rating_id)
+	public function rating(Request $request, $member_id, $rating_member_id)
 	{
 		$data['member_id']=$member_id;
-		$data['rating_id']=$rating_id;
+		$data['rating_member_id']=$rating_member_id;
 		$data['allows_edit']=false;
 
 		// check this member has this rating
-		if (!RatingMember::where('rating_id', $rating_id)->where('member_id', $member_id)->first())
+		if (!$ratingMember = RatingMember::findOrFail($rating_member_id)->first())
 		{
 			abort(404);
 		}
@@ -108,7 +108,7 @@ class MembersController extends Controller
 			abort(403);
 		}
 
-		$data['rating'] = Rating::findOrFail($rating_id);
+		$data['rating'] = Rating::findOrFail($ratingMember->rating_id);
 
 		// check if the current logged in user is an admin of the club
 		if (Gate::allows('club-admin', $members_org)) {

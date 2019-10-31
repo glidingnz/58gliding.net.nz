@@ -3824,7 +3824,7 @@ __webpack_require__.r(__webpack_exports__);
 Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
-  props: ['ratingId', 'memberId', 'allowsEdit'],
+  props: ['ratingMemberId', 'memberId', 'allowsEdit'],
   data: function data() {
     return {
       rating: {},
@@ -3840,7 +3840,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     load: function load() {
       var that = this;
       that.loading = true;
-      window.axios.get('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingId).then(function (response) {
+      window.axios.get('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingMemberId).then(function (response) {
         that.loading = false;
         that.rating = response.data.data;
         that.rating.timeToExpire = moment__WEBPACK_IMPORTED_MODULE_1___default()(that.rating.expires).fromNow();
@@ -3849,7 +3849,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     },
     deleteFile: function deleteFile(upload) {
       var that = this;
-      window.axios["delete"]('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingId + '/upload/' + upload.id).then(function (response) {
+      window.axios["delete"]('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingMemberId + '/upload/' + upload.id).then(function (response) {
         that.load();
       });
     },
@@ -52506,7 +52506,7 @@ var render = function() {
                           "/members/" +
                           _vm.memberId +
                           "/ratings/" +
-                          result.rating_id +
+                          result.id +
                           "/"
                       }
                     },
