@@ -61,6 +61,11 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 	Route::resource('/ratings', 'RatingsApiController', ['only' => [
 		'index'
 	]]);
+
+	// Not sure an uploads API is a good idea, as we can't handle permissions on it.
+	// Route::resource('/uploads', 'UploadsApiController', ['only' => [
+	// 	'destroy'
+	// ]]);
 		
 	// Route::resource('days', 'DayApiController', ['only' => [
 	// 	'index', 'show', 'destroy', 'create', 'update'
@@ -79,12 +84,12 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 	Route::get('/members/address-changes', 'MembersApiController@address_changes');
 	Route::get('/members/address-changes/{limit_date}', 'MembersApiController@address_changes');
 
-	Route::get('/ratings/report',  'RatingMemberApiController@ratingsReport');
 
-	Route::get('/members/export/{format}', 'MembersApiController@export');
-	
 	Route::group(['middleware' => ['auth:api']], function () {
 
+		Route::get('/ratings/report',  'RatingMemberApiController@ratingsReport');
+		Route::get('/members/export/{format}', 'MembersApiController@export');
+		
 		Route::get('/users',  'UsersApiController@index');
 		Route::get('/users/{userID}/roles',  'RolesApiController@user_roles');
 		Route::post('/users/{userID}/roles',  'RolesApiController@add_user_role');
@@ -94,7 +99,12 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 		Route::resource('/members/{member_id}/ratings', 'RatingMemberApiController', ['only' => [
 			'index', 'store', 'create'
 		]]);
-		Route::get('/members/{member_id}/ratings/{rating_id}',  'RatingMemberApiController@get');
+		Route::post('/members/{member_id}/ratings/upload',  'RolesApiController@upload');
+
+
+		Route::get('/members/{member_id}/ratings/{rating_member_id}',  'RatingMemberApiController@get');
+		Route::delete('/members/{member_id}/ratings/{rating_id}/upload/{upload_id}',  'RatingMemberApiController@destroyFile');
+		Route::post('/rating-member/{id}/upload',  'RatingMemberApiController@upload');
 
 
 

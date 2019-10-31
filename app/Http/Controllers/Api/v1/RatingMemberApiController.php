@@ -10,6 +10,8 @@ use DB;
 use DateTime;
 use App\Models\Member;
 use App\Models\Rating;
+use App\Models\Upload;
+use App\User;
 use App\Models\RatingMember;
 use Carbon\Carbon;
 
@@ -22,20 +24,15 @@ class RatingMemberApiController extends ApiController
 	 */
 	public function index(Request $request, $member_id)
 	{
+
+		if (Gate::denies('club-member')) return $this->denied();
+
 		// check the member exists first
 		if (!$member = Member::where('id', $member_id)->first())
 		{
 			return $this->error('Member not found');
 		}
 
-		// get the member's ratings
-		// $ratingQuery = RatingMember::query()->with(array(
-		// 	'member' => function($query)
-		// 	{
-		// 		$query->select('first_name');
-		// 	}), 'authorisingMember'
-		// 	)->where('member_id', $member->id);
-		//$ratingQuery = RatingMember::query()->with(array('member:first_name', 'authorisingMember:first_name'))->where('member_id', $member->id);
 		$ratingQuery = DB::table('rating_member')
 			->leftJoin('gnz_member AS authorising_member', 'authorising_member_id', '=', 'authorising_member.id')
 			->leftJoin('ratings', 'rating_id', '=', 'ratings.id')
@@ -64,9 +61,24 @@ class RatingMemberApiController extends ApiController
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function get(Request $request, $member_id, $rating_id)
+	public function get(Request $request, $member_id, $rating_member_id)
 	{
-		$rating_member = RatingMember::where('member_id', $member_id)->where('rating_id', $rating_id)->with(['rating', 'member'])->first();
+		$rating_member = RatingMember::where('id', $rating_member_id)
+			->with(['rating', 'member', 'uploads'])
+			->first();
+
+		if ($auth_member = Member::where('id', $rating_member->authorising_member_id)->first())
+		{
+			$rating_member->auth_firstname = $auth_member->first_name;
+			$rating_member->auth_lastname = $auth_member->last_name;
+			$rating_member->nzga_number = $auth_member->nzga_number;
+		}
+
+		if ($added_user = User::where('id', $rating_member->granted_by_user_id)->first())
+		{
+			$rating_member->added_firstname = $added_user->first_name;
+			$rating_member->added_lastname = $added_user->last_name;
+		}
 
 		if (!$rating_member)
 		{
@@ -74,7 +86,6 @@ class RatingMemberApiController extends ApiController
 		}
 
 		return $this->success($rating_member);
-
 	}
 
 
@@ -87,6 +98,8 @@ class RatingMemberApiController extends ApiController
 	 */
 	public function store(Request $request)
 	{
+		$org = $request->get('_ORG');
+
 		$user =  Auth::user();
 		// check user has permission
 		if (Gate::denies('club-admin')) return $this->denied();
@@ -96,7 +109,8 @@ class RatingMemberApiController extends ApiController
 		if (!$request->input('awarded')) return $this->error("awarded date is required");
 		if (!$request->input('authorising_member_id')) return $this->error("authorising_member_id is required");
 
-
+		// handle uploading the files
+		$path = $org->folder;
 
 		// fetch the rating
 		if (!$rating = Rating::where('id', $request->input('rating_id'))->first())
@@ -110,14 +124,14 @@ class RatingMemberApiController extends ApiController
 			return $this->error('Member not found');
 		}
 
-		$item = new RatingMember;
-		$item->expires = null;
-		$item->revoked_by = null;
+		$ratingMember = new RatingMember;
+		$ratingMember->expires = null;
+		$ratingMember->revoked_by = null;
 
 		// calculate expires date from months given if given
 		if ($request->input('expires')) {
 			if (!is_numeric($request->input('expires'))) {
-				$item->expires=null;
+				$ratingMember->expires=null;
 			}
 			else
 			{
@@ -125,26 +139,90 @@ class RatingMemberApiController extends ApiController
 				//$expires_date = DateTime::createFromFormat('Y-m-d', $request->input('awarded'));
 				$expires_date->addMonths($request->input('expires'));
 				//$expires_date->modify('+' . $request->input('expires') . ' month');
-				$item->expires = $expires_date->toDateString();
+				$ratingMember->expires = $expires_date->toDateString();
 			}
-			
 		}
 
 		$awarded = new Carbon($request->input('awarded'));
 
-		$item->rating_id=$request->input('rating_id');
-		$item->member_id=$request->input('member_id');
-		$item->awarded= $awarded->toDateString();
-		$item->notes=$request->input('notes', '');
-		$item->authorising_member_id=$request->input('authorising_member_id');
-		$item->granted_by_user_id = $user->id;
+		$ratingMember->rating_id=$request->input('rating_id');
+		$ratingMember->member_id=$request->input('member_id');
+		$ratingMember->awarded= $awarded->toDateString();
+		$ratingMember->notes=$request->input('notes', '');
+		$ratingMember->authorising_member_id=$request->input('authorising_member_id');
+		$ratingMember->granted_by_user_id = $user->id;
 
-		if ($item->save())
+
+		// save the item if all OK!
+		if ($ratingMember->save())
 		{
-			return $this->success($item);
+			$this->upload_files($request, $ratingMember, $org);
+			return $this->success($ratingMember);
 		}
 		return $this->error('Something went wrong sorry');
 	}
+
+
+	/**
+	 * Upload files for a memberRating
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return \Illuminate\Http\Response
+	 */
+	public function upload(Request $request, $rating_member_id)
+	{
+		$org = $request->get('_ORG');
+		$ratingMember = RatingMember::findOrFail($rating_member_id);
+
+		$this->upload_files($request, $ratingMember, $org);
+	}
+
+
+	public function upload_files($request, $ratingMember, $org)
+	{
+		// get rating details
+		$member = Member::findOrFail($ratingMember->member_id);
+		$rating = Rating::findOrFail($ratingMember->rating_id);
+		$user =  Auth::user();
+
+		// process any files that were uploaded
+		foreach ($request->allFiles('files') AS $files)
+		{
+			$counter = 0;
+			foreach ($files as $file)
+			{
+				$upload = new Upload();
+				$upload->user_id = $user->id; // the user that uploaded the file, not the pilot
+				$upload->org_id = $org->id;
+				// save into the DB so we can get the ID
+				$upload->save();
+
+
+				$filename = simple_string(strtolower($member->last_name)) . '-' . 
+							simple_string(strtolower($rating->name)) . '-' .
+							$ratingMember->id . '-' . 
+							$upload->id . '.' . 
+							$file->getClientOriginalExtension();
+
+				// save the file
+				$path =  $file->storeAs($org->folder . 'ratings', $filename);
+
+				// put details into database
+				$upload->filename = $filename;
+				$upload->folder = $org->files_path . 'ratings';
+				$upload->slug = simple_string(strtolower($filename));
+				$upload->type = $file->getClientOriginalExtension();
+				$upload->uploadable()->associate($ratingMember);
+				$upload->save();
+
+				$counter++;
+			}
+			
+		}
+	}
+
+
+
 
 
 	/**
@@ -169,6 +247,21 @@ class RatingMemberApiController extends ApiController
 	{
 		//
 	}
+
+
+	public function destroyFile(Request $request, $member_id, $rating_id, $upload_id)
+	{
+		if (Gate::denies('club-admin')) return $this->denied();
+
+		$upload = Upload::findOrFail($upload_id);
+		if ($upload->delete())
+		{
+			return $this->success('Deleted');
+		}
+		return $this->error(); 
+	}
+
+
 
 
 	public function ratingsReport(Request $request)

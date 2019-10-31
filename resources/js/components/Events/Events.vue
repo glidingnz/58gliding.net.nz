@@ -76,8 +76,6 @@
 			</div>
 		</div>
 
-		
-
 	</nav>
 
 	<table v-show="events.length>0 && !showCalendar" class="table  collapsable calendar-table">
