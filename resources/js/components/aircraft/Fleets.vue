@@ -45,7 +45,7 @@
 		methods: {
 			load: function() {
 				var that=this;
-				window.axios.get('/api/v1/fleets', {params: this.state}).then(function (response) {
+				window.axios.get('/api/v1/fleets').then(function (response) {
 					that.fleets = response.data.data;
 				});
 			},
