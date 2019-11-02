@@ -18,7 +18,6 @@ use Carbon\Carbon;
 
 class EventsAPIController extends AppBaseController
 {
-
 	/**
 	 * Display a listing of the events.
 	 * GET|HEAD /events
@@ -122,7 +121,7 @@ class EventsAPIController extends AppBaseController
 
 		$event = Event::create($input);
 
-		$event->slug = $this->create_unique_slug($slug);
+		$event->slug = $slug;
 
 		// default the end date to the start date unless given otherwise
 		$event->end_date = $request->input('end_date', $request->input('start_date', null));
@@ -140,39 +139,6 @@ class EventsAPIController extends AppBaseController
 
 
 
-	public function create_unique_slug($slug)
-	{
-		
-		$slug = simple_string(strtolower($slug));
-
-		// count the number of times this slug has already been used
-		$slug_matches = Event::where('slug', 'like', $slug . '-%')->orWhere('slug', $slug)->get();
-		// figure out the biggest
-		$biggest = 0;
-		foreach ($slug_matches AS $slug_match)
-		{
-			$biggest=1;
-			preg_match("/^.*\-([0-9]*)$/", $slug_match['slug'], $matches);
-			if (sizeof($matches)>0)
-			{
-				$found = (int)$matches[1];
-				if ($found > $biggest) $biggest = $found;
-			}
-		}
-
-		if ($biggest>0)
-		{
-			$slug_before_number = $slug;
-			preg_match("/^(.*)\-[0-9]*$/", $slug, $matches2);
-			if (sizeof($matches2)>0) {
-				$slug_before_number = $matches2[1];
-			}
-			$biggest = $biggest + 1;
-			$slug = $slug_before_number . '-' . $biggest;
-		}
-
-		return $slug;
-	}
 
 
 	/**
@@ -230,13 +196,7 @@ class EventsAPIController extends AppBaseController
 		}
 
 		$event->fill($input);
-		//$event->start_time = $input['start_time'];
-		//$event->end_time = $input['end_time'];
 
-		if ($event->isDirty('slug')) {
-			$event->slug = $this->create_unique_slug($event->slug);
-		}
-		
 		$event->save();
 
 		return $this->sendResponse($event->toArray(), 'Event updated successfully');

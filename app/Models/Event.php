@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Gate;
 use Auth;
 use Carbon\Carbon;
+use App\Classes\SluggableTrait;
 
 /**
  * Class Event
@@ -21,6 +22,7 @@ use Carbon\Carbon;
 class Event extends Model
 {
 	use SoftDeletes;
+	use SluggableTrait;
 
 	public $table = 'events';
 	

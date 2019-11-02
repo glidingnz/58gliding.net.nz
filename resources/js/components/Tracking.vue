@@ -187,6 +187,10 @@
 							<label for="showSouth"><input type="radio" id="showSouth" value="south" v-model="filterIsland"> South</label>
 							<br>
 							<label for="showUnknown"><input type="checkbox" value="true" v-model="filterUnknown" id="showUnknown"> Hide Unknown</label>
+							<select name="fleet" v-if="fleets" v-model="selectedFleet">
+								<option :value="null">Filter to a fleet of aircraft...</option>
+								<option v-for="fleet in fleets" :value="fleet">{{fleet.name}}</option>
+							</select>
 						</td>
 					</tr>
 					<tr>
@@ -233,6 +237,10 @@
 		</div>
 	</div>
 
+	<div class="card mt-4">
+	  <div class="card-body text-center">
+		Big thanks to <a href="http://glidernet.org">glidernet.org</a> for the FLARM tracking system and <a href="https://trackme.nz">TrackMe.nz</a> for their SPOT &amp; InReach Tracking data.
+	</div></div>
 
 </div>
 </template>
@@ -275,7 +283,11 @@
 				sortBy: 'rego',
 				sortOrder: 0,
 
-				colors: ['e86666', 'ab4b4b', 'e87766', 'ba6052', '8c483e', 'e88966', 'ba6e52', '8c533e', 'e89a66', 'ab714b', 'c99559', '9c7344', 'c9a459', '8c723e', 'e8ce66', '9c8a44', 'aba44b', 'dfe866', 'b3ba52', '878c3e', 'b0d95f', '8aba52', '739c44', '9ae866', '68c959', '58ab4b', '66e866', '3e8c3e', '66e889', '4bab65', '3e8c5d', '66e8ab', '52ba8a', '5fd9b0', '449c7f', '59c9b3', '66e8df', '52bab3', '3e8c87', '5fd1d9', '4ba4ab', '66cee8', '52a5ba', '3e7d8c', '5fb0d9', '4b8bab', '3e728c', '66abe8', '44739c', '669ae8', '44679c', '6689e8', '526eba', '3e538c', '6677e8', '44509c', '6052ba', '483e8c', '805fd9', '67449c', 'ab66e8', '8a52ba', 'ce66e8', 'ab4ba4', '8c3e87', 'e866ce', 'c959a4', '9c447f', 'e8669a', 'ba527c', 'e86689', '9c445c', 'e86677', 'ab4b58']
+				colors: ['e86666', 'ab4b4b', 'e87766', 'ba6052', '8c483e', 'e88966', 'ba6e52', '8c533e', 'e89a66', 'ab714b', 'c99559', '9c7344', 'c9a459', '8c723e', 'e8ce66', '9c8a44', 'aba44b', 'dfe866', 'b3ba52', '878c3e', 'b0d95f', '8aba52', '739c44', '9ae866', '68c959', '58ab4b', '66e866', '3e8c3e', '66e889', '4bab65', '3e8c5d', '66e8ab', '52ba8a', '5fd9b0', '449c7f', '59c9b3', '66e8df', '52bab3', '3e8c87', '5fd1d9', '4ba4ab', '66cee8', '52a5ba', '3e7d8c', '5fb0d9', '4b8bab', '3e728c', '66abe8', '44739c', '669ae8', '44679c', '6689e8', '526eba', '3e538c', '6677e8', '44509c', '6052ba', '483e8c', '805fd9', '67449c', 'ab66e8', '8a52ba', 'ce66e8', 'ab4ba4', '8c3e87', 'e866ce', 'c959a4', '9c447f', 'e8669a', 'ba527c', 'e86689', '9c445c', 'e86677', 'ab4b58'],
+
+				fleets: [], // the list of fleets available to select
+				selectedFleet: null, // the currently selected fleet item in the select
+				fleet: {}, // the actual fleet we'll filter, includes the list of aircraft
 			}
 		},
 	created: function() {
@@ -290,6 +302,19 @@
 		}
 		// start the timer
 		this.timeoutTimer = setTimeout(this.timerLoop, 3000);
+		this.loadFleets();
+	},
+	watch: {
+		selectedFleet: function() {
+			var that=this;
+			if (this.selectedFleet) {
+				window.axios.get('/api/v1/fleets/' + this.selectedFleet.id).then(function (response) {
+					that.fleet = response.data.data;
+				});
+			} else {
+				that.fleet = {};
+			}
+		}
 	},
 	events: {
 	},
@@ -311,6 +336,17 @@
 			}
 			if (this.filterUnknown) {
 				if (item.rego=='') return false;
+			}
+			// check if NOT in the list of aircraft if we are filtering that way
+			if (this.selectedFleet!=null && this.fleet.aircraft && this.fleet.aircraft.length>0) {
+				var found=false;
+				for(var i = 0; i < this.fleet.aircraft.length; i++) {
+					if (this.fleet.aircraft[i].rego == item.rego) {
+						found=true;
+						break;
+					}
+				}
+				if (!found) return false;
 			}
 			return true;
 		},
@@ -660,6 +696,12 @@
 
 				// if following an aircraft, center on it when selected
 				if (that.followSelected) that.centerOn(response.data.data[0].lat, response.data.data[0].lng);
+			});
+		},
+		loadFleets: function() {
+			var that=this;
+			window.axios.get('/api/v1/fleets').then(function (response) {
+				that.fleets = response.data.data;
 			});
 		}
 	}

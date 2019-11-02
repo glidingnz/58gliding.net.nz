@@ -28,9 +28,10 @@
         "bootstrap-vue": "^2.0.0-rc.24",
         "highcharts": "^7.1.2",
         "moment": "^2.24.0",
-        "v-calendar": "^1.0.0-beta.16",
         "multiselect": "^0.9.12",
         "nprogress": "^0.2.0",
-        "pjax": "^0.2.8"
+        "pjax": "^0.2.8",
+        "v-calendar": "^1.0.0-beta.16",
+        "vue-debounce": "^2.1.0"
     }
 }

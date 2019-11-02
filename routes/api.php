@@ -84,6 +84,13 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 	Route::get('/members/address-changes', 'MembersApiController@address_changes');
 	Route::get('/members/address-changes/{limit_date}', 'MembersApiController@address_changes');
 
+	Route::resource('/fleets', 'FleetsApiController', ['only' => [
+		'index', 'show', 'store'
+	]]);
+	Route::post('/fleets/{fleet_id}/add',  'FleetsApiController@add');
+	Route::post('/fleets/{fleet_id}/remove',  'FleetsApiController@remove');
+
+
 
 	Route::group(['middleware' => ['auth:api']], function () {
 
