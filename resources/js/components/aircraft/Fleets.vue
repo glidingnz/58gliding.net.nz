@@ -11,13 +11,14 @@
 	<table class="table table-striped">
 		<tr>
 			<th>Name</th>
-			<th>Date Added</th>
+			<th>Organisation</th>
 		</tr>
 		<tr v-for="fleet in fleets">
-			<td>{{fleet.name}}</td>
-			<td>{{formatDate(fleet.created_at)}}</td>
+			<td><a :href="'/fleets/' + fleet.slug + '/edit'">{{fleet.name}}</a></td>
+			<td>{{fleet.org.name}}</td>
 		</tr>
 	</table>
+
 </div>
 </template>
 

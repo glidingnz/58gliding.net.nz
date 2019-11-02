@@ -5,7 +5,7 @@
 
 <div class="container-fluid" id="fleets">
 
-	<fleets></fleets>
+	<fleets org-id="{{$org['id']}}"></fleets>
 
 </div>
 

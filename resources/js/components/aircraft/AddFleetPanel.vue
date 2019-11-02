@@ -58,6 +58,7 @@ export default {
 			{
 				var data = {
 					"name": this.name,
+					"org_id": this.orgId
 				}
 
 				window.axios.post('/api/v1/fleets', data).then(function (response) {

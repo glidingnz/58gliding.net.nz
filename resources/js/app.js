@@ -72,6 +72,7 @@ Vue.component('events', require('./components/events/Events.vue').default);
 Vue.component('add-event-panel', require('./components/events/AddEventPanel.vue').default);
 Vue.component('fleets', require('./components/aircraft/Fleets.vue').default);
 Vue.component('add-fleet-panel', require('./components/aircraft/AddFleetPanel.vue').default);
+Vue.component('edit-fleet', require('./components/aircraft/EditFleet.vue').default);
 
 /** common components  */
 Vue.component('autosize-textarea', require('./components/widgets/AutosizeTextarea.vue').default);

@@ -100,6 +100,6 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/events/{slug}/edit', 'Apps\EventsController@editEvent');
 
 	Route::get('/fleets', 'Apps\FleetsController@index');
-	Route::get('/fleets/{id}', 'Apps\FleetsController@show');
+	Route::get('/fleets/{id}/edit', 'Apps\FleetsController@edit');
 
 });

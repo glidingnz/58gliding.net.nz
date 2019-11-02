@@ -13,7 +13,7 @@ class FleetsApiController extends ApiController
 {
 	public function index(Request $request)
 	{
-		$query = Fleet::query()->orderBy('created_at', 'desc');
+		$query = Fleet::query()->with('org')->orderBy('created_at', 'desc');
 
 		// limit by organisation
 		if ($request->has('org_id'))
@@ -21,11 +21,6 @@ class FleetsApiController extends ApiController
 			$query->where('org_id','=',$request->input('org_id'));
 		}
 		
-		// limit by organisation
-		if ($request->has('org_id'))
-		{
-			$query->where('org_id','=',$request->input('org_id'));
-		}
 
 		if ($fleets = $query->get())
 		{

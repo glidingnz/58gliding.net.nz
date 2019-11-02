@@ -33,6 +33,14 @@ class AircraftApiController extends ApiController
 			});
 		}
 
+		if ($request->input('search-rego'))
+		{
+			$s = '%' . $request->input('search-rego') .'%';
+			$queryAircraft->where(function($queryAircraft) use ($s) {
+				$queryAircraft->where('rego','like',$s);
+			});
+		}
+
 
 		switch ($request->input('type'))
 		{
