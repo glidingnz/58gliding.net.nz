@@ -3,9 +3,9 @@
 @section('content')
 
 
-<div class="container-fluid" id="fleet">
+<div class="container-fluid" id="fleets">
 
-	<fleet></fleet>
+	<fleets></fleets>
 
 </div>
 

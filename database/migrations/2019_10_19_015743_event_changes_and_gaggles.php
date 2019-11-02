@@ -20,9 +20,9 @@ class EventChangesAndGaggles extends Migration
 			});
 		}
 
-		// gaggles are lists of aircraft e.g. what a club owns, or which aircraft are in a comp
-		if (!Schema::hasTable('gaggles')) {
-			Schema::create('gaggles', function (Blueprint $table) {
+		// fleets are lists of aircraft e.g. what a club owns, or which aircraft are in a comp
+		if (!Schema::hasTable('fleets')) {
+			Schema::create('fleets', function (Blueprint $table) {
 				$table->increments('id');
 				$table->string('name')->nullable();
 				$table->string('slug')->nullable();
@@ -33,15 +33,18 @@ class EventChangesAndGaggles extends Migration
 			});
 		}
 
-		// gaggles are lists of aircraft e.g. what a club owns, or which aircraft are in a comp
-		if (!Schema::hasTable('aircraft_gaggle')) {
-			Schema::create('aircraft_gaggle', function (Blueprint $table) {
+		// fleets are lists of aircraft e.g. what a club owns, or which aircraft are in a comp
+		if (!Schema::hasTable('aircraft_fleet')) {
+			Schema::create('aircraft_fleet', function (Blueprint $table) {
 				$table->increments('id');
 				$table->integer('aircraft_id');
-				$table->integer('gaggle_id');
+				$table->integer('fleet_id');
 				$table->timestamps();
 			});
 		}
+
+
+		Schema::dropIfExists('fleet');
 	}
 
 	/**
@@ -58,8 +61,8 @@ class EventChangesAndGaggles extends Migration
 			});
 		}
 
-		Schema::dropIfExists('gaggles');
+		Schema::dropIfExists('fleets');
 		
-		Schema::dropIfExists('aircraft_gaggle');
+		Schema::dropIfExists('aircraft_fleet');
 	}
 }

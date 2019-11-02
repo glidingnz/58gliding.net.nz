@@ -5716,10 +5716,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/aircraft/AddGagglePanel.vue?vue&type=script&lang=js&":
-/*!**********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/aircraft/AddGagglePanel.vue?vue&type=script&lang=js& ***!
-  \**********************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/aircraft/AddFleetPanel.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/aircraft/AddFleetPanel.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -5778,7 +5778,7 @@ __webpack_require__.r(__webpack_exports__);
     closeCustomModal: function closeCustomModal() {
       this.$emit('closeModal');
     },
-    addGaggle: function addGaggle() {
+    addFleet: function addFleet() {
       var that = this;
 
       if (this.name == '') {
@@ -5788,10 +5788,10 @@ __webpack_require__.r(__webpack_exports__);
         var data = {
           "name": this.name
         };
-        window.axios.post('/api/v1/gaggles', data).then(function (response) {
-          messages.$emit('success', 'Gaggle ' + that.name + ' added');
+        window.axios.post('/api/v1/fleets', data).then(function (response) {
+          messages.$emit('success', 'Fleet ' + that.name + ' added');
           that.closeCustomModal();
-          that.$emit('gaggleAdded', response.data.data);
+          that.$emit('fleetAdded', response.data.data);
         });
       }
     }
@@ -5800,10 +5800,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/aircraft/Gaggles.vue?vue&type=script&lang=js&":
-/*!***************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/aircraft/Gaggles.vue?vue&type=script&lang=js& ***!
-  \***************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/aircraft/Fleets.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/aircraft/Fleets.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -5841,7 +5841,7 @@ __webpack_require__.r(__webpack_exports__);
   props: ['orgId', 'orgName'],
   data: function data() {
     return {
-      gaggles: [],
+      fleets: [],
       showAddPanel: false,
       showEdit: false,
       showAdmin: false
@@ -5855,13 +5855,13 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     load: function load() {
       var that = this;
-      window.axios.get('/api/v1/gaggles', {
+      window.axios.get('/api/v1/fleets', {
         params: this.state
       }).then(function (response) {
-        that.gaggles = response.data.data;
+        that.fleets = response.data.data;
       });
     },
-    gaggleAdded: function gaggleAdded(event) {
+    fleetAdded: function fleetAdded(event) {
       this.load(); //window.location.href = "/events/" + event.slug  + "/edit";
     }
   }
@@ -55091,10 +55091,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/aircraft/AddGagglePanel.vue?vue&type=template&id=037d7924&":
-/*!**************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/aircraft/AddGagglePanel.vue?vue&type=template&id=037d7924& ***!
-  \**************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/aircraft/AddFleetPanel.vue?vue&type=template&id=344bd689&":
+/*!*************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/aircraft/AddFleetPanel.vue?vue&type=template&id=344bd689& ***!
+  \*************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -55163,7 +55163,7 @@ var render = function() {
             _vm._m(0),
             _vm._v(" "),
             _c("div", { staticClass: "form-group" }, [
-              _c("label", [_vm._v("Gaggle Name")]),
+              _c("label", [_vm._v("Fleet Name")]),
               _vm._v(" "),
               _c(
                 "span",
@@ -55212,11 +55212,11 @@ var render = function() {
                   staticClass: "btn btn-outline-dark",
                   on: {
                     click: function($event) {
-                      return _vm.addGaggle()
+                      return _vm.addFleet()
                     }
                   }
                 },
-                [_vm._v("Add Gaggle")]
+                [_vm._v("Add Fleet")]
               )
             ])
           ]
@@ -55231,7 +55231,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "form-group" }, [
-      _c("h2", [_vm._v("Add Gaggle")])
+      _c("h2", [_vm._v("Add Fleet")])
     ])
   }
 ]
@@ -55241,10 +55241,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/aircraft/Gaggles.vue?vue&type=template&id=5bf81d52&":
-/*!*******************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/aircraft/Gaggles.vue?vue&type=template&id=5bf81d52& ***!
-  \*******************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/aircraft/Fleets.vue?vue&type=template&id=e69f58ba&":
+/*!******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/aircraft/Fleets.vue?vue&type=template&id=e69f58ba& ***!
+  \******************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -55262,13 +55262,13 @@ var render = function() {
       _vm._m(0),
       _vm._v(" "),
       _vm.Laravel.clubMember == true || _vm.Laravel.admin
-        ? _c("add-gaggle-panel", {
+        ? _c("add-fleet-panel", {
             attrs: { "org-id": _vm.orgId, show: _vm.showAddPanel },
             on: {
               closeModal: function($event) {
                 _vm.showAddPanel = false
               },
-              gaggleAdded: _vm.gaggleAdded
+              fleetAdded: _vm.fleetAdded
             }
           })
         : _vm._e(),
@@ -55285,7 +55285,7 @@ var render = function() {
                   }
                 }
               },
-              [_c("span", { staticClass: "fa fa-plus" }), _vm._v(" Add Gaggle")]
+              [_c("span", { staticClass: "fa fa-plus" }), _vm._v(" Add Fleet")]
             )
           ])
         : _vm._e(),
@@ -55296,11 +55296,11 @@ var render = function() {
         [
           _vm._m(1),
           _vm._v(" "),
-          _vm._l(_vm.gaggles, function(gaggle) {
+          _vm._l(_vm.fleets, function(fleet) {
             return _c("tr", [
-              _c("td", [_vm._v(_vm._s(gaggle.name))]),
+              _c("td", [_vm._v(_vm._s(fleet.name))]),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(_vm.formatDate(gaggle.created_at)))])
+              _c("td", [_vm._v(_vm._s(_vm.formatDate(fleet.created_at)))])
             ])
           })
         ],
@@ -55317,7 +55317,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("h1", [
       _c("a", { attrs: { href: "/aircraft" } }, [_vm._v("Aircraft")]),
-      _vm._v(" » Gaggles")
+      _vm._v(" » Fleets")
     ])
   },
   function() {
@@ -72298,8 +72298,8 @@ Vue.component('edit-event', __webpack_require__(/*! ./components/events/EventEdi
 Vue.component('view-event', __webpack_require__(/*! ./components/events/EventView.vue */ "./resources/js/components/events/EventView.vue")["default"]);
 Vue.component('events', __webpack_require__(/*! ./components/events/Events.vue */ "./resources/js/components/events/Events.vue")["default"]);
 Vue.component('add-event-panel', __webpack_require__(/*! ./components/events/AddEventPanel.vue */ "./resources/js/components/events/AddEventPanel.vue")["default"]);
-Vue.component('gaggles', __webpack_require__(/*! ./components/aircraft/Gaggles.vue */ "./resources/js/components/aircraft/Gaggles.vue")["default"]);
-Vue.component('add-gaggle-panel', __webpack_require__(/*! ./components/aircraft/AddGagglePanel.vue */ "./resources/js/components/aircraft/AddGagglePanel.vue")["default"]);
+Vue.component('fleets', __webpack_require__(/*! ./components/aircraft/Fleets.vue */ "./resources/js/components/aircraft/Fleets.vue")["default"]);
+Vue.component('add-fleet-panel', __webpack_require__(/*! ./components/aircraft/AddFleetPanel.vue */ "./resources/js/components/aircraft/AddFleetPanel.vue")["default"]);
 /** common components  */
 
 Vue.component('autosize-textarea', __webpack_require__(/*! ./components/widgets/AutosizeTextarea.vue */ "./resources/js/components/widgets/AutosizeTextarea.vue")["default"]);
@@ -73864,17 +73864,17 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/aircraft/AddGagglePanel.vue":
-/*!*************************************************************!*\
-  !*** ./resources/js/components/aircraft/AddGagglePanel.vue ***!
-  \*************************************************************/
+/***/ "./resources/js/components/aircraft/AddFleetPanel.vue":
+/*!************************************************************!*\
+  !*** ./resources/js/components/aircraft/AddFleetPanel.vue ***!
+  \************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _AddGagglePanel_vue_vue_type_template_id_037d7924___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AddGagglePanel.vue?vue&type=template&id=037d7924& */ "./resources/js/components/aircraft/AddGagglePanel.vue?vue&type=template&id=037d7924&");
-/* harmony import */ var _AddGagglePanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AddGagglePanel.vue?vue&type=script&lang=js& */ "./resources/js/components/aircraft/AddGagglePanel.vue?vue&type=script&lang=js&");
+/* harmony import */ var _AddFleetPanel_vue_vue_type_template_id_344bd689___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AddFleetPanel.vue?vue&type=template&id=344bd689& */ "./resources/js/components/aircraft/AddFleetPanel.vue?vue&type=template&id=344bd689&");
+/* harmony import */ var _AddFleetPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AddFleetPanel.vue?vue&type=script&lang=js& */ "./resources/js/components/aircraft/AddFleetPanel.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -73884,9 +73884,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _AddGagglePanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _AddGagglePanel_vue_vue_type_template_id_037d7924___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _AddGagglePanel_vue_vue_type_template_id_037d7924___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _AddFleetPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _AddFleetPanel_vue_vue_type_template_id_344bd689___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _AddFleetPanel_vue_vue_type_template_id_344bd689___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -73896,107 +73896,107 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/aircraft/AddGagglePanel.vue"
+component.options.__file = "resources/js/components/aircraft/AddFleetPanel.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/aircraft/AddGagglePanel.vue?vue&type=script&lang=js&":
-/*!**************************************************************************************!*\
-  !*** ./resources/js/components/aircraft/AddGagglePanel.vue?vue&type=script&lang=js& ***!
-  \**************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddGagglePanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./AddGagglePanel.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/aircraft/AddGagglePanel.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddGagglePanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/aircraft/AddGagglePanel.vue?vue&type=template&id=037d7924&":
-/*!********************************************************************************************!*\
-  !*** ./resources/js/components/aircraft/AddGagglePanel.vue?vue&type=template&id=037d7924& ***!
-  \********************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddGagglePanel_vue_vue_type_template_id_037d7924___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./AddGagglePanel.vue?vue&type=template&id=037d7924& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/aircraft/AddGagglePanel.vue?vue&type=template&id=037d7924&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddGagglePanel_vue_vue_type_template_id_037d7924___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddGagglePanel_vue_vue_type_template_id_037d7924___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/js/components/aircraft/Gaggles.vue":
-/*!******************************************************!*\
-  !*** ./resources/js/components/aircraft/Gaggles.vue ***!
-  \******************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Gaggles_vue_vue_type_template_id_5bf81d52___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Gaggles.vue?vue&type=template&id=5bf81d52& */ "./resources/js/components/aircraft/Gaggles.vue?vue&type=template&id=5bf81d52&");
-/* harmony import */ var _Gaggles_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Gaggles.vue?vue&type=script&lang=js& */ "./resources/js/components/aircraft/Gaggles.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _Gaggles_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _Gaggles_vue_vue_type_template_id_5bf81d52___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _Gaggles_vue_vue_type_template_id_5bf81d52___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/aircraft/Gaggles.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/aircraft/Gaggles.vue?vue&type=script&lang=js&":
-/*!*******************************************************************************!*\
-  !*** ./resources/js/components/aircraft/Gaggles.vue?vue&type=script&lang=js& ***!
-  \*******************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Gaggles_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./Gaggles.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/aircraft/Gaggles.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Gaggles_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/aircraft/Gaggles.vue?vue&type=template&id=5bf81d52&":
+/***/ "./resources/js/components/aircraft/AddFleetPanel.vue?vue&type=script&lang=js&":
 /*!*************************************************************************************!*\
-  !*** ./resources/js/components/aircraft/Gaggles.vue?vue&type=template&id=5bf81d52& ***!
+  !*** ./resources/js/components/aircraft/AddFleetPanel.vue?vue&type=script&lang=js& ***!
   \*************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddFleetPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./AddFleetPanel.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/aircraft/AddFleetPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddFleetPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/aircraft/AddFleetPanel.vue?vue&type=template&id=344bd689&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/aircraft/AddFleetPanel.vue?vue&type=template&id=344bd689& ***!
+  \*******************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Gaggles_vue_vue_type_template_id_5bf81d52___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./Gaggles.vue?vue&type=template&id=5bf81d52& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/aircraft/Gaggles.vue?vue&type=template&id=5bf81d52&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Gaggles_vue_vue_type_template_id_5bf81d52___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddFleetPanel_vue_vue_type_template_id_344bd689___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./AddFleetPanel.vue?vue&type=template&id=344bd689& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/aircraft/AddFleetPanel.vue?vue&type=template&id=344bd689&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddFleetPanel_vue_vue_type_template_id_344bd689___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Gaggles_vue_vue_type_template_id_5bf81d52___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddFleetPanel_vue_vue_type_template_id_344bd689___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/aircraft/Fleets.vue":
+/*!*****************************************************!*\
+  !*** ./resources/js/components/aircraft/Fleets.vue ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Fleets_vue_vue_type_template_id_e69f58ba___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Fleets.vue?vue&type=template&id=e69f58ba& */ "./resources/js/components/aircraft/Fleets.vue?vue&type=template&id=e69f58ba&");
+/* harmony import */ var _Fleets_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Fleets.vue?vue&type=script&lang=js& */ "./resources/js/components/aircraft/Fleets.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Fleets_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Fleets_vue_vue_type_template_id_e69f58ba___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Fleets_vue_vue_type_template_id_e69f58ba___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/aircraft/Fleets.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/aircraft/Fleets.vue?vue&type=script&lang=js&":
+/*!******************************************************************************!*\
+  !*** ./resources/js/components/aircraft/Fleets.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Fleets_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./Fleets.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/aircraft/Fleets.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Fleets_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/aircraft/Fleets.vue?vue&type=template&id=e69f58ba&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/aircraft/Fleets.vue?vue&type=template&id=e69f58ba& ***!
+  \************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Fleets_vue_vue_type_template_id_e69f58ba___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./Fleets.vue?vue&type=template&id=e69f58ba& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/aircraft/Fleets.vue?vue&type=template&id=e69f58ba&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Fleets_vue_vue_type_template_id_e69f58ba___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Fleets_vue_vue_type_template_id_e69f58ba___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

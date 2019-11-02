@@ -6,14 +6,14 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Api\ApiController;
-use App\Models\Gaggle;
+use App\Models\Fleet;
 use Auth;
 
-class GagglesApiController extends ApiController
+class FleetsApiController extends ApiController
 {
 	public function index(Request $request)
 	{
-		$query = Gaggle::query()->orderBy('created_at', 'desc');
+		$query = Fleet::query()->orderBy('created_at', 'desc');
 
 		// limit by organisation
 		if ($request->has('org_id'))
@@ -27,9 +27,9 @@ class GagglesApiController extends ApiController
 			$query->where('org_id','=',$request->input('org_id'));
 		}
 
-		if ($gaggles = $query->get())
+		if ($fleets = $query->get())
 		{
-			return $this->success($gaggles);
+			return $this->success($fleets);
 		}
 		return $this->error();
 	}
@@ -43,16 +43,16 @@ class GagglesApiController extends ApiController
 	*/
 	public function show($id)
 	{
-		if ($gaggle = Gaggle::find($id))
+		if ($fleet = Fleet::find($id))
 		{
-			return $this->success($gaggle);
+			return $this->success($fleet);
 		}
 		return $this->error();
 	}
 
 
 	/**
-	* Create a gaggle.
+	* Create a fleet.
 	*
 	* @param  int  $id
 	* @return \Illuminate\Http\Response
@@ -64,13 +64,13 @@ class GagglesApiController extends ApiController
 		// create a slug if one doesn't exist
 		$slug = $request->input('slug', $request->input('name', ''));
 
-		$gaggle = Gaggle::create($input);
+		$fleet = Fleet::create($input);
 
-		$gaggle->slug = $slug;
-		$gaggle->user_id = Auth::user()->id;
-		$gaggle->org_id = $request->input('org_id', null);
-		$gaggle->save();
+		$fleet->slug = $slug;
+		$fleet->user_id = Auth::user()->id;
+		$fleet->org_id = $request->input('org_id', null);
+		$fleet->save();
 
-		return $this->success($gaggle);
+		return $this->success($fleet);
 	}
 }

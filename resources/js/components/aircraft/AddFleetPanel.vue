@@ -7,17 +7,17 @@
 			<button v-on:click="closeCustomModal()" class="btn btn-outline-dark float-right">Cancel</button>
 			
 			<div class="form-group">
-				<h2>Add Gaggle</h2>
+				<h2>Add Fleet</h2>
 			</div>
 
 			<div class="form-group">
-				<label>Gaggle Name</label> <span class="error" v-show="showNameRequired">Name is required</span>
+				<label>Fleet Name</label> <span class="error" v-show="showNameRequired">Name is required</span>
 				<input type="text" class="form-control" v-model="name" ref="newName">
 			</div>
 
 
 			<div class="form-group mt-2">
-				<button v-on:click="addGaggle()" class="btn btn-outline-dark">Add Gaggle</button>
+				<button v-on:click="addFleet()" class="btn btn-outline-dark">Add Fleet</button>
 			</div>
 
 		</div>
@@ -48,7 +48,7 @@ export default {
 		closeCustomModal: function() {
 			this.$emit('closeModal');
 		},
-		addGaggle: function() {
+		addFleet: function() {
 			var that = this;
 			if (this.name=='') {
 				messages.$emit('error', 'A name is required');
@@ -60,10 +60,10 @@ export default {
 					"name": this.name,
 				}
 
-				window.axios.post('/api/v1/gaggles', data).then(function (response) {
-					messages.$emit('success', 'Gaggle ' + that.name + ' added');
+				window.axios.post('/api/v1/fleets', data).then(function (response) {
+					messages.$emit('success', 'Fleet ' + that.name + ' added');
 					that.closeCustomModal();
-					that.$emit('gaggleAdded', response.data.data);
+					that.$emit('fleetAdded', response.data.data);
 
 				});
 			}

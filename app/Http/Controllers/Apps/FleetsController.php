@@ -8,11 +8,11 @@ use App\Http\Requests;
 // use App\Models\Aircraft;
 // use App\Classes\LoadAircraft;
 
-class GagglesController extends Controller
+class FleetsController extends Controller
 {
 	public function index()
 	{
-		return view('aircraft/gaggles');
+		return view('aircraft/fleets');
 	}
 
 
