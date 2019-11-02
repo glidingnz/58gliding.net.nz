@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Classes\SluggableTrait;
 
 class Gaggle extends Model
 {
+	use SluggableTrait;
 
 	public $fillable = [
 		'name',
@@ -32,5 +34,5 @@ class Gaggle extends Model
 		return $this->belongsTo('App\Models\Org'); 
 	}
 
-	
+
 }

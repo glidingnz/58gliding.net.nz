@@ -7,12 +7,25 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Api\ApiController;
 use App\Models\Gaggle;
+use Auth;
 
 class GagglesApiController extends ApiController
 {
-	public function index(request $request)
+	public function index(Request $request)
 	{
-		$query = Gaggle::query();
+		$query = Gaggle::query()->orderBy('created_at', 'desc');
+
+		// limit by organisation
+		if ($request->has('org_id'))
+		{
+			$query->where('org_id','=',$request->input('org_id'));
+		}
+		
+		// limit by organisation
+		if ($request->has('org_id'))
+		{
+			$query->where('org_id','=',$request->input('org_id'));
+		}
 
 		if ($gaggles = $query->get())
 		{
@@ -44,28 +57,20 @@ class GagglesApiController extends ApiController
 	* @param  int  $id
 	* @return \Illuminate\Http\Response
 	*/
-	public function post($id)
+	public function store(Request $request)
 	{
 		$input = $request->all();
 
 		// create a slug if one doesn't exist
 		$slug = $request->input('slug', $request->input('name', ''));
 
-		$event = Event::create($input);
+		$gaggle = Gaggle::create($input);
 
-		$event->slug = $this->create_unique_slug($slug);
+		$gaggle->slug = $slug;
+		$gaggle->user_id = Auth::user()->id;
+		$gaggle->org_id = $request->input('org_id', null);
+		$gaggle->save();
 
-		// default the end date to the start date unless given otherwise
-		$event->end_date = $request->input('end_date', $request->input('start_date', null));
-		$event->type = $request->input('type', $request->input('type', 'other'));
-		if ($request->input('org_id')==null) {
-			$event->org_id = $slug;
-			$gnz_org = Org::where('slug', 'gnz')->first();
-			$event->org_id = $gnz_org->id;
-		}
-		$event->creator_user_id = Auth::user()->id;
-		$event->save();
-
-		return $this->sendResponse($event->toArray(), 'Event Created');
+		return $this->success($gaggle);
 	}
 }

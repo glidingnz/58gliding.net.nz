@@ -100,5 +100,6 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/events/{slug}/edit', 'Apps\EventsController@editEvent');
 
 	Route::get('/gaggles', 'Apps\GagglesController@index');
+	Route::get('/gaggles/{id}', 'Apps\GagglesController@show');
 
 });

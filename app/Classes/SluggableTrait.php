@@ -6,7 +6,7 @@ trait SluggableTrait
 {
 	public function setSlugAttribute($slug)
 	{
-		// check if the slug has changed. If it hasn't, don't do anything otherwise we end up with a incremented number
+		// check if the slug has changed. If it hasn't, don't do anything otherwise we end up with an incremented number when we don't want one
 		if (isset($this->attributes['slug']) && $this->attributes['slug']==$slug) return;
 
 		$slug = simple_string(strtolower($slug));

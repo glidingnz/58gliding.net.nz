@@ -71,6 +71,7 @@ Vue.component('view-event', require('./components/events/EventView.vue').default
 Vue.component('events', require('./components/events/Events.vue').default);
 Vue.component('add-event-panel', require('./components/events/AddEventPanel.vue').default);
 Vue.component('gaggles', require('./components/aircraft/Gaggles.vue').default);
+Vue.component('add-gaggle-panel', require('./components/aircraft/AddGagglePanel.vue').default);
 
 /** common components  */
 Vue.component('autosize-textarea', require('./components/widgets/AutosizeTextarea.vue').default);

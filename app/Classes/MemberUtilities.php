@@ -15,7 +15,6 @@ class MemberUtilities {
 	 */
 	public function get_filtered_members($request)
 	{
-
 		$query = Member::query();
 		$query->orderBy('last_name');
 
