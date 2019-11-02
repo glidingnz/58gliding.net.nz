@@ -16,8 +16,9 @@ class Aircraft extends Model
 	/**
 	 * The roles that belong to the user.
 	 */
-	public function gaggles()
+	public function fleet()
 	{
-		return $this->belongsToMany('App\Models\Gaggle');
+		return $this->belongsToMany('App\Models\Fleet');
 	}
+
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Api\ApiController;
 use App\Models\Fleet;
+use App\Models\Aircraft;
 use Auth;
 
 class FleetsApiController extends ApiController
@@ -38,9 +39,57 @@ class FleetsApiController extends ApiController
 	*/
 	public function show($id)
 	{
-		if ($fleet = Fleet::find($id))
+		if ($fleet = Fleet::with('aircraft')->find($id))
 		{
 			return $this->success($fleet);
+		}
+		return $this->error();
+	}
+
+
+	/**
+	* Add an aircraft to a fleet.
+	*
+	* @param  int  $id
+	* @return \Illuminate\Http\Response
+	*/
+	public function add(Request $request, $fleet_id)
+	{
+		if ($fleet = Fleet::find($fleet_id))
+		{
+			// check the aircraft exists
+			if ($request->has('aircraft_id'))
+			{
+				$aircraft = Aircraft::find($request->input('aircraft_id'));
+				if ($fleet->aircraft()->save($aircraft))
+				{
+					return $this->success();
+				}
+			}
+		}
+		return $this->error();
+	}
+
+
+	/**
+	* Detatch an aircraft from a fleet.
+	*
+	* @param  int  $id
+	* @return \Illuminate\Http\Response
+	*/
+	public function remove(Request $request, $fleet_id)
+	{
+		if ($fleet = Fleet::find($fleet_id))
+		{
+			// check the aircraft exists
+			if ($request->has('aircraft_id'))
+			{
+				$aircraft = Aircraft::find($request->input('aircraft_id'));
+				if ($fleet->aircraft()->detach($aircraft))
+				{
+					return $this->success();
+				}
+			}
 		}
 		return $this->error();
 	}

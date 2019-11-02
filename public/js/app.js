@@ -5812,6 +5812,57 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../mixins.js */ "./resources/js/mixins.js");
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vue_debounce__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-debounce */ "./node_modules/vue-debounce/dist/vue-debounce.min.js");
+/* harmony import */ var vue_debounce__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_debounce__WEBPACK_IMPORTED_MODULE_1__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5826,13 +5877,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
+Vue.use(vue_debounce__WEBPACK_IMPORTED_MODULE_1___default.a);
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
   props: ['orgId', 'fleetId'],
   data: function data() {
     return {
       fleet: {},
-      searchString: ''
+      searchString: '',
+      searchResults: null
     };
   },
   mounted: function mounted() {
@@ -5846,8 +5900,34 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     searchAircraft: function searchAircraft() {
-      window.axios.get('/api/v1/aircraft/').then(function (response) {
-        that.fleet = response.data.data;
+      var that = this;
+
+      if (this.searchString != '') {
+        window.axios.get('/api/v1/aircraft?search-rego=' + this.searchString).then(function (response) {
+          that.searchResults = response.data.data;
+        });
+      } else {
+        this.searchResults = null;
+      }
+    },
+    addAircraft: function addAircraft(aircraft) {
+      var that = this;
+      var data = {
+        "aircraft_id": aircraft.id
+      };
+      window.axios.post('/api/v1/fleets/' + this.fleetId + '/add', data).then(function (response) {
+        messages.$emit('success', aircraft.rego + ' added');
+        that.load();
+      });
+    },
+    removeAircraft: function removeAircraft(aircraft) {
+      var that = this;
+      var data = {
+        "aircraft_id": aircraft.id
+      };
+      window.axios.post('/api/v1/fleets/' + this.fleetId + '/remove', data).then(function (response) {
+        messages.$emit('success', aircraft.rego + ' removed');
+        that.load();
       });
     }
   }
@@ -5918,7 +5998,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     fleetAdded: function fleetAdded(event) {
-      this.load(); //window.location.href = "/events/" + event.slug  + "/edit";
+      this.load();
     }
   }
 });
@@ -47697,6 +47777,18 @@ var r="undefined"!==typeof window&&"undefined"!==typeof document,n=["Edge","Trid
 
 /***/ }),
 
+/***/ "./node_modules/vue-debounce/dist/vue-debounce.min.js":
+/*!************************************************************!*\
+  !*** ./node_modules/vue-debounce/dist/vue-debounce.min.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+!function(e,n){ true?module.exports=n():undefined}(this,function(){"use strict";function d(t,e){function n(){for(var e=[],n=arguments.length;n--;)e[n]=arguments[n];clearTimeout(o),(o=setTimeout(function(){o=null,t.apply(void 0,e)},i))||t.apply(void 0,e)}var o=null,i="number"==typeof e?e:function(e){var n=String(e).split(/(ms|s)/i),t=n[0],o=n[1];return void 0===o&&(o="ms"),Number(t)*{ms:1,s:1e3}[o]}(e);return n.cancel=function(){clearTimeout(o),o=null},n}return{name:"debounce",install:function(e,n){void 0===n&&(n={});var a=n.lock,f=n.listenTo;void 0===f&&(f="keyup");var l=n.defaultTime;void 0===l&&(l="300ms"),e.directive("debounce",{bind:function(n,e){var i=e.value,t=e.arg,u=e.modifiers,o=function(e,n){var t=(e.getNamedItem("debounce-events")||{}).value;function o(e){return e.map(function(e){return e.toLowerCase()})}return void 0===t&&(t=!1),t?o(t.split(",")):Array.isArray(n)?o(n):[n]}(n.attributes,f),r=d(function(e){i(e.value)},t||l);function c(e){var n=e.key,t=e.target,o=!u.lock&&!a||u.unlock;"Enter"===n&&o&&(r.cancel(),i(t.value)),"Enter"!==n&&r(t)}o.forEach(function(e){n.addEventListener(e,c)})}})}}});
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Achievements.vue?vue&type=template&id=2edacde2&":
 /*!***************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Achievements.vue?vue&type=template&id=2edacde2& ***!
@@ -55321,8 +55413,8 @@ var render = function() {
       _vm.fleet.name ? _c("span", [_vm._v(_vm._s(_vm.fleet.name))]) : _vm._e()
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "form-inline" }, [
-      _c("span", { staticClass: "label mr-2" }, [_vm._v("Add Aircraft:")]),
+    _c("div", { staticClass: "form-inline mb-4" }, [
+      _c("span", { staticClass: "label mr-2" }, [_vm._v("Add by Rego:")]),
       _vm._v(" "),
       _c("input", {
         directives: [
@@ -55331,9 +55423,16 @@ var render = function() {
             rawName: "v-model",
             value: _vm.searchString,
             expression: "searchString"
+          },
+          {
+            name: "debounce",
+            rawName: "v-debounce:500ms",
+            value: _vm.searchAircraft,
+            expression: "searchAircraft",
+            arg: "500ms"
           }
         ],
-        staticClass: "form-control",
+        staticClass: "form-control mr-2",
         attrs: { type: "text" },
         domProps: { value: _vm.searchString },
         on: {
@@ -55344,11 +55443,149 @@ var render = function() {
             _vm.searchString = $event.target.value
           }
         }
-      })
-    ])
+      }),
+      _vm._v(" e.g. GBA\n\t")
+    ]),
+    _vm._v(" "),
+    _vm.searchResults != null
+      ? _c("div", { staticClass: "mb-4" }, [
+          _c("h2", [_vm._v("Search Results")]),
+          _vm._v(" "),
+          _vm.searchResults.length > 0
+            ? _c(
+                "table",
+                { staticClass: "table table-striped table-sm" },
+                [
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _vm._l(_vm.searchResults, function(aircraft) {
+                    return _c("tr", [
+                      _c("td", [_vm._v(_vm._s(aircraft.rego))]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-dark btn-xs",
+                            on: {
+                              click: function($event) {
+                                return _vm.addAircraft(aircraft)
+                              }
+                            }
+                          },
+                          [_vm._v("Add")]
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(aircraft.contest_id))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(aircraft.model))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(aircraft.manufacturer))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(aircraft.class))])
+                    ])
+                  })
+                ],
+                2
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.searchResults.length == 0
+            ? _c("span", { staticClass: "badge badge-danger" }, [
+                _vm._v("No Results")
+              ])
+            : _vm._e()
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c("h2", [_vm._v("Current Aircraft")]),
+    _vm._v(" "),
+    _vm.fleet.aircraft && _vm.fleet.aircraft.length != 0
+      ? _c(
+          "table",
+          { staticClass: "table table-striped table-sm" },
+          [
+            _vm._m(1),
+            _vm._v(" "),
+            _vm._l(_vm.fleet.aircraft, function(aircraft) {
+              return _c("tr", [
+                _c("td", [_vm._v(_vm._s(aircraft.rego))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(aircraft.contest_id))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(aircraft.model))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(aircraft.manufacturer))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(aircraft.class))]),
+                _vm._v(" "),
+                _c("td", [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-outline-dark btn-xs",
+                      on: {
+                        click: function($event) {
+                          return _vm.removeAircraft(aircraft)
+                        }
+                      }
+                    },
+                    [_vm._v("Remove")]
+                  )
+                ])
+              ])
+            })
+          ],
+          2
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    !_vm.fleet.aircraft || _vm.fleet.aircraft.length == 0
+      ? _c("span", { staticClass: "badge badge-warning" }, [
+          _vm._v("This fleet is empty!")
+        ])
+      : _vm._e()
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("th", [_vm._v("Rego")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Add")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Contest ID")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Model")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Manufacturer")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Class")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("th", [_vm._v("Rego")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Contest ID")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Model")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Manufacturer")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Class")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Remove")])
+    ])
+  }
+]
 render._withStripped = true
 
 

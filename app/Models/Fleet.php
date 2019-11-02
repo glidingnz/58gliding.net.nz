@@ -31,7 +31,7 @@ class Fleet extends Model
 	];
 
 	public function aircraft() { 
-		return $this->belongsTo('App\Models\Aircraft'); 
+		return $this->belongsToMany('App\Models\Aircraft'); 
 	} 
 
 	public function org() { 

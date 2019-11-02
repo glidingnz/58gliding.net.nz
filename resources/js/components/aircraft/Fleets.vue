@@ -51,7 +51,6 @@
 			},
 			fleetAdded: function(event) {
 				this.load();
-				//window.location.href = "/events/" + event.slug  + "/edit";
 			}
 		}
 	}
