@@ -3420,9 +3420,20 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
     },
     exportData: function exportData(format) {
       // create the url
-      var url = '/api/v1/members/export/' + format + '?' + this.createExportUrl(format); // download it!
-
-      window.location.href = url;
+      var url = '/api/v1/members/export/' + format + '?' + this.createExportUrl(format);
+      axios({
+        url: url,
+        method: 'GET',
+        responseType: 'blob'
+      }).then(function (response) {
+        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        var fileLink = document.createElement('a');
+        fileLink.href = fileURL;
+        fileLink.setAttribute('download', 'members.' + format);
+        document.body.appendChild(fileLink);
+        fileLink.click();
+      }); // download it!
+      // window.location.href = url;
     },
     createUrl: function createUrl(obj, extras) {
       var parts = [];
