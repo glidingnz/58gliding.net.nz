@@ -43,13 +43,14 @@
 				
 				<div class="form-inline form-group">
 					<div class="mr-4">
-						Authorised by 
-						<input class="form-control ml-2" type="search" v-on:keyup="onSearch(searchText)" v-model="searchText" placeholder="Search...">
+						Authorised by: 
+						<input class="form-control ml-2" type="search" v-on:keyup="onSearch(searchText)" v-model="searchText" placeholder="Search for member...">
 						<select v-show="peopleSearchResults.length!=0" class="form-control ml-2" name="peopleSearch" id="peopleSearch" v-model="authorising_member_id">
 							<option value="0">Select...</option>
 							<option v-for="person in peopleSearchResults" v-bind:value="person.id">{{person.first_name}} {{person.last_name}} {{person.nzga_number}} {{person.club}} {{person.city}}</option>
 						</select>
 						<span v-show="peopleSearchResults.length==0" class="ml-2">No members found</span>
+						<span class="ml-2">(e.g. CFI)</span>
 					</div>
 				</div>
 				
@@ -172,7 +173,7 @@ export default {
 
 			if (this.newRating.rating_id) formData.append('rating_id', this.newRating.rating_id);
 			if (this.memberId) formData.append('member_id', this.memberId);
-			if (this.newRating.awarded) formData.append('awarded', this.newRating.awarded);
+			if (this.newRating.awarded) formData.append('awarded', this.$moment(this.newRating.awarded).format('YYYY-MM-DD'));
 			if (this.newRating.notes) formData.append('notes', this.newRating.notes);
 			if (this.presetExpires) formData.append('expires', this.presetExpires);
 			if (this.authorising_member_id) formData.append('authorising_member_id', this.authorising_member_id);
@@ -182,10 +183,6 @@ export default {
 				}
 			}
 
-			if (!formData.has('authorising_member_id')) {
-				messages.$emit('error', 'An authorising person is required');
-				return false;
-			}
 			if (!formData.has('rating_id')) {
 				messages.$emit('error', 'A rating is required');
 				return false;
@@ -204,7 +201,6 @@ export default {
 					messages.$emit('success', 'Rating Added');
 					that.getMemberRatings();
 					that.uploading = false;
-					that.newRating = {};
 					that.files = null;
 					that.addRating = false;
 				})

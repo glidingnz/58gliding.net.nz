@@ -107,7 +107,6 @@ class RatingMemberApiController extends ApiController
 		if (!$request->input('rating_id')) return $this->error("rating_id is required");
 		if (!$request->input('member_id')) return $this->error("member_id is required");
 		if (!$request->input('awarded')) return $this->error("awarded date is required");
-		if (!$request->input('authorising_member_id')) return $this->error("authorising_member_id is required");
 
 		// handle uploading the files
 		$path = $org->folder;
@@ -127,6 +126,7 @@ class RatingMemberApiController extends ApiController
 		$ratingMember = new RatingMember;
 		$ratingMember->expires = null;
 		$ratingMember->revoked_by = null;
+		$ratingMember->authorising_member_id = null;
 
 		// calculate expires date from months given if given
 		if ($request->input('expires')) {

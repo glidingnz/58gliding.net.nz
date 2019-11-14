@@ -4040,6 +4040,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -4084,7 +4085,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       var formData = new FormData();
       if (this.newRating.rating_id) formData.append('rating_id', this.newRating.rating_id);
       if (this.memberId) formData.append('member_id', this.memberId);
-      if (this.newRating.awarded) formData.append('awarded', this.newRating.awarded);
+      if (this.newRating.awarded) formData.append('awarded', this.$moment(this.newRating.awarded).format('YYYY-MM-DD'));
       if (this.newRating.notes) formData.append('notes', this.newRating.notes);
       if (this.presetExpires) formData.append('expires', this.presetExpires);
       if (this.authorising_member_id) formData.append('authorising_member_id', this.authorising_member_id);
@@ -4093,11 +4094,6 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         for (var i = 0; i < this.files.length; i++) {
           formData.append('files[' + i + ']', this.files[i]);
         }
-      }
-
-      if (!formData.has('authorising_member_id')) {
-        messages.$emit('error', 'An authorising person is required');
-        return false;
       }
 
       if (!formData.has('rating_id')) {
@@ -4115,7 +4111,6 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         messages.$emit('success', 'Rating Added');
         that.getMemberRatings();
         that.uploading = false;
-        that.newRating = {};
         that.files = null;
         that.addRating = false;
       })["catch"](function (error) {
@@ -52586,7 +52581,7 @@ var render = function() {
               _vm._v(" "),
               _c("div", { staticClass: "form-inline form-group" }, [
                 _c("div", { staticClass: "mr-4" }, [
-                  _vm._v("\n\t\t\t\t\tAuthorised by \n\t\t\t\t\t"),
+                  _vm._v("\n\t\t\t\t\tAuthorised by: \n\t\t\t\t\t"),
                   _c("input", {
                     directives: [
                       {
@@ -52597,7 +52592,10 @@ var render = function() {
                       }
                     ],
                     staticClass: "form-control ml-2",
-                    attrs: { type: "search", placeholder: "Search..." },
+                    attrs: {
+                      type: "search",
+                      placeholder: "Search for member..."
+                    },
                     domProps: { value: _vm.searchText },
                     on: {
                       keyup: function($event) {
@@ -52689,7 +52687,9 @@ var render = function() {
                       staticClass: "ml-2"
                     },
                     [_vm._v("No members found")]
-                  )
+                  ),
+                  _vm._v(" "),
+                  _c("span", { staticClass: "ml-2" }, [_vm._v("(e.g. CFI)")])
                 ])
               ]),
               _vm._v(" "),

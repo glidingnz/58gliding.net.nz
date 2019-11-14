@@ -30,7 +30,7 @@ class AddRatings extends Migration
 			$table->date('awarded');
 			$table->date('expires')->nullable()->default(NULL);
 			$table->text('notes')->nullable();
-			$table->integer('authorising_member_id');
+			$table->integer('authorising_member_id')->nullable();
 			$table->integer('granted_by_user_id');
 			$table->string('revoked_by')->nullable();
 			$table->timestamps();
