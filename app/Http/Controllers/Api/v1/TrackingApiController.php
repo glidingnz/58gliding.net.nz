@@ -317,6 +317,10 @@ class TrackingApiController extends ApiController
 			{
 				// If we don't know the aircraft, store it anyway, using the device ID converted to hex as the hex code.
 				$rego = null;
+				$hex = null;
+			}
+
+			if ($hex==null) {
 				$hex = strtoupper(dechex(substr($request['deviceId'], 2)));
 			}
 
