@@ -52,6 +52,7 @@ Route::match(['post','get'],'/contestentries/contestentries/loaddata', 'Apps\Con
 Route::resource('/contestentries', 'Apps\ContestEntriesController');
 
 Route::get('/tracking', 'Apps\TrackingController@index');
+Route::get('/tracking2', 'Apps\TrackingController@mapbox');
 Route::get('/tracking/{year}-{month}-{day}', 'Apps\TrackingController@day');
 Route::get('/tracking/{year}-{month}-{day}/{rego}', 'Apps\TrackingController@track');
 Route::get('/tracking2/{year}-{month}-{day}', 'Apps\TrackingController@day2');

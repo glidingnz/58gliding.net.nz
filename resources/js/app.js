@@ -47,7 +47,8 @@ Vue.component('edit-aircraft', require('./components/EditAircraft.vue').default)
 Vue.component('members', require('./components/Members.vue').default);
 Vue.component('member', require('./components/Member.vue').default);
 Vue.component('edit-member', require('./components/EditMember.vue').default);
-Vue.component('tracking', require('./components/Tracking.vue').default);
+Vue.component('tracking', require('./components/tracking/Tracking.vue').default);
+Vue.component('tracking2', require('./components/tracking/Tracking2.vue').default);
 Vue.component('trackd', require('./components/Trackd.vue').default);
 Vue.component('altitude-chart', require('./components/AltitudeChart.vue').default);
 Vue.component('users-list', require('./components/admin/UsersList.vue').default);

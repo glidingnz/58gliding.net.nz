@@ -14,6 +14,10 @@ class TrackingController extends Controller
 	{
 		return view('tracking/map');
 	}
+	public function mapbox()
+	{
+		return view('tracking/mapbox');
+	}
 	public function spots()
 	{
 		return view('tracking/spots');

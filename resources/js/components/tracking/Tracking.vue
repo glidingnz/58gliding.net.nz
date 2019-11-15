@@ -246,7 +246,7 @@
 </template>
 
 <script>
-	import common from '../mixins.js';
+	import common from '../../mixins.js';
 	import moment from 'moment';
 	Vue.prototype.$moment = moment;
 
