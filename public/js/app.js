@@ -8791,6 +8791,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -8814,17 +8818,22 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
   },
   computed: {
     filteredAircraft: function filteredAircraft() {
-      if (this.filterIsland == 'north') {
-        if (item.lng < 172.5270994) return false;
-      }
+      var that = this;
+      return this.aircraft.filter(function (craft) {
+        if (that.filterIsland == 'north') {
+          if (craft.points[0].lng < 172.5270994) return false;
+        }
 
-      if (this.filterIsland == 'south') {
-        if (item.lng > 174.8282816) return false;
-      }
+        if (that.filterIsland == 'south') {
+          if (craft.points[0].lng > 174.8282816) return false;
+        }
 
-      if (this.filterUnknown) {
-        if (item.rego == '') return false;
-      } // check if NOT in the list of aircraft if we are filtering that way
+        if (that.filterUnknown) {
+          if (craft.rego == '') return false;
+        }
+
+        return true;
+      }); // check if NOT in the list of aircraft if we are filtering that way
       // if (this.selectedFleet!=null && this.fleet.aircraft && this.fleet.aircraft.length>0) {
       // 	var found=false;
       // 	for(var i = 0; i < this.fleet.aircraft.length; i++) {
@@ -8835,7 +8844,6 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       // 	}
       // 	if (!found) return false;
       // }
-
 
       return true;
     }
@@ -8889,7 +8897,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     },
     createMarkers: function createMarkers() {
       var that = this;
-      that.aircraft.forEach(function (aircraft) {
+      that.filteredAircraft.forEach(function (aircraft) {
         var el = document.createElement('div');
         var iel = document.createElement('div');
         iel.className = 'aircraft_marker';
@@ -8900,7 +8908,9 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
           offset: [0, -5]
         }).setLngLat([aircraft.points[0].lng, aircraft.points[0].lat]).addTo(that.map);
       });
-    }
+    },
+    createMarker: function createMarker() {},
+    updateMarker: function updateMarker() {}
   }
 });
 
@@ -60694,19 +60704,75 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [
-      _vm._v("\n\n\tMap:\n\t"),
-      _c("div", { staticClass: "mapbox", attrs: { id: "map" } })
+  return _c("div", [
+    _vm._v("\n\n\tMap:\n\t"),
+    _c("div", { staticClass: "mapbox", attrs: { id: "map" } }),
+    _vm._v(" "),
+    _c("label", { attrs: { for: "showAll" } }, [
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.filterIsland,
+            expression: "filterIsland"
+          }
+        ],
+        attrs: { type: "radio", id: "showAll", value: "all" },
+        domProps: { checked: _vm._q(_vm.filterIsland, "all") },
+        on: {
+          change: function($event) {
+            _vm.filterIsland = "all"
+          }
+        }
+      }),
+      _vm._v(" All")
+    ]),
+    _vm._v("  \n\t"),
+    _c("label", { attrs: { for: "showNorth" } }, [
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.filterIsland,
+            expression: "filterIsland"
+          }
+        ],
+        attrs: { type: "radio", id: "showNorth", value: "north" },
+        domProps: { checked: _vm._q(_vm.filterIsland, "north") },
+        on: {
+          change: function($event) {
+            _vm.filterIsland = "north"
+          }
+        }
+      }),
+      _vm._v(" North")
+    ]),
+    _vm._v("  \n\t"),
+    _c("label", { attrs: { for: "showSouth" } }, [
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.filterIsland,
+            expression: "filterIsland"
+          }
+        ],
+        attrs: { type: "radio", id: "showSouth", value: "south" },
+        domProps: { checked: _vm._q(_vm.filterIsland, "south") },
+        on: {
+          change: function($event) {
+            _vm.filterIsland = "south"
+          }
+        }
+      }),
+      _vm._v(" South")
     ])
-  }
-]
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 

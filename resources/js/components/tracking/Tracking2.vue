@@ -34,6 +34,10 @@
 	Map:
 	<div class="mapbox" id="map"></div>
 
+	
+	<label for="showAll"><input type="radio" id="showAll" value="all" v-model="filterIsland"> All</label> &nbsp;
+	<label for="showNorth"><input type="radio" id="showNorth" value="north" v-model="filterIsland"> North</label> &nbsp;
+	<label for="showSouth"><input type="radio" id="showSouth" value="south" v-model="filterIsland"> South</label>
 
 </div>
 </template>
@@ -62,15 +66,20 @@
 		},
 		computed: {
 			filteredAircraft: function() {
-				if (this.filterIsland=='north') {
-					if (item.lng<172.5270994) return false;
-				}
-				if (this.filterIsland=='south') {
-					if (item.lng>174.8282816) return false;
-				}
-				if (this.filterUnknown) {
-					if (item.rego=='') return false;
-				}
+				var that = this;
+				return this.aircraft.filter(function(craft) {
+					if (that.filterIsland=='north') {
+						if (craft.points[0].lng<172.5270994) return false;
+					}
+					if (that.filterIsland=='south') {
+						if (craft.points[0].lng>174.8282816) return false;
+					}
+					if (that.filterUnknown) {
+						if (craft.rego=='') return false;
+					}
+					return true;
+				});
+				
 				// check if NOT in the list of aircraft if we are filtering that way
 				// if (this.selectedFleet!=null && this.fleet.aircraft && this.fleet.aircraft.length>0) {
 				// 	var found=false;
@@ -136,8 +145,7 @@
 		},
 		createMarkers() {
 			var that = this;
-
-			that.aircraft.forEach(function (aircraft) { 
+			that.filteredAircraft.forEach(function (aircraft) { 
 				var el = document.createElement('div');
 				var iel = document.createElement('div');
 				iel.className = 'aircraft_marker';
@@ -151,7 +159,13 @@
 					.setLngLat([aircraft.points[0].lng, aircraft.points[0].lat])
 					.addTo(that.map);
 			}); 
-		}
+		},
+		createMarker() {
+
+		},
+		updateMarker() {
+			
+		},
 	}
 }
 </script>
