@@ -52,7 +52,6 @@ class Tracking2ApiController extends ApiController
 		$aircraft = [];
 		$hexes_to_load = [];
 		$regos_to_load = [];
-		$queries = [];
 
 		// fetch all individual aircraft
 		$results = DB::connection('ogn')->select('select distinct rego, hex FROM `'.$table_name.'`');
@@ -101,6 +100,7 @@ class Tracking2ApiController extends ApiController
 			$select_columns = ', vspeed';
 		}
 		$keys = [];
+		$queries = [];
 
 		foreach ($aircraft AS $key=>$craft)
 		{
@@ -122,31 +122,42 @@ class Tracking2ApiController extends ApiController
 		{
 			if ($pings = DB::connection('ogn')->select(implode($queries, ' UNION ALL '), $keys))
 			{
+
+				// walk through all pings backwards and work out course directions from previous points
+				$index = count($pings);
+				while($index) {
+					$ping = $pings[--$index];
+					// work out the direction from previous point, if it exists AND if we don't have direction from the GPS for this point.
+					if (isset($previous_point[$ping->thekey]) && $ping->course==null) {
+
+						$ping->course = $this->angle(
+							$previous_point[$ping->thekey]->lat,
+							$previous_point[$ping->thekey]->lng,
+							$ping->lat,
+							$ping->lng);
+					}
+					$previous_point[$ping->thekey] = $ping;
+				}
+
+
+				// go through the correct direction and add to the list of points
 				foreach($pings AS $ping)
 				{
+					// round the lat and long to 6 digits, so we don't transmit unnecessary data
+					$ping->lat = round($ping->lat, 6);
+					$ping->lng = round($ping->lng, 6);
+
 					$aircraft[$ping->thekey]->points[] = $ping;
+
+					// remove the key to save data transfer, as we already have it as the index key
+					unset($ping->thekey);
 				}
 			}
 		}
 
-
-		// 	if ($pings)
-		// 	{
-		// 		// add ground levels for each point
-		// 		foreach ($pings AS $key=>$ping)
-		// 		{
-		// 			$pings[$key]->gl = $this->_get_ground_level($ping->lat, $ping->lng);
-		// 			if (!isset($ping->vspeed)) $pings[$key]->vspeed=null;
-		// 		}
-
-		// 		return $this->success($pings);
-		// 	}
-		// }
-
-
-		return $this->success($aircraft);
+		// strip out the array keys for javascript
+		return $this->success(array_values($aircraft));
 	}
-
 
 	protected function _get_table_name($dayDate)
 	{
@@ -156,5 +167,18 @@ class Tracking2ApiController extends ApiController
 		return $table_name;
 	}
 
-
+	/**
+	 * Calculate angle between 2 given latLng
+	 * @param  float $lat1
+	 * @param  float $lat2
+	 * @param  float $lng1
+	 * @param  float $lng2
+	 * @return integer
+	 */
+	function angle($lat1, $lng1, $lat2, $lng2) {
+		$dLon = $lng2 - $lng1;
+		$y = sin($dLon) * cos($lat2);
+		$x = cos($lat1) * sin($lat2) - sin($lat1) * cos($lat2) * cos($dLon);
+		return 360 - ((rad2deg(atan2($y, $x)) + 360) % 360);
+	}
 }

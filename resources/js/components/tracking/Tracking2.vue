@@ -4,6 +4,28 @@
 	height: 500px;
 	border: 1px solid #A00;
 }
+.aircraft_marker {
+	background-color: #A00;
+	color: #FFF;
+	font-size: 12px;
+	font-weight: bold;
+	text-align: center;
+	border-radius: 50%;
+	padding: 5px 0 3px 0;
+	width: 30px;
+	height: 30px;
+}
+
+.aircraft_marker::before {
+	position: absolute;
+	content: '';
+	width: 0px;
+	height: 0px;;
+	border: 10px solid transparent;
+	border-top: 10px solid #A00;
+	bottom: -16px;
+	left: 5px;
+}
 </style>
 
 <template>
@@ -12,7 +34,6 @@
 	Map:
 	<div class="mapbox" id="map"></div>
 
-	<div v-for="aircarft in aircrafts"></div>
 
 </div>
 </template>
@@ -33,7 +54,35 @@
 				flyingDay: null,
 				'map': {},
 				'nav': {},
-				aircrafts: []
+				aircraft: [],
+				showTrails: false,
+				filterIsland: 'all',
+				filterUnknown: false,
+			}
+		},
+		computed: {
+			filteredAircraft: function() {
+				if (this.filterIsland=='north') {
+					if (item.lng<172.5270994) return false;
+				}
+				if (this.filterIsland=='south') {
+					if (item.lng>174.8282816) return false;
+				}
+				if (this.filterUnknown) {
+					if (item.rego=='') return false;
+				}
+				// check if NOT in the list of aircraft if we are filtering that way
+				// if (this.selectedFleet!=null && this.fleet.aircraft && this.fleet.aircraft.length>0) {
+				// 	var found=false;
+				// 	for(var i = 0; i < this.fleet.aircraft.length; i++) {
+				// 		if (this.fleet.aircraft[i].rego == item.rego) {
+				// 			found=true;
+				// 			break;
+				// 		}
+				// 	}
+				// 	if (!found) return false;
+				// }
+				return true;
 			}
 		},
 	mounted: function() {
@@ -46,10 +95,6 @@
 
 		this.nav = new mapboxgl.NavigationControl();
 		this.map.addControl(this.nav, 'top-left');
-
-		var marker = new mapboxgl.Marker()
-		.setLngLat([175.733, -37.73593])
-		.addTo(this.map);
 
 		this.loadDays();
 	},
@@ -70,37 +115,43 @@
 				that.loadTracks();
 			});
 		},
+		getLabel: function(point) {
+			if (point.aircraft) {
+				if (point.aircraft.contest_id) return point.aircraft.contest_id;
+			}
+			if (point.rego) return point.rego;
+			return '?';
+		},
 		loadTracks: function() {
 			var pings = 25;
 			if (this.showTrails==false) pings=2;
 			var that = this;
 
-			window.axios.get('/api/v1/tracking/' + that.flyingDay + '/pings/' + pings).then(function (response) {
+			window.axios.get('/api/v2/tracking/' + that.flyingDay + '/aircraft/' + pings).then(function (response) {
+				that.aircraft = response.data.data;
 
-				// Process the track data to split up by aircraft
-				//var aircraftTracks = that.splitTracksByAircraft(response.data.data);
-				//
 				console.log(response.data.data);
-
-				// set up the annotations
-				//aircraftTracks.map(that.createAnnotation);
-
-				// zoom to the extents, only if not 'live'
-				//if (!that.liveLoading) that.map.showItems(that.annotationsArray);
-
-				// follow if an item is selected and the option is set
-				// if (that.liveLoading && that.followSelected && that.selectedPoint) {
-				// 	that.centerOn(that.selectedPoint.lat, that.selectedPoint.lng)
-				// } 
-
-				// draw the track lines
-				//aircraftTracks.map(that.createPolyline);
-
-				// load the aircraft details from the hex codes that have been collected
-				//that.loadAircraftDetails();
-
+				that.createMarkers();
 			});
 		},
+		createMarkers() {
+			var that = this;
+
+			that.aircraft.forEach(function (aircraft) { 
+				var el = document.createElement('div');
+				var iel = document.createElement('div');
+				iel.className = 'aircraft_marker';
+				el.appendChild(iel);
+				iel.appendChild(document.createTextNode(that.getLabel(aircraft)));
+
+				new mapboxgl.Marker(el, {
+						anchor: 'bottom',
+						offset: [0, -5]
+					})
+					.setLngLat([aircraft.points[0].lng, aircraft.points[0].lat])
+					.addTo(that.map);
+			}); 
+		}
 	}
 }
 </script>

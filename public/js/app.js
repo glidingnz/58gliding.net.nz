@@ -8770,6 +8770,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -8785,8 +8806,39 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       flyingDay: null,
       'map': {},
       'nav': {},
-      aircrafts: []
+      aircraft: [],
+      showTrails: false,
+      filterIsland: 'all',
+      filterUnknown: false
     };
+  },
+  computed: {
+    filteredAircraft: function filteredAircraft() {
+      if (this.filterIsland == 'north') {
+        if (item.lng < 172.5270994) return false;
+      }
+
+      if (this.filterIsland == 'south') {
+        if (item.lng > 174.8282816) return false;
+      }
+
+      if (this.filterUnknown) {
+        if (item.rego == '') return false;
+      } // check if NOT in the list of aircraft if we are filtering that way
+      // if (this.selectedFleet!=null && this.fleet.aircraft && this.fleet.aircraft.length>0) {
+      // 	var found=false;
+      // 	for(var i = 0; i < this.fleet.aircraft.length; i++) {
+      // 		if (this.fleet.aircraft[i].rego == item.rego) {
+      // 			found=true;
+      // 			break;
+      // 		}
+      // 	}
+      // 	if (!found) return false;
+      // }
+
+
+      return true;
+    }
   },
   mounted: function mounted() {
     this.map = new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.Map({
@@ -8797,7 +8849,6 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     });
     this.nav = new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.NavigationControl();
     this.map.addControl(this.nav, 'top-left');
-    var marker = new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.Marker().setLngLat([175.733, -37.73593]).addTo(this.map);
     this.loadDays();
   },
   methods: {
@@ -8818,26 +8869,36 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         that.loadTracks();
       });
     },
+    getLabel: function getLabel(point) {
+      if (point.aircraft) {
+        if (point.aircraft.contest_id) return point.aircraft.contest_id;
+      }
+
+      if (point.rego) return point.rego;
+      return '?';
+    },
     loadTracks: function loadTracks() {
       var pings = 25;
       if (this.showTrails == false) pings = 2;
       var that = this;
-      window.axios.get('/api/v1/tracking/' + that.flyingDay + '/pings/' + pings).then(function (response) {
-        // Process the track data to split up by aircraft
-        //var aircraftTracks = that.splitTracksByAircraft(response.data.data);
-        //
-        console.log(response.data.data); // set up the annotations
-        //aircraftTracks.map(that.createAnnotation);
-        // zoom to the extents, only if not 'live'
-        //if (!that.liveLoading) that.map.showItems(that.annotationsArray);
-        // follow if an item is selected and the option is set
-        // if (that.liveLoading && that.followSelected && that.selectedPoint) {
-        // 	that.centerOn(that.selectedPoint.lat, that.selectedPoint.lng)
-        // } 
-        // draw the track lines
-        //aircraftTracks.map(that.createPolyline);
-        // load the aircraft details from the hex codes that have been collected
-        //that.loadAircraftDetails();
+      window.axios.get('/api/v2/tracking/' + that.flyingDay + '/aircraft/' + pings).then(function (response) {
+        that.aircraft = response.data.data;
+        console.log(response.data.data);
+        that.createMarkers();
+      });
+    },
+    createMarkers: function createMarkers() {
+      var that = this;
+      that.aircraft.forEach(function (aircraft) {
+        var el = document.createElement('div');
+        var iel = document.createElement('div');
+        iel.className = 'aircraft_marker';
+        el.appendChild(iel);
+        iel.appendChild(document.createTextNode(that.getLabel(aircraft)));
+        new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.Marker(el, {
+          anchor: 'bottom',
+          offset: [0, -5]
+        }).setLngLat([aircraft.points[0].lng, aircraft.points[0].lat]).addTo(that.map);
       });
     }
   }
@@ -9402,7 +9463,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.mapbox {\n\twidth: 100%;\n\theight: 500px;\n\tborder: 1px solid #A00;\n}\n", ""]);
+exports.push([module.i, "\n.mapbox {\n\twidth: 100%;\n\theight: 500px;\n\tborder: 1px solid #A00;\n}\n.aircraft_marker {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 12px;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 30px;\n\theight: 30px;\n}\n.aircraft_marker::before {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -16px;\n\tleft: 5px;\n}\n", ""]);
 
 // exports
 
@@ -60633,20 +60694,19 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _vm._v("\n\n\tMap:\n\t"),
-      _c("div", { staticClass: "mapbox", attrs: { id: "map" } }),
-      _vm._v(" "),
-      _vm._l(_vm.aircrafts, function(aircarft) {
-        return _c("div")
-      })
-    ],
-    2
-  )
+  return _vm._m(0)
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", [
+      _vm._v("\n\n\tMap:\n\t"),
+      _c("div", { staticClass: "mapbox", attrs: { id: "map" } })
+    ])
+  }
+]
 render._withStripped = true
 
 
