@@ -8795,6 +8795,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -9473,7 +9474,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.mapbox {\n\twidth: 100%;\n\theight: 500px;\n\tborder: 1px solid #A00;\n}\n.aircraft_marker {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 12px;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 30px;\n\theight: 30px;\n}\n.aircraft_marker::before {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -16px;\n\tleft: 5px;\n}\n", ""]);
+exports.push([module.i, "\n.mapbox {\n\twidth: 100%;\n\theight: 500px;\n\tborder: 1px solid #A00;\n}\n.aircraft_marker {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 12px;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 30px;\n\theight: 30px;\n}\n.aircraft_marker::before {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -16px;\n\tleft: 5px;\n}\n\n", ""]);
 
 // exports
 
@@ -52273,113 +52274,126 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("a", {
-      staticClass: "fa fa-bell-o no-messages",
-      class: {
-        "no-messages": _vm.areNoMessages,
-        "new-messages": _vm.areNewMessages,
-        "old-messages": _vm.areOldMessages
-      },
-      attrs: { href: "javascript:void(null)" },
-      on: {
-        click: function($event) {
-          return _vm.togglePanel()
+  return _c(
+    "div",
+    {
+      directives: [
+        {
+          name: "show",
+          rawName: "v-show",
+          value: _vm.panelOpen,
+          expression: "panelOpen"
         }
-      }
-    }),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        directives: [
-          {
-            name: "show",
-            rawName: "v-show",
-            value: _vm.panelOpen,
-            expression: "panelOpen"
+      ]
+    },
+    [
+      _c("a", {
+        staticClass: "fa fa-bell-o no-messages",
+        class: {
+          "no-messages": _vm.areNoMessages,
+          "new-messages": _vm.areNewMessages,
+          "old-messages": _vm.areOldMessages
+        },
+        attrs: { href: "javascript:void(null)" },
+        on: {
+          click: function($event) {
+            return _vm.togglePanel()
           }
-        ],
-        staticClass: "messages-panel"
-      },
-      [
-        _c("i", {
-          staticClass: "fa fa-times close-panel",
-          on: {
-            click: function($event) {
-              return _vm.togglePanel()
+        }
+      }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.panelOpen,
+              expression: "panelOpen"
             }
-          }
-        }),
-        _vm._v(" "),
-        _vm._l(_vm.newMessages, function(message) {
-          return _c("div", { class: "message message-" + message.type }, [
-            _c("i", {
-              staticClass: "fa",
-              class: {
-                "fa-minus-circle": message.type == "error",
-                "fa-exclamation-triangle": message.type == "warning",
-                "fa-check-circle": message.type == "success",
-                "fa-info-circle": message.type == "note"
-              }
-            }),
-            _vm._v(" " + _vm._s(message.text) + "\n\t\t")
-          ])
-        }),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            directives: [
-              {
-                name: "show",
-                rawName: "v-show",
-                value: _vm.newMessages.length == 0,
-                expression: "newMessages.length==0"
-              }
-            ]
-          },
-          [
-            _c("span", { staticClass: "small" }, [
-              _vm._v("Last 10 Notifications")
-            ]),
-            _vm._v(" "),
-            _vm._l(_vm.messagesArchive, function(message) {
-              return _c("div", { class: "message message-" + message.type }, [
-                _c("i", {
-                  staticClass: "fa",
-                  class: {
-                    "fa-minus-circle": message.type == "error",
-                    "fa-exclamation-triangle": message.type == "warning",
-                    "fa-check-circle": message.type == "success",
-                    "fa-info-circle": message.type == "note"
-                  }
-                }),
-                _vm._v(" " + _vm._s(message.text) + "\n\t\t\t")
-              ])
-            }),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.messagesArchive.length == 0,
-                    expression: "messagesArchive.length==0"
-                  }
-                ]
-              },
-              [_c("span", { staticClass: "grey small" }, [_vm._v("None")])]
-            )
           ],
-          2
-        )
-      ],
-      2
-    )
-  ])
+          staticClass: "messages-panel"
+        },
+        [
+          _c("i", {
+            staticClass: "fa fa-times close-panel",
+            on: {
+              click: function($event) {
+                return _vm.togglePanel()
+              }
+            }
+          }),
+          _vm._v(" "),
+          _vm._l(_vm.newMessages, function(message) {
+            return _c("div", { class: "message message-" + message.type }, [
+              _c("i", {
+                staticClass: "fa",
+                class: {
+                  "fa-minus-circle": message.type == "error",
+                  "fa-exclamation-triangle": message.type == "warning",
+                  "fa-check-circle": message.type == "success",
+                  "fa-info-circle": message.type == "note"
+                }
+              }),
+              _vm._v(" " + _vm._s(message.text) + "\n\t\t")
+            ])
+          }),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.newMessages.length == 0,
+                  expression: "newMessages.length==0"
+                }
+              ]
+            },
+            [
+              _c("span", { staticClass: "small" }, [
+                _vm._v("Last 10 Notifications")
+              ]),
+              _vm._v(" "),
+              _vm._l(_vm.messagesArchive, function(message) {
+                return _c("div", { class: "message message-" + message.type }, [
+                  _c("i", {
+                    staticClass: "fa",
+                    class: {
+                      "fa-minus-circle": message.type == "error",
+                      "fa-exclamation-triangle": message.type == "warning",
+                      "fa-check-circle": message.type == "success",
+                      "fa-info-circle": message.type == "note"
+                    }
+                  }),
+                  _vm._v(" " + _vm._s(message.text) + "\n\t\t\t")
+                ])
+              }),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.messagesArchive.length == 0,
+                      expression: "messagesArchive.length==0"
+                    }
+                  ]
+                },
+                [_c("span", { staticClass: "grey small" }, [_vm._v("None")])]
+              )
+            ],
+            2
+          )
+        ],
+        2
+      )
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

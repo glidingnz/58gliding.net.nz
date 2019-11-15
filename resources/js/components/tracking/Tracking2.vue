@@ -26,6 +26,7 @@
 	bottom: -16px;
 	left: 5px;
 }
+
 </style>
 
 <template>

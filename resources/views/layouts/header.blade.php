@@ -50,6 +50,7 @@
 	</head>
 	<body>
 		<div id="app">
+
 			<nav class="main-nav navbar navbar-dark bg-dark navbar-expand">
 				<a class="navbar-brand" href="{{ url('/') }}">
 					<?php if (isset($org) && $org->slug!='gnz') { ?>
@@ -110,14 +111,15 @@
 					</li>
 					@endif
 				</ul>
-				<messages></messages>
 			</nav>
+
+			<messages></messages>
 
 			@yield('content')
 
-			<hr class="ml-4 mr-4 mt-4">
-
 			<div class="footer">
+				<hr class="ml-4 mr-4 mt-4">
+
 				&copy; <?php echo date('Y'); ?>  <a href="http://gliding.co.nz/">Gliding New Zealand</a>
 
 				<a href="//{{env('APP_DOMAIN')}}/" class="ml-4">Switch Club</a>
