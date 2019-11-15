@@ -8768,6 +8768,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -8782,7 +8784,8 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     return {
       flyingDay: null,
       'map': {},
-      'nav': {}
+      'nav': {},
+      aircrafts: []
     };
   },
   mounted: function mounted() {
@@ -60630,19 +60633,20 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [
+  return _c(
+    "div",
+    [
       _vm._v("\n\n\tMap:\n\t"),
-      _c("div", { staticClass: "mapbox", attrs: { id: "map" } })
-    ])
-  }
-]
+      _c("div", { staticClass: "mapbox", attrs: { id: "map" } }),
+      _vm._v(" "),
+      _vm._l(_vm.aircrafts, function(aircarft) {
+        return _c("div")
+      })
+    ],
+    2
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 

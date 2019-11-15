@@ -18,6 +18,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:api');
 
 
+/* Unversionsed APIs */
 Route::group(['namespace' => 'Api', 'middleware' => 'auth:api'], function()
 {
 	Route::resource('days', 'DayAPIController');
@@ -33,6 +34,16 @@ Route::group(['namespace' => 'Api'], function()
 	Route::get('/events/{event_id}/soaringspot/contests', 'SoaringSpotAPIController@contests');
 });
 
+
+/* v2 redesigned APIs. v1 remains as is below */
+Route::group(['prefix'=>'v2', 'namespace' => 'Api\v2'], function()
+{
+	// all pings for all aircraft on a specific day
+	Route::get('/tracking/{dayDate}/aircraft/{points}',  'Tracking2ApiController@aircraft'); 
+});
+
+
+/* v1 API */
 Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 {
 

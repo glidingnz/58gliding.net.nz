@@ -12,6 +12,8 @@
 	Map:
 	<div class="mapbox" id="map"></div>
 
+	<div v-for="aircarft in aircrafts"></div>
+
 </div>
 </template>
 
@@ -30,7 +32,8 @@
 			return {
 				flyingDay: null,
 				'map': {},
-				'nav': {}
+				'nav': {},
+				aircrafts: []
 			}
 		},
 	mounted: function() {
