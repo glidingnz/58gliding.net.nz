@@ -8796,6 +8796,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -8814,19 +8827,27 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       aircraft: [],
       showTrails: false,
       filterIsland: 'all',
-      filterUnknown: false
+      filterUnknown: false,
+      mapMarkers: []
     };
+  },
+  watch: {
+    filterIsland: function filterIsland() {
+      this.loadTracks();
+    }
   },
   computed: {
     filteredAircraft: function filteredAircraft() {
       var that = this;
       return this.aircraft.filter(function (craft) {
+        console.log(craft.points[0]); //coordinates for 
+
         if (that.filterIsland == 'north') {
-          if (craft.points[0].lng < 172.5270994) return false;
+          if (craft.points[0].lat < -40.29 && craft.points[0].lng < 174.36) return false;
         }
 
         if (that.filterIsland == 'south') {
-          if (craft.points[0].lng > 174.8282816) return false;
+          if (!(craft.points[0].lat < -40.29 && craft.points[0].lng < 174.36)) return false;
         }
 
         if (that.filterUnknown) {
@@ -8854,7 +8875,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       container: 'map',
       style: '/mapstyle.json',
       center: [175.409, -40.97435],
-      zoom: 6
+      zoom: 8
     });
     this.nav = new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.NavigationControl();
     this.map.addControl(this.nav, 'top-left');
@@ -8889,7 +8910,12 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     loadTracks: function loadTracks() {
       var pings = 25;
       if (this.showTrails == false) pings = 2;
-      var that = this;
+      var that = this; // delete all exsiting markers
+
+      for (var i = 0; i < this.mapMarkers.length; i++) {
+        this.mapMarkers[i].remove();
+      }
+
       window.axios.get('/api/v2/tracking/' + that.flyingDay + '/aircraft/' + pings).then(function (response) {
         that.aircraft = response.data.data;
         console.log(response.data.data);
@@ -8904,10 +8930,11 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         iel.className = 'aircraft_marker';
         el.appendChild(iel);
         iel.appendChild(document.createTextNode(that.getLabel(aircraft)));
-        new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.Marker(el, {
+        var marker = new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.Marker(el, {
           anchor: 'bottom',
           offset: [0, -5]
         }).setLngLat([aircraft.points[0].lng, aircraft.points[0].lat]).addTo(that.map);
+        that.mapMarkers.push(marker);
       });
     },
     createMarker: function createMarker() {},
@@ -9474,7 +9501,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.mapbox {\n\twidth: 100%;\n\theight: 500px;\n\tborder: 1px solid #A00;\n}\n.aircraft_marker {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 12px;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 30px;\n\theight: 30px;\n}\n.aircraft_marker::before {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -16px;\n\tleft: 5px;\n}\n\n", ""]);
+exports.push([module.i, "\n.mapbox {\n\twidth: 100%;\n\theight: 500px;\n\tborder: 1px solid #A00;\n}\n.aircraft_marker {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 12px;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 30px;\n\theight: 30px;\n}\n.aircraft_marker::before {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -16px;\n\tleft: 5px;\n}\n.fullscreen .main-nav,\n.fullscreen .footer {\n\tdisplay: none !important;\n}\n.fullscreen .wrapper {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\tmin-height: 100vh;\n}\n.fullscreen .mapbox {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n\n", ""]);
 
 // exports
 
@@ -60718,71 +60745,72 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _vm._v("\n\n\tMap:\n\t"),
+  return _c("div", { staticClass: "wrapper" }, [
     _c("div", { staticClass: "mapbox", attrs: { id: "map" } }),
     _vm._v(" "),
-    _c("label", { attrs: { for: "showAll" } }, [
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.filterIsland,
-            expression: "filterIsland"
+    _c("div", [
+      _c("label", { attrs: { for: "showAll" } }, [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.filterIsland,
+              expression: "filterIsland"
+            }
+          ],
+          attrs: { type: "radio", id: "showAll", value: "all" },
+          domProps: { checked: _vm._q(_vm.filterIsland, "all") },
+          on: {
+            change: function($event) {
+              _vm.filterIsland = "all"
+            }
           }
-        ],
-        attrs: { type: "radio", id: "showAll", value: "all" },
-        domProps: { checked: _vm._q(_vm.filterIsland, "all") },
-        on: {
-          change: function($event) {
-            _vm.filterIsland = "all"
+        }),
+        _vm._v(" All")
+      ]),
+      _vm._v("  \n\t\t"),
+      _c("label", { attrs: { for: "showNorth" } }, [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.filterIsland,
+              expression: "filterIsland"
+            }
+          ],
+          attrs: { type: "radio", id: "showNorth", value: "north" },
+          domProps: { checked: _vm._q(_vm.filterIsland, "north") },
+          on: {
+            change: function($event) {
+              _vm.filterIsland = "north"
+            }
           }
-        }
-      }),
-      _vm._v(" All")
-    ]),
-    _vm._v("  \n\t"),
-    _c("label", { attrs: { for: "showNorth" } }, [
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.filterIsland,
-            expression: "filterIsland"
+        }),
+        _vm._v(" North")
+      ]),
+      _vm._v("  \n\t\t"),
+      _c("label", { attrs: { for: "showSouth" } }, [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.filterIsland,
+              expression: "filterIsland"
+            }
+          ],
+          attrs: { type: "radio", id: "showSouth", value: "south" },
+          domProps: { checked: _vm._q(_vm.filterIsland, "south") },
+          on: {
+            change: function($event) {
+              _vm.filterIsland = "south"
+            }
           }
-        ],
-        attrs: { type: "radio", id: "showNorth", value: "north" },
-        domProps: { checked: _vm._q(_vm.filterIsland, "north") },
-        on: {
-          change: function($event) {
-            _vm.filterIsland = "north"
-          }
-        }
-      }),
-      _vm._v(" North")
-    ]),
-    _vm._v("  \n\t"),
-    _c("label", { attrs: { for: "showSouth" } }, [
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.filterIsland,
-            expression: "filterIsland"
-          }
-        ],
-        attrs: { type: "radio", id: "showSouth", value: "south" },
-        domProps: { checked: _vm._q(_vm.filterIsland, "south") },
-        on: {
-          change: function($event) {
-            _vm.filterIsland = "south"
-          }
-        }
-      }),
-      _vm._v(" South")
+        }),
+        _vm._v(" South")
+      ])
     ])
   ])
 }

@@ -49,7 +49,7 @@
 		</script>
 	</head>
 	<body>
-		<div id="app">
+		<div id="app" class="<?php if (isset($app_class)) echo $app_class; ?>">
 
 			<nav class="main-nav navbar navbar-dark bg-dark navbar-expand">
 				<a class="navbar-brand" href="{{ url('/') }}">

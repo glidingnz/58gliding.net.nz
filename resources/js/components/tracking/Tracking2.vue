@@ -26,19 +26,32 @@
 	bottom: -16px;
 	left: 5px;
 }
+.fullscreen .main-nav,
+.fullscreen .footer {
+	display: none !important;
+}
+
+.fullscreen .wrapper {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+.fullscreen .mapbox {
+	flex-grow: 1;
+}
 
 </style>
 
 <template>
-<div>
+<div class="wrapper">
 
-	Map:
 	<div class="mapbox" id="map"></div>
 
-	
-	<label for="showAll"><input type="radio" id="showAll" value="all" v-model="filterIsland"> All</label> &nbsp;
-	<label for="showNorth"><input type="radio" id="showNorth" value="north" v-model="filterIsland"> North</label> &nbsp;
-	<label for="showSouth"><input type="radio" id="showSouth" value="south" v-model="filterIsland"> South</label>
+	<div>
+		<label for="showAll"><input type="radio" id="showAll" value="all" v-model="filterIsland"> All</label> &nbsp;
+		<label for="showNorth"><input type="radio" id="showNorth" value="north" v-model="filterIsland"> North</label> &nbsp;
+		<label for="showSouth"><input type="radio" id="showSouth" value="south" v-model="filterIsland"> South</label>
+	</div>
 
 </div>
 </template>
@@ -63,17 +76,29 @@
 				showTrails: false,
 				filterIsland: 'all',
 				filterUnknown: false,
+				mapMarkers: []
+			}
+		},
+		watch: {
+			filterIsland: function() {
+				this.loadTracks();
 			}
 		},
 		computed: {
 			filteredAircraft: function() {
 				var that = this;
 				return this.aircraft.filter(function(craft) {
+					console.log(craft.points[0]);
+
+					//coordinates for 
+
+
 					if (that.filterIsland=='north') {
-						if (craft.points[0].lng<172.5270994) return false;
+						if ((craft.points[0].lat<-40.29 && craft.points[0].lng<174.36)) 
+							return false;
 					}
 					if (that.filterIsland=='south') {
-						if (craft.points[0].lng>174.8282816) return false;
+						if (!(craft.points[0].lat<-40.29 && craft.points[0].lng<174.36)) return false;
 					}
 					if (that.filterUnknown) {
 						if (craft.rego=='') return false;
@@ -100,7 +125,7 @@
 			container: 'map',
 			style: '/mapstyle.json',
 			center: [175.409, -40.97435],
-			zoom: 6
+			zoom: 8
 		});
 
 		this.nav = new mapboxgl.NavigationControl();
@@ -137,6 +162,11 @@
 			if (this.showTrails==false) pings=2;
 			var that = this;
 
+			// delete all exsiting markers
+			for (var i=0; i<this.mapMarkers.length; i++) {
+				this.mapMarkers[i].remove();
+			}
+
 			window.axios.get('/api/v2/tracking/' + that.flyingDay + '/aircraft/' + pings).then(function (response) {
 				that.aircraft = response.data.data;
 
@@ -153,12 +183,13 @@
 				el.appendChild(iel);
 				iel.appendChild(document.createTextNode(that.getLabel(aircraft)));
 
-				new mapboxgl.Marker(el, {
+				var marker = new mapboxgl.Marker(el, {
 						anchor: 'bottom',
 						offset: [0, -5]
 					})
 					.setLngLat([aircraft.points[0].lng, aircraft.points[0].lat])
 					.addTo(that.map);
+				that.mapMarkers.push(marker);
 			}); 
 		},
 		createMarker() {

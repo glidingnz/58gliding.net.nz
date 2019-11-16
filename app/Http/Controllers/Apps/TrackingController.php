@@ -16,7 +16,8 @@ class TrackingController extends Controller
 	}
 	public function mapbox()
 	{
-		return view('tracking/mapbox');
+		$data['app_class'] = 'fullscreen';
+		return view('tracking/mapbox', $data);
 	}
 	public function spots()
 	{
