@@ -14,6 +14,9 @@ use Schema;
 use DateTime;
 use DateTimeZone;
 use Log;
+use SRTMGeoTIFFReader;
+
+include(app_path() . '/Classes/SRTMGeoTIFFReader.php');
 
 /**
  * Types of entries
@@ -39,10 +42,15 @@ class Tracking2ApiController extends ApiController
 	//var $url="http://spots.dev/FEED_ID_HERE/feed.json";
 	var $url="https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/FEED_ID_HERE/message.json";
 
+	// List of colours to use 
+	var $colours = ['e86666', 'ab4b4b', 'e87766', 'ba6052', '8c483e', 'e88966', 'ba6e52', '8c533e', 'e89a66', 'ab714b', 'c99559', '9c7344', 'c9a459', '8c723e', 'e8ce66', '9c8a44', 'aba44b', 'dfe866', 'b3ba52', '878c3e', 'b0d95f', '8aba52', '739c44', '9ae866', '68c959', '58ab4b', '66e866', '3e8c3e', '66e889', '4bab65', '3e8c5d', '66e8ab', '52ba8a', '5fd9b0', '449c7f', '59c9b3', '66e8df', '52bab3', '3e8c87', '5fd1d9', '4ba4ab', '66cee8', '52a5ba', '3e7d8c', '5fb0d9', '4b8bab', '3e728c', '66abe8', '44739c', '669ae8', '44679c', '6689e8', '526eba', '3e538c', '6677e8', '44509c', '6052ba', '483e8c', '805fd9', '67449c', 'ab66e8', '8a52ba', 'ce66e8', 'ab4ba4', '8c3e87', 'e866ce', 'c959a4', '9c447f', 'e8669a', 'ba527c', 'e86689', '9c445c', 'e86677', 'ab4b58'];
+
+
+
+
 	/**
 	 * Get a list of aircraft that have tracking today
 	 */
-	
 	public function aircraft($dayDate, $points=5)
 	{
 		$points = (int)$points; // ensure $pointsPerHex is an integer
@@ -63,6 +71,7 @@ class Tracking2ApiController extends ApiController
 
 			$aircraft[$key] = $result;
 			$aircraft[$key]->key = $key;
+			$aircraft[$key]->colour = $this->colours[crc32($key) % count($this->colours)];
 
 			// add to the list of aircraft to search for
 			if ($result->rego!=null) $regos_to_load[] = 'ZK-' . $result->rego;
@@ -139,13 +148,13 @@ class Tracking2ApiController extends ApiController
 					$previous_point[$ping->thekey] = $ping;
 				}
 
-
 				// go through the correct direction and add to the list of points
 				foreach($pings AS $ping)
 				{
 					// round the lat and long to 6 digits, so we don't transmit unnecessary data
 					$ping->lat = round($ping->lat, 6);
 					$ping->lng = round($ping->lng, 6);
+					$ping->gl = $this->_get_ground_level($ping->lat, $ping->lng);
 
 					$aircraft[$ping->thekey]->points[] = $ping;
 
@@ -181,4 +190,27 @@ class Tracking2ApiController extends ApiController
 		$x = cos($lat1) * sin($lat2) - sin($lat1) * cos($lat2) * cos($dLon);
 		return 360 - ((rad2deg(atan2($y, $x)) + 360) % 360);
 	}
+
+
+	protected function _get_ground_level($lat, $long)
+	{
+		try
+		{
+			$dataReader = new SRTMGeoTIFFReader(storage_path() . '/app/geotiffdata');
+			$dataReader->showErrors = false;
+			if ($elevation = $dataReader->getElevation($lat, $long))
+			{
+				if ($elevation<0) return null;
+				return $elevation;
+			}
+		}
+		catch(\Exception $e)
+		{
+			return null;
+		}
+		
+
+		return null;
+	}
+
 }

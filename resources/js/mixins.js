@@ -140,6 +140,15 @@ module.exports = {
 				}
 			}
 			return eventUrl;
+		},
+		formatAltitudeFeet: function(meters) {
+			var feet = meters * 3.28084;
+			return Math.round(feet) + "'";
+		},
+		heightAgl: function(alt, gl) {
+			var agl = alt - gl;
+			if (agl<0) return 0; // shouldn't be less than ground level :)
+			return agl;
 		}
 	}
 }

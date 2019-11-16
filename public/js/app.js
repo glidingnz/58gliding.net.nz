@@ -8809,6 +8809,83 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -8821,6 +8898,10 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
   data: function data() {
     return {
+      loading: false,
+      showOptions: false,
+      showLegend: false,
+      selectedAircraft: null,
       flyingDay: null,
       'map': {},
       'nav': {},
@@ -8840,8 +8921,6 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     filteredAircraft: function filteredAircraft() {
       var that = this;
       return this.aircraft.filter(function (craft) {
-        console.log(craft.points[0]); //coordinates for 
-
         if (that.filterIsland == 'north') {
           if (craft.points[0].lat < -40.29 && craft.points[0].lng < 174.36) return false;
         }
@@ -8905,7 +8984,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       }
 
       if (point.rego) return point.rego;
-      return '?';
+      return '?' + point.key.substring(0, 2);
     },
     loadTracks: function loadTracks() {
       var pings = 25;
@@ -8918,7 +8997,6 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
 
       window.axios.get('/api/v2/tracking/' + that.flyingDay + '/aircraft/' + pings).then(function (response) {
         that.aircraft = response.data.data;
-        console.log(response.data.data);
         that.createMarkers();
       });
     },
@@ -8927,9 +9005,14 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       that.filteredAircraft.forEach(function (aircraft) {
         var el = document.createElement('div');
         var iel = document.createElement('div');
+        var elpin = document.createElement('div');
         iel.className = 'aircraft_marker';
+        elpin.className = 'aircraft_marker_pin';
         el.appendChild(iel);
+        el.appendChild(elpin);
         iel.appendChild(document.createTextNode(that.getLabel(aircraft)));
+        elpin.style.borderTopColor = '#' + aircraft.colour;
+        iel.style.backgroundColor = '#' + aircraft.colour;
         var marker = new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.Marker(el, {
           anchor: 'bottom',
           offset: [0, -5]
@@ -9501,7 +9584,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.mapbox {\n\twidth: 100%;\n\theight: 500px;\n\tborder: 1px solid #A00;\n}\n.aircraft_marker {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 12px;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 30px;\n\theight: 30px;\n}\n.aircraft_marker::before {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -16px;\n\tleft: 5px;\n}\n.fullscreen .main-nav,\n.fullscreen .footer {\n\tdisplay: none !important;\n}\n.fullscreen .wrapper {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\tmin-height: 100vh;\n}\n.fullscreen .mapbox {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n\n", ""]);
+exports.push([module.i, "\n.mapbox {\n}\n.aircraft_marker {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 14px;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 34px;\n\theight: 34px;\n}\n.aircraft_marker_pin {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -17px;\n\tleft: 7px;\n}\n.fullscreen .main-nav,\n.fullscreen .footer {\n\tdisplay: none !important;\n}\n.fullscreen .tracking {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\tmin-height: 100vh;\n}\n.fullscreen .mapbox, .fullscreen .options {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.tracking .sidepanel {\n\tposition: fixed;\n\twidth: 50px;\n\tbackground-color: #EEE;\n\tborder: 1px solid #888;\n\tright: 0;\n\ttop: 20px;\n\tborder-top-left-radius: 5px;\n\tborder-bottom-left-radius: 5px;\n}\n.tracking .sidepanel::-webkit-scrollbar { /* WebKit */\n\twidth: 0;\n\theight: 0;\n}\n.tracking .expanded {\n\twidth: auto;\n}\n.aircraft-badges {\n\theight: 80vh;\n\toverflow: scroll;\n\tscrollbar-width: none; /* Firefox */\n\t-ms-overflow-style: none;  /* Internet Explorer 10+ */\n}\n.tracking .aircraft-badge {\n\tfont-size: 14px;\n\tfont-weight: bold;\n\ttext-align: center;\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tmargin: 3px 0;\n\tpadding: 0;\n}\n.legend .aircraft-badge {\n\tborder-radius: 3px;\n}\n.legend td {\n\tpadding: 0px 3px;\n}\n.legend th {\n\ttext-align: center;\n}\n\n", ""]);
 
 // exports
 
@@ -60745,73 +60828,241 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "wrapper" }, [
-    _c("div", { staticClass: "mapbox", attrs: { id: "map" } }),
+  return _c("div", { staticClass: "tracking" }, [
+    _c("div", {
+      directives: [
+        {
+          name: "show",
+          rawName: "v-show",
+          value: !_vm.showOptions,
+          expression: "!showOptions"
+        }
+      ],
+      staticClass: "mapbox",
+      attrs: { id: "map" }
+    }),
     _vm._v(" "),
-    _c("div", [
-      _c("label", { attrs: { for: "showAll" } }, [
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.filterIsland,
-              expression: "filterIsland"
-            }
-          ],
-          attrs: { type: "radio", id: "showAll", value: "all" },
-          domProps: { checked: _vm._q(_vm.filterIsland, "all") },
-          on: {
-            change: function($event) {
-              _vm.filterIsland = "all"
-            }
+    _c(
+      "div",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: _vm.showOptions,
+            expression: "showOptions"
           }
-        }),
-        _vm._v(" All")
-      ]),
-      _vm._v("  \n\t\t"),
-      _c("label", { attrs: { for: "showNorth" } }, [
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.filterIsland,
-              expression: "filterIsland"
+        ],
+        staticClass: "options"
+      },
+      [
+        _c("a", { attrs: { href: "/" } }, [_vm._v("Home")]),
+        _vm._v(" "),
+        _c("label", { attrs: { for: "showAll" } }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.filterIsland,
+                expression: "filterIsland"
+              }
+            ],
+            attrs: { type: "radio", id: "showAll", value: "all" },
+            domProps: { checked: _vm._q(_vm.filterIsland, "all") },
+            on: {
+              change: function($event) {
+                _vm.filterIsland = "all"
+              }
             }
-          ],
-          attrs: { type: "radio", id: "showNorth", value: "north" },
-          domProps: { checked: _vm._q(_vm.filterIsland, "north") },
-          on: {
-            change: function($event) {
-              _vm.filterIsland = "north"
+          }),
+          _vm._v(" All")
+        ]),
+        _vm._v("  \n\t\t"),
+        _c("label", { attrs: { for: "showNorth" } }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.filterIsland,
+                expression: "filterIsland"
+              }
+            ],
+            attrs: { type: "radio", id: "showNorth", value: "north" },
+            domProps: { checked: _vm._q(_vm.filterIsland, "north") },
+            on: {
+              change: function($event) {
+                _vm.filterIsland = "north"
+              }
             }
+          }),
+          _vm._v(" North")
+        ]),
+        _vm._v("  \n\t\t"),
+        _c("label", { attrs: { for: "showSouth" } }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.filterIsland,
+                expression: "filterIsland"
+              }
+            ],
+            attrs: { type: "radio", id: "showSouth", value: "south" },
+            domProps: { checked: _vm._q(_vm.filterIsland, "south") },
+            on: {
+              change: function($event) {
+                _vm.filterIsland = "south"
+              }
+            }
+          }),
+          _vm._v(" South")
+        ]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-outline-dark btn-sm",
+            on: {
+              click: function($event) {
+                _vm.showOptions = !_vm.showOptions
+              }
+            }
+          },
+          [_vm._v("Settings")]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: !_vm.showOptions,
+            expression: "!showOptions"
           }
-        }),
-        _vm._v(" North")
-      ]),
-      _vm._v("  \n\t\t"),
-      _c("label", { attrs: { for: "showSouth" } }, [
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.filterIsland,
-              expression: "filterIsland"
-            }
+        ],
+        staticClass: "sidepanel",
+        class: [_vm.showLegend ? "expanded" : ""]
+      },
+      [
+        !_vm.showLegend
+          ? _c("button", {
+              staticClass: "fa fa-angle-double-left ml-2 mt-1",
+              on: {
+                click: function($event) {
+                  _vm.showLegend = !_vm.showLegend
+                }
+              }
+            })
+          : _vm._e(),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "aircraft-badges" },
+          [
+            _vm._l(_vm.filteredAircraft, function(craft) {
+              return !_vm.showLegend
+                ? _c(
+                    "div",
+                    {
+                      staticClass: "aircraft-badge",
+                      style: { backgroundColor: "#" + craft.colour }
+                    },
+                    [
+                      _vm._v(
+                        "\n\t\t\t\t" + _vm._s(_vm.getLabel(craft)) + "\n\t\t\t"
+                      )
+                    ]
+                  )
+                : _vm._e()
+            }),
+            _vm._v(" "),
+            _vm.showLegend
+              ? _c(
+                  "table",
+                  { staticClass: "legend" },
+                  [
+                    _c("tr", [
+                      _c("th", [_vm._v("Reg")]),
+                      _vm._v(" "),
+                      _c("th", [_vm._v("AGL")]),
+                      _vm._v(" "),
+                      _c("th", [
+                        _vm._v("\n\t\t\t\t\t\tSeen \n\t\t\t\t\t\t"),
+                        _c("button", {
+                          staticClass: "fa fa-angle-double-right ml-2 mt-1",
+                          on: {
+                            click: function($event) {
+                              _vm.showLegend = !_vm.showLegend
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _vm._l(_vm.filteredAircraft, function(craft) {
+                      return _c("tr", [
+                        _c("td", [
+                          _c(
+                            "div",
+                            {
+                              staticClass: "aircraft-badge",
+                              style: { backgroundColor: "#" + craft.colour },
+                              on: {
+                                click: function($event) {
+                                  _vm.selectedAircraft = craft
+                                }
+                              }
+                            },
+                            [
+                              _vm._v(
+                                "\n\t\t\t\t\t\t\t" +
+                                  _vm._s(_vm.getLabel(craft)) +
+                                  "\n\t\t\t\t\t\t"
+                              )
+                            ]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _vm._v(
+                            _vm._s(
+                              _vm.formatAltitudeFeet(
+                                _vm.heightAgl(
+                                  craft.points[0].alt,
+                                  craft.points[0].gl
+                                )
+                              )
+                            )
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _vm._v(_vm._s(_vm.dateToNow(craft.points[0].thetime)))
+                        ])
+                      ])
+                    })
+                  ],
+                  2
+                )
+              : _vm._e()
           ],
-          attrs: { type: "radio", id: "showSouth", value: "south" },
-          domProps: { checked: _vm._q(_vm.filterIsland, "south") },
-          on: {
-            change: function($event) {
-              _vm.filterIsland = "south"
-            }
-          }
-        }),
-        _vm._v(" South")
-      ])
-    ])
+          2
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _vm.selectedAircraft
+      ? _c("div", { staticClass: "selected-aircraft" }, [
+          _vm._v("\n\t\t" + _vm._s(_vm.selectedAircraft.key) + "\n\t")
+        ])
+      : _vm._e()
   ])
 }
 var staticRenderFns = []
@@ -76688,6 +76939,16 @@ module.exports = {
       }
 
       return eventUrl;
+    },
+    formatAltitudeFeet: function formatAltitudeFeet(meters) {
+      var feet = meters * 3.28084;
+      return Math.round(feet) + "'";
+    },
+    heightAgl: function heightAgl(alt, gl) {
+      var agl = alt - gl;
+      if (agl < 0) return 0; // shouldn't be less than ground level :)
+
+      return agl;
     }
   }
 };
