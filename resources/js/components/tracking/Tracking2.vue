@@ -141,18 +141,6 @@
 <template>
 <div class="tracking" id="tracking">
 
-	<div class="selected-aircraft" v-if="selectedAircraft">
-		<div class="flex-row">
-			<div class="aircraft-badge" v-on:click="showOptions=!showOptions" v-bind:style="{backgroundColor: '#'+selectedAircraft.colour}">{{selectedAircraft.key}}</div>
-			<div>{{formatAltitudeFeet(heightAgl(selectedAircraft.points[0].alt, selectedAircraft.points[0].gl))}}</div>
-			<div>{{ Math.round(selectedAircraft.points[0].vspeed * 1.944) }} kt</div>
-			<div>{{dateToNow(createDateFromMysql(selectedAircraft.points[0].thetime))}}</div>
-			<div>
-				<label for="follow"><input name="follow" id="follow" type="checkbox" v-on:click="follow()" v-model="optionFollow" :value="true"> Follow</label>
-			</div>
-		</div>
-	</div>
-
 
 	<div class="maprow">
 
@@ -192,6 +180,18 @@
 						<td v-show="showLegend">{{dateToNow(createDateFromMysql(craft.points[0].thetime))}}</td>
 					</tr>
 				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="selected-aircraft" v-if="selectedAircraft">
+		<div class="flex-row">
+			<div class="aircraft-badge" v-on:click="showOptions=!showOptions" v-bind:style="{backgroundColor: '#'+selectedAircraft.colour}">{{selectedAircraft.key}}</div>
+			<div>{{formatAltitudeFeet(heightAgl(selectedAircraft.points[0].alt, selectedAircraft.points[0].gl))}}</div>
+			<div>{{ Math.round(selectedAircraft.points[0].vspeed * 1.944) }} kt</div>
+			<div>{{dateToNow(createDateFromMysql(selectedAircraft.points[0].thetime))}}</div>
+			<div>
+				<label for="follow"><input name="follow" id="follow" type="checkbox" v-on:click="follow()" v-model="optionFollow" :value="true"> Follow</label>
 			</div>
 		</div>
 	</div>
