@@ -40,7 +40,8 @@
 .fullscreen .tracking {
 	display: flex;
 	flex-direction: column;
-	height: 100vh;
+	height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+	height: calc(var(--vh, 1vh) * 100);
 }
 .fullscreen .mapbox, .fullscreen .options {
 	flex-grow: 1;
@@ -98,7 +99,7 @@
 }
 
 .selected-aircraft {
-	border-top: 1px solid #888;
+	border-bottom: 1px solid #888;
 }
 
 .mapboxgl-ctrl-bottom-right {
@@ -140,7 +141,21 @@
 <template>
 <div class="tracking" id="tracking">
 
+	<div class="selected-aircraft" v-if="selectedAircraft">
+		<div class="flex-row">
+			<div class="aircraft-badge" v-on:click="showOptions=!showOptions" v-bind:style="{backgroundColor: '#'+selectedAircraft.colour}">{{selectedAircraft.key}}</div>
+			<div>{{formatAltitudeFeet(heightAgl(selectedAircraft.points[0].alt, selectedAircraft.points[0].gl))}}</div>
+			<div>{{ Math.round(selectedAircraft.points[0].vspeed * 1.944) }} kt</div>
+			<div>{{dateToNow(createDateFromMysql(selectedAircraft.points[0].thetime))}}</div>
+			<div>
+				<label for="follow"><input name="follow" id="follow" type="checkbox" v-on:click="follow()" v-model="optionFollow" :value="true"> Follow</label>
+			</div>
+		</div>
+	</div>
+
+
 	<div class="maprow">
+
 
 		<div class="mapbox" id="map">
 			<div class="buttons">
@@ -180,19 +195,6 @@
 			</div>
 		</div>
 	</div>
-
-	<div class="selected-aircraft" v-if="selectedAircraft">
-		<div class="flex-row">
-			<div class="aircraft-badge" v-on:click="showOptions=!showOptions" v-bind:style="{backgroundColor: '#'+selectedAircraft.colour}">{{selectedAircraft.key}}</div>
-			<div>{{formatAltitudeFeet(heightAgl(selectedAircraft.points[0].alt, selectedAircraft.points[0].gl))}}</div>
-			<div>{{ Math.round(selectedAircraft.points[0].vspeed * 1.944) }} kt</div>
-			<div>{{dateToNow(createDateFromMysql(selectedAircraft.points[0].thetime))}}</div>
-			<div>
-				<label for="follow"><input name="follow" id="follow" type="checkbox" v-on:click="follow()" v-model="optionFollow" :value="true"> Follow</label>
-			</div>
-		</div>
-	</div>
-
 
 
 	<div class="day-selector" v-show="showDaySelector" v-if="days">
@@ -348,17 +350,19 @@
 		// check if the legend should be open or not
 		if (window.innerWidth<600) this.showLegend=false;
 
+		// from https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+		let vh = window.innerHeight * 0.01;
+		document.documentElement.style.setProperty('--vh', `${vh}px`);
+		window.addEventListener('resize', () => {
+			// We execute the same script as before
+			let vh = window.innerHeight * 0.01;
+			document.documentElement.style.setProperty('--vh', `${vh}px`);
+		});
+
 		this.nav = new mapboxgl.NavigationControl();
 		this.map.addControl(this.nav, 'top-left');
 
 		this.loadDays();
-
-		// fix iOS height if we can!
-		var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-		if (iOS) {
-			var el=document.getElementById('tracking');
-			el.style.height = innerHeight() + 'px';
-		}
 
 		// start the timer
 		this.timeoutTimer = setTimeout(this.timerLoop, 15000);

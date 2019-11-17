@@ -8988,6 +8988,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -9108,18 +9110,18 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     } // check if the legend should be open or not
 
 
-    if (window.innerWidth < 600) this.showLegend = false;
+    if (window.innerWidth < 600) this.showLegend = false; // from https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+
+    var vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', "".concat(vh, "px"));
+    window.addEventListener('resize', function () {
+      // We execute the same script as before
+      var vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', "".concat(vh, "px"));
+    });
     this.nav = new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.NavigationControl();
     this.map.addControl(this.nav, 'top-left');
-    this.loadDays(); // fix iOS height if we can!
-
-    var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-    if (iOS) {
-      var el = document.getElementById('tracking');
-      el.style.height = innerHeight() + 'px';
-    } // start the timer
-
+    this.loadDays(); // start the timer
 
     this.timeoutTimer = setTimeout(this.timerLoop, 15000);
   },
@@ -9910,7 +9912,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.fullscreen .main-nav,\n.fullscreen .footer {\n\tdisplay: none !important;\n}\n.mapbox {\n}\n.aircraft_marker {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 34px;\n\theight: 34px;\n\tbox-shadow: 0px 0px 15px 0px rgba(0,0,0,0.3);\n}\n.aircraft_marker_pin {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -17px;\n\tleft: 7px;\n}\n.fullscreen .maprow\t{\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: horizontal;\n\t-webkit-box-direction: normal;\n\t        flex-direction: row;\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.fullscreen .tracking {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\theight: 100vh;\n}\n.fullscreen .mapbox, .fullscreen .options {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.tracking .sidepanel {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\twidth: 50px;\n\tbackground-color: #EEE;\n\tborder-left: 1px solid #888;\n}\n.tracking .expanded {\n\twidth: auto;\n}\n.aircraft-badges {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n\tmax-height: 100%;\n\toverflow: scroll;\n\tscrollbar-width: none; /* Firefox */\n\t-ms-overflow-style: none;  /* Internet Explorer 10+ */\n}\n.aircraft-badges::-webkit-scrollbar { /* WebKit */\n\twidth: 0;\n\theight: 0;\n}\n.tracking .aircraft-badge {\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tpadding: 0 3px;\n\tborder-radius: 3px;\n}\n.legend td, .legend th {\n\tpadding: 3px 3px;\n}\n.legend th {\n\ttext-align: center;\n}\n.legend-header {\n\twidth: 100%;\n}\n.hover-row:hover {\n\tbackground-color: #5AF;\n}\n.selected-aircraft .flex-row {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-pack: justify;\n\t        justify-content: space-between;\n\tpadding: 3px 5px;\n\tfont-size: 120%;\n\tmax-width: 500px;\n\tmargin-left: auto;\n\tmargin-right: auto;\n}\n.selected-aircraft {\n\tborder-top: 1px solid #888;\n}\n.mapboxgl-ctrl-bottom-right {\n\tz-index: 0 !important;\n}\n.mapbox .btn-outline-dark {\n\tbackground-color: #EEE;\n}\n.mapbox .btn-outline-dark:hover {\n\tbackground-color: #000;\n}\n.mapbox .buttons {\n\tposition: absolute;\n\tleft: 50px;\n\ttop: 10px;\n\tz-index: 10;\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n}\n.tracking .options, \n.tracking .day-selector {\n\tpadding: 10px;\n\tposition: absolute;\n\ttop: 43px;\n\tleft: 50px;\n\tz-index: 999;\n\tbackground-color: #FFF;\n\tborder-radius: 5px;\n\tborder: 1px solid #888;\n\tmargin-right: 20px;\n\tmax-height: 80%;\n\toverflow: scroll;\n}\n.tracking .day-selector {\n}\n", ""]);
+exports.push([module.i, "\n.fullscreen .main-nav,\n.fullscreen .footer {\n\tdisplay: none !important;\n}\n.mapbox {\n}\n.aircraft_marker {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 34px;\n\theight: 34px;\n\tbox-shadow: 0px 0px 15px 0px rgba(0,0,0,0.3);\n}\n.aircraft_marker_pin {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -17px;\n\tleft: 7px;\n}\n.fullscreen .maprow\t{\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: horizontal;\n\t-webkit-box-direction: normal;\n\t        flex-direction: row;\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.fullscreen .tracking {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\theight: 100vh; /* Fallback for browsers that do not support Custom Properties */\n\theight: calc(var(--vh, 1vh) * 100);\n}\n.fullscreen .mapbox, .fullscreen .options {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.tracking .sidepanel {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\twidth: 50px;\n\tbackground-color: #EEE;\n\tborder-left: 1px solid #888;\n}\n.tracking .expanded {\n\twidth: auto;\n}\n.aircraft-badges {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n\tmax-height: 100%;\n\toverflow: scroll;\n\tscrollbar-width: none; /* Firefox */\n\t-ms-overflow-style: none;  /* Internet Explorer 10+ */\n}\n.aircraft-badges::-webkit-scrollbar { /* WebKit */\n\twidth: 0;\n\theight: 0;\n}\n.tracking .aircraft-badge {\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tpadding: 0 3px;\n\tborder-radius: 3px;\n}\n.legend td, .legend th {\n\tpadding: 3px 3px;\n}\n.legend th {\n\ttext-align: center;\n}\n.legend-header {\n\twidth: 100%;\n}\n.hover-row:hover {\n\tbackground-color: #5AF;\n}\n.selected-aircraft .flex-row {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-pack: justify;\n\t        justify-content: space-between;\n\tpadding: 3px 5px;\n\tfont-size: 120%;\n\tmax-width: 500px;\n\tmargin-left: auto;\n\tmargin-right: auto;\n}\n.selected-aircraft {\n\tborder-bottom: 1px solid #888;\n}\n.mapboxgl-ctrl-bottom-right {\n\tz-index: 0 !important;\n}\n.mapbox .btn-outline-dark {\n\tbackground-color: #EEE;\n}\n.mapbox .btn-outline-dark:hover {\n\tbackground-color: #000;\n}\n.mapbox .buttons {\n\tposition: absolute;\n\tleft: 50px;\n\ttop: 10px;\n\tz-index: 10;\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n}\n.tracking .options, \n.tracking .day-selector {\n\tpadding: 10px;\n\tposition: absolute;\n\ttop: 43px;\n\tleft: 50px;\n\tz-index: 999;\n\tbackground-color: #FFF;\n\tborder-radius: 5px;\n\tborder: 1px solid #888;\n\tmargin-right: 20px;\n\tmax-height: 80%;\n\toverflow: scroll;\n}\n.tracking .day-selector {\n}\n", ""]);
 
 // exports
 
@@ -61249,6 +61251,106 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "tracking", attrs: { id: "tracking" } }, [
+    _vm.selectedAircraft
+      ? _c("div", { staticClass: "selected-aircraft" }, [
+          _c("div", { staticClass: "flex-row" }, [
+            _c(
+              "div",
+              {
+                staticClass: "aircraft-badge",
+                style: { backgroundColor: "#" + _vm.selectedAircraft.colour },
+                on: {
+                  click: function($event) {
+                    _vm.showOptions = !_vm.showOptions
+                  }
+                }
+              },
+              [_vm._v(_vm._s(_vm.selectedAircraft.key))]
+            ),
+            _vm._v(" "),
+            _c("div", [
+              _vm._v(
+                _vm._s(
+                  _vm.formatAltitudeFeet(
+                    _vm.heightAgl(
+                      _vm.selectedAircraft.points[0].alt,
+                      _vm.selectedAircraft.points[0].gl
+                    )
+                  )
+                )
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", [
+              _vm._v(
+                _vm._s(
+                  Math.round(_vm.selectedAircraft.points[0].vspeed * 1.944)
+                ) + " kt"
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", [
+              _vm._v(
+                _vm._s(
+                  _vm.dateToNow(
+                    _vm.createDateFromMysql(
+                      _vm.selectedAircraft.points[0].thetime
+                    )
+                  )
+                )
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", [
+              _c("label", { attrs: { for: "follow" } }, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.optionFollow,
+                      expression: "optionFollow"
+                    }
+                  ],
+                  attrs: { name: "follow", id: "follow", type: "checkbox" },
+                  domProps: {
+                    value: true,
+                    checked: Array.isArray(_vm.optionFollow)
+                      ? _vm._i(_vm.optionFollow, true) > -1
+                      : _vm.optionFollow
+                  },
+                  on: {
+                    click: function($event) {
+                      return _vm.follow()
+                    },
+                    change: function($event) {
+                      var $$a = _vm.optionFollow,
+                        $$el = $event.target,
+                        $$c = $$el.checked ? true : false
+                      if (Array.isArray($$a)) {
+                        var $$v = true,
+                          $$i = _vm._i($$a, $$v)
+                        if ($$el.checked) {
+                          $$i < 0 && (_vm.optionFollow = $$a.concat([$$v]))
+                        } else {
+                          $$i > -1 &&
+                            (_vm.optionFollow = $$a
+                              .slice(0, $$i)
+                              .concat($$a.slice($$i + 1)))
+                        }
+                      } else {
+                        _vm.optionFollow = $$c
+                      }
+                    }
+                  }
+                }),
+                _vm._v(" Follow")
+              ])
+            ])
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _c("div", { staticClass: "maprow" }, [
       _c("div", { staticClass: "mapbox", attrs: { id: "map" } }, [
         _c("div", { staticClass: "buttons" }, [
@@ -61487,106 +61589,6 @@ var render = function() {
         ]
       )
     ]),
-    _vm._v(" "),
-    _vm.selectedAircraft
-      ? _c("div", { staticClass: "selected-aircraft" }, [
-          _c("div", { staticClass: "flex-row" }, [
-            _c(
-              "div",
-              {
-                staticClass: "aircraft-badge",
-                style: { backgroundColor: "#" + _vm.selectedAircraft.colour },
-                on: {
-                  click: function($event) {
-                    _vm.showOptions = !_vm.showOptions
-                  }
-                }
-              },
-              [_vm._v(_vm._s(_vm.selectedAircraft.key))]
-            ),
-            _vm._v(" "),
-            _c("div", [
-              _vm._v(
-                _vm._s(
-                  _vm.formatAltitudeFeet(
-                    _vm.heightAgl(
-                      _vm.selectedAircraft.points[0].alt,
-                      _vm.selectedAircraft.points[0].gl
-                    )
-                  )
-                )
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", [
-              _vm._v(
-                _vm._s(
-                  Math.round(_vm.selectedAircraft.points[0].vspeed * 1.944)
-                ) + " kt"
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", [
-              _vm._v(
-                _vm._s(
-                  _vm.dateToNow(
-                    _vm.createDateFromMysql(
-                      _vm.selectedAircraft.points[0].thetime
-                    )
-                  )
-                )
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", [
-              _c("label", { attrs: { for: "follow" } }, [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.optionFollow,
-                      expression: "optionFollow"
-                    }
-                  ],
-                  attrs: { name: "follow", id: "follow", type: "checkbox" },
-                  domProps: {
-                    value: true,
-                    checked: Array.isArray(_vm.optionFollow)
-                      ? _vm._i(_vm.optionFollow, true) > -1
-                      : _vm.optionFollow
-                  },
-                  on: {
-                    click: function($event) {
-                      return _vm.follow()
-                    },
-                    change: function($event) {
-                      var $$a = _vm.optionFollow,
-                        $$el = $event.target,
-                        $$c = $$el.checked ? true : false
-                      if (Array.isArray($$a)) {
-                        var $$v = true,
-                          $$i = _vm._i($$a, $$v)
-                        if ($$el.checked) {
-                          $$i < 0 && (_vm.optionFollow = $$a.concat([$$v]))
-                        } else {
-                          $$i > -1 &&
-                            (_vm.optionFollow = $$a
-                              .slice(0, $$i)
-                              .concat($$a.slice($$i + 1)))
-                        }
-                      } else {
-                        _vm.optionFollow = $$c
-                      }
-                    }
-                  }
-                }),
-                _vm._v(" Follow")
-              ])
-            ])
-          ])
-        ])
-      : _vm._e(),
     _vm._v(" "),
     _vm.days
       ? _c(
