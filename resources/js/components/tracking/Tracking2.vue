@@ -58,7 +58,7 @@
 }
 .aircraft-badges {
 	flex-grow: 1;
-	max-height: 100%;
+	height: 100vh;
 	overflow: scroll;
 	scrollbar-width: none; /* Firefox */
 	-ms-overflow-style: none;  /* Internet Explorer 10+ */
@@ -99,7 +99,7 @@
 }
 
 .selected-aircraft {
-	border-bottom: 1px solid #888;
+	border-top: 1px solid #888;
 }
 
 .mapboxgl-ctrl-bottom-right {
