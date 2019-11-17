@@ -19,6 +19,14 @@ class TrackingController extends Controller
 		$data['app_class'] = 'fullscreen';
 		return view('tracking/mapbox', $data);
 	}
+	public function mapboxDay($year, $month, $day)
+	{
+		$data['month']=$month;
+		$data['day']=$day;
+		$data['year']=$year;
+		$data['app_class'] = 'fullscreen';
+		return view('tracking/mapbox', $data);
+	}
 	public function spots()
 	{
 		return view('tracking/spots');

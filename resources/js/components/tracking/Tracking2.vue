@@ -126,6 +126,7 @@
 	background-color: #FFF;
 	border-radius: 5px;
 	border: 1px solid #888;
+	margin-right: 20px;
 }
 .tracking .loading {
 	
@@ -155,7 +156,11 @@
 			<label for="live"><input name="live" id="live" type="checkbox" class="" v-model="optionLive" :value="true"> Live Updates</label>
 
 		<hr>
-		<p class="mt-4"><a href="/">Exit Tracking</a></p>
+		<p class=""><a href="/">Exit Tracking</a></p>
+
+		<p class="figure-caption">
+			Big thanks to <a href="http://glidernet.org">glidernet.org</a> for the FLARM tracking system and <a href="https://trackme.nz">TrackMe.nz</a> for their SPOT &amp; InReach Tracking data.
+		</p>
 
 	</div>
 
@@ -245,6 +250,8 @@
 				filterIsland: 'all',
 				filterUnknown: false,
 				mapMarkers: [],
+				mapFlying: false,
+				fitBoundsStarted: false
 			}
 		},
 		watch: {
@@ -291,15 +298,34 @@
 		},
 	mounted: function() {
 		var that = this;
+		mapboxgl.accessToken = 'pk.eyJ1IjoiaXBlYXJ4IiwiYSI6ImNqd2c1dnU3bjFoMmg0NHBzbG9vbmQwbGkifQ.HeNPRpXBkpmC_ljY7QQTRA';
 		this.map = new mapboxgl.Map({
 			container: 'map',
-			style: '/mapstyle.json',
+			style: 'mapbox://styles/ipearx/ck32qsl341wst1dn8b9vi0jhx',
 			center: [175.409, -40.97435],
-			zoom: 8
+			zoom: 5
 		});
 		this.map.on('load', function () {
 			that.map.resize();
 		});
+
+		this.map.on('moveend', function(e){
+			// we've finished moving. Check if it was started by a fit bounds
+			if (that.fitBoundsStarted) {
+				that.fitBoundsStarted=false;
+				console.log('finished fitbound');
+				if (that.optionFollow && that.selectedAircraft) {
+					that.map.panTo([that.selectedAircraft.points[0].lng, that.selectedAircraft.points[0].lat]);
+				}
+			}
+		});
+
+		// setup center after zooming
+		if(that.mapFlying) {
+			// tooltip or overlay here
+			map.fire(flyend); 
+		}
+
 
 		this.nav = new mapboxgl.NavigationControl();
 		this.map.addControl(this.nav, 'top-left');
@@ -307,7 +333,7 @@
 		this.loadDays();
 
 		// start the timer
-		this.timeoutTimer = setTimeout(this.timerLoop, 5000);
+		this.timeoutTimer = setTimeout(this.timerLoop, 15000);
 	},
 	methods: {
 		loadDays: function() {
@@ -365,7 +391,11 @@
 			// check if we already have some data
 			if (this.selectedAircraftKey==aircraft.key) {
 				// get the last point retreived
+				console.log('yo');
+				console.log(this.selectedAircraftKey);
+				console.log(aircraft.key);
 				from = this.selectedAircraftTrack[0].id;
+
 			} else {
 				that.selectedAircraftTrack = [];
 			}
@@ -396,7 +426,7 @@
 						}]
 					};
 				}
-				
+
 				// save the new data
 				newData.forEach(function(point) {
 					that.selectedAircraftTrackGeoJson.features[0].geometry.coordinates.push([point.lng, point.lat]);
@@ -420,9 +450,12 @@
 						return bounds.extend(coord);
 					}, new mapboxgl.LngLatBounds(coords[0], coords[0]));
 					 
+					that.fitBoundsStarted = true;
+					console.log('fitBoundsStarted');
 					that.map.fitBounds(bounds, {
 						padding: 20
 					});
+
 				}
 
 			});
@@ -454,7 +487,7 @@
 					.addTo(that.map);
 				that.mapMarkers.push(marker);
 
-				if (that.optionFollow) {
+				if (that.optionFollow && that.selectedAircraft) {
 					that.map.panTo([that.selectedAircraft.points[0].lng, that.selectedAircraft.points[0].lat]);
 				}
 
@@ -542,7 +575,7 @@
 				this.loadTracks();
 				if (this.selectedAircraft) this.selectAircraft(this.selectedAircraft);
 			}
-			this.timeoutTimer = setTimeout(this.timerLoop, 5000); // thirty seconds
+			this.timeoutTimer = setTimeout(this.timerLoop, 15000); // thirty seconds
 		},
 		follow: function() {
 			var that = this;

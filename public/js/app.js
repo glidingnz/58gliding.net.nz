@@ -8968,6 +8968,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -8998,7 +9003,9 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       showTrails: false,
       filterIsland: 'all',
       filterUnknown: false,
-      mapMarkers: []
+      mapMarkers: [],
+      mapFlying: false,
+      fitBoundsStarted: false
     };
   },
   watch: {
@@ -9048,20 +9055,38 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
   },
   mounted: function mounted() {
     var that = this;
+    mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.accessToken = 'pk.eyJ1IjoiaXBlYXJ4IiwiYSI6ImNqd2c1dnU3bjFoMmg0NHBzbG9vbmQwbGkifQ.HeNPRpXBkpmC_ljY7QQTRA';
     this.map = new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.Map({
       container: 'map',
-      style: '/mapstyle.json',
+      style: 'mapbox://styles/ipearx/ck32qsl341wst1dn8b9vi0jhx',
       center: [175.409, -40.97435],
-      zoom: 8
+      zoom: 5
     });
     this.map.on('load', function () {
       that.map.resize();
     });
+    this.map.on('moveend', function (e) {
+      // we've finished moving. Check if it was started by a fit bounds
+      if (that.fitBoundsStarted) {
+        that.fitBoundsStarted = false;
+        console.log('finished fitbound');
+
+        if (that.optionFollow && that.selectedAircraft) {
+          that.map.panTo([that.selectedAircraft.points[0].lng, that.selectedAircraft.points[0].lat]);
+        }
+      }
+    }); // setup center after zooming
+
+    if (that.mapFlying) {
+      // tooltip or overlay here
+      map.fire(flyend);
+    }
+
     this.nav = new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.NavigationControl();
     this.map.addControl(this.nav, 'top-left');
     this.loadDays(); // start the timer
 
-    this.timeoutTimer = setTimeout(this.timerLoop, 5000);
+    this.timeoutTimer = setTimeout(this.timerLoop, 15000);
   },
   methods: {
     loadDays: function loadDays() {
@@ -9114,6 +9139,9 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
 
       if (this.selectedAircraftKey == aircraft.key) {
         // get the last point retreived
+        console.log('yo');
+        console.log(this.selectedAircraftKey);
+        console.log(aircraft.key);
         from = this.selectedAircraftTrack[0].id;
       } else {
         that.selectedAircraftTrack = [];
@@ -9162,6 +9190,8 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
           var bounds = coords.reduce(function (bounds, coord) {
             return bounds.extend(coord);
           }, new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.LngLatBounds(coords[0], coords[0]));
+          that.fitBoundsStarted = true;
+          console.log('fitBoundsStarted');
           that.map.fitBounds(bounds, {
             padding: 20
           });
@@ -9190,7 +9220,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         }).setLngLat([aircraft.points[0].lng, aircraft.points[0].lat]).addTo(that.map);
         that.mapMarkers.push(marker);
 
-        if (that.optionFollow) {
+        if (that.optionFollow && that.selectedAircraft) {
           that.map.panTo([that.selectedAircraft.points[0].lng, that.selectedAircraft.points[0].lat]);
         }
       });
@@ -9276,7 +9306,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         if (this.selectedAircraft) this.selectAircraft(this.selectedAircraft);
       }
 
-      this.timeoutTimer = setTimeout(this.timerLoop, 5000); // thirty seconds
+      this.timeoutTimer = setTimeout(this.timerLoop, 15000); // thirty seconds
     },
     follow: function follow() {
       var that = this;
@@ -9848,7 +9878,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.fullscreen .main-nav,\n.fullscreen .footer {\n\tdisplay: none !important;\n}\n.mapbox {\n}\n.aircraft_marker {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 34px;\n\theight: 34px;\n}\n.aircraft_marker_pin {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -17px;\n\tleft: 7px;\n}\n.fullscreen .maprow\t{\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: horizontal;\n\t-webkit-box-direction: normal;\n\t        flex-direction: row;\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.fullscreen .tracking {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\theight: 100vh;\n}\n.fullscreen .mapbox, .fullscreen .options {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.tracking .sidepanel {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\twidth: 50px;\n\tbackground-color: #EEE;\n\tborder-left: 1px solid #888;\n}\n.tracking .expanded {\n\twidth: auto;\n}\n.aircraft-badges {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n\tmax-height: 100%;\n\toverflow: scroll;\n\tscrollbar-width: none; /* Firefox */\n\t-ms-overflow-style: none;  /* Internet Explorer 10+ */\n}\n.aircraft-badges::-webkit-scrollbar { /* WebKit */\n\twidth: 0;\n\theight: 0;\n}\n.tracking .aircraft-badge {\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tpadding: 0 3px;\n\tborder-radius: 3px;\n}\n.legend td, .legend th {\n\tpadding: 3px 3px;\n}\n.legend th {\n\ttext-align: center;\n}\n.legend-header {\n\twidth: 100%;\n}\n.hover-row:hover {\n\tbackground-color: #5AF;\n}\n.selected-aircraft .flex-row {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-pack: justify;\n\t        justify-content: space-between;\n\tpadding: 3px 5px;\n\tfont-size: 120%;\n\tmax-width: 500px;\n\tmargin-left: auto;\n\tmargin-right: auto;\n}\n.selected-aircraft {\n\tborder-top: 1px solid #888;\n}\n.mapboxgl-ctrl-bottom-right {\n\tz-index: 0 !important;\n}\n.mapbox .btn-outline-dark {\n\tbackground-color: #EEE;\n}\n.mapbox .btn-outline-dark:hover {\n\tbackground-color: #000;\n}\n.mapbox .buttons {\n\tposition: absolute;\n\tleft: 50px;\n\ttop: 10px;\n\tz-index: 10;\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n}\n.tracking .options {\n\tpadding: 10px;\n\tposition: absolute;\n\ttop: 43px;\n\tleft: 50px;\n\tz-index: 999;\n\tbackground-color: #FFF;\n\tborder-radius: 5px;\n\tborder: 1px solid #888;\n}\n.tracking .loading {\n}\n", ""]);
+exports.push([module.i, "\n.fullscreen .main-nav,\n.fullscreen .footer {\n\tdisplay: none !important;\n}\n.mapbox {\n}\n.aircraft_marker {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 34px;\n\theight: 34px;\n}\n.aircraft_marker_pin {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -17px;\n\tleft: 7px;\n}\n.fullscreen .maprow\t{\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: horizontal;\n\t-webkit-box-direction: normal;\n\t        flex-direction: row;\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.fullscreen .tracking {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\theight: 100vh;\n}\n.fullscreen .mapbox, .fullscreen .options {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.tracking .sidepanel {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\twidth: 50px;\n\tbackground-color: #EEE;\n\tborder-left: 1px solid #888;\n}\n.tracking .expanded {\n\twidth: auto;\n}\n.aircraft-badges {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n\tmax-height: 100%;\n\toverflow: scroll;\n\tscrollbar-width: none; /* Firefox */\n\t-ms-overflow-style: none;  /* Internet Explorer 10+ */\n}\n.aircraft-badges::-webkit-scrollbar { /* WebKit */\n\twidth: 0;\n\theight: 0;\n}\n.tracking .aircraft-badge {\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tpadding: 0 3px;\n\tborder-radius: 3px;\n}\n.legend td, .legend th {\n\tpadding: 3px 3px;\n}\n.legend th {\n\ttext-align: center;\n}\n.legend-header {\n\twidth: 100%;\n}\n.hover-row:hover {\n\tbackground-color: #5AF;\n}\n.selected-aircraft .flex-row {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-pack: justify;\n\t        justify-content: space-between;\n\tpadding: 3px 5px;\n\tfont-size: 120%;\n\tmax-width: 500px;\n\tmargin-left: auto;\n\tmargin-right: auto;\n}\n.selected-aircraft {\n\tborder-top: 1px solid #888;\n}\n.mapboxgl-ctrl-bottom-right {\n\tz-index: 0 !important;\n}\n.mapbox .btn-outline-dark {\n\tbackground-color: #EEE;\n}\n.mapbox .btn-outline-dark:hover {\n\tbackground-color: #000;\n}\n.mapbox .buttons {\n\tposition: absolute;\n\tleft: 50px;\n\ttop: 10px;\n\tz-index: 10;\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n}\n.tracking .options {\n\tpadding: 10px;\n\tposition: absolute;\n\ttop: 43px;\n\tleft: 50px;\n\tz-index: 999;\n\tbackground-color: #FFF;\n\tborder-radius: 5px;\n\tborder: 1px solid #888;\n\tmargin-right: 20px;\n}\n.tracking .loading {\n}\n", ""]);
 
 // exports
 
@@ -61279,7 +61309,9 @@ var render = function() {
         _vm._v(" "),
         _c("hr"),
         _vm._v(" "),
-        _vm._m(0)
+        _vm._m(0),
+        _vm._v(" "),
+        _vm._m(1)
       ]
     ),
     _vm._v(" "),
@@ -61604,8 +61636,24 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("p", { staticClass: "mt-4" }, [
+    return _c("p", {}, [
       _c("a", { attrs: { href: "/" } }, [_vm._v("Exit Tracking")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", { staticClass: "figure-caption" }, [
+      _vm._v("\n\t\t\tBig thanks to "),
+      _c("a", { attrs: { href: "http://glidernet.org" } }, [
+        _vm._v("glidernet.org")
+      ]),
+      _vm._v(" for the FLARM tracking system and "),
+      _c("a", { attrs: { href: "https://trackme.nz" } }, [
+        _vm._v("TrackMe.nz")
+      ]),
+      _vm._v(" for their SPOT & InReach Tracking data.\n\t\t")
     ])
   }
 ]

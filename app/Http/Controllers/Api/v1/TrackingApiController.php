@@ -535,7 +535,7 @@ class TrackingApiController extends ApiController
 		$nzdate->setTimezone(new DateTimeZone('Pacific/Auckland'));
 		$today = $nzdate->format('Y-m-d');
 
-		if ($days = TrackingDay::orderBy('day_date', 'DESC')->where('day_date', "<=", $today)->get())
+		if ($days = TrackingDay::orderBy('day_date', 'DESC')->where('day_date', "<=", $today)->limit(14)->get())
 		{
 			return $this->success($days);
 		}
