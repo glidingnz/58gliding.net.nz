@@ -117,7 +117,8 @@
 	z-index: 10;
 	display: flex;
 }
-.tracking .options {
+.tracking .options, 
+.tracking .day-selector {
 	padding: 10px;
 	position: absolute;
 	top: 43px;
@@ -127,49 +128,23 @@
 	border-radius: 5px;
 	border: 1px solid #888;
 	margin-right: 20px;
+	max-height: 80%;
+	overflow: scroll;
 }
-.tracking .loading {
-	
+.tracking .day-selector {
+
 }
 </style>
 
 <template>
 <div class="tracking">
 
-
-
-	<div class="options" v-show="showOptions">
-
-		<button class="btn btn-outline-dark btn-sm float-right" v-on:click="showOptions = !showOptions">Close</button>
-
-		<h4>Filters</h4>
-
-		<label for="showAll"><input type="radio" id="showAll" value="all" v-model="filterIsland"> All</label> &nbsp;
-		<label for="showNorth"><input type="radio" id="showNorth" value="north" v-model="filterIsland"> North</label> &nbsp;
-		<label for="showSouth"><input type="radio" id="showSouth" value="south" v-model="filterIsland"> South</label>
-
-		<hr>
-		<h4>Options</h4>
-
-			<label for="zoomToSelected"><input name="zoomToSelected" id="zoomToSelected" type="checkbox" class="" v-model="optionZoomToSelected" :value="true"> Zoom To Selected</label>
-
-			<label for="live"><input name="live" id="live" type="checkbox" class="" v-model="optionLive" :value="true"> Live Updates</label>
-
-		<hr>
-		<p class=""><a href="/">Exit Tracking</a></p>
-
-		<p class="figure-caption">
-			Big thanks to <a href="http://glidernet.org">glidernet.org</a> for the FLARM tracking system and <a href="https://trackme.nz">TrackMe.nz</a> for their SPOT &amp; InReach Tracking data.
-		</p>
-
-	</div>
-
-
 	<div class="maprow">
 
 		<div class="mapbox" id="map">
 			<div class="buttons">
 				<button class="settings-button fa fa-cog btn btn-outline-dark" v-on:click="showOptions = !showOptions"></button>
+				<button class="settings-button fa fa-calendar btn btn-outline-dark ml-2" v-on:click="showDaySelector = !showDaySelector"></button>
 				<div class="loading ml-2 mt-1" v-show="loading"><span class=" fas fa-sync fa-spin"></span> Loading...</div>
 			</div>
 		</div>
@@ -198,7 +173,7 @@
 							</div>
 						</td>
 						<td v-show="showLegend">{{formatAltitudeFeet(heightAgl(craft.points[0].alt, craft.points[0].gl))}}</td>
-						<td v-show="showLegend">{{dateToNow(craft.points[0].thetime)}}</td>
+						<td v-show="showLegend">{{dateToNow(createDateFromMysql(craft.points[0].thetime))}}</td>
 					</tr>
 				</table>
 			</div>
@@ -210,11 +185,50 @@
 			<div class="aircraft-badge" v-on:click="showOptions=!showOptions" v-bind:style="{backgroundColor: '#'+selectedAircraft.colour}">{{selectedAircraft.key}}</div>
 			<div>{{formatAltitudeFeet(heightAgl(selectedAircraft.points[0].alt, selectedAircraft.points[0].gl))}}</div>
 			<div>{{ Math.round(selectedAircraft.points[0].vspeed * 1.944) }} kt</div>
-			<div>{{dateToNow(selectedAircraft.points[0].thetime)}}</div>
+			<div>{{dateToNow(createDateFromMysql(selectedAircraft.points[0].thetime))}}</div>
 			<div>
 				<label for="follow"><input name="follow" id="follow" type="checkbox" v-on:click="follow()" v-model="optionFollow" :value="true"> Follow</label>
 			</div>
 		</div>
+	</div>
+
+
+
+	<div class="day-selector" v-show="showDaySelector" v-if="days">
+
+		<button class="btn btn-outline-dark btn-sm mb-2" v-on:click="showDaySelector = !showDaySelector">Close</button>
+
+		<div class="list-group" >
+			<a v-bind:href="'/tracking2/' + day.day_date"  v-for="(day, index) in days" class="list-group-item list-group-item-action" v-bind:class="[ day.day_date==flyingDay ? 'btn-secondary' : 'btn-outline-dark']">{{formatDate(day.day_date)}}
+			</a>
+		</div>
+	</div>
+
+
+	<div class="options" v-show="showOptions">
+
+		<button class="btn btn-outline-dark btn-sm float-right" v-on:click="showOptions = !showOptions">Close</button>
+
+		<h4>Filters</h4>
+
+		<label for="showAll"><input type="radio" id="showAll" value="all" v-model="filterIsland"> All</label> &nbsp;
+		<label for="showNorth"><input type="radio" id="showNorth" value="north" v-model="filterIsland"> North</label> &nbsp;
+		<label for="showSouth"><input type="radio" id="showSouth" value="south" v-model="filterIsland"> South</label>
+
+		<hr>
+		<h4>Options</h4>
+
+			<label for="zoomToSelected"><input name="zoomToSelected" id="zoomToSelected" type="checkbox" class="" v-model="optionZoomToSelected" :value="true"> Zoom To Selected</label>
+
+			<label for="live"><input name="live" id="live" type="checkbox" class="" v-model="optionLive" :value="true"> Live Updates</label>
+
+		<hr>
+		<p class=""><a href="/">Exit Tracking</a></p>
+
+		<p class="figure-caption">
+			Big thanks to <a href="http://glidernet.org">glidernet.org</a> for the FLARM tracking system and <a href="https://trackme.nz">TrackMe.nz</a> for their SPOT &amp; InReach Tracking data.
+		</p>
+
 	</div>
 
 </div>
@@ -235,7 +249,8 @@
 			return {
 				loading: false,
 				showOptions: false,
-				showLegend: false,
+				showDaySelector: false,
+				showLegend: true,
 				optionZoomToSelected: true,
 				optionLive: true,
 				optionFollow: true,
@@ -246,6 +261,7 @@
 				'map': {},
 				'nav': {},
 				aircraft: [],
+				days: [],
 				showTrails: false,
 				filterIsland: 'all',
 				filterUnknown: false,
@@ -257,6 +273,10 @@
 		watch: {
 			filterIsland: function() {
 				this.loadTracks();
+			},
+			showLegend: function() {
+				console.log('resizing!');
+				setTimeout(() => this.map.resize(), 20);
 			}
 		},
 		computed: {
@@ -301,7 +321,7 @@
 		mapboxgl.accessToken = 'pk.eyJ1IjoiaXBlYXJ4IiwiYSI6ImNqd2c1dnU3bjFoMmg0NHBzbG9vbmQwbGkifQ.HeNPRpXBkpmC_ljY7QQTRA';
 		this.map = new mapboxgl.Map({
 			container: 'map',
-			style: 'mapbox://styles/ipearx/ck32qsl341wst1dn8b9vi0jhx',
+			style: 'mapbox://styles/ipearx/ck32sc9mh34gt1cqlyi852vh1',
 			center: [175.409, -40.97435],
 			zoom: 5
 		});
@@ -326,6 +346,8 @@
 			map.fire(flyend); 
 		}
 
+		// check if the legend should be open or not
+		if (window.innerWidth<600) this.showLegend=false;
 
 		this.nav = new mapboxgl.NavigationControl();
 		this.map.addControl(this.nav, 'top-left');
@@ -391,9 +413,6 @@
 			// check if we already have some data
 			if (this.selectedAircraftKey==aircraft.key) {
 				// get the last point retreived
-				console.log('yo');
-				console.log(this.selectedAircraftKey);
-				console.log(aircraft.key);
 				from = this.selectedAircraftTrack[0].id;
 
 			} else {
