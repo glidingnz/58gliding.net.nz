@@ -48,7 +48,7 @@ class Tracking2ApiController extends ApiController
 	/**
 	 * Get a list of aircraft that have tracking today
 	 */
-	public function aircraft($dayDate, $points=5)
+	public function points($dayDate, $points=5)
 	{
 		$points = (int)$points; // ensure $pointsPerHex is an integer
 		if (!$table_name = $this->_get_table_name($dayDate)) return $this->error(); 
@@ -183,6 +183,58 @@ class Tracking2ApiController extends ApiController
 		//return $this->success($unique_aircraft);
 		return $this->success(array_values($unique_aircraft));
 	}
+
+
+	public function aircraft(Request $request, $dayDate, $key)
+	{
+		if (!$table_name = $this->_get_table_name($dayDate)) return $this->error(); 
+		if (!Schema::connection('ogn')->hasTable($table_name)) return $this->not_found("Day Not Found");
+
+		$rego = $hex = $key;
+
+		// see if the key is a hex that belongs to an aircraft (i.e. flarm)
+		if ($aircraft = Aircraft::where('rego', 'ZK-'.$key)->first())
+		{
+			$rego = substr($aircraft->rego, 3, 6); // strip the ZK-
+			if ($aircraft->flarm!=null) $hex = $aircraft->flarm;
+		}
+
+		if ($aircraft = Aircraft::where('flarm', $key)->first())
+		{
+			$rego = substr($aircraft->rego, 3, 6); // strip the ZK-
+			if ($aircraft->flarm!=null) $hex = $aircraft->flarm;
+		}
+
+		$select_columns='';
+		if(Schema::connection('ogn')->hasColumn($table_name, 'vspeed')) {
+			$select_columns = ', vspeed';
+		}
+
+		$query = "SELECT '".$key."' AS thekey , id, thetime, X(loc) AS lat, Y(loc) AS lng, hex, alt, speed, course, rego, type".$select_columns." FROM `".$table_name."` WHERE";
+		$query .= " (rego=?";
+		$keys[]=$rego;
+		$query .= " OR hex=?)";
+		$keys[]=$hex;
+
+		if ($request->has('from')) {
+			$query .= " AND id>?";
+			$keys[]=$request->input('from');
+		}
+
+
+		$query .= " ORDER BY thetime DESC";
+		$points = DB::connection('ogn')->select($query, $keys);
+
+		if ($points)
+		{
+			return $this->success($points);
+		}
+
+		return $this->success(Array());
+		
+	}
+
+
 
 	protected function _get_table_name($dayDate)
 	{

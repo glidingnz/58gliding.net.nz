@@ -148,6 +148,13 @@
 		<label for="showSouth"><input type="radio" id="showSouth" value="south" v-model="filterIsland"> South</label>
 
 		<hr>
+		<h4>Options</h4>
+
+			<label for="zoomToSelected"><input name="zoomToSelected" id="zoomToSelected" type="checkbox" class="" v-model="optionZoomToSelected" :value="true"> Zoom To Selected</label>
+
+			<label for="live"><input name="live" id="live" type="checkbox" class="" v-model="optionLive" :value="true"> Live Updates</label>
+
+		<hr>
 		<p class="mt-4"><a href="/">Exit Tracking</a></p>
 
 	</div>
@@ -178,7 +185,7 @@
 			</table>
 			<div class="aircraft-badges">
 				<table class="legend">
-					<tr v-for="craft in filteredAircraft" v-on:click="selectedAircraftKey=craft.key" class="hover-row">
+					<tr v-for="craft in filteredAircraft" v-on:click="selectAircraft(craft)" class="hover-row">
 						<td>
 							<div class="aircraft-badge" 
 								v-bind:style="{backgroundColor: '#'+craft.colour}">
@@ -197,14 +204,13 @@
 		<div class="flex-row">
 			<div class="aircraft-badge" v-on:click="showOptions=!showOptions" v-bind:style="{backgroundColor: '#'+selectedAircraft.colour}">{{selectedAircraft.key}}</div>
 			<div>{{formatAltitudeFeet(heightAgl(selectedAircraft.points[0].alt, selectedAircraft.points[0].gl))}}</div>
-			<div>{{ Math.round(selectedAircraft.points[0].vspeed * 1.944) }} knots</div>
+			<div>{{ Math.round(selectedAircraft.points[0].vspeed * 1.944) }} kt</div>
 			<div>{{dateToNow(selectedAircraft.points[0].thetime)}}</div>
+			<div>
+				<label for="follow"><input name="follow" id="follow" type="checkbox" v-on:click="follow()" v-model="optionFollow" :value="true"> Follow</label>
+			</div>
 		</div>
 	</div>
-
-
-
-	
 
 </div>
 </template>
@@ -225,7 +231,12 @@
 				loading: false,
 				showOptions: false,
 				showLegend: false,
+				optionZoomToSelected: true,
+				optionLive: true,
+				optionFollow: true,
 				selectedAircraftKey: null,
+				selectedAircraftTrack: [], // all the track data
+				selectedAircraftTrackGeoJson: [], // used by mapbox
 				flyingDay: null,
 				'map': {},
 				'nav': {},
@@ -294,6 +305,9 @@
 		this.map.addControl(this.nav, 'top-left');
 
 		this.loadDays();
+
+		// start the timer
+		this.timeoutTimer = setTimeout(this.timerLoop, 5000);
 	},
 	methods: {
 		loadDays: function() {
@@ -330,7 +344,7 @@
 			if (this.showTrails==false) pings=3;
 			var that = this;
 
-			window.axios.get('/api/v2/tracking/' + that.flyingDay + '/aircraft/' + pings).then(function (response) {
+			window.axios.get('/api/v2/tracking/' + that.flyingDay + '/' + pings).then(function (response) {
 
 				// delete all exsiting markers
 				for (var i=0; i<that.mapMarkers.length; i++) {
@@ -339,14 +353,83 @@
 
 				that.loading=false;
 				that.aircraft = response.data.data;
-				console.log(response.data.data);
 
 				that.createMarkers();
 				that.createTracks()
 			});
 		},
+		selectAircraft: function(aircraft) {
+			var that = this;
+			var from = 0;
+
+			// check if we already have some data
+			if (this.selectedAircraftKey==aircraft.key) {
+				// get the last point retreived
+				from = this.selectedAircraftTrack[0].id;
+			} else {
+				that.selectedAircraftTrack = [];
+			}
+
+			this.selectedAircraftKey=aircraft.key;
+			this.loading=true;
+
+			// load the data
+			window.axios.get('/api/v2/tracking/' + that.flyingDay + '/aircraft/' + aircraft.key + '?from=' + from).then(function (response) {
+
+				that.loading=false;
+				var newData = response.data.data;
+
+
+				// setup the geojson object if it hasn't been yet
+				if (from==0) {
+					that.selectedAircraftTrackGeoJson = {
+						'type': 'FeatureCollection',
+						'features': [{
+							'type': 'Feature',
+							'properties': {
+								'color': '#' + aircraft.colour
+							},
+							'geometry': {
+								'type': 'LineString',
+								'coordinates': []
+							}
+						}]
+					};
+				}
+				
+				// save the new data
+				newData.forEach(function(point) {
+					that.selectedAircraftTrackGeoJson.features[0].geometry.coordinates.push([point.lng, point.lat]);
+					that.selectedAircraftTrack.push(point);
+				});
+				
+
+				if (from==0) {
+					// create a new track
+					that.createSelectedTrack(aircraft);
+				} else {
+					// update the existing track
+					that.map.getSource('selectedTrack').setData(that.selectedAircraftTrackGeoJson);
+				}
+				
+
+				if (that.optionZoomToSelected && from==0) {
+					var coords = that.selectedAircraftTrackGeoJson.features[0].geometry.coordinates; // shortcut
+
+					var bounds = coords.reduce(function(bounds, coord) {
+						return bounds.extend(coord);
+					}, new mapboxgl.LngLatBounds(coords[0], coords[0]));
+					 
+					that.map.fitBounds(bounds, {
+						padding: 20
+					});
+				}
+
+			});
+		},
 		createMarkers() {
 			var that = this;
+
 			that.filteredAircraft.forEach(function (aircraft) { 
 				var el = document.createElement('div');
 				var iel = document.createElement('div');
@@ -358,7 +441,11 @@
 				iel.appendChild(document.createTextNode(that.getLabel(aircraft)));
 				elpin.style.borderTopColor = '#'+aircraft.colour;
 				iel.style.backgroundColor = '#'+aircraft.colour;
-
+				el.addEventListener('click', () => 
+					{ 
+						that.selectAircraft(aircraft);
+					}
+				); 
 				var marker = new mapboxgl.Marker(el, {
 						anchor: 'bottom',
 						offset: [0, -5]
@@ -366,13 +453,49 @@
 					.setLngLat([aircraft.points[0].lng, aircraft.points[0].lat])
 					.addTo(that.map);
 				that.mapMarkers.push(marker);
+
+				if (that.optionFollow) {
+					that.map.panTo([that.selectedAircraft.points[0].lng, that.selectedAircraft.points[0].lat]);
+				}
+
 			}); 
 		},
+		createSelectedTrack(aircraft) {
+			var that = this;
+
+			// delete existing selected track
+			var mapLayer = this.map.getLayer('selectedTrack');
+			if (typeof mapLayer !== 'undefined') {
+				this.map.removeLayer('selectedTrack');
+				this.map.removeSource('selectedTrack');
+			}
+
+			that.map.addLayer({
+				'id': 'selectedTrack',
+				'type': 'line',
+				'source': {
+					'type': 'geojson',
+					'lineMetrics': true,
+					'data': that.selectedAircraftTrackGeoJson
+				},
+				'paint': {
+					"line-width": 6,
+					'line-color': ['get', 'color'],
+					'line-opacity': .8
+				}
+			});
+
+		},
 		createTracks() {
+			// delete existing track lines
+			var mapLayer = this.map.getLayer('lines');
+			if (typeof mapLayer !== 'undefined') {
+				this.map.removeLayer('lines');
+				this.map.removeSource('lines');
+			}
+
 			var that = this;
 			var features = [];
-			let baseWidth = 5;
-			let baseZoom = 15;
 
 			that.filteredAircraft.forEach(function (aircraft) { 
 				features.push({
@@ -399,7 +522,7 @@
 					}
 				},
 				'paint': {
-					"line-width": 8,
+					"line-width": 4,
 					// Use a get expression (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-get)
 					// to set the line-color to a feature property value.
 					'line-color': ['get', 'color'],
@@ -413,6 +536,21 @@
 				coords.push([point.lng, point.lat]);
 			});
 			return coords;
+		},
+		timerLoop: function() {
+			if (this.optionLive) {
+				this.loadTracks();
+				if (this.selectedAircraft) this.selectAircraft(this.selectedAircraft);
+			}
+			this.timeoutTimer = setTimeout(this.timerLoop, 5000); // thirty seconds
+		},
+		follow: function() {
+			var that = this;
+			Vue.nextTick(function () {
+				if (that.optionFollow) {
+					that.map.panTo([that.selectedAircraft.points[0].lng, that.selectedAircraft.points[0].lat]);
+				}
+			});
 		}
 	}
 }

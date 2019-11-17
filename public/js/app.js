@@ -8962,6 +8962,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -8977,7 +8983,14 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       loading: false,
       showOptions: false,
       showLegend: false,
+      optionZoomToSelected: true,
+      optionLive: true,
+      optionFollow: true,
       selectedAircraftKey: null,
+      selectedAircraftTrack: [],
+      // all the track data
+      selectedAircraftTrackGeoJson: [],
+      // used by mapbox
       flyingDay: null,
       'map': {},
       'nav': {},
@@ -9046,7 +9059,9 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     });
     this.nav = new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.NavigationControl();
     this.map.addControl(this.nav, 'top-left');
-    this.loadDays();
+    this.loadDays(); // start the timer
+
+    this.timeoutTimer = setTimeout(this.timerLoop, 5000);
   },
   methods: {
     loadDays: function loadDays() {
@@ -9081,7 +9096,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       var pings = 25;
       if (this.showTrails == false) pings = 3;
       var that = this;
-      window.axios.get('/api/v2/tracking/' + that.flyingDay + '/aircraft/' + pings).then(function (response) {
+      window.axios.get('/api/v2/tracking/' + that.flyingDay + '/' + pings).then(function (response) {
         // delete all exsiting markers
         for (var i = 0; i < that.mapMarkers.length; i++) {
           that.mapMarkers[i].remove();
@@ -9089,9 +9104,68 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
 
         that.loading = false;
         that.aircraft = response.data.data;
-        console.log(response.data.data);
         that.createMarkers();
         that.createTracks();
+      });
+    },
+    selectAircraft: function selectAircraft(aircraft) {
+      var that = this;
+      var from = 0; // check if we already have some data
+
+      if (this.selectedAircraftKey == aircraft.key) {
+        // get the last point retreived
+        from = this.selectedAircraftTrack[0].id;
+      } else {
+        that.selectedAircraftTrack = [];
+      }
+
+      this.selectedAircraftKey = aircraft.key;
+      this.loading = true; // load the data
+
+      window.axios.get('/api/v2/tracking/' + that.flyingDay + '/aircraft/' + aircraft.key + '?from=' + from).then(function (response) {
+        that.loading = false;
+        var newData = response.data.data; // setup the geojson object if it hasn't been yet
+
+        if (from == 0) {
+          that.selectedAircraftTrackGeoJson = {
+            'type': 'FeatureCollection',
+            'features': [{
+              'type': 'Feature',
+              'properties': {
+                'color': '#' + aircraft.colour
+              },
+              'geometry': {
+                'type': 'LineString',
+                'coordinates': []
+              }
+            }]
+          };
+        } // save the new data
+
+
+        newData.forEach(function (point) {
+          that.selectedAircraftTrackGeoJson.features[0].geometry.coordinates.push([point.lng, point.lat]);
+          that.selectedAircraftTrack.push(point);
+        });
+
+        if (from == 0) {
+          // create a new track
+          that.createSelectedTrack(aircraft);
+        } else {
+          // update the existing track
+          that.map.getSource('selectedTrack').setData(that.selectedAircraftTrackGeoJson);
+        }
+
+        if (that.optionZoomToSelected && from == 0) {
+          var coords = that.selectedAircraftTrackGeoJson.features[0].geometry.coordinates; // shortcut
+
+          var bounds = coords.reduce(function (bounds, coord) {
+            return bounds.extend(coord);
+          }, new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.LngLatBounds(coords[0], coords[0]));
+          that.map.fitBounds(bounds, {
+            padding: 20
+          });
+        }
       });
     },
     createMarkers: function createMarkers() {
@@ -9107,18 +9181,56 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         iel.appendChild(document.createTextNode(that.getLabel(aircraft)));
         elpin.style.borderTopColor = '#' + aircraft.colour;
         iel.style.backgroundColor = '#' + aircraft.colour;
+        el.addEventListener('click', function () {
+          that.selectAircraft(aircraft);
+        });
         var marker = new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.Marker(el, {
           anchor: 'bottom',
           offset: [0, -5]
         }).setLngLat([aircraft.points[0].lng, aircraft.points[0].lat]).addTo(that.map);
         that.mapMarkers.push(marker);
+
+        if (that.optionFollow) {
+          that.map.panTo([that.selectedAircraft.points[0].lng, that.selectedAircraft.points[0].lat]);
+        }
+      });
+    },
+    createSelectedTrack: function createSelectedTrack(aircraft) {
+      var that = this; // delete existing selected track
+
+      var mapLayer = this.map.getLayer('selectedTrack');
+
+      if (typeof mapLayer !== 'undefined') {
+        this.map.removeLayer('selectedTrack');
+        this.map.removeSource('selectedTrack');
+      }
+
+      that.map.addLayer({
+        'id': 'selectedTrack',
+        'type': 'line',
+        'source': {
+          'type': 'geojson',
+          'lineMetrics': true,
+          'data': that.selectedAircraftTrackGeoJson
+        },
+        'paint': {
+          "line-width": 6,
+          'line-color': ['get', 'color'],
+          'line-opacity': .8
+        }
       });
     },
     createTracks: function createTracks() {
+      // delete existing track lines
+      var mapLayer = this.map.getLayer('lines');
+
+      if (typeof mapLayer !== 'undefined') {
+        this.map.removeLayer('lines');
+        this.map.removeSource('lines');
+      }
+
       var that = this;
       var features = [];
-      var baseWidth = 5;
-      var baseZoom = 15;
       that.filteredAircraft.forEach(function (aircraft) {
         features.push({
           'type': 'Feature',
@@ -9143,7 +9255,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
           }
         },
         'paint': {
-          "line-width": 8,
+          "line-width": 4,
           // Use a get expression (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-get)
           // to set the line-color to a feature property value.
           'line-color': ['get', 'color'],
@@ -9157,6 +9269,22 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         coords.push([point.lng, point.lat]);
       });
       return coords;
+    },
+    timerLoop: function timerLoop() {
+      if (this.optionLive) {
+        this.loadTracks();
+        if (this.selectedAircraft) this.selectAircraft(this.selectedAircraft);
+      }
+
+      this.timeoutTimer = setTimeout(this.timerLoop, 5000); // thirty seconds
+    },
+    follow: function follow() {
+      var that = this;
+      Vue.nextTick(function () {
+        if (that.optionFollow) {
+          that.map.panTo([that.selectedAircraft.points[0].lng, that.selectedAircraft.points[0].lat]);
+        }
+      });
     }
   }
 });
@@ -61059,6 +61187,98 @@ var render = function() {
         _vm._v(" "),
         _c("hr"),
         _vm._v(" "),
+        _c("h4", [_vm._v("Options")]),
+        _vm._v(" "),
+        _c("label", { attrs: { for: "zoomToSelected" } }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.optionZoomToSelected,
+                expression: "optionZoomToSelected"
+              }
+            ],
+            attrs: {
+              name: "zoomToSelected",
+              id: "zoomToSelected",
+              type: "checkbox"
+            },
+            domProps: {
+              value: true,
+              checked: Array.isArray(_vm.optionZoomToSelected)
+                ? _vm._i(_vm.optionZoomToSelected, true) > -1
+                : _vm.optionZoomToSelected
+            },
+            on: {
+              change: function($event) {
+                var $$a = _vm.optionZoomToSelected,
+                  $$el = $event.target,
+                  $$c = $$el.checked ? true : false
+                if (Array.isArray($$a)) {
+                  var $$v = true,
+                    $$i = _vm._i($$a, $$v)
+                  if ($$el.checked) {
+                    $$i < 0 && (_vm.optionZoomToSelected = $$a.concat([$$v]))
+                  } else {
+                    $$i > -1 &&
+                      (_vm.optionZoomToSelected = $$a
+                        .slice(0, $$i)
+                        .concat($$a.slice($$i + 1)))
+                  }
+                } else {
+                  _vm.optionZoomToSelected = $$c
+                }
+              }
+            }
+          }),
+          _vm._v(" Zoom To Selected")
+        ]),
+        _vm._v(" "),
+        _c("label", { attrs: { for: "live" } }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.optionLive,
+                expression: "optionLive"
+              }
+            ],
+            attrs: { name: "live", id: "live", type: "checkbox" },
+            domProps: {
+              value: true,
+              checked: Array.isArray(_vm.optionLive)
+                ? _vm._i(_vm.optionLive, true) > -1
+                : _vm.optionLive
+            },
+            on: {
+              change: function($event) {
+                var $$a = _vm.optionLive,
+                  $$el = $event.target,
+                  $$c = $$el.checked ? true : false
+                if (Array.isArray($$a)) {
+                  var $$v = true,
+                    $$i = _vm._i($$a, $$v)
+                  if ($$el.checked) {
+                    $$i < 0 && (_vm.optionLive = $$a.concat([$$v]))
+                  } else {
+                    $$i > -1 &&
+                      (_vm.optionLive = $$a
+                        .slice(0, $$i)
+                        .concat($$a.slice($$i + 1)))
+                  }
+                } else {
+                  _vm.optionLive = $$c
+                }
+              }
+            }
+          }),
+          _vm._v(" Live Updates")
+        ]),
+        _vm._v(" "),
+        _c("hr"),
+        _vm._v(" "),
         _vm._m(0)
       ]
     ),
@@ -61212,7 +61432,7 @@ var render = function() {
                     staticClass: "hover-row",
                     on: {
                       click: function($event) {
-                        _vm.selectedAircraftKey = craft.key
+                        return _vm.selectAircraft(craft)
                       }
                     }
                   },
@@ -61318,7 +61538,7 @@ var render = function() {
               _vm._v(
                 _vm._s(
                   Math.round(_vm.selectedAircraft.points[0].vspeed * 1.944)
-                ) + " knots"
+                ) + " kt"
               )
             ]),
             _vm._v(" "),
@@ -61326,6 +61546,53 @@ var render = function() {
               _vm._v(
                 _vm._s(_vm.dateToNow(_vm.selectedAircraft.points[0].thetime))
               )
+            ]),
+            _vm._v(" "),
+            _c("div", [
+              _c("label", { attrs: { for: "follow" } }, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.optionFollow,
+                      expression: "optionFollow"
+                    }
+                  ],
+                  attrs: { name: "follow", id: "follow", type: "checkbox" },
+                  domProps: {
+                    value: true,
+                    checked: Array.isArray(_vm.optionFollow)
+                      ? _vm._i(_vm.optionFollow, true) > -1
+                      : _vm.optionFollow
+                  },
+                  on: {
+                    click: function($event) {
+                      return _vm.follow()
+                    },
+                    change: function($event) {
+                      var $$a = _vm.optionFollow,
+                        $$el = $event.target,
+                        $$c = $$el.checked ? true : false
+                      if (Array.isArray($$a)) {
+                        var $$v = true,
+                          $$i = _vm._i($$a, $$v)
+                        if ($$el.checked) {
+                          $$i < 0 && (_vm.optionFollow = $$a.concat([$$v]))
+                        } else {
+                          $$i > -1 &&
+                            (_vm.optionFollow = $$a
+                              .slice(0, $$i)
+                              .concat($$a.slice($$i + 1)))
+                        }
+                      } else {
+                        _vm.optionFollow = $$c
+                      }
+                    }
+                  }
+                }),
+                _vm._v(" Follow")
+              ])
             ])
           ])
         ])
