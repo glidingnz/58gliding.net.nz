@@ -8,6 +8,18 @@
 .mapbox {
 }
 
+html, body, 
+.fullscreen,
+.fullscreen .tracking, 
+.fullscreen .flex-vertical {
+	height: 100%;
+}
+
+.fullscreen .flex-vertical {
+	height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+	height: calc(var(--vh, 1vh) * 100);
+}
+
 .aircraft_marker {
 	background-color: #A00;
 	color: #FFF;
@@ -36,13 +48,6 @@
 	flex-direction: row;
 	flex-grow: 1;
 }
-
-.fullscreen .tracking {
-	display: flex;
-	flex-direction: column;
-	height: 100vh; /* Fallback for browsers that do not support Custom Properties */
-	height: calc(var(--vh, 1vh) * 100);
-}
 .fullscreen .mapbox, .fullscreen .options {
 	flex-grow: 1;
 }
@@ -58,7 +63,7 @@
 }
 .aircraft-badges {
 	flex-grow: 1;
-	height: 100vh;
+	height: 100px;
 	overflow: scroll;
 	scrollbar-width: none; /* Firefox */
 	-ms-overflow-style: none;  /* Internet Explorer 10+ */
@@ -96,6 +101,7 @@
 	max-width: 500px;
 	margin-left: auto;
 	margin-right: auto;
+	flex-grow: 1;
 }
 
 .selected-aircraft {
@@ -133,68 +139,73 @@
 	max-height: 80%;
 	overflow: scroll;
 }
-.tracking .day-selector {
-
+.flex-vertical {
+	display: flex;
+	flex-direction: column;
 }
 </style>
 
 <template>
 <div class="tracking" id="tracking">
 
+	<div class="flex-vertical">
 
-	<div class="maprow">
+		<div class="maprow">
 
-
-		<div class="mapbox" id="map">
-			<div class="buttons">
-				<button class="settings-button fa fa-cog btn btn-outline-dark" v-on:click="showOptions = !showOptions"></button>
-				<button class="settings-button fa fa-calendar btn btn-outline-dark ml-2" v-on:click="showDaySelector = !showDaySelector"></button>
-				<div class="loading ml-2 mt-1" v-show="loading"><span class=" fas fa-sync fa-spin"></span> Loading...</div>
+			<!-- <div class="mapbox">Map</div> -->
+			<div class="mapbox" id="map">
+				<div class="buttons">
+					<button class="settings-button fa fa-cog btn btn-outline-dark" v-on:click="showOptions = !showOptions"></button>
+					<button class="settings-button fa fa-calendar btn btn-outline-dark ml-2" v-on:click="showDaySelector = !showDaySelector"></button>
+					<div class="loading ml-2 mt-1" v-show="loading"><span class=" fas fa-sync fa-spin"></span> Loading...</div>
+				</div>
 			</div>
-		</div>
 
-		<div class="sidepanel" v-bind:class="[showLegend ? 'expanded' : '']">
-			<table class="legend legend-header">
-				<tr>
-					<th v-show="!showLegend">
-						<button class="fa fa-angle-double-left btn btn-xs btn-outline-dark ml-2 mt-1 pr-2 pl-2" v-if="!showLegend" v-on:click="showLegend=!showLegend" ></button>
-					</th>
-					<th v-show="showLegend">Reg</th>
-					<th v-show="showLegend">AGL</th>
-					<th v-show="showLegend">Seen</th>
-					<th v-show="showLegend">
-						<button class="fa fa-angle-double-right btn btn-xs btn-outline-dark ml-2 mt-1 pr-2 pl-2" v-on:click="showLegend=!showLegend" ></button>
-					</th>
-				</tr>
-			</table>
-			<div class="aircraft-badges">
-				<table class="legend">
-					<tr v-for="craft in filteredAircraft" v-on:click="selectAircraft(craft)" class="hover-row">
-						<td>
-							<div class="aircraft-badge" 
-								v-bind:style="{backgroundColor: '#'+craft.colour}">
-								{{getLabel(craft)}}
-							</div>
-						</td>
-						<td v-show="showLegend">{{formatAltitudeFeet(heightAgl(craft.points[0].alt, craft.points[0].gl))}}</td>
-						<td v-show="showLegend">{{dateToNow(createDateFromMysql(craft.points[0].thetime))}}</td>
+			<div class="sidepanel" v-bind:class="[showLegend ? 'expanded' : '']">
+				<table class="legend legend-header">
+					<tr>
+						<th v-show="!showLegend">
+							<button class="fa fa-angle-double-left btn btn-xs btn-outline-dark ml-2 mt-1 pr-2 pl-2" v-if="!showLegend" v-on:click="showLegend=!showLegend" ></button>
+						</th>
+						<th v-show="showLegend">Reg</th>
+						<th v-show="showLegend">AGL</th>
+						<th v-show="showLegend">Seen</th>
+						<th v-show="showLegend">
+							<button class="fa fa-angle-double-right btn btn-xs btn-outline-dark ml-2 mt-1 pr-2 pl-2" v-on:click="showLegend=!showLegend" ></button>
+						</th>
 					</tr>
 				</table>
+				<div class="aircraft-badges">
+					<table class="legend">
+						<tr v-for="craft in filteredAircraft" v-on:click="selectAircraft(craft)" class="hover-row">
+							<td>
+								<div class="aircraft-badge" 
+									v-bind:style="{backgroundColor: '#'+craft.colour}">
+									{{getLabel(craft)}}
+								</div>
+							</td>
+							<td v-show="showLegend">{{formatAltitudeFeet(heightAgl(craft.points[0].alt, craft.points[0].gl))}}</td>
+							<td v-show="showLegend">{{dateToNow(createDateFromMysql(craft.points[0].thetime))}}</td>
+						</tr>
+					</table>
+				</div>
 			</div>
 		</div>
+
+		<div class="selected-aircraft" v-if="selectedAircraft">
+			<div class="flex-row">
+				<div class="aircraft-badge" v-on:click="showOptions=!showOptions" v-bind:style="{backgroundColor: '#'+selectedAircraft.colour}">{{selectedAircraft.key}}</div>
+				<div>{{formatAltitudeFeet(heightAgl(selectedAircraft.points[0].alt, selectedAircraft.points[0].gl))}}</div>
+				<div>{{ Math.round(selectedAircraft.points[0].vspeed * 1.944) }} kt</div>
+				<div>{{dateToNow(createDateFromMysql(selectedAircraft.points[0].thetime))}}</div>
+				<div>
+					<label for="follow"><input name="follow" id="follow" type="checkbox" v-on:click="follow()" v-model="optionFollow" :value="true"> Follow</label>
+				</div>
+			</div>
+		</div>
+
 	</div>
 
-	<div class="selected-aircraft" v-if="selectedAircraft">
-		<div class="flex-row">
-			<div class="aircraft-badge" v-on:click="showOptions=!showOptions" v-bind:style="{backgroundColor: '#'+selectedAircraft.colour}">{{selectedAircraft.key}}</div>
-			<div>{{formatAltitudeFeet(heightAgl(selectedAircraft.points[0].alt, selectedAircraft.points[0].gl))}}</div>
-			<div>{{ Math.round(selectedAircraft.points[0].vspeed * 1.944) }} kt</div>
-			<div>{{dateToNow(createDateFromMysql(selectedAircraft.points[0].thetime))}}</div>
-			<div>
-				<label for="follow"><input name="follow" id="follow" type="checkbox" v-on:click="follow()" v-model="optionFollow" :value="true"> Follow</label>
-			</div>
-		</div>
-	</div>
 
 
 	<div class="day-selector" v-show="showDaySelector" v-if="days">
@@ -242,7 +253,6 @@
 	import moment from 'moment';
 	import mapboxgl from 'mapbox-gl';
 	require('../../../../node_modules/mapbox-gl/dist/mapbox-gl.css');
-	var innerHeight = require('ios-inner-height');
 
 	Vue.prototype.$moment = moment;
 
@@ -333,7 +343,6 @@
 			// we've finished moving. Check if it was started by a fit bounds
 			if (that.fitBoundsStarted) {
 				that.fitBoundsStarted=false;
-				console.log('finished fitbound');
 				if (that.optionFollow && that.selectedAircraft) {
 					that.map.panTo([that.selectedAircraft.points[0].lng, that.selectedAircraft.points[0].lat]);
 				}
@@ -344,7 +353,6 @@
 		if(that.mapFlying) {
 			// tooltip or overlay here
 			map.fire(flyend); 
-			console.log(innerHeight());
 		}
 
 		// check if the legend should be open or not
@@ -354,7 +362,7 @@
 		let vh = window.innerHeight * 0.01;
 		document.documentElement.style.setProperty('--vh', `${vh}px`);
 		window.addEventListener('resize', () => {
-			// We execute the same script as before
+			//We execute the same script as before
 			let vh = window.innerHeight * 0.01;
 			document.documentElement.style.setProperty('--vh', `${vh}px`);
 		});
