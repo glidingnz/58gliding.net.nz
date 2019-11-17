@@ -354,6 +354,12 @@
 
 		this.loadDays();
 
+		// fix safari ios footer issue?
+		window.onresize = function() {
+			document.body.height = window.innerHeight;
+		}
+		window.onresize(); // called to initially set the height.
+
 		// start the timer
 		this.timeoutTimer = setTimeout(this.timerLoop, 15000);
 	},
