@@ -18,6 +18,7 @@
 	padding: 5px 0 3px 0;
 	width: 34px;
 	height: 34px;
+	box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.3);
 }
 .aircraft_marker_pin {
 	position: absolute;
@@ -137,7 +138,7 @@
 </style>
 
 <template>
-<div class="tracking">
+<div class="tracking" id="tracking">
 
 	<div class="maprow">
 
@@ -239,6 +240,7 @@
 	import moment from 'moment';
 	import mapboxgl from 'mapbox-gl';
 	require('../../../../node_modules/mapbox-gl/dist/mapbox-gl.css');
+	var innerHeight = require('ios-inner-height');
 
 	Vue.prototype.$moment = moment;
 
@@ -325,10 +327,6 @@
 			center: [175.409, -40.97435],
 			zoom: 5
 		});
-		this.map.on('load', function () {
-			that.map.resize();
-		});
-
 		this.map.on('moveend', function(e){
 			// we've finished moving. Check if it was started by a fit bounds
 			if (that.fitBoundsStarted) {
@@ -344,6 +342,7 @@
 		if(that.mapFlying) {
 			// tooltip or overlay here
 			map.fire(flyend); 
+			console.log(innerHeight());
 		}
 
 		// check if the legend should be open or not
@@ -354,11 +353,12 @@
 
 		this.loadDays();
 
-		// fix safari ios footer issue?
-		window.onresize = function() {
-			document.body.height = window.innerHeight;
+		// fix iOS height if we can!
+		var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+		if (iOS) {
+			var el=document.getElementById('tracking');
+			el.style.height = innerHeight() + 'px';
 		}
-		window.onresize(); // called to initially set the height.
 
 		// start the timer
 		this.timeoutTimer = setTimeout(this.timerLoop, 15000);
