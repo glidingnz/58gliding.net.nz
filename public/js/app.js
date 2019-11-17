@@ -8886,6 +8886,82 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -8901,7 +8977,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       loading: false,
       showOptions: false,
       showLegend: false,
-      selectedAircraft: null,
+      selectedAircraftKey: null,
       flyingDay: null,
       'map': {},
       'nav': {},
@@ -8918,9 +8994,17 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     }
   },
   computed: {
+    selectedAircraft: function selectedAircraft() {
+      if (!this.selectedAircraftKey) return false;
+      var searchKey = this.selectedAircraftKey;
+      return this.aircraft.find(function (_ref) {
+        var key = _ref.key;
+        return key === searchKey;
+      });
+    },
     filteredAircraft: function filteredAircraft() {
       var that = this;
-      return this.aircraft.filter(function (craft) {
+      return _.orderBy(this.aircraft.filter(function (craft) {
         if (that.filterIsland == 'north') {
           if (craft.points[0].lat < -40.29 && craft.points[0].lng < 174.36) return false;
         }
@@ -8934,7 +9018,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         }
 
         return true;
-      }); // check if NOT in the list of aircraft if we are filtering that way
+      }), ['aircraft.contest_id', 'key']); // check if NOT in the list of aircraft if we are filtering that way
       // if (this.selectedFleet!=null && this.fleet.aircraft && this.fleet.aircraft.length>0) {
       // 	var found=false;
       // 	for(var i = 0; i < this.fleet.aircraft.length; i++) {
@@ -8950,11 +9034,15 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     }
   },
   mounted: function mounted() {
+    var that = this;
     this.map = new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.Map({
       container: 'map',
       style: '/mapstyle.json',
       center: [175.409, -40.97435],
       zoom: 8
+    });
+    this.map.on('load', function () {
+      that.map.resize();
     });
     this.nav = new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.NavigationControl();
     this.map.addControl(this.nav, 'top-left');
@@ -8963,7 +9051,9 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
   methods: {
     loadDays: function loadDays() {
       var that = this;
+      this.loading = true;
       window.axios.get('/api/v1/tracking/days').then(function (response) {
+        that.loading = false;
         that.days = response.data.data;
 
         if (that.year == null || that.month == null || that.day == null) {
@@ -8987,17 +9077,21 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       return '?' + point.key.substring(0, 2);
     },
     loadTracks: function loadTracks() {
+      this.loading = true;
       var pings = 25;
-      if (this.showTrails == false) pings = 2;
-      var that = this; // delete all exsiting markers
-
-      for (var i = 0; i < this.mapMarkers.length; i++) {
-        this.mapMarkers[i].remove();
-      }
-
+      if (this.showTrails == false) pings = 3;
+      var that = this;
       window.axios.get('/api/v2/tracking/' + that.flyingDay + '/aircraft/' + pings).then(function (response) {
+        // delete all exsiting markers
+        for (var i = 0; i < that.mapMarkers.length; i++) {
+          that.mapMarkers[i].remove();
+        }
+
+        that.loading = false;
         that.aircraft = response.data.data;
+        console.log(response.data.data);
         that.createMarkers();
+        that.createTracks();
       });
     },
     createMarkers: function createMarkers() {
@@ -9020,8 +9114,50 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         that.mapMarkers.push(marker);
       });
     },
-    createMarker: function createMarker() {},
-    updateMarker: function updateMarker() {}
+    createTracks: function createTracks() {
+      var that = this;
+      var features = [];
+      var baseWidth = 5;
+      var baseZoom = 15;
+      that.filteredAircraft.forEach(function (aircraft) {
+        features.push({
+          'type': 'Feature',
+          'properties': {
+            'color': '#' + aircraft.colour
+          },
+          'geometry': {
+            'type': 'LineString',
+            'coordinates': that.getLineCoords(aircraft)
+          }
+        });
+      });
+      that.map.addLayer({
+        'id': 'lines',
+        'type': 'line',
+        'source': {
+          'type': 'geojson',
+          'lineMetrics': true,
+          'data': {
+            'type': 'FeatureCollection',
+            'features': features
+          }
+        },
+        'paint': {
+          "line-width": 8,
+          // Use a get expression (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-get)
+          // to set the line-color to a feature property value.
+          'line-color': ['get', 'color'],
+          'line-opacity': 0.5
+        }
+      });
+    },
+    getLineCoords: function getLineCoords(aircraft) {
+      var coords = [];
+      aircraft.points.forEach(function (point) {
+        coords.push([point.lng, point.lat]);
+      });
+      return coords;
+    }
   }
 });
 
@@ -9584,7 +9720,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.mapbox {\n}\n.aircraft_marker {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 14px;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 34px;\n\theight: 34px;\n}\n.aircraft_marker_pin {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -17px;\n\tleft: 7px;\n}\n.fullscreen .main-nav,\n.fullscreen .footer {\n\tdisplay: none !important;\n}\n.fullscreen .tracking {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\tmin-height: 100vh;\n}\n.fullscreen .mapbox, .fullscreen .options {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.tracking .sidepanel {\n\tposition: fixed;\n\twidth: 50px;\n\tbackground-color: #EEE;\n\tborder: 1px solid #888;\n\tright: 0;\n\ttop: 20px;\n\tborder-top-left-radius: 5px;\n\tborder-bottom-left-radius: 5px;\n}\n.tracking .sidepanel::-webkit-scrollbar { /* WebKit */\n\twidth: 0;\n\theight: 0;\n}\n.tracking .expanded {\n\twidth: auto;\n}\n.aircraft-badges {\n\theight: 80vh;\n\toverflow: scroll;\n\tscrollbar-width: none; /* Firefox */\n\t-ms-overflow-style: none;  /* Internet Explorer 10+ */\n}\n.tracking .aircraft-badge {\n\tfont-size: 14px;\n\tfont-weight: bold;\n\ttext-align: center;\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tmargin: 3px 0;\n\tpadding: 0;\n}\n.legend .aircraft-badge {\n\tborder-radius: 3px;\n}\n.legend td {\n\tpadding: 0px 3px;\n}\n.legend th {\n\ttext-align: center;\n}\n\n", ""]);
+exports.push([module.i, "\n.fullscreen .main-nav,\n.fullscreen .footer {\n\tdisplay: none !important;\n}\n.mapbox {\n}\n.aircraft_marker {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 34px;\n\theight: 34px;\n}\n.aircraft_marker_pin {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -17px;\n\tleft: 7px;\n}\n.fullscreen .maprow\t{\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: horizontal;\n\t-webkit-box-direction: normal;\n\t        flex-direction: row;\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.fullscreen .tracking {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\theight: 100vh;\n}\n.fullscreen .mapbox, .fullscreen .options {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.tracking .sidepanel {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\twidth: 50px;\n\tbackground-color: #EEE;\n\tborder-left: 1px solid #888;\n}\n.tracking .expanded {\n\twidth: auto;\n}\n.aircraft-badges {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n\tmax-height: 100%;\n\toverflow: scroll;\n\tscrollbar-width: none; /* Firefox */\n\t-ms-overflow-style: none;  /* Internet Explorer 10+ */\n}\n.aircraft-badges::-webkit-scrollbar { /* WebKit */\n\twidth: 0;\n\theight: 0;\n}\n.tracking .aircraft-badge {\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tpadding: 0 3px;\n\tborder-radius: 3px;\n}\n.legend td, .legend th {\n\tpadding: 3px 3px;\n}\n.legend th {\n\ttext-align: center;\n}\n.legend-header {\n\twidth: 100%;\n}\n.hover-row:hover {\n\tbackground-color: #5AF;\n}\n.selected-aircraft .flex-row {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-pack: justify;\n\t        justify-content: space-between;\n\tpadding: 3px 5px;\n\tfont-size: 120%;\n\tmax-width: 500px;\n\tmargin-left: auto;\n\tmargin-right: auto;\n}\n.selected-aircraft {\n\tborder-top: 1px solid #888;\n}\n.mapboxgl-ctrl-bottom-right {\n\tz-index: 0 !important;\n}\n.mapbox .btn-outline-dark {\n\tbackground-color: #EEE;\n}\n.mapbox .btn-outline-dark:hover {\n\tbackground-color: #000;\n}\n.mapbox .buttons {\n\tposition: absolute;\n\tleft: 50px;\n\ttop: 10px;\n\tz-index: 10;\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n}\n.tracking .options {\n\tpadding: 10px;\n\tposition: absolute;\n\ttop: 43px;\n\tleft: 50px;\n\tz-index: 999;\n\tbackground-color: #FFF;\n\tborder-radius: 5px;\n\tborder: 1px solid #888;\n}\n.tracking .loading {\n}\n", ""]);
 
 // exports
 
@@ -60829,19 +60965,6 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "tracking" }, [
-    _c("div", {
-      directives: [
-        {
-          name: "show",
-          rawName: "v-show",
-          value: !_vm.showOptions,
-          expression: "!showOptions"
-        }
-      ],
-      staticClass: "mapbox",
-      attrs: { id: "map" }
-    }),
-    _vm._v(" "),
     _c(
       "div",
       {
@@ -60856,7 +60979,20 @@ var render = function() {
         staticClass: "options"
       },
       [
-        _c("a", { attrs: { href: "/" } }, [_vm._v("Home")]),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-outline-dark btn-sm float-right",
+            on: {
+              click: function($event) {
+                _vm.showOptions = !_vm.showOptions
+              }
+            }
+          },
+          [_vm._v("Close")]
+        ),
+        _vm._v(" "),
+        _c("h4", [_vm._v("Filters")]),
         _vm._v(" "),
         _c("label", { attrs: { for: "showAll" } }, [
           _c("input", {
@@ -60921,151 +61057,291 @@ var render = function() {
           _vm._v(" South")
         ]),
         _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-outline-dark btn-sm",
+        _c("hr"),
+        _vm._v(" "),
+        _vm._m(0)
+      ]
+    ),
+    _vm._v(" "),
+    _c("div", { staticClass: "maprow" }, [
+      _c("div", { staticClass: "mapbox", attrs: { id: "map" } }, [
+        _c("div", { staticClass: "buttons" }, [
+          _c("button", {
+            staticClass: "settings-button fa fa-cog btn btn-outline-dark",
             on: {
               click: function($event) {
                 _vm.showOptions = !_vm.showOptions
               }
             }
-          },
-          [_vm._v("Settings")]
-        )
-      ]
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        directives: [
-          {
-            name: "show",
-            rawName: "v-show",
-            value: !_vm.showOptions,
-            expression: "!showOptions"
-          }
-        ],
-        staticClass: "sidepanel",
-        class: [_vm.showLegend ? "expanded" : ""]
-      },
-      [
-        !_vm.showLegend
-          ? _c("button", {
-              staticClass: "fa fa-angle-double-left ml-2 mt-1",
-              on: {
-                click: function($event) {
-                  _vm.showLegend = !_vm.showLegend
+          }),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.loading,
+                  expression: "loading"
                 }
-              }
-            })
-          : _vm._e(),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "aircraft-badges" },
-          [
-            _vm._l(_vm.filteredAircraft, function(craft) {
-              return !_vm.showLegend
-                ? _c(
-                    "div",
+              ],
+              staticClass: "loading ml-2 mt-1"
+            },
+            [
+              _c("span", { staticClass: " fas fa-sync fa-spin" }),
+              _vm._v(" Loading...")
+            ]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "sidepanel", class: [_vm.showLegend ? "expanded" : ""] },
+        [
+          _c("table", { staticClass: "legend legend-header" }, [
+            _c("tr", [
+              _c(
+                "th",
+                {
+                  directives: [
                     {
-                      staticClass: "aircraft-badge",
-                      style: { backgroundColor: "#" + craft.colour }
-                    },
-                    [
-                      _vm._v(
-                        "\n\t\t\t\t" + _vm._s(_vm.getLabel(craft)) + "\n\t\t\t"
-                      )
-                    ]
-                  )
-                : _vm._e()
-            }),
-            _vm._v(" "),
-            _vm.showLegend
-              ? _c(
-                  "table",
-                  { staticClass: "legend" },
-                  [
-                    _c("tr", [
-                      _c("th", [_vm._v("Reg")]),
-                      _vm._v(" "),
-                      _c("th", [_vm._v("AGL")]),
-                      _vm._v(" "),
-                      _c("th", [
-                        _vm._v("\n\t\t\t\t\t\tSeen \n\t\t\t\t\t\t"),
-                        _c("button", {
-                          staticClass: "fa fa-angle-double-right ml-2 mt-1",
-                          on: {
-                            click: function($event) {
-                              _vm.showLegend = !_vm.showLegend
-                            }
+                      name: "show",
+                      rawName: "v-show",
+                      value: !_vm.showLegend,
+                      expression: "!showLegend"
+                    }
+                  ]
+                },
+                [
+                  !_vm.showLegend
+                    ? _c("button", {
+                        staticClass:
+                          "fa fa-angle-double-left btn btn-xs btn-outline-dark ml-2 mt-1 pr-2 pl-2",
+                        on: {
+                          click: function($event) {
+                            _vm.showLegend = !_vm.showLegend
                           }
-                        })
-                      ])
+                        }
+                      })
+                    : _vm._e()
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "th",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.showLegend,
+                      expression: "showLegend"
+                    }
+                  ]
+                },
+                [_vm._v("Reg")]
+              ),
+              _vm._v(" "),
+              _c(
+                "th",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.showLegend,
+                      expression: "showLegend"
+                    }
+                  ]
+                },
+                [_vm._v("AGL")]
+              ),
+              _vm._v(" "),
+              _c(
+                "th",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.showLegend,
+                      expression: "showLegend"
+                    }
+                  ]
+                },
+                [_vm._v("Seen")]
+              ),
+              _vm._v(" "),
+              _c(
+                "th",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.showLegend,
+                      expression: "showLegend"
+                    }
+                  ]
+                },
+                [
+                  _c("button", {
+                    staticClass:
+                      "fa fa-angle-double-right btn btn-xs btn-outline-dark ml-2 mt-1 pr-2 pl-2",
+                    on: {
+                      click: function($event) {
+                        _vm.showLegend = !_vm.showLegend
+                      }
+                    }
+                  })
+                ]
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "aircraft-badges" }, [
+            _c(
+              "table",
+              { staticClass: "legend" },
+              _vm._l(_vm.filteredAircraft, function(craft) {
+                return _c(
+                  "tr",
+                  {
+                    staticClass: "hover-row",
+                    on: {
+                      click: function($event) {
+                        _vm.selectedAircraftKey = craft.key
+                      }
+                    }
+                  },
+                  [
+                    _c("td", [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "aircraft-badge",
+                          style: { backgroundColor: "#" + craft.colour }
+                        },
+                        [
+                          _vm._v(
+                            "\n\t\t\t\t\t\t\t\t" +
+                              _vm._s(_vm.getLabel(craft)) +
+                              "\n\t\t\t\t\t\t\t"
+                          )
+                        ]
+                      )
                     ]),
                     _vm._v(" "),
-                    _vm._l(_vm.filteredAircraft, function(craft) {
-                      return _c("tr", [
-                        _c("td", [
-                          _c(
-                            "div",
-                            {
-                              staticClass: "aircraft-badge",
-                              style: { backgroundColor: "#" + craft.colour },
-                              on: {
-                                click: function($event) {
-                                  _vm.selectedAircraft = craft
-                                }
-                              }
-                            },
-                            [
-                              _vm._v(
-                                "\n\t\t\t\t\t\t\t" +
-                                  _vm._s(_vm.getLabel(craft)) +
-                                  "\n\t\t\t\t\t\t"
-                              )
-                            ]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _vm._v(
-                            _vm._s(
-                              _vm.formatAltitudeFeet(
-                                _vm.heightAgl(
-                                  craft.points[0].alt,
-                                  craft.points[0].gl
-                                )
+                    _c(
+                      "td",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.showLegend,
+                            expression: "showLegend"
+                          }
+                        ]
+                      },
+                      [
+                        _vm._v(
+                          _vm._s(
+                            _vm.formatAltitudeFeet(
+                              _vm.heightAgl(
+                                craft.points[0].alt,
+                                craft.points[0].gl
                               )
                             )
                           )
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _vm._v(_vm._s(_vm.dateToNow(craft.points[0].thetime)))
-                        ])
-                      ])
-                    })
-                  ],
-                  2
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "td",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.showLegend,
+                            expression: "showLegend"
+                          }
+                        ]
+                      },
+                      [_vm._v(_vm._s(_vm.dateToNow(craft.points[0].thetime)))]
+                    )
+                  ]
                 )
-              : _vm._e()
-          ],
-          2
-        )
-      ]
-    ),
+              }),
+              0
+            )
+          ])
+        ]
+      )
+    ]),
     _vm._v(" "),
     _vm.selectedAircraft
       ? _c("div", { staticClass: "selected-aircraft" }, [
-          _vm._v("\n\t\t" + _vm._s(_vm.selectedAircraft.key) + "\n\t")
+          _c("div", { staticClass: "flex-row" }, [
+            _c(
+              "div",
+              {
+                staticClass: "aircraft-badge",
+                style: { backgroundColor: "#" + _vm.selectedAircraft.colour },
+                on: {
+                  click: function($event) {
+                    _vm.showOptions = !_vm.showOptions
+                  }
+                }
+              },
+              [_vm._v(_vm._s(_vm.selectedAircraft.key))]
+            ),
+            _vm._v(" "),
+            _c("div", [
+              _vm._v(
+                _vm._s(
+                  _vm.formatAltitudeFeet(
+                    _vm.heightAgl(
+                      _vm.selectedAircraft.points[0].alt,
+                      _vm.selectedAircraft.points[0].gl
+                    )
+                  )
+                )
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", [
+              _vm._v(
+                _vm._s(
+                  Math.round(_vm.selectedAircraft.points[0].vspeed * 1.944)
+                ) + " knots"
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", [
+              _vm._v(
+                _vm._s(_vm.dateToNow(_vm.selectedAircraft.points[0].thetime))
+              )
+            ])
+          ])
         ])
       : _vm._e()
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", { staticClass: "mt-4" }, [
+      _c("a", { attrs: { href: "/" } }, [_vm._v("Exit Tracking")])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -76942,7 +77218,7 @@ module.exports = {
     },
     formatAltitudeFeet: function formatAltitudeFeet(meters) {
       var feet = meters * 3.28084;
-      return Math.round(feet) + "'";
+      return Math.round(feet) + "ft";
     },
     heightAgl: function heightAgl(alt, gl) {
       var agl = alt - gl;

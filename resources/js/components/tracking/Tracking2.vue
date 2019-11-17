@@ -1,10 +1,17 @@
 <style>
+
+.fullscreen .main-nav,
+.fullscreen .footer {
+	display: none !important;
+}
+
 .mapbox {
 }
+
 .aircraft_marker {
 	background-color: #A00;
 	color: #FFF;
-	font-size: 14px;
+	font-size: 110%;
 	font-weight: bold;
 	text-align: center;
 	border-radius: 50%;
@@ -12,123 +19,192 @@
 	width: 34px;
 	height: 34px;
 }
-
 .aircraft_marker_pin {
 	position: absolute;
 	content: '';
 	width: 0px;
-	height: 0px;;
+	height: 0px;
 	border: 10px solid transparent;
 	border-top: 10px solid #A00;
 	bottom: -17px;
 	left: 7px;
 }
-.fullscreen .main-nav,
-.fullscreen .footer {
-	display: none !important;
+
+.fullscreen .maprow	{
+	display: flex;
+	flex-direction: row;
+	flex-grow: 1;
 }
 
 .fullscreen .tracking {
 	display: flex;
 	flex-direction: column;
-	min-height: 100vh;
+	height: 100vh;
 }
 .fullscreen .mapbox, .fullscreen .options {
 	flex-grow: 1;
 }
 .tracking .sidepanel {
-	position: fixed;
+	display: flex;
+	flex-direction: column;
 	width: 50px;
 	background-color: #EEE;
-	border: 1px solid #888;
-	right: 0;
-	top: 20px;
-	border-top-left-radius: 5px;
-	border-bottom-left-radius: 5px;
-}
-.tracking .sidepanel::-webkit-scrollbar { /* WebKit */
-	width: 0;
-	height: 0;
+	border-left: 1px solid #888;
 }
 .tracking .expanded {
 	width: auto;
 }
 .aircraft-badges {
-	height: 80vh;
+	flex-grow: 1;
+	max-height: 100%;
 	overflow: scroll;
 	scrollbar-width: none; /* Firefox */
 	-ms-overflow-style: none;  /* Internet Explorer 10+ */
 }
+.aircraft-badges::-webkit-scrollbar { /* WebKit */
+	width: 0;
+	height: 0;
+}
 .tracking .aircraft-badge {
-	font-size: 14px;
+	font-size: 110%;
 	font-weight: bold;
 	text-align: center;
 	background-color: #A00;
 	color: #FFF;
-	margin: 3px 0;
-	padding: 0;
-}
-.legend .aircraft-badge {
+	padding: 0 3px;
 	border-radius: 3px;
 }
-.legend td {
-	padding: 0px 3px;
+.legend td, .legend th {
+	padding: 3px 3px;
 }
 .legend th {
 	text-align: center;
 }
+.legend-header {
+	width: 100%;
+}
+.hover-row:hover {
+	background-color: #5AF;
+}
+.selected-aircraft .flex-row {
+	display: flex;
+	justify-content: space-between;
+	padding: 3px 5px;
+	font-size: 120%;
+	max-width: 500px;
+	margin-left: auto;
+	margin-right: auto;
+}
 
+.selected-aircraft {
+	border-top: 1px solid #888;
+}
+
+.mapboxgl-ctrl-bottom-right {
+	z-index: 0 !important;
+}
+.mapbox .btn-outline-dark {
+	background-color: #EEE;
+}
+.mapbox .btn-outline-dark:hover {
+	background-color: #000;
+}
+
+.mapbox .buttons {
+	position: absolute;
+	left: 50px;
+	top: 10px;
+	z-index: 10;
+	display: flex;
+}
+.tracking .options {
+	padding: 10px;
+	position: absolute;
+	top: 43px;
+	left: 50px;
+	z-index: 999;
+	background-color: #FFF;
+	border-radius: 5px;
+	border: 1px solid #888;
+}
+.tracking .loading {
+	
+}
 </style>
 
 <template>
 <div class="tracking">
 
-	<div v-show="!showOptions" class="mapbox" id="map"></div>
+
 
 	<div class="options" v-show="showOptions">
-		<a href="/">Home</a>
+
+		<button class="btn btn-outline-dark btn-sm float-right" v-on:click="showOptions = !showOptions">Close</button>
+
+		<h4>Filters</h4>
 
 		<label for="showAll"><input type="radio" id="showAll" value="all" v-model="filterIsland"> All</label> &nbsp;
 		<label for="showNorth"><input type="radio" id="showNorth" value="north" v-model="filterIsland"> North</label> &nbsp;
 		<label for="showSouth"><input type="radio" id="showSouth" value="south" v-model="filterIsland"> South</label>
-		<button class="btn btn-outline-dark btn-sm" v-on:click="showOptions = !showOptions">Settings</button>
+
+		<hr>
+		<p class="mt-4"><a href="/">Exit Tracking</a></p>
 
 	</div>
 
-	<div class="sidepanel" v-show="!showOptions" v-bind:class="[showLegend ? 'expanded' : '']">
-		<button class="fa fa-angle-double-left ml-2 mt-1" v-if="!showLegend" v-on:click="showLegend=!showLegend" ></button>
-		<div class="aircraft-badges">
-			<div v-if="!showLegend" class="aircraft-badge" v-for="craft in filteredAircraft" v-bind:style="{backgroundColor: '#'+craft.colour}">
-				{{getLabel(craft)}}
+
+	<div class="maprow">
+
+		<div class="mapbox" id="map">
+			<div class="buttons">
+				<button class="settings-button fa fa-cog btn btn-outline-dark" v-on:click="showOptions = !showOptions"></button>
+				<div class="loading ml-2 mt-1" v-show="loading"><span class=" fas fa-sync fa-spin"></span> Loading...</div>
 			</div>
-			<table v-if="showLegend" class="legend">
+		</div>
+
+		<div class="sidepanel" v-bind:class="[showLegend ? 'expanded' : '']">
+			<table class="legend legend-header">
 				<tr>
-					<th>Reg</th>
-					<th>AGL</th>
-					<th>
-						Seen 
-						<button class="fa fa-angle-double-right ml-2 mt-1" v-on:click="showLegend=!showLegend" ></button>
+					<th v-show="!showLegend">
+						<button class="fa fa-angle-double-left btn btn-xs btn-outline-dark ml-2 mt-1 pr-2 pl-2" v-if="!showLegend" v-on:click="showLegend=!showLegend" ></button>
+					</th>
+					<th v-show="showLegend">Reg</th>
+					<th v-show="showLegend">AGL</th>
+					<th v-show="showLegend">Seen</th>
+					<th v-show="showLegend">
+						<button class="fa fa-angle-double-right btn btn-xs btn-outline-dark ml-2 mt-1 pr-2 pl-2" v-on:click="showLegend=!showLegend" ></button>
 					</th>
 				</tr>
-				<tr v-for="craft in filteredAircraft">
-					<td>
-						<div class="aircraft-badge" 
-							v-on:click="selectedAircraft = craft"
-							v-bind:style="{backgroundColor: '#'+craft.colour}">
-							{{getLabel(craft)}}
-						</div>
-					</td>
-					<td>{{formatAltitudeFeet(heightAgl(craft.points[0].alt, craft.points[0].gl))}}</td>
-					<td>{{dateToNow(craft.points[0].thetime)}}</td>
-				</tr>
 			</table>
+			<div class="aircraft-badges">
+				<table class="legend">
+					<tr v-for="craft in filteredAircraft" v-on:click="selectedAircraftKey=craft.key" class="hover-row">
+						<td>
+							<div class="aircraft-badge" 
+								v-bind:style="{backgroundColor: '#'+craft.colour}">
+								{{getLabel(craft)}}
+							</div>
+						</td>
+						<td v-show="showLegend">{{formatAltitudeFeet(heightAgl(craft.points[0].alt, craft.points[0].gl))}}</td>
+						<td v-show="showLegend">{{dateToNow(craft.points[0].thetime)}}</td>
+					</tr>
+				</table>
+			</div>
 		</div>
 	</div>
 
 	<div class="selected-aircraft" v-if="selectedAircraft">
-		{{selectedAircraft.key}}
+		<div class="flex-row">
+			<div class="aircraft-badge" v-on:click="showOptions=!showOptions" v-bind:style="{backgroundColor: '#'+selectedAircraft.colour}">{{selectedAircraft.key}}</div>
+			<div>{{formatAltitudeFeet(heightAgl(selectedAircraft.points[0].alt, selectedAircraft.points[0].gl))}}</div>
+			<div>{{ Math.round(selectedAircraft.points[0].vspeed * 1.944) }} knots</div>
+			<div>{{dateToNow(selectedAircraft.points[0].thetime)}}</div>
+		</div>
 	</div>
 
+
+
+	
 
 </div>
 </template>
@@ -149,7 +225,7 @@
 				loading: false,
 				showOptions: false,
 				showLegend: false,
-				selectedAircraft: null,
+				selectedAircraftKey: null,
 				flyingDay: null,
 				'map': {},
 				'nav': {},
@@ -166,9 +242,14 @@
 			}
 		},
 		computed: {
+			selectedAircraft: function() {
+				if (!this.selectedAircraftKey) return false;
+				var searchKey = this.selectedAircraftKey;
+				return this.aircraft.find( ({ key }) => key === searchKey );
+			},
 			filteredAircraft: function() {
 				var that = this;
-				return this.aircraft.filter(function(craft) {
+				return _.orderBy(this.aircraft.filter(function(craft) {
 
 					if (that.filterIsland=='north') {
 						if ((craft.points[0].lat<-40.29 && craft.points[0].lng<174.36)) 
@@ -181,7 +262,7 @@
 						if (craft.rego=='') return false;
 					}
 					return true;
-				});
+				}), ['aircraft.contest_id', 'key']);
 				
 				// check if NOT in the list of aircraft if we are filtering that way
 				// if (this.selectedFleet!=null && this.fleet.aircraft && this.fleet.aircraft.length>0) {
@@ -198,11 +279,15 @@
 			}
 		},
 	mounted: function() {
+		var that = this;
 		this.map = new mapboxgl.Map({
 			container: 'map',
 			style: '/mapstyle.json',
 			center: [175.409, -40.97435],
 			zoom: 8
+		});
+		this.map.on('load', function () {
+			that.map.resize();
 		});
 
 		this.nav = new mapboxgl.NavigationControl();
@@ -213,7 +298,11 @@
 	methods: {
 		loadDays: function() {
 			var that = this;
+
+			this.loading=true;
+
 			window.axios.get('/api/v1/tracking/days').then(function (response) {
+				that.loading=false;
 				that.days = response.data.data;
 				if (that.year==null || that.month==null || that.day==null) {
 					// get the first day
@@ -235,18 +324,25 @@
 			return '?' + point.key.substring(0,2);
 		},
 		loadTracks: function() {
+			this.loading=true;
+
 			var pings = 25;
-			if (this.showTrails==false) pings=2;
+			if (this.showTrails==false) pings=3;
 			var that = this;
 
-			// delete all exsiting markers
-			for (var i=0; i<this.mapMarkers.length; i++) {
-				this.mapMarkers[i].remove();
-			}
-
 			window.axios.get('/api/v2/tracking/' + that.flyingDay + '/aircraft/' + pings).then(function (response) {
+
+				// delete all exsiting markers
+				for (var i=0; i<that.mapMarkers.length; i++) {
+					that.mapMarkers[i].remove();
+				}
+
+				that.loading=false;
 				that.aircraft = response.data.data;
+				console.log(response.data.data);
+
 				that.createMarkers();
+				that.createTracks()
 			});
 		},
 		createMarkers() {
@@ -272,12 +368,52 @@
 				that.mapMarkers.push(marker);
 			}); 
 		},
-		createMarker() {
+		createTracks() {
+			var that = this;
+			var features = [];
+			let baseWidth = 5;
+			let baseZoom = 15;
 
+			that.filteredAircraft.forEach(function (aircraft) { 
+				features.push({
+					'type': 'Feature',
+					'properties': {
+						'color': '#' + aircraft.colour
+					},
+					'geometry': {
+						'type': 'LineString',
+						'coordinates': that.getLineCoords(aircraft)
+					}
+				});
+			});
+
+			that.map.addLayer({
+				'id': 'lines',
+				'type': 'line',
+				'source': {
+					'type': 'geojson',
+					'lineMetrics': true,
+					'data': {
+						'type': 'FeatureCollection',
+						'features': features
+					}
+				},
+				'paint': {
+					"line-width": 8,
+					// Use a get expression (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-get)
+					// to set the line-color to a feature property value.
+					'line-color': ['get', 'color'],
+					'line-opacity': 0.5
+				}
+			});
 		},
-		updateMarker() {
-			
-		},
+		getLineCoords: function(aircraft) {
+			var coords = [];
+			aircraft.points.forEach(function(point) {
+				coords.push([point.lng, point.lat]);
+			});
+			return coords;
+		}
 	}
 }
 </script>

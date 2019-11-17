@@ -143,7 +143,7 @@ module.exports = {
 		},
 		formatAltitudeFeet: function(meters) {
 			var feet = meters * 3.28084;
-			return Math.round(feet) + "'";
+			return Math.round(feet) + "ft";
 		},
 		heightAgl: function(alt, gl) {
 			var agl = alt - gl;
