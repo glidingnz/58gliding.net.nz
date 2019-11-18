@@ -363,6 +363,9 @@ html, body,
 			document.documentElement.style.setProperty('--vh', `${vh}px`);
 		});
 
+		// load the list of aircraft filters
+		this.loadFleets();
+
 	},
 	methods: {
 		mapLoaded: function() {
@@ -622,6 +625,12 @@ html, body,
 				if (that.optionFollow) {
 					that.map.panTo([that.selectedAircraft.points[0].lng, that.selectedAircraft.points[0].lat]);
 				}
+			});
+		},
+		loadFleets: function() {
+			var that=this;
+			window.axios.get('/api/v1/fleets').then(function (response) {
+				that.fleets = response.data.data;
 			});
 		}
 	}
