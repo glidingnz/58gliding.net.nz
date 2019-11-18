@@ -217,7 +217,7 @@ class Tracking2ApiController extends ApiController
 		$keys[]=$hex;
 
 		if ($request->has('from')) {
-			$query .= " AND id>?";
+			$query .= " AND thetime>?";
 			$keys[]=$request->input('from');
 		}
 

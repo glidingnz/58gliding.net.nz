@@ -289,7 +289,6 @@ html, body,
 				this.loadTracks();
 			},
 			showLegend: function() {
-				console.log('resizing!');
 				setTimeout(() => this.map.resize(), 20);
 			}
 		},
@@ -349,11 +348,8 @@ html, body,
 			}
 		});
 
-		// setup center after zooming
-		if(that.mapFlying) {
-			// tooltip or overlay here
-			map.fire(flyend); 
-		}
+		// only try and put things on the map once it's loaded
+		this.map.on('load', this.mapLoaded);
 
 		// check if the legend should be open or not
 		if (window.innerWidth<600) this.showLegend=false;
@@ -367,15 +363,22 @@ html, body,
 			document.documentElement.style.setProperty('--vh', `${vh}px`);
 		});
 
-		this.nav = new mapboxgl.NavigationControl();
-		this.map.addControl(this.nav, 'top-left');
-
-		this.loadDays();
-
-		// start the timer
-		this.timeoutTimer = setTimeout(this.timerLoop, 15000);
 	},
 	methods: {
+		mapLoaded: function() {
+			var that = this;
+			// setup center after zooming
+			if(that.mapFlying) {
+				// tooltip or overlay here
+				map.fire(flyend); 
+			}
+			this.nav = new mapboxgl.NavigationControl();
+			this.map.addControl(this.nav, 'top-left');
+
+			// start the timer
+			this.timeoutTimer = setTimeout(this.timerLoop, 15000);
+			this.loadDays();
+		},
 		loadDays: function() {
 			var that = this;
 
@@ -431,7 +434,7 @@ html, body,
 			// check if we already have some data
 			if (this.selectedAircraftKey==aircraft.key) {
 				// get the last point retreived
-				from = this.selectedAircraftTrack[0].id;
+				from = this.selectedAircraftTrack[0].thetime;
 
 			} else {
 				that.selectedAircraftTrack = [];
@@ -463,13 +466,13 @@ html, body,
 						}]
 					};
 				}
-
-				// save the new data
-				newData.forEach(function(point) {
-					that.selectedAircraftTrackGeoJson.features[0].geometry.coordinates.push([point.lng, point.lat]);
-					that.selectedAircraftTrack.push(point);
-				});
-				
+				// Step through the new data from oldest to newest, and place onto the beginning of the array.
+				// This way the order of newest to oldest is maintained
+				for (var i=newData.length-1; i>=0; i--) {
+					var point = newData[i];
+					that.selectedAircraftTrackGeoJson.features[0].geometry.coordinates.unshift([point.lng, point.lat]);
+					that.selectedAircraftTrack.unshift(point);
+				}
 
 				if (from==0) {
 					// create a new track
@@ -488,7 +491,6 @@ html, body,
 					}, new mapboxgl.LngLatBounds(coords[0], coords[0]));
 					 
 					that.fitBoundsStarted = true;
-					console.log('fitBoundsStarted');
 					that.map.fitBounds(bounds, {
 						padding: 20
 					});
