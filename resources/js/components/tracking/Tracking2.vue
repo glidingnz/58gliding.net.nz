@@ -47,7 +47,7 @@ html, body,
 	box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.7);
 }
 .selectedMarker .marker_inner { 
-	transform: scale(1.6) translate(0, -9px);
+	transform: scale(1.4) translate(0, -9px);
 }
 
 .fullscreen .maprow	{
@@ -246,7 +246,7 @@ html, body,
 			</div>
 			<div v-if="showCoordDetails" class="flex-row">
 				
-				<altitude-chart :values="altitudes" :height="100"></altitude-chart>  <!-- @showpoint="showPoint" @mouseout="mouseOut" @clickpoint="clickPoint" -->
+				<altitude-chart :values="altitudes" @showpoint="showPoint" :height="100"></altitude-chart>  <!-- @showpoint="showPoint" @mouseout="mouseOut" @clickpoint="clickPoint" -->
 
 			</div>
 
@@ -580,6 +580,10 @@ html, body,
 				// This way the order of newest to oldest is maintained
 				for (var i=newData.length-1; i>=0; i--) {
 					var point = newData[i];
+
+					// while we are here, add the unix time
+					point.unixtime = that.createDateFromMysql(point.thetime).getTime();
+
 					that.selectedAircraftTrackGeoJson.features[0].geometry.coordinates.unshift([point.lng, point.lat]);
 					that.selectedAircraftTrack.unshift(point);
 				}
@@ -768,6 +772,10 @@ html, body,
 			window.axios.get('/api/v1/fleets').then(function (response) {
 				that.fleets = response.data.data;
 			});
+		},
+		showPoint: function(object) {
+			const point = this.selectedAircraftTrack.find( point => point.unixtime == object.x );
+			this.selectedMarker.setLngLat([point.lng, point.lat]);
 		}
 	}
 }

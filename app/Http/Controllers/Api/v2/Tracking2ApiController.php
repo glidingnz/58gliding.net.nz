@@ -210,7 +210,7 @@ class Tracking2ApiController extends ApiController
 			$select_columns = ', vspeed';
 		}
 
-		$query = "SELECT '".$key."' AS thekey , id, thetime, X(loc) AS lat, Y(loc) AS lng, hex, alt, speed, course, rego, type".$select_columns." FROM `".$table_name."` WHERE";
+		$query = "SELECT '".$key."' AS thekey, id, thetime, X(loc) AS lat, Y(loc) AS lng, hex, alt, speed, course, rego, type".$select_columns." FROM `".$table_name."` WHERE";
 		$query .= " (rego=?";
 		$keys[]=$rego;
 		$query .= " OR hex=?)";
