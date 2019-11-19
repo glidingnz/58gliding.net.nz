@@ -9054,6 +9054,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -9264,7 +9271,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       }
 
       if (point.rego) return point.rego;
-      return '?' + point.key.substring(0, 2);
+      return '*' + point.key.substring(0, 2);
     },
     loadTracks: function loadTracks() {
       this.loading = true;
@@ -9327,10 +9334,13 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
 
         if (from == 0) {
           // create a new track
-          that.createSelectedTrack(aircraft);
+          that.createSelectedTrack(aircraft); // create a new marker
+
+          that.createSelectedMarker();
         } else {
           // update the existing track
           that.map.getSource('selectedTrack').setData(that.selectedAircraftTrackGeoJson);
+          that.selectedMarker.setLngLat([that.selectedAircraftTrack[0].lng, that.selectedAircraftTrack[0].lat]);
         }
 
         if (that.optionZoomToSelected && from == 0) {
@@ -9346,19 +9356,23 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         }
       });
     },
+    createSelectedMarker: function createSelectedMarker() {
+      var that = this; // if an aircraft has never been selected, return
+
+      if (that.selectedAircraftTrack.length == 0) return false; // delete existing marker  if it exists
+
+      if (this.selectedMarker) this.selectedMarker.remove();
+      var aircraft = this.selectedAircraft;
+      var el = that.createMarkerDom(that.getLabel(aircraft), aircraft.colour, 'selectedMarker');
+      this.selectedMarker = new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.Marker(el, {
+        anchor: 'bottom',
+        offset: [0, -5]
+      }).setLngLat([that.selectedAircraftTrack[0].lng, that.selectedAircraftTrack[0].lat]).addTo(that.map);
+    },
     createMarkers: function createMarkers() {
       var that = this;
       that.filteredAircraft.forEach(function (aircraft) {
-        var el = document.createElement('div');
-        var iel = document.createElement('div');
-        var elpin = document.createElement('div');
-        iel.className = 'aircraft_marker';
-        elpin.className = 'aircraft_marker_pin';
-        el.appendChild(iel);
-        el.appendChild(elpin);
-        iel.appendChild(document.createTextNode(that.getLabel(aircraft)));
-        elpin.style.borderTopColor = '#' + aircraft.colour;
-        iel.style.backgroundColor = '#' + aircraft.colour;
+        var el = that.createMarkerDom(that.getLabel(aircraft), aircraft.colour, 'aircraftMarker');
         el.addEventListener('click', function () {
           that.selectAircraft(aircraft);
         });
@@ -9371,7 +9385,26 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         if (that.optionFollow && that.selectedAircraft) {
           that.map.panTo([that.selectedAircraft.points[0].lng, that.selectedAircraft.points[0].lat]);
         }
+
+        that.createSelectedMarker();
       });
+    },
+    createMarkerDom: function createMarkerDom(label, colour, className) {
+      var el = document.createElement('div');
+      var el2 = document.createElement('div');
+      var pingTop = document.createElement('div');
+      var pinBottom = document.createElement('div');
+      el.className = className;
+      el.appendChild(el2);
+      el2.className = 'marker_inner';
+      pingTop.className = 'marker_top';
+      pinBottom.className = 'marker_pin';
+      el2.appendChild(pingTop);
+      el2.appendChild(pinBottom);
+      pingTop.appendChild(document.createTextNode(label));
+      pinBottom.style.borderTopColor = '#' + colour;
+      pingTop.style.backgroundColor = '#' + colour;
+      return el;
     },
     createSelectedTrack: function createSelectedTrack(aircraft) {
       var that = this; // delete existing selected track
@@ -10032,7 +10065,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.fullscreen .main-nav,\n.fullscreen .footer {\n\tdisplay: none !important;\n}\n.mapbox {\n}\nhtml, body, \n.fullscreen,\n.fullscreen .tracking, \n.fullscreen .flex-vertical {\n\theight: 100%;\n}\n.fullscreen .flex-vertical {\n\theight: 100vh; /* Fallback for browsers that do not support Custom Properties */\n\theight: calc(var(--vh, 1vh) * 100);\n}\n.aircraft_marker {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 34px;\n\theight: 34px;\n\tbox-shadow: 0px 0px 15px 0px rgba(0,0,0,0.3);\n}\n.aircraft_marker_pin {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -17px;\n\tleft: 7px;\n}\n.fullscreen .maprow\t{\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: horizontal;\n\t-webkit-box-direction: normal;\n\t        flex-direction: row;\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.fullscreen .mapbox, .fullscreen .options {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.tracking .sidepanel {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\twidth: 50px;\n\tbackground-color: #EEE;\n\tborder-left: 1px solid #888;\n}\n.tracking .expanded {\n\twidth: auto;\n}\n.aircraft-badges {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n\theight: 100px;\n\toverflow: scroll;\n\tscrollbar-width: none; /* Firefox */\n\t-ms-overflow-style: none;  /* Internet Explorer 10+ */\n}\n.aircraft-badges::-webkit-scrollbar { /* WebKit */\n\twidth: 0;\n\theight: 0;\n}\n.tracking .aircraft-badge {\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tpadding: 0 3px;\n\tborder-radius: 3px;\n}\n.legend td, .legend th {\n\tpadding: 3px 3px;\n}\n.legend th {\n\ttext-align: center;\n}\n.legend-header {\n\twidth: 100%;\n}\n.hover-row:hover {\n\tbackground-color: #5AF;\n}\n.selected-aircraft .flex-row {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-pack: justify;\n\t        justify-content: space-between;\n\tpadding: 3px 5px;\n\tfont-size: 120%;\n\tmax-width: 100%;\n\tmargin-left: auto;\n\tmargin-right: auto;\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n\tflex-wrap: wrap;\n}\n.selected-aircraft {\n\tborder-top: 1px solid #888;\n}\n.selected-aircraft .detail {\n\tmargin-left: 5px;\n\tmargin-right: 5px;\n}\n.mapboxgl-ctrl-bottom-right {\n\tz-index: 0 !important;\n}\n.mapbox .btn-outline-dark {\n\tbackground-color: #EEE;\n}\n.mapbox .btn-outline-dark:hover {\n\tbackground-color: #000;\n}\n.mapbox .buttons {\n\tposition: absolute;\n\tleft: 50px;\n\ttop: 10px;\n\tz-index: 10;\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n}\n.tracking .options, \n.tracking .day-selector {\n\tpadding: 10px;\n\tposition: absolute;\n\ttop: 43px;\n\tleft: 50px;\n\tz-index: 999;\n\tbackground-color: #FFF;\n\tborder-radius: 5px;\n\tborder: 1px solid #888;\n\tmargin-right: 20px;\n\tmax-height: 80%;\n\toverflow: scroll;\n}\n.flex-vertical {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n}\n", ""]);
+exports.push([module.i, "\n.fullscreen .main-nav,\n.fullscreen .footer {\n\tdisplay: none !important;\n}\n.mapbox {\n}\nhtml, body, \n.fullscreen,\n.fullscreen .tracking, \n.fullscreen .flex-vertical {\n\theight: 100%;\n}\n.fullscreen .flex-vertical {\n\theight: 100vh; /* Fallback for browsers that do not support Custom Properties */\n\theight: calc(var(--vh, 1vh) * 100);\n}\n.marker_top {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 34px;\n\theight: 34px;\n\tbox-shadow: 0px 0px 15px 0px rgba(0,0,0,0.3);\n}\n.marker_pin {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -17px;\n\tleft: 7px;\n}\n/*.selectedMarker {  }*/\n.selectedMarker .marker_top { \n\tbox-shadow: 0px 0px 15px 0px rgba(0,0,0,0.7);\n}\n.selectedMarker .marker_inner { \n\t-webkit-transform: scale(1.6) translate(0, -9px); \n\t        transform: scale(1.6) translate(0, -9px);\n}\n.fullscreen .maprow\t{\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: horizontal;\n\t-webkit-box-direction: normal;\n\t        flex-direction: row;\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.fullscreen .mapbox, .fullscreen .options {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.tracking .sidepanel {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\twidth: 50px;\n\tbackground-color: #EEE;\n\tborder-left: 1px solid #888;\n}\n.tracking .expanded {\n\twidth: auto;\n}\n.aircraft-badges {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n\theight: 100px;\n\toverflow: scroll;\n\tscrollbar-width: none; /* Firefox */\n\t-ms-overflow-style: none;  /* Internet Explorer 10+ */\n}\n.aircraft-badges::-webkit-scrollbar { /* WebKit */\n\twidth: 0;\n\theight: 0;\n}\n.tracking .aircraft-badge {\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tpadding: 0 3px;\n\tborder-radius: 3px;\n}\n.legend td, .legend th {\n\tpadding: 3px 3px;\n}\n.legend th {\n\ttext-align: center;\n}\n.legend-header {\n\twidth: 100%;\n}\n.hover-row:hover {\n\tbackground-color: #5AF;\n}\n.selected-aircraft .flex-row {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-pack: justify;\n\t        justify-content: space-between;\n\tpadding: 3px 5px;\n\tfont-size: 120%;\n\tmax-width: 100%;\n\tmargin-left: auto;\n\tmargin-right: auto;\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n\tflex-wrap: wrap;\n}\n.selected-aircraft {\n\tborder-top: 1px solid #888;\n}\n.selected-aircraft .detail {\n\tmargin-left: 5px;\n\tmargin-right: 5px;\n}\n.mapboxgl-ctrl-bottom-right {\n\tz-index: 0 !important;\n}\n.mapbox .btn-outline-dark {\n\tbackground-color: #EEE;\n}\n.mapbox .btn-outline-dark:hover {\n\tbackground-color: #000;\n}\n.mapbox .buttons {\n\tposition: absolute;\n\tleft: 50px;\n\ttop: 10px;\n\tz-index: 10;\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n}\n.tracking .options, \n.tracking .day-selector {\n\tpadding: 10px;\n\tposition: absolute;\n\ttop: 43px;\n\tleft: 50px;\n\tz-index: 999;\n\tbackground-color: #FFF;\n\tborder-radius: 5px;\n\tborder: 1px solid #888;\n\tmargin-right: 20px;\n\tmax-height: 80%;\n\toverflow: scroll;\n}\n.flex-vertical {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n}\n", ""]);
 
 // exports
 

@@ -20,7 +20,7 @@ html, body,
 	height: calc(var(--vh, 1vh) * 100);
 }
 
-.aircraft_marker {
+.marker_top {
 	background-color: #A00;
 	color: #FFF;
 	font-size: 110%;
@@ -32,7 +32,7 @@ html, body,
 	height: 34px;
 	box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.3);
 }
-.aircraft_marker_pin {
+.marker_pin {
 	position: absolute;
 	content: '';
 	width: 0px;
@@ -41,6 +41,13 @@ html, body,
 	border-top: 10px solid #A00;
 	bottom: -17px;
 	left: 7px;
+}
+/*.selectedMarker {  }*/
+.selectedMarker .marker_top { 
+	box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.7);
+}
+.selectedMarker .marker_inner { 
+	transform: scale(1.6) translate(0, -9px);
 }
 
 .fullscreen .maprow	{
@@ -507,7 +514,7 @@ html, body,
 				if (point.aircraft.contest_id) return point.aircraft.contest_id;
 			}
 			if (point.rego) return point.rego;
-			return '?' + point.key.substring(0,2);
+			return '*' + point.key.substring(0,2);
 		},
 		loadTracks: function() {
 			this.loading=true;
@@ -580,11 +587,14 @@ html, body,
 				if (from==0) {
 					// create a new track
 					that.createSelectedTrack(aircraft);
+					// create a new marker
+					that.createSelectedMarker();
 				} else {
 					// update the existing track
 					that.map.getSource('selectedTrack').setData(that.selectedAircraftTrackGeoJson);
+					that.selectedMarker.setLngLat([that.selectedAircraftTrack[0].lng, that.selectedAircraftTrack[0].lat]);
 				}
-				
+
 
 				if (that.optionZoomToSelected && from==0) {
 					var coords = that.selectedAircraftTrackGeoJson.features[0].geometry.coordinates; // shortcut
@@ -597,25 +607,33 @@ html, body,
 					that.map.fitBounds(bounds, {
 						padding: 20
 					});
-
 				}
 
 			});
+		},
+		createSelectedMarker() {
+			var that = this;
+
+			// if an aircraft has never been selected, return
+			if (that.selectedAircraftTrack.length==0) return false;
+
+			// delete existing marker  if it exists
+			if (this.selectedMarker) this.selectedMarker.remove();
+
+			var aircraft = this.selectedAircraft;
+			var el = that.createMarkerDom(that.getLabel(aircraft), aircraft.colour, 'selectedMarker');
+			this.selectedMarker = new mapboxgl.Marker(el, {
+					anchor: 'bottom',
+					offset: [0, -5]
+				})
+				.setLngLat([that.selectedAircraftTrack[0].lng, that.selectedAircraftTrack[0].lat])
+				.addTo(that.map);
 		},
 		createMarkers() {
 			var that = this;
 
 			that.filteredAircraft.forEach(function (aircraft) { 
-				var el = document.createElement('div');
-				var iel = document.createElement('div');
-				var elpin = document.createElement('div');
-				iel.className = 'aircraft_marker';
-				elpin.className = 'aircraft_marker_pin';
-				el.appendChild(iel);
-				el.appendChild(elpin);
-				iel.appendChild(document.createTextNode(that.getLabel(aircraft)));
-				elpin.style.borderTopColor = '#'+aircraft.colour;
-				iel.style.backgroundColor = '#'+aircraft.colour;
+				var el = that.createMarkerDom(that.getLabel(aircraft), aircraft.colour, 'aircraftMarker');
 				el.addEventListener('click', () => 
 					{ 
 						that.selectAircraft(aircraft);
@@ -633,7 +651,25 @@ html, body,
 					that.map.panTo([that.selectedAircraft.points[0].lng, that.selectedAircraft.points[0].lat]);
 				}
 
-			}); 
+				that.createSelectedMarker();
+			});
+		},
+		createMarkerDom: function(label, colour, className) {
+			var el = document.createElement('div');
+			var el2 = document.createElement('div');
+			var pingTop = document.createElement('div');
+			var pinBottom = document.createElement('div');
+			el.className = className;
+			el.appendChild(el2);
+			el2.className = 'marker_inner';
+			pingTop.className = 'marker_top';
+			pinBottom.className = 'marker_pin';
+			el2.appendChild(pingTop);
+			el2.appendChild(pinBottom);
+			pingTop.appendChild(document.createTextNode(label));
+			pinBottom.style.borderTopColor = '#'+colour;
+			pingTop.style.backgroundColor = '#'+colour;
+			return el;
 		},
 		createSelectedTrack(aircraft) {
 			var that = this;
