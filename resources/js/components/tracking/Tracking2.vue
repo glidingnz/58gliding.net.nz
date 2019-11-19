@@ -236,12 +236,11 @@ html, body,
 				<div class="detail">Lng {{ selectedAircraft.points[0].lng.toFixed(5) }}</div>
 				<div class="detail"><a v-bind:href="'https://www.google.com/maps/place/' + selectedAircraft.points[0].lat + '+' + selectedAircraft.points[0].lng + '/'">Google Maps</a></div>
 				<div class="detail"><a v-bind:href="'http://maps.apple.com/?q=' + selectedAircraft.points[0].lat + ',' + selectedAircraft.points[0].lng">Apple Maps</a></div>
-
-				<!-- <a v-if="selectedAircraft.rego" v-bind:href="'/tracking/' + this.flyingDay + '/' + selectedAircraft.rego">Analyse</a>
-				<a v-if="!selectedAircraft.rego" v-bind:href="'/tracking/' + this.flyingDay + '/' + selectedAircraft.hex">Analyse</a> -->
 			</div>
 			<div v-if="showCoordDetails" class="flex-row">
-				Chart of track
+				
+				<altitude-chart :values="altitudes" :height="100"></altitude-chart>  <!-- @showpoint="showPoint" @mouseout="mouseOut" @clickpoint="clickPoint" -->
+
 			</div>
 
 
@@ -329,6 +328,7 @@ html, body,
 				selectedAircraftTrack: [], // all the track data
 				selectedAircraftTrackGeoJson: [], // used by mapbox
 				selectedMarker: null,
+				//selectedAltitudes: [], // selected items altitude data for the chart
 				flyingDay: null,
 				'map': {},
 				'nav': {},
@@ -400,8 +400,33 @@ html, body,
 					return true;
 
 				}), ['aircraft.contest_id', 'key']);
+			},
+			altitudes: function() {
+				var that = this;
+				var previous = 0;
 
+				// create an array suitable for highcharts. Ensure it's in ascending order.
+				var selectedAltitudes = that.selectedAircraftTrack.slice().reverse().map(function(point) {
+					var alt = Math.round(point.alt * 3.28084);
+					if (point.alt==null) alt=null;
+					var newPoint = [that.createDateFromMysql(point.thetime).getTime(), alt];
+					return newPoint;
+				});
+
+				// ensure NULL values are previous
+				var previous=0;
+				for (var i=0; i<selectedAltitudes.length; i++) {
+					if (selectedAltitudes[i][1]==null) {
+						selectedAltitudes[i][1]=previous;
+						//that.noAltBands.push(selectedAltitudes[i][0]);
+					} else {
+						previous=selectedAltitudes[i][1];
+					}
+				}
+
+				return selectedAltitudes;
 			}
+			
 		},
 	mounted: function() {
 		var that = this;

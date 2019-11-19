@@ -20,7 +20,7 @@ div.chart {
 	var Highcharts = require('highcharts');
 
 	export default {
-		props: ['values', 'noaltbands'],
+		props: ['values', 'height'],
 		mixins: [],
 		data() {
 			return {
@@ -32,24 +32,20 @@ div.chart {
 			// whenever question changes, this function will run
 			values: 
 				function (newValue, oldValue) {
+					//console.log('values changed');
 					var series = this.target.series[0];
-					series.setData(newValue);
+					series.setData(newValue, true, false, false);
 					this.target.reflow();
 				},
 			loading:
 				function (newValue, oldValue) {
+					//console.log('loading');
 					if (newValue) this.target.showLoading();
 					else this.target.hideLoading();
 				},
-			noaltbands:
-				function (newValue, oldValue) {
-					var target = this.target;
-					newValue.forEach(function(element) {
-						target.xAxis[0].addPlotLine(element);
-					});
-				},
 			showPlotPoints:
 				function (newValue, oldValue) {
+					//console.log('showPlotPoints');
 					if (newValue) {
 						this.target.update({plotOptions: { line: { marker: { enabled: true }}}});
 					} else {
@@ -67,6 +63,8 @@ div.chart {
 		});
 		var that = this;
 
+
+
 		this.target = Highcharts.chart(this.$el, {
 			title: {
 				text: null,
@@ -76,7 +74,7 @@ div.chart {
 			},
 			subtitle: null,
 			chart: {
-				height: 300,
+				height: that.height,
 				zoomType: 'x',
 				backgroundColor:'rgba(255, 255, 255, 0.0)'
 			},
@@ -168,7 +166,10 @@ div.chart {
 					}
 				}]
 			}
+		}, function () {
+			this.series[0].setData(that.values);
 		});
+
 
 	},
 	beforeDestroy: function() {

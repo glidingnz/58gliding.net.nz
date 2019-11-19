@@ -87,7 +87,7 @@
 		</div>
 	</div>
 
-	<altitude-chart :values="altitudes" :noaltbands="noAltBands" @showpoint="showPoint" @mouseout="mouseOut" @clickpoint="clickPoint"></altitude-chart>
+	<altitude-chart :values="altitudes" :height="300" :noaltbands="noAltBands" @showpoint="showPoint" @mouseout="mouseOut" @clickpoint="clickPoint"></altitude-chart>
 
 </div>
 </template>

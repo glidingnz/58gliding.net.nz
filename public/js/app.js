@@ -1983,7 +1983,7 @@ __webpack_require__.r(__webpack_exports__);
 var Highcharts = __webpack_require__(/*! highcharts */ "./node_modules/highcharts/highcharts.js");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['values', 'noaltbands'],
+  props: ['values', 'height'],
   mixins: [],
   data: function data() {
     return {
@@ -1994,20 +1994,17 @@ var Highcharts = __webpack_require__(/*! highcharts */ "./node_modules/highchart
   watch: {
     // whenever question changes, this function will run
     values: function values(newValue, oldValue) {
+      //console.log('values changed');
       var series = this.target.series[0];
-      series.setData(newValue);
+      series.setData(newValue, true, false, false);
       this.target.reflow();
     },
     loading: function loading(newValue, oldValue) {
+      //console.log('loading');
       if (newValue) this.target.showLoading();else this.target.hideLoading();
     },
-    noaltbands: function noaltbands(newValue, oldValue) {
-      var target = this.target;
-      newValue.forEach(function (element) {
-        target.xAxis[0].addPlotLine(element);
-      });
-    },
     showPlotPoints: function showPlotPoints(newValue, oldValue) {
+      //console.log('showPlotPoints');
       if (newValue) {
         this.target.update({
           plotOptions: {
@@ -2048,7 +2045,7 @@ var Highcharts = __webpack_require__(/*! highcharts */ "./node_modules/highchart
       },
       subtitle: null,
       chart: {
-        height: 300,
+        height: that.height,
         zoomType: 'x',
         backgroundColor: 'rgba(255, 255, 255, 0.0)'
       },
@@ -2144,6 +2141,8 @@ var Highcharts = __webpack_require__(/*! highcharts */ "./node_modules/highchart
           }
         }]
       }
+    }, function () {
+      this.series[0].setData(that.values);
     });
   },
   beforeDestroy: function beforeDestroy() {
@@ -9055,7 +9054,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 
@@ -9083,6 +9081,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       selectedAircraftTrackGeoJson: [],
       // used by mapbox
       selectedMarker: null,
+      //selectedAltitudes: [], // selected items altitude data for the chart
       flyingDay: null,
       'map': {},
       'nav': {},
@@ -9165,6 +9164,29 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
 
         return true;
       }), ['aircraft.contest_id', 'key']);
+    },
+    altitudes: function altitudes() {
+      var that = this;
+      var previous = 0; // create an array suitable for highcharts. Ensure it's in ascending order.
+
+      var selectedAltitudes = that.selectedAircraftTrack.slice().reverse().map(function (point) {
+        var alt = Math.round(point.alt * 3.28084);
+        if (point.alt == null) alt = null;
+        var newPoint = [that.createDateFromMysql(point.thetime).getTime(), alt];
+        return newPoint;
+      }); // ensure NULL values are previous
+
+      var previous = 0;
+
+      for (var i = 0; i < selectedAltitudes.length; i++) {
+        if (selectedAltitudes[i][1] == null) {
+          selectedAltitudes[i][1] = previous; //that.noAltBands.push(selectedAltitudes[i][0]);
+        } else {
+          previous = selectedAltitudes[i][1];
+        }
+      }
+
+      return selectedAltitudes;
     }
   },
   mounted: function mounted() {
@@ -54327,7 +54349,11 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("altitude-chart", {
-        attrs: { values: _vm.altitudes, noaltbands: _vm.noAltBands },
+        attrs: {
+          values: _vm.altitudes,
+          height: 300,
+          noaltbands: _vm.noAltBands
+        },
         on: {
           showpoint: _vm.showPoint,
           mouseout: _vm.mouseOut,
@@ -61760,9 +61786,16 @@ var render = function() {
               : _vm._e(),
             _vm._v(" "),
             _vm.showCoordDetails
-              ? _c("div", { staticClass: "flex-row" }, [
-                  _vm._v("\n\t\t\t\tChart of track\n\t\t\t")
-                ])
+              ? _c(
+                  "div",
+                  { staticClass: "flex-row" },
+                  [
+                    _c("altitude-chart", {
+                      attrs: { values: _vm.altitudes, height: 100 }
+                    })
+                  ],
+                  1
+                )
               : _vm._e()
           ])
         : _vm._e()
