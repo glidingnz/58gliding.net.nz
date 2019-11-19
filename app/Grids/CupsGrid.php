@@ -161,22 +161,23 @@ class CupsGrid extends Grid implements CupsGridInterface
             }
         ])));
 
-        $this->addRowButton('airpsace', (new GenericButton([
-            'name' => 'Airspace',
-            'icon' => 'fa-download',
-            'position' => 0,
-            'class' => 'btn btn-outline-dark btn-sm grid-row-button',
-            'showModal' => false,
-            'gridId' => $this->getId(),
-            'type' => static::$TYPE_ROW,
-            'title' => 'Airspace',
-            'url' => function($gridName, $gridItem) {
-                return route('cups.airspace',$gridItem->id);
-            },
-            'renderIf' => function ($gridName, $item) {
-                return in_array('airspace', $this->buttonsToGenerate);
-            }
-        ])));
+        // We do not want downloading of airspace files yet from here
+        // $this->addRowButton('airpsace', (new GenericButton([
+        //     'name' => 'Airspace',
+        //     'icon' => 'fa-download',
+        //     'position' => 0,
+        //     'class' => 'btn btn-outline-dark btn-sm grid-row-button',
+        //     'showModal' => false,
+        //     'gridId' => $this->getId(),
+        //     'type' => static::$TYPE_ROW,
+        //     'title' => 'Airspace',
+        //     'url' => function($gridName, $gridItem) {
+        //         return route('cups.airspace',$gridItem->id);
+        //     },
+        //     'renderIf' => function ($gridName, $item) {
+        //         return in_array('airspace', $this->buttonsToGenerate);
+        //     }
+        // ])));
 
         $this->addRowButton('attach', (new GenericButton([
             'name' => 'Attach',

@@ -167,12 +167,16 @@ class CupsController extends Controller
         # add headers for each column in the CSV download
         array_unshift($list, array_keys($list[0]));
 
+
         $callback = function() use ($list)
         {
             $FH = fopen('php://output', 'w');
             fputcsv($FH, ['name','code','country','lat','lon','elev','style','rwdir','rwlen','freq','desc']);
             unset($list[0]);
             foreach ($list as $row) {
+                // add the code to the name
+                if ($row['code']!='' && $row['code']!=null) $row['name'] = $row['code'] . ' ' . $row['name'];
+        
                 $row['elevation'] .= 'ft';
                 $row['lat'] = $row['lat']  < 0 ? sprintf("%08.3f",abs($row['lat']))."S" : sprintf("%08.3f",$row['lat'])."N";
                 $row['long'] = $row['long'] < 0 ? sprintf("%09.3f",abs($row['long']))."W" : sprintf("%09.3f",$row['long'])."E";
