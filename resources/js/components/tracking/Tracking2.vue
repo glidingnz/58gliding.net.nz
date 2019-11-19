@@ -98,14 +98,19 @@ html, body,
 	justify-content: space-between;
 	padding: 3px 5px;
 	font-size: 120%;
-	max-width: 500px;
+	max-width: 100%;
 	margin-left: auto;
 	margin-right: auto;
 	flex-grow: 1;
+	flex-wrap: wrap;
 }
 
 .selected-aircraft {
 	border-top: 1px solid #888;
+}
+.selected-aircraft .detail {
+	margin-left: 5px;
+	margin-right: 5px;
 }
 
 .mapboxgl-ctrl-bottom-right {
@@ -184,8 +189,12 @@ html, body,
 									{{getLabel(craft)}}
 								</div>
 							</td>
-							<td v-show="showLegend">{{formatAltitudeFeet(heightAgl(craft.points[0].alt, craft.points[0].gl))}}</td>
-							<td v-show="showLegend">{{dateToNow(createDateFromMysql(craft.points[0].thetime))}}</td>
+							<td v-show="showLegend">
+								<span v-if="craft.points[0].gl && craft.points[0].alt">{{formatAltitudeFeet(heightAgl(craft.points[0].alt, craft.points[0].gl))}}</span>
+								<span v-if="craft.points[0].gl===null || craft.points[0].alt==null">n/a</span>
+								
+							</td>
+							<td v-show="showLegend">{{shortDateToNow(createDateFromMysql(craft.points[0].thetime))}}</td>
 						</tr>
 					</table>
 				</div>
@@ -193,15 +202,50 @@ html, body,
 		</div>
 
 		<div class="selected-aircraft" v-if="selectedAircraft">
+
+			<div v-if="showAircraftDetails" class="flex-row">
+				<div class="detail" v-if="selectedAircraft.aircraft">{{ selectedAircraft.aircraft.rego }}</div>
+				<div class="detail" v-if="!selectedAircraft.rego">Unknown Aircraft</div>
+				<div class="detail" v-if="selectedAircraft.aircraft">{{selectedAircraft.aircraft.contest_id}}</div>
+				<div class="detail" v-if="selectedAircraft.aircraft">{{selectedAircraft.aircraft.model}}</div>
+				<div class="detail" v-if="selectedAircraft.aircraft && selectedAircraft.aircraft.flarm">Flarm {{selectedAircraft.aircraft.flarm}}</div>
+				<div class="detail" v-if="selectedAircraft.aircraft && selectedAircraft.aircraft.spot_esn">Spot {{selectedAircraft.aircraft.spot_esn}}</div>
+			</div>
+
 			<div class="flex-row">
-				<div class="aircraft-badge" v-on:click="showOptions=!showOptions" v-bind:style="{backgroundColor: '#'+selectedAircraft.colour}">{{selectedAircraft.key}}</div>
-				<div>{{formatAltitudeFeet(heightAgl(selectedAircraft.points[0].alt, selectedAircraft.points[0].gl))}}</div>
-				<div>{{ Math.round(selectedAircraft.points[0].vspeed * 1.944) }} kt</div>
-				<div>{{dateToNow(createDateFromMysql(selectedAircraft.points[0].thetime))}}</div>
-				<div>
+				<div class="detail aircraft-badge" v-on:click="showAircraftDetails=!showAircraftDetails" v-bind:style="{backgroundColor: '#'+selectedAircraft.colour}">{{selectedAircraft.key}}</div>
+				<div class="detail">
 					<label for="follow"><input name="follow" id="follow" type="checkbox" v-on:click="follow()" v-model="optionFollow" :value="true"> Follow</label>
 				</div>
+				<div class="detail">{{formatAltitudeFeet(heightAgl(selectedAircraft.points[0].alt, selectedAircraft.points[0].gl))}} AGL</div>
+				<div class="detail">{{formatAltitudeFeet(selectedAircraft.points[0].alt)}} QNH</div>
+				<div class="detail" v-if="selectedAircraft.points[0].vspeed!=null">
+					<span class="fa fa-arrow-up" v-show="selectedAircraft.points[0].vspeed>0"></span>
+					<span class="fa fa-arrow-down" v-show="selectedAircraft.points[0].vspeed<0"></span>
+					{{ Math.round(selectedAircraft.points[0].vspeed * 1.944) }} kt
+				</div>
+				<div class="detail">{{shortDateToNow(createDateFromMysql(selectedAircraft.points[0].thetime))}}</div>
+				<div class="detail">{{formatType(selectedAircraft.points[0].type)}}</div>
+				<div class="detail">
+					<button class="fa fa-map-marker btn-outline-dark btn btn-xs  ml-2 mt-1 pr-2 pl-2" v-on:click="showCoordDetails=!showCoordDetails" v-bind:class="[showCoordDetails ? 'active' : '']"></button>
+				</div>
 			</div>
+
+			<div v-if="showCoordDetails" class="flex-row">
+				<div class="detail">Lat {{ selectedAircraft.points[0].lat.toFixed(5)}}</div>
+				<div class="detail">Lng {{ selectedAircraft.points[0].lng.toFixed(5) }}</div>
+				<div class="detail"><a v-bind:href="'https://www.google.com/maps/place/' + selectedAircraft.points[0].lat + '+' + selectedAircraft.points[0].lng + '/'">Google Maps</a></div>
+				<div class="detail"><a v-bind:href="'http://maps.apple.com/?q=' + selectedAircraft.points[0].lat + ',' + selectedAircraft.points[0].lng">Apple Maps</a></div>
+
+				<!-- <a v-if="selectedAircraft.rego" v-bind:href="'/tracking/' + this.flyingDay + '/' + selectedAircraft.rego">Analyse</a>
+				<a v-if="!selectedAircraft.rego" v-bind:href="'/tracking/' + this.flyingDay + '/' + selectedAircraft.hex">Analyse</a> -->
+			</div>
+			<div v-if="showCoordDetails" class="flex-row">
+				Chart of track
+			</div>
+
+
+
 		</div>
 
 	</div>
@@ -225,9 +269,20 @@ html, body,
 
 		<h4>Filters</h4>
 
-		<label for="showAll"><input type="radio" id="showAll" value="all" v-model="filterIsland"> All</label> &nbsp;
-		<label for="showNorth"><input type="radio" id="showNorth" value="north" v-model="filterIsland"> North</label> &nbsp;
-		<label for="showSouth"><input type="radio" id="showSouth" value="south" v-model="filterIsland"> South</label>
+		<div>
+			<label for="showAll"><input type="radio" id="showAll" value="all" v-model="filterIsland"> All</label> &nbsp;
+			<label for="showNorth"><input type="radio" id="showNorth" value="north" v-model="filterIsland"> North</label> &nbsp;
+			<label for="showSouth"><input type="radio" id="showSouth" value="south" v-model="filterIsland"> South</label>
+		</div>
+	
+		<div>
+			<select name="fleet" v-if="fleets" v-model="selectedFleet">
+				<option :value="null">Select a group of aircraft...</option>
+				<option v-for="fleet in fleets" :value="fleet">{{fleet.name}}</option>
+			</select>
+
+			<a href="/fleets">Edit Aircraft Groups</a>
+		</div>
 
 		<hr>
 		<h4>Options</h4>
@@ -265,12 +320,15 @@ html, body,
 				showOptions: false,
 				showDaySelector: false,
 				showLegend: true,
+				showCoordDetails: false,
+				showAircraftDetails: false,
 				optionZoomToSelected: true,
 				optionLive: true,
 				optionFollow: true,
 				selectedAircraftKey: null,
 				selectedAircraftTrack: [], // all the track data
 				selectedAircraftTrackGeoJson: [], // used by mapbox
+				selectedMarker: null,
 				flyingDay: null,
 				'map': {},
 				'nav': {},
@@ -281,7 +339,11 @@ html, body,
 				filterUnknown: false,
 				mapMarkers: [],
 				mapFlying: false,
-				fitBoundsStarted: false
+				fitBoundsStarted: false,
+
+				fleets: [], // the list of fleets available to select
+				selectedFleet: null, // the currently selected fleet item in the select
+				fleet: {}, // the actual fleet we'll filter, includes the list of aircraft
 			}
 		},
 		watch: {
@@ -290,6 +352,16 @@ html, body,
 			},
 			showLegend: function() {
 				setTimeout(() => this.map.resize(), 20);
+			},
+			selectedFleet: function() {
+				var that=this;
+				if (this.selectedFleet) {
+					window.axios.get('/api/v1/fleets/' + this.selectedFleet.id).then(function (response) {
+						that.fleet = response.data.data;
+					});
+				} else {
+					that.fleet = {};
+				}
 			}
 		},
 		computed: {
@@ -312,21 +384,23 @@ html, body,
 					if (that.filterUnknown) {
 						if (craft.rego=='') return false;
 					}
+
+					//check if NOT in the list of aircraft if we are filtering that way
+					if (that.selectedFleet!=null && that.fleet.aircraft && that.fleet.aircraft.length>0) {
+						var found=false;
+						for(var i = 0; i < that.fleet.aircraft.length; i++) {
+							if (that.fleet.aircraft[i].rego == 'ZK-' + craft.rego) {
+								found=true;
+								break;
+							}
+						}
+						if (!found) return false;
+					}
+
 					return true;
+
 				}), ['aircraft.contest_id', 'key']);
-				
-				// check if NOT in the list of aircraft if we are filtering that way
-				// if (this.selectedFleet!=null && this.fleet.aircraft && this.fleet.aircraft.length>0) {
-				// 	var found=false;
-				// 	for(var i = 0; i < this.fleet.aircraft.length; i++) {
-				// 		if (this.fleet.aircraft[i].rego == item.rego) {
-				// 			found=true;
-				// 			break;
-				// 		}
-				// 	}
-				// 	if (!found) return false;
-				// }
-				return true;
+
 			}
 		},
 	mounted: function() {
@@ -334,7 +408,8 @@ html, body,
 		mapboxgl.accessToken = 'pk.eyJ1IjoiaXBlYXJ4IiwiYSI6ImNqd2c1dnU3bjFoMmg0NHBzbG9vbmQwbGkifQ.HeNPRpXBkpmC_ljY7QQTRA';
 		this.map = new mapboxgl.Map({
 			container: 'map',
-			style: 'mapbox://styles/ipearx/ck32sc9mh34gt1cqlyi852vh1',
+			//style: 'mapbox://styles/ipearx/ck32sc9mh34gt1cqlyi852vh1',
+			style:  'http://maps.gliding.net.nz:8080/styles/positron/style.json',
 			center: [175.409, -40.97435],
 			zoom: 5
 		});

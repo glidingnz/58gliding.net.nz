@@ -62,6 +62,11 @@ module.exports = {
 		dateToNow: function(date) {
 			return Vue.prototype.$moment(date).fromNow();
 		},
+		shortDateToNow: function(date) {
+			var dateString = this.dateToNow(date);
+			dateString = dateString.replace(" seconds","s").replace(" minutes","m").replace(" hours","h").replace(" second","s").replace(" minute","m").replace(" hour","h");
+			return dateString;
+		},
 		dateDifferenceMoment: function(moment_date) {
 			var difference = Vue.prototype.$moment().startOf('day').diff(moment_date, 'days');
 			return difference;
@@ -149,6 +154,19 @@ module.exports = {
 			var agl = alt - gl;
 			if (agl<0) return 0; // shouldn't be less than ground level :)
 			return agl;
+		},
+		formatType: function(type) {
+			switch (type) {
+				case 1: return 'FLARM'; break;
+				case 2: return 'SPOT US'; break;
+				case 3: return 'Particle'; break;
+				case 4: return 'Overland'; break;
+				case 5: return 'SPOT NZ'; break;
+				case 6: return 'InReach NZ'; break;
+				case 7: return 'Btraced'; break;
+				case 8: return 'GlidingOps'; break;
+				default: return 'Unknown'; break;
+			}
 		}
 	}
 }

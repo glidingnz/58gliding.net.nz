@@ -116,7 +116,7 @@
 					<th>Aircraft</th>
 					<th>
 						<div v-if="selectedAircraft.rego">{{ selectedAircraft.rego + ' / ' + selectedAircraft.contest_id }} / {{selectedAircraft.model}}</div>
-						<div v-if="!selectedAircraft.rego">Unkown</div>
+						<div v-if="!selectedAircraft.rego">Unknown</div>
 					</th>
 				</tr>
 				<tr>
