@@ -440,8 +440,8 @@ html, body,
 		mapboxgl.accessToken = 'pk.eyJ1IjoiaXBlYXJ4IiwiYSI6ImNqd2c1dnU3bjFoMmg0NHBzbG9vbmQwbGkifQ.HeNPRpXBkpmC_ljY7QQTRA';
 		this.map = new mapboxgl.Map({
 			container: 'map',
-			//style: 'mapbox://styles/ipearx/ck32sc9mh34gt1cqlyi852vh1',
-			style:  'http://maps.gliding.net.nz:8080/styles/positron/style.json',
+			style: 'mapbox://styles/ipearx/ck32sc9mh34gt1cqlyi852vh1',
+			//style:  'http://maps.gliding.net.nz:8080/styles/positron/style.json',
 			center: [175.409, -40.97435],
 			zoom: 5
 		});
