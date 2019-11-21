@@ -167,9 +167,11 @@ html, body,
 			<!-- <div class="mapbox">Map</div> -->
 			<div class="mapbox" id="map">
 				<div class="buttons">
-					<button class="settings-button fa fa-cog btn btn-outline-dark" v-on:click="showOptions = !showOptions"></button>
-					<button class="settings-button fa fa-calendar btn btn-outline-dark ml-2" v-on:click="showDaySelector = !showDaySelector"></button>
-					<button class="settings-button fa fa-search-plus btn btn-outline-dark ml-2" v-on:click="showZoomMenu = !showZoomMenu"></button>
+					<button class="settings-button fa fa-cog btn btn-outline-dark" v-on:click="showPanel('showOptions')"></button>
+					<button class="settings-button fa fa-calendar btn btn-outline-dark ml-2" v-on:click="showPanel('showDaySelector')"></button>
+					<button class="settings-button fa fa-search-plus btn btn-outline-dark ml-2" v-on:click="showPanel('showZoomMenu')"></button>
+					<button class="settings-button fa fa-route btn btn-outline-dark ml-2" v-on:click="showPanel('showTaskSelector')"></button>
+					
 					<div class="loading ml-2 mt-1" v-show="loading"><span class=" fas fa-sync fa-spin"></span> Loading...</div>
 				</div>
 			</div>
@@ -282,6 +284,12 @@ html, body,
 		</div>
 	</div>
 
+	<div class="day-selector" v-show="showTaskSelector">
+		
+		Choose a task
+
+	</div>
+
 
 	<div class="options" v-show="showOptions">
 
@@ -340,12 +348,13 @@ html, body,
 				showOptions: false,
 				showDaySelector: false,
 				showZoomMenu: false,
+				showTaskSelector: false,
 				showLegend: true,
 				showCoordDetails: false,
 				showAircraftDetails: false,
 				optionZoomToSelected: true,
 				optionLive: true,
-				optionFollow: true,
+				optionFollow: false,
 				selectedAircraftKey: null,
 				selectedAircraftTrack: [], // all the track data
 				selectedAircraftTrackGeoJson: [], // used by mapbox
@@ -509,6 +518,19 @@ html, body,
 
 	},
 	methods: {
+		showPanel: function(name) {
+
+			var current_state = this[name];
+
+			// first close the other panels
+			this.showOptions = false;
+			this.showDaySelector = false;
+			this.showZoomMenu = false;
+			this.showTaskSelector = false;
+
+			// open it if it's closed
+			if (current_state==false) this[name]=true;
+		},
 		mapLoaded: function() {
 			var that = this;
 			// setup center after zooming
