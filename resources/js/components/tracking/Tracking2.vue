@@ -169,6 +169,7 @@ html, body,
 				<div class="buttons">
 					<button class="settings-button fa fa-cog btn btn-outline-dark" v-on:click="showOptions = !showOptions"></button>
 					<button class="settings-button fa fa-calendar btn btn-outline-dark ml-2" v-on:click="showDaySelector = !showDaySelector"></button>
+					<button class="settings-button fa fa-search-plus btn btn-outline-dark ml-2" v-on:click="showZoomMenu = !showZoomMenu"></button>
 					<div class="loading ml-2 mt-1" v-show="loading"><span class=" fas fa-sync fa-spin"></span> Loading...</div>
 				</div>
 			</div>
@@ -260,11 +261,24 @@ html, body,
 
 	<div class="day-selector" v-show="showDaySelector" v-if="days">
 
-		<button class="btn btn-outline-dark btn-sm mb-2" v-on:click="showDaySelector = !showDaySelector">Close</button>
+		<div class="list-group" >
+			<button class="btn btn-outline-dark btn-sm mb-2" v-on:click="showDaySelector = !showDaySelector">Close</button>
+		</div>
 
 		<div class="list-group" >
 			<a v-bind:href="'/tracking2/' + day.day_date"  v-for="(day, index) in days" class="list-group-item list-group-item-action" v-bind:class="[ day.day_date==flyingDay ? 'btn-secondary' : 'btn-outline-dark']">{{formatDate(day.day_date)}}
 			</a>
+		</div>
+	</div>
+
+	<div class="day-selector" v-show="showZoomMenu" v-if="sites">
+
+		<div class="list-group" >
+			<button class="btn btn-outline-dark btn-sm mb-2" v-on:click="showZoomMenu = !showZoomMenu">Close</button>
+		</div>
+
+		<div class="list-group" >
+			<a v-bind:href="null" v-on:click="zoomTo(site.lat, site.lng, site.scale)" v-for="site in sites" class="list-group-item list-group-item-action">{{site.name}}</a>
 		</div>
 	</div>
 
@@ -325,6 +339,7 @@ html, body,
 				loading: false,
 				showOptions: false,
 				showDaySelector: false,
+				showZoomMenu: false,
 				showLegend: true,
 				showCoordDetails: false,
 				showAircraftDetails: false,
@@ -351,6 +366,25 @@ html, body,
 				fleets: [], // the list of fleets available to select
 				selectedFleet: null, // the currently selected fleet item in the select
 				fleet: {}, // the actual fleet we'll filter, includes the list of aircraft
+				sites: [
+					{lat: -41.18301, lng: 174.0, scale: 5, name: "NZ"},
+					{lat: -38.688, lng:  176.138, scale: 6, name: "North Island"},
+					{lat: -37.11170, lng: 174.937, scale: 12, name: "Drury"},
+					{lat: -37.29800, lng: 174.925, scale: 9, name: "Mercer"},
+					{lat: -37.48444, lng: 175.511, scale: 9, name: "Swamp"},
+					{lat: -37.73593, lng: 175.733, scale: 12, name: "Matamata"},
+					{lat: -38.27730, lng: 175.863, scale: 9, name: "Tokoroa"},
+					{lat: -38.688, lng:  176.138, scale: 12, name: "Centennial"},
+					{lat: -38.688, lng:  176.138, scale: 9, name: "Taupo"},
+					{lat: -39.30991, lng: 174.1413, scale: 10, name: "Taranaki"},
+					{lat: -40.9724, lng: 175.632, scale: 12, name: "Hood"},
+					{lat: -40.97435, lng: 175.409, scale: 9, name: "Wellington"},
+					{lat: -41.09532, lng: 175.490, scale: 12, name: "Papawai"},
+					{lat: -43.5547114, lng: 171.024, scale: 6, name: "South Island"},
+					{lat: -43.38478, lng: 171.9054, scale: 10, name: "Springfield"},
+					{lat: -44.48489, lng: 169.9809, scale: 12, name: "Omarama"},
+					{lat: -44.51185, lng: 169.3208, scale: 8, name: "Otago"}
+				]
 			}
 		},
 		watch: {
@@ -776,6 +810,12 @@ html, body,
 		showPoint: function(object) {
 			const point = this.selectedAircraftTrack.find( point => point.unixtime == object.x );
 			this.selectedMarker.setLngLat([point.lng, point.lat]);
+		},
+		zoomTo: function(lat, lng, scale) {
+			this.map.flyTo({
+				center: [lng, lat],
+					zoom: scale,
+			});
 		}
 	}
 }
