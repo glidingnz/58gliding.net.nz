@@ -44,6 +44,10 @@ class EventsAPIController extends AppBaseController
 			});
 		}
 
+		if ($request->has('soaringspot')) {
+			$query->where('soaringspot_api_secret', '!=', '')->where('soaringspot_api_client_id', '!=', '');
+		}
+
 
 		if ($request->input('gnz', true)==='false') {
 			$query->where('org_id', '!=', $gnz->id);

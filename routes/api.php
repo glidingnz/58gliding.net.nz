@@ -31,7 +31,7 @@ Route::group(['namespace' => 'Api', 'middleware' => 'auth:api'], function()
 Route::group(['namespace' => 'Api'], function()
 {
 	Route::resource('events', 'EventsAPIController');
-	Route::get('/events/{event_id}/soaringspot/contests', 'SoaringSpotAPIController@contests');
+	Route::get('/events/{event_id}/soaringspot/tasks', 'SoaringSpotAPIController@tasks');
 });
 
 

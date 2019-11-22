@@ -64,6 +64,7 @@ class Event extends Model
 
 	protected $dates = ['deleted_at','start_date','end_date','earlybird'];
 
+	protected $hidden = array('soaringspot_api_secret');
 
 	public $fillable = [
 		'org_id',
