@@ -286,7 +286,26 @@ html, body,
 
 	<div class="day-selector" v-show="showTaskSelector">
 		
-		Choose a task
+		<div v-if="contests">
+			<div class="label">Choose a contest</div>
+			<select name="contest" v-model="selectedContest">
+				<option :value="null">Select a Contest</option>
+				<option :value="contest" v-for="contest in contests">{{contest.name}}</option>
+			</select>
+
+			<div v-if="selectedContest && tasks">
+				<div class="label">Tasks</div>
+				<select name="task" v-model="selectedTask">
+					<option :value="null">Select a Task</option>
+					<option :value="task" v-for="task in tasks"><span v-if="!task.class_name">{{task.class_type}}</span> {{task.class_name}} : Task {{task.task_number}} {{task.task_date}} {{task.task_name}}</option>
+				</select>
+			</div>
+		</div>
+
+
+		<div v-if="!contests">
+			No contests available to choose a task
+		</div>
 
 	</div>
 
@@ -365,6 +384,14 @@ html, body,
 				'nav': {},
 				aircraft: [],
 				days: [],
+
+				// options to select a task
+				contests: [],
+				selectedContest: null,
+				tasks: [],
+				selectedTask: null,
+				selectedTaskData: null,
+
 				showTrails: false,
 				filterIsland: 'all',
 				filterUnknown: false,
@@ -412,6 +439,20 @@ html, body,
 				} else {
 					that.fleet = {};
 				}
+			},
+			showTaskSelector: function() {
+				// load contests if we haven't already when we open the panel
+				if (this.contests.length==0) {
+					this.loadContests();
+				}
+			},
+			selectedContest: function() {
+				this.tasks = [];
+				this.selectedTask = null;
+				this.selectedTaskData = null;
+
+				// watch for a change to the selected contest
+				if (this.selectedContest!=null) this.loadTasks();
 			}
 		},
 		computed: {
@@ -571,6 +612,24 @@ html, body,
 			}
 			if (point.rego) return point.rego;
 			return '*' + point.key.substring(0,2);
+		},
+		loadContests: function() {
+			var that = this;
+			this.loading=true;
+			window.axios.get('/api/events/?soaringspot=1').then(function (response) {
+
+				that.contests = response.data.data;
+				that.loading=false;
+			});
+		},
+		loadTasks: function() {
+			var that = this;
+			this.loading=true;
+			window.axios.get('/api/events/' + this.selectedContest.id + '/soaringspot/tasks').then(function (response) {
+
+				that.tasks = response.data.data;
+				that.loading=false;
+			});
 		},
 		loadTracks: function() {
 			this.loading=true;

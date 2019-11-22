@@ -9083,6 +9083,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -9118,6 +9137,12 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       'nav': {},
       aircraft: [],
       days: [],
+      // options to select a task
+      contests: [],
+      selectedContest: null,
+      tasks: [],
+      selectedTask: null,
+      selectedTaskData: null,
       showTrails: false,
       filterIsland: 'all',
       filterUnknown: false,
@@ -9239,6 +9264,19 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       } else {
         that.fleet = {};
       }
+    },
+    showTaskSelector: function showTaskSelector() {
+      // load contests if we haven't already when we open the panel
+      if (this.contests.length == 0) {
+        this.loadContests();
+      }
+    },
+    selectedContest: function selectedContest() {
+      this.tasks = [];
+      this.selectedTask = null;
+      this.selectedTaskData = null; // watch for a change to the selected contest
+
+      if (this.selectedContest != null) this.loadTasks();
     }
   },
   computed: {
@@ -9392,6 +9430,22 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
 
       if (point.rego) return point.rego;
       return '*' + point.key.substring(0, 2);
+    },
+    loadContests: function loadContests() {
+      var that = this;
+      this.loading = true;
+      window.axios.get('/api/events/?soaringspot=1').then(function (response) {
+        that.contests = response.data.data;
+        that.loading = false;
+      });
+    },
+    loadTasks: function loadTasks() {
+      var that = this;
+      this.loading = true;
+      window.axios.get('/api/events/' + this.selectedContest.id + '/soaringspot/tasks').then(function (response) {
+        that.tasks = response.data.data;
+        that.loading = false;
+      });
     },
     loadTracks: function loadTracks() {
       this.loading = true;
@@ -62110,7 +62164,121 @@ var render = function() {
         ],
         staticClass: "day-selector"
       },
-      [_vm._v("\n\t\t\n\t\tChoose a task\n\n\t")]
+      [
+        _vm.contests
+          ? _c("div", [
+              _c("div", { staticClass: "label" }, [_vm._v("Choose a contest")]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.selectedContest,
+                      expression: "selectedContest"
+                    }
+                  ],
+                  attrs: { name: "contest" },
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.selectedContest = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    }
+                  }
+                },
+                [
+                  _c("option", { domProps: { value: null } }, [
+                    _vm._v("Select a Contest")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.contests, function(contest) {
+                    return _c("option", { domProps: { value: contest } }, [
+                      _vm._v(_vm._s(contest.name))
+                    ])
+                  })
+                ],
+                2
+              ),
+              _vm._v(" "),
+              _vm.selectedContest && _vm.tasks
+                ? _c("div", [
+                    _c("div", { staticClass: "label" }, [_vm._v("Tasks")]),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.selectedTask,
+                            expression: "selectedTask"
+                          }
+                        ],
+                        attrs: { name: "task" },
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.selectedTask = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { domProps: { value: null } }, [
+                          _vm._v("Select a Task")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.tasks, function(task) {
+                          return _c("option", { domProps: { value: task } }, [
+                            !task.class_name
+                              ? _c("span", [_vm._v(_vm._s(task.class_type))])
+                              : _vm._e(),
+                            _vm._v(
+                              " " +
+                                _vm._s(task.class_name) +
+                                " : Task " +
+                                _vm._s(task.task_number) +
+                                " " +
+                                _vm._s(task.task_date) +
+                                " " +
+                                _vm._s(task.task_name)
+                            )
+                          ])
+                        })
+                      ],
+                      2
+                    )
+                  ])
+                : _vm._e()
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        !_vm.contests
+          ? _c("div", [
+              _vm._v("\n\t\t\tNo contests available to choose a task\n\t\t")
+            ])
+          : _vm._e()
+      ]
     ),
     _vm._v(" "),
     _c(

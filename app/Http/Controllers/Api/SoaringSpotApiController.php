@@ -56,16 +56,40 @@ class SoaringSpotAPIController extends AppBaseController
 					]
 				]);
 
-				$data = $result->getBody()->getContents();
-				print_r($data);
+				$contest_body = $result->getBody()->getContents();
+				$contest_data = json_decode($contest_body, true);
+				//print_r($contest_data);
+				if (isset($contest_data['_embedded']['http://api.soaringspot.com/rel/contests'][0]['_embedded']['http://api.soaringspot.com/rel/classes'])) {
+					$classes = $contest_data['_embedded']['http://api.soaringspot.com/rel/contests'][0]['_embedded']['http://api.soaringspot.com/rel/classes'];
+					foreach ($classes AS $class) {
+						//print_r($class);
 
-				return $this->success($data);
+						// get the tasks for the classes
+						$tasks_results = $client->request('GET', 'http://api.soaringspot.com/v1/classes/'.$class['id'].'/tasks', [
+							'json' => [],
+							'headers' => [
+								'Authorization' => $auth_header
+							]
+						]);
+						$tasks_body = $tasks_results->getBody()->getContents();
+						$tasks_data = json_decode($tasks_body, true);
+						
+						if (isset($tasks_data['_embedded']['http://api.soaringspot.com/rel/tasks'])) {
+							$tasks_array = $tasks_data['_embedded']['http://api.soaringspot.com/rel/tasks'];
+							foreach ($tasks_array AS $key=>$task) {
+								if (isset($class['type'])) $task['class_type'] = $class['type'];
+								if (isset($class['name'])) $task['class_name'] = $class['name'];
+								$tasks[] = $task;
+							}
+						}
+					}
+				}
+
+				return $this->success($tasks);
 			}
-
-			
 		}
 		return $this->error();
 	}
-
+	
 
 }
