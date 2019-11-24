@@ -42,6 +42,17 @@ html, body,
 	bottom: -17px;
 	left: 7px;
 }
+.waypoint_dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 8px;
+}
+
+.waypoint_text {
+	margin-top: -12px;
+	margin-left: 13px;
+}
+
 /*.selectedMarker {  }*/
 .selectedMarker .marker_top { 
 	box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.7);
@@ -137,11 +148,19 @@ html, body,
 	z-index: 10;
 	display: flex;
 }
+.mapbox .dayDate {
+	position: absolute;
+	left: 20px;
+	bottom: 20px;
+	z-index: 11;
+	font-size: 120%;
+	font-weight: bold;
+}
 .tracking .options, 
 .tracking .day-selector {
 	padding: 10px;
 	position: absolute;
-	top: 43px;
+	top: 50px;
 	left: 50px;
 	z-index: 999;
 	background-color: #FFF;
@@ -168,12 +187,16 @@ html, body,
 			<div class="mapbox" id="map">
 				<div class="buttons">
 					<button class="settings-button fa fa-cog btn btn-outline-dark" v-on:click="showPanel('showOptions')"></button>
-					<button class="settings-button fa fa-calendar btn btn-outline-dark ml-2" v-on:click="showPanel('showDaySelector')"></button>
+					<button class="settings-button btn btn-outline-dark ml-2" v-on:click="showPanel('showDaySelector')">
+						<span class="fa fa-calendar"></span>
+					</button>
 					<button class="settings-button fa fa-search-plus btn btn-outline-dark ml-2" v-on:click="showPanel('showZoomMenu')"></button>
 					<button class="settings-button fa fa-route btn btn-outline-dark ml-2" v-on:click="showPanel('showTaskSelector')"></button>
 					
 					<div class="loading ml-2 mt-1" v-show="loading"><span class=" fas fa-sync fa-spin"></span> Loading...</div>
 				</div>
+				<div class="dayDate" v-if="flyingDay">{{formatDate(flyingDay)}}</div>
+
 			</div>
 
 			<div class="sidepanel" v-bind:class="[showLegend ? 'expanded' : '']">
@@ -265,13 +288,23 @@ html, body,
 
 		<div class="list-group" >
 			<button class="btn btn-outline-dark btn-sm mb-2" v-on:click="showDaySelector = !showDaySelector">Close</button>
+			<a v-bind:href="'/tracking2/' + flyingDay" class="btn btn-outline-dark btn-sm mb-2" >Go to Day URL</a>
 		</div>
 
-		<div class="list-group" >
-			<a v-bind:href="'/tracking2/' + day.day_date"  v-for="(day, index) in days" class="list-group-item list-group-item-action" v-bind:class="[ day.day_date==flyingDay ? 'btn-secondary' : 'btn-outline-dark']">{{formatDate(day.day_date)}}
+		<div class="list-group">
+			<a v-on:click="selectDay(day.day_date)" v-for="(day, index) in days" class="list-group-item list-group-item-action" v-bind:class="[ day.day_date==flyingDay ? 'btn-secondary' : 'btn-outline-dark']">{{formatDate(day.day_date)}}
 			</a>
+
+			<div class="list-group-item">
+				<div class="row">
+					<input class="form-control col-8 mr-2" type="text" v-model="flyingDay" v-on:blur="selectDay(flyingDay)">
+					<button class="btn btn-outline-dark col-3" v-on:click="selectDay(flyingDay)">Go</button>
+				</div>
+			</div>
 		</div>
 	</div>
+
+
 
 	<div class="day-selector" v-show="showZoomMenu" v-if="sites">
 
@@ -286,22 +319,35 @@ html, body,
 
 	<div class="day-selector" v-show="showTaskSelector">
 		
+		<button class="btn btn-outline-dark btn-sm mb-2" v-on:click="showTaskSelector = !showTaskSelector">Close</button>
+
 		<div v-if="contests">
 			<div class="label">Choose a contest</div>
-			<select name="contest" v-model="selectedContest">
+			<select class="form-control" name="contest" v-model="selectedContest">
 				<option :value="null">Select a Contest</option>
 				<option :value="contest" v-for="contest in contests">{{contest.name}}</option>
 			</select>
 
 			<div v-if="selectedContest && tasks">
 				<div class="label">Tasks</div>
-				<select name="task" v-model="selectedTask">
+				<div v-if="loadingTasks"><span class="fa fa-spin"></span> Loading...</div>
+				<select class="form-control" name="task" v-model="selectedTask" v-if="!loadingTasks">
 					<option :value="null">Select a Task</option>
 					<option :value="task" v-for="task in tasks"><span v-if="!task.class_name">{{task.class_type}}</span> {{task.class_name}} : Task {{task.task_number}} {{task.task_date}} {{task.task_name}}</option>
 				</select>
 			</div>
-		</div>
 
+			<div v-if="selectedTask">
+				<div class="label">
+					Task Loaded
+				</div>
+				<div v-if="loadingTask"><span class="fa fa-spin"></span> Loading...</div>
+				<div v-if="!loadingTask">
+					<button class="btn btn-outline-dark btn-sm mr-2" v-on:click="zoomToTask()">Zoom to task</button>
+					<button class="btn btn-outline-dark btn-sm mr-2"  v-on:click="clearCurrentTask()">Remove Task</button>
+				</div>
+			</div>
+		</div>
 
 		<div v-if="!contests">
 			No contests available to choose a task
@@ -350,11 +396,12 @@ html, body,
 </div>
 </template>
 
-<script>
+<script> 
 	import common from '../../mixins.js';
 	import moment from 'moment';
 	import mapboxgl from 'mapbox-gl';
 	require('../../../../node_modules/mapbox-gl/dist/mapbox-gl.css');
+	import MapboxCircle from 'mapbox-gl-circle';
 
 	Vue.prototype.$moment = moment;
 
@@ -390,7 +437,13 @@ html, body,
 				selectedContest: null,
 				tasks: [],
 				selectedTask: null,
-				selectedTaskData: null,
+				selectTaskCoords: [],
+				selectedTaskData: [],
+				loadingTasks: false,
+				loadingTask: false,
+				taskWaypoints: [],
+				taskCircles: [],
+				taskTrack: [],
 
 				showTrails: false,
 				filterIsland: 'all',
@@ -455,7 +508,6 @@ html, body,
 				if (this.selectedContest!=null) this.loadTasks();
 			},
 			selectedTask: function() {
-				console.log('selectedTask changed');
 				this.loadTask(this.selectedTask);
 			}
 		},
@@ -525,11 +577,11 @@ html, body,
 		},
 	mounted: function() {
 		var that = this;
-		mapboxgl.accessToken = 'pk.eyJ1IjoiaXBlYXJ4IiwiYSI6ImNqd2c1dnU3bjFoMmg0NHBzbG9vbmQwbGkifQ.HeNPRpXBkpmC_ljY7QQTRA';
+		//mapboxgl.accessToken = 'pk.eyJ1IjoiaXBlYXJ4IiwiYSI6ImNqd2c1dnU3bjFoMmg0NHBzbG9vbmQwbGkifQ.HeNPRpXBkpmC_ljY7QQTRA';
 		this.map = new mapboxgl.Map({
 			container: 'map',
-			style: 'mapbox://styles/ipearx/ck32sc9mh34gt1cqlyi852vh1',
-			//style:  'http://maps.gliding.net.nz:8080/styles/positron/style.json',
+			//style: 'mapbox://styles/ipearx/ck32sc9mh34gt1cqlyi852vh1',
+			style:  'http://maps.gliding.net.nz:8080/styles/positron/style.json',
 			center: [175.409, -40.97435],
 			zoom: 5
 		});
@@ -563,6 +615,10 @@ html, body,
 
 	},
 	methods: {
+		selectDay: function(day_date) {
+			this.flyingDay = day_date;
+			this.loadTracks();
+		},
 		showPanel: function(name) {
 
 			var current_state = this[name];
@@ -629,29 +685,31 @@ html, body,
 		loadTasks: function() {
 			var that = this;
 			this.loading=true;
+			this.loadingTasks = true;
 			window.axios.get('/api/events/' + this.selectedContest.id + '/soaringspot/tasks').then(function (response) {
 
 				that.tasks = response.data.data;
 				that.loading=false;
+				that.loadingTasks = false;
 			});
 		},
 		loadTask: function(task) {
 			var that = this;
 			this.loading=true;
-			console.log(task);
+			this.loadingTask = true;
 
 			// extract the task ID from the task URL
 			var task_url = task._links.self.href.split('/');
-			console.log(task_url);
 			var task_id = task_url[task_url.length-1];
-			console.log(task_url.length);
-			console.log(task_id);
 
 			// http://58gliding.net.test/api/events/488/soaringspot/tasks/6279921668
 			window.axios.get('/api/events/' + this.selectedContest.id + '/soaringspot/tasks/' + task_id).then(function (response) {
 
-				that.task = response.data.data;
+				that.selectedTaskData = response.data.data;
 				that.loading=false;
+				that.loadingTask = false;
+
+				that.drawTask();
 			});
 		},
 		loadTracks: function() {
@@ -920,6 +978,100 @@ html, body,
 				center: [lng, lat],
 					zoom: scale,
 			});
+		},
+		drawTask: function() {
+			var that = this;
+			if (!this.selectedTaskData) return false;
+
+			this.clearCurrentTask();
+
+			// create the waypoints
+			this.selectedTaskData.forEach(function(point, index) {
+				var waypoint = that.createWaypointDom(point.name, '000000');
+
+				var marker = new mapboxgl.Marker(waypoint, {
+						anchor: 'left',
+						offset: [-3, 4]
+					})
+					.setLngLat([point.lng, point.lat])
+					.addTo(that.map);
+				that.taskWaypoints.push(marker);
+
+				var myCircle = new MapboxCircle({lat: point.lat, lng: point.lng}, point.oz_radius1, {
+					editable: false,
+					minRadius: 1500,
+					fillColor: '#E3652B',
+					strokeColor: '#E3652B',
+					strokeWeight: 3,
+					fillOpacity: 0.15,
+				}).addTo(that.map);
+				that.taskWaypoints.push(myCircle);
+
+				that.selectTaskCoords.push([point.lng, point.lat]);
+			});
+
+			that.map.addLayer({
+				"id": "taskLine",
+				"type": "line",
+				"source": {
+					"type": "geojson",
+					"data": {
+						"type": "Feature",
+						"properties": {},
+						"geometry": {
+							"type": "LineString",
+							"coordinates":  that.selectTaskCoords
+						}
+					}
+				},
+				"layout": {
+					"line-join": "round",
+					"line-cap": "round"
+				},
+				"paint": {
+					"line-color": "#E3652B",
+					"line-width": 4
+				}
+			});
+
+			this.zoomToTask();
+
+		},
+		zoomToTask: function() {
+			var coords = this.selectTaskCoords;
+			var bounds = coords.reduce(function(bounds, coord) {
+				return bounds.extend(coord);
+			}, new mapboxgl.LngLatBounds(coords[0], coords[0]));
+			this.map.fitBounds(bounds, {
+				padding: 40
+			});
+		},
+		clearCurrentTask: function() {
+			var that = this;
+			// drop all existing markers and lines
+			for (var i=0; i<that.taskWaypoints.length; i++) {
+				that.taskWaypoints[i].remove();
+			}
+			that.taskWaypoints=[];
+			var taskLineLayer = that.map.getLayer('taskLine');
+			if (typeof taskLineLayer !== 'undefined') {
+				that.map.removeLayer('taskLine');
+				that.map.removeSource('taskLine');
+			}
+			that.selectTaskCoords = [];
+		},
+		createWaypointDom: function(label, colour) {
+			var el = document.createElement('div');
+			var el2 = document.createElement('div');
+			var el3 = document.createElement('div');
+			el.appendChild(el2);
+			el.appendChild(el3);
+			el.className = 'waypoint';
+			el2.className = 'waypoint_dot';
+			el3.className = 'waypoint_text';
+			el3.appendChild(document.createTextNode(label));
+			el2.style.backgroundColor = '#'+colour;
+			return el;
 		}
 	}
 }

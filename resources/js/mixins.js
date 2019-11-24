@@ -64,7 +64,7 @@ module.exports = {
 		},
 		shortDateToNow: function(date) {
 			var dateString = this.dateToNow(date);
-			dateString = dateString.replace(" seconds","s").replace(" minutes","m").replace(" hours","h").replace(" second","s").replace(" minute","m").replace(" hour","h");
+			dateString = dateString.replace(" seconds"," secs").replace(" minutes"," mins").replace(" hours"," hrs").replace(" second"," sec").replace(" minute"," min").replace(" hour"," hr");
 			return dateString;
 		},
 		dateDifferenceMoment: function(moment_date) {

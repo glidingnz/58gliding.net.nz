@@ -86,6 +86,2723 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./node_modules/@turf/bbox-polygon/index.js":
+/*!**************************************************!*\
+  !*** ./node_modules/@turf/bbox-polygon/index.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var polygon = __webpack_require__(/*! @turf/helpers */ "./node_modules/@turf/bbox-polygon/node_modules/@turf/helpers/index.js").polygon;
+
+/**
+ * Takes a bbox and returns an equivalent {@link Polygon|polygon}.
+ *
+ * @name bboxPolygon
+ * @param {Array<number>} bbox extent in [minX, minY, maxX, maxY] order
+ * @returns {Feature<Polygon>} a Polygon representation of the bounding box
+ * @example
+ * var bbox = [0, 0, 10, 10];
+ *
+ * var poly = turf.bboxPolygon(bbox);
+ *
+ * //addToMap
+ * var addToMap = [poly]
+ */
+module.exports = function (bbox) {
+    var lowLeft = [bbox[0], bbox[1]];
+    var topLeft = [bbox[0], bbox[3]];
+    var topRight = [bbox[2], bbox[3]];
+    var lowRight = [bbox[2], bbox[1]];
+
+    return polygon([[
+        lowLeft,
+        lowRight,
+        topRight,
+        topLeft,
+        lowLeft
+    ]]);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/@turf/bbox-polygon/node_modules/@turf/helpers/index.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@turf/bbox-polygon/node_modules/@turf/helpers/index.js ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Wraps a GeoJSON {@link Geometry} in a GeoJSON {@link Feature}.
+ *
+ * @name feature
+ * @param {Geometry} geometry input geometry
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {Feature} a GeoJSON Feature
+ * @example
+ * var geometry = {
+ *   "type": "Point",
+ *   "coordinates": [110, 50]
+ * };
+ *
+ * var feature = turf.feature(geometry);
+ *
+ * //=feature
+ */
+function feature(geometry, properties, bbox, id) {
+    if (geometry === undefined) throw new Error('geometry is required');
+    if (properties && properties.constructor !== Object) throw new Error('properties must be an Object');
+    if (bbox && bbox.length !== 4) throw new Error('bbox must be an Array of 4 numbers');
+    if (id && ['string', 'number'].indexOf(typeof id) === -1) throw new Error('id must be a number or a string');
+
+    var feat = {type: 'Feature'};
+    if (id) feat.id = id;
+    if (bbox) feat.bbox = bbox;
+    feat.properties = properties || {};
+    feat.geometry = geometry;
+    return feat;
+}
+
+/**
+ * Creates a GeoJSON {@link Geometry} from a Geometry string type & coordinates.
+ * For GeometryCollection type use `helpers.geometryCollection`
+ *
+ * @name geometry
+ * @param {string} type Geometry Type
+ * @param {Array<number>} coordinates Coordinates
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @returns {Geometry} a GeoJSON Geometry
+ * @example
+ * var type = 'Point';
+ * var coordinates = [110, 50];
+ *
+ * var geometry = turf.geometry(type, coordinates);
+ *
+ * //=geometry
+ */
+function geometry(type, coordinates, bbox) {
+    // Validation
+    if (!type) throw new Error('type is required');
+    if (!coordinates) throw new Error('coordinates is required');
+    if (!Array.isArray(coordinates)) throw new Error('coordinates must be an Array');
+    if (bbox && bbox.length !== 4) throw new Error('bbox must be an Array of 4 numbers');
+
+    var geom;
+    switch (type) {
+    case 'Point': geom = point(coordinates).geometry; break;
+    case 'LineString': geom = lineString(coordinates).geometry; break;
+    case 'Polygon': geom = polygon(coordinates).geometry; break;
+    case 'MultiPoint': geom = multiPoint(coordinates).geometry; break;
+    case 'MultiLineString': geom = multiLineString(coordinates).geometry; break;
+    case 'MultiPolygon': geom = multiPolygon(coordinates).geometry; break;
+    default: throw new Error(type + ' is invalid');
+    }
+    if (bbox) geom.bbox = bbox;
+    return geom;
+}
+
+/**
+ * Takes coordinates and properties (optional) and returns a new {@link Point} feature.
+ *
+ * @name point
+ * @param {Array<number>} coordinates longitude, latitude position (each in decimal degrees)
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {Feature<Point>} a Point feature
+ * @example
+ * var point = turf.point([-75.343, 39.984]);
+ *
+ * //=point
+ */
+function point(coordinates, properties, bbox, id) {
+    if (!coordinates) throw new Error('No coordinates passed');
+    if (coordinates.length === undefined) throw new Error('Coordinates must be an array');
+    if (coordinates.length < 2) throw new Error('Coordinates must be at least 2 numbers long');
+    if (!isNumber(coordinates[0]) || !isNumber(coordinates[1])) throw new Error('Coordinates must contain numbers');
+
+    return feature({
+        type: 'Point',
+        coordinates: coordinates
+    }, properties, bbox, id);
+}
+
+/**
+ * Takes an array of LinearRings and optionally an {@link Object} with properties and returns a {@link Polygon} feature.
+ *
+ * @name polygon
+ * @param {Array<Array<Array<number>>>} coordinates an array of LinearRings
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {Feature<Polygon>} a Polygon feature
+ * @throws {Error} throw an error if a LinearRing of the polygon has too few positions
+ * or if a LinearRing of the Polygon does not have matching Positions at the beginning & end.
+ * @example
+ * var polygon = turf.polygon([[
+ *   [-2.275543, 53.464547],
+ *   [-2.275543, 53.489271],
+ *   [-2.215118, 53.489271],
+ *   [-2.215118, 53.464547],
+ *   [-2.275543, 53.464547]
+ * ]], { name: 'poly1', population: 400});
+ *
+ * //=polygon
+ */
+function polygon(coordinates, properties, bbox, id) {
+    if (!coordinates) throw new Error('No coordinates passed');
+
+    for (var i = 0; i < coordinates.length; i++) {
+        var ring = coordinates[i];
+        if (ring.length < 4) {
+            throw new Error('Each LinearRing of a Polygon must have 4 or more Positions.');
+        }
+        for (var j = 0; j < ring[ring.length - 1].length; j++) {
+            // Check if first point of Polygon contains two numbers
+            if (i === 0 && j === 0 && !isNumber(ring[0][0]) || !isNumber(ring[0][1])) throw new Error('Coordinates must contain numbers');
+            if (ring[ring.length - 1][j] !== ring[0][j]) {
+                throw new Error('First and last Position are not equivalent.');
+            }
+        }
+    }
+
+    return feature({
+        type: 'Polygon',
+        coordinates: coordinates
+    }, properties, bbox, id);
+}
+
+/**
+ * Creates a {@link LineString} based on a
+ * coordinate array. Properties can be added optionally.
+ *
+ * @name lineString
+ * @param {Array<Array<number>>} coordinates an array of Positions
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {Feature<LineString>} a LineString feature
+ * @throws {Error} if no coordinates are passed
+ * @example
+ * var linestring1 = turf.lineString([
+ *   [-21.964416, 64.148203],
+ *   [-21.956176, 64.141316],
+ *   [-21.93901, 64.135924],
+ *   [-21.927337, 64.136673]
+ * ]);
+ * var linestring2 = turf.lineString([
+ *   [-21.929054, 64.127985],
+ *   [-21.912918, 64.134726],
+ *   [-21.916007, 64.141016],
+ *   [-21.930084, 64.14446]
+ * ], {name: 'line 1', distance: 145});
+ *
+ * //=linestring1
+ *
+ * //=linestring2
+ */
+function lineString(coordinates, properties, bbox, id) {
+    if (!coordinates) throw new Error('No coordinates passed');
+    if (coordinates.length < 2) throw new Error('Coordinates must be an array of two or more positions');
+    // Check if first point of LineString contains two numbers
+    if (!isNumber(coordinates[0][1]) || !isNumber(coordinates[0][1])) throw new Error('Coordinates must contain numbers');
+
+    return feature({
+        type: 'LineString',
+        coordinates: coordinates
+    }, properties, bbox, id);
+}
+
+/**
+ * Takes one or more {@link Feature|Features} and creates a {@link FeatureCollection}.
+ *
+ * @name featureCollection
+ * @param {Feature[]} features input features
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {FeatureCollection} a FeatureCollection of input features
+ * @example
+ * var features = [
+ *  turf.point([-75.343, 39.984], {name: 'Location A'}),
+ *  turf.point([-75.833, 39.284], {name: 'Location B'}),
+ *  turf.point([-75.534, 39.123], {name: 'Location C'})
+ * ];
+ *
+ * var collection = turf.featureCollection(features);
+ *
+ * //=collection
+ */
+function featureCollection(features, bbox, id) {
+    if (!features) throw new Error('No features passed');
+    if (!Array.isArray(features)) throw new Error('features must be an Array');
+    if (bbox && bbox.length !== 4) throw new Error('bbox must be an Array of 4 numbers');
+    if (id && ['string', 'number'].indexOf(typeof id) === -1) throw new Error('id must be a number or a string');
+
+    var fc = {type: 'FeatureCollection'};
+    if (id) fc.id = id;
+    if (bbox) fc.bbox = bbox;
+    fc.features = features;
+    return fc;
+}
+
+/**
+ * Creates a {@link Feature<MultiLineString>} based on a
+ * coordinate array. Properties can be added optionally.
+ *
+ * @name multiLineString
+ * @param {Array<Array<Array<number>>>} coordinates an array of LineStrings
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {Feature<MultiLineString>} a MultiLineString feature
+ * @throws {Error} if no coordinates are passed
+ * @example
+ * var multiLine = turf.multiLineString([[[0,0],[10,10]]]);
+ *
+ * //=multiLine
+ */
+function multiLineString(coordinates, properties, bbox, id) {
+    if (!coordinates) throw new Error('No coordinates passed');
+
+    return feature({
+        type: 'MultiLineString',
+        coordinates: coordinates
+    }, properties, bbox, id);
+}
+
+/**
+ * Creates a {@link Feature<MultiPoint>} based on a
+ * coordinate array. Properties can be added optionally.
+ *
+ * @name multiPoint
+ * @param {Array<Array<number>>} coordinates an array of Positions
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {Feature<MultiPoint>} a MultiPoint feature
+ * @throws {Error} if no coordinates are passed
+ * @example
+ * var multiPt = turf.multiPoint([[0,0],[10,10]]);
+ *
+ * //=multiPt
+ */
+function multiPoint(coordinates, properties, bbox, id) {
+    if (!coordinates) throw new Error('No coordinates passed');
+
+    return feature({
+        type: 'MultiPoint',
+        coordinates: coordinates
+    }, properties, bbox, id);
+}
+
+/**
+ * Creates a {@link Feature<MultiPolygon>} based on a
+ * coordinate array. Properties can be added optionally.
+ *
+ * @name multiPolygon
+ * @param {Array<Array<Array<Array<number>>>>} coordinates an array of Polygons
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {Feature<MultiPolygon>} a multipolygon feature
+ * @throws {Error} if no coordinates are passed
+ * @example
+ * var multiPoly = turf.multiPolygon([[[[0,0],[0,10],[10,10],[10,0],[0,0]]]]);
+ *
+ * //=multiPoly
+ *
+ */
+function multiPolygon(coordinates, properties, bbox, id) {
+    if (!coordinates) throw new Error('No coordinates passed');
+
+    return feature({
+        type: 'MultiPolygon',
+        coordinates: coordinates
+    }, properties, bbox, id);
+}
+
+/**
+ * Creates a {@link Feature<GeometryCollection>} based on a
+ * coordinate array. Properties can be added optionally.
+ *
+ * @name geometryCollection
+ * @param {Array<Geometry>} geometries an array of GeoJSON Geometries
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {Feature<GeometryCollection>} a GeoJSON GeometryCollection Feature
+ * @example
+ * var pt = {
+ *     "type": "Point",
+ *       "coordinates": [100, 0]
+ *     };
+ * var line = {
+ *     "type": "LineString",
+ *     "coordinates": [ [101, 0], [102, 1] ]
+ *   };
+ * var collection = turf.geometryCollection([pt, line]);
+ *
+ * //=collection
+ */
+function geometryCollection(geometries, properties, bbox, id) {
+    if (!geometries) throw new Error('geometries is required');
+    if (!Array.isArray(geometries)) throw new Error('geometries must be an Array');
+
+    return feature({
+        type: 'GeometryCollection',
+        geometries: geometries
+    }, properties, bbox, id);
+}
+
+// https://en.wikipedia.org/wiki/Great-circle_distance#Radius_for_spherical_Earth
+var factors = {
+    miles: 3960,
+    nauticalmiles: 3441.145,
+    degrees: 57.2957795,
+    radians: 1,
+    inches: 250905600,
+    yards: 6969600,
+    meters: 6373000,
+    metres: 6373000,
+    centimeters: 6.373e+8,
+    centimetres: 6.373e+8,
+    kilometers: 6373,
+    kilometres: 6373,
+    feet: 20908792.65
+};
+
+var areaFactors = {
+    kilometers: 0.000001,
+    kilometres: 0.000001,
+    meters: 1,
+    metres: 1,
+    centimetres: 10000,
+    millimeter: 1000000,
+    acres: 0.000247105,
+    miles: 3.86e-7,
+    yards: 1.195990046,
+    feet: 10.763910417,
+    inches: 1550.003100006
+};
+/**
+ * Round number to precision
+ *
+ * @param {number} num Number
+ * @param {number} [precision=0] Precision
+ * @returns {number} rounded number
+ * @example
+ * turf.round(120.4321)
+ * //=120
+ *
+ * turf.round(120.4321, 2)
+ * //=120.43
+ */
+function round(num, precision) {
+    if (num === undefined || num === null || isNaN(num)) throw new Error('num is required');
+    if (precision && !(precision >= 0)) throw new Error('precision must be a positive number');
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(num * multiplier) / multiplier;
+}
+
+/**
+ * Convert a distance measurement (assuming a spherical Earth) from radians to a more friendly unit.
+ * Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
+ *
+ * @name radiansToDistance
+ * @param {number} radians in radians across the sphere
+ * @param {string} [units=kilometers] can be degrees, radians, miles, or kilometers inches, yards, metres, meters, kilometres, kilometers.
+ * @returns {number} distance
+ */
+function radiansToDistance(radians, units) {
+    if (radians === undefined || radians === null) throw new Error('radians is required');
+
+    var factor = factors[units || 'kilometers'];
+    if (!factor) throw new Error('units is invalid');
+    return radians * factor;
+}
+
+/**
+ * Convert a distance measurement (assuming a spherical Earth) from a real-world unit into radians
+ * Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
+ *
+ * @name distanceToRadians
+ * @param {number} distance in real units
+ * @param {string} [units=kilometers] can be degrees, radians, miles, or kilometers inches, yards, metres, meters, kilometres, kilometers.
+ * @returns {number} radians
+ */
+function distanceToRadians(distance, units) {
+    if (distance === undefined || distance === null) throw new Error('distance is required');
+
+    var factor = factors[units || 'kilometers'];
+    if (!factor) throw new Error('units is invalid');
+    return distance / factor;
+}
+
+/**
+ * Convert a distance measurement (assuming a spherical Earth) from a real-world unit into degrees
+ * Valid units: miles, nauticalmiles, inches, yards, meters, metres, centimeters, kilometres, feet
+ *
+ * @name distanceToDegrees
+ * @param {number} distance in real units
+ * @param {string} [units=kilometers] can be degrees, radians, miles, or kilometers inches, yards, metres, meters, kilometres, kilometers.
+ * @returns {number} degrees
+ */
+function distanceToDegrees(distance, units) {
+    return radians2degrees(distanceToRadians(distance, units));
+}
+
+/**
+ * Converts any bearing angle from the north line direction (positive clockwise)
+ * and returns an angle between 0-360 degrees (positive clockwise), 0 being the north line
+ *
+ * @name bearingToAngle
+ * @param {number} bearing angle, between -180 and +180 degrees
+ * @returns {number} angle between 0 and 360 degrees
+ */
+function bearingToAngle(bearing) {
+    if (bearing === null || bearing === undefined) throw new Error('bearing is required');
+
+    var angle = bearing % 360;
+    if (angle < 0) angle += 360;
+    return angle;
+}
+
+/**
+ * Converts an angle in radians to degrees
+ *
+ * @name radians2degrees
+ * @param {number} radians angle in radians
+ * @returns {number} degrees between 0 and 360 degrees
+ */
+function radians2degrees(radians) {
+    if (radians === null || radians === undefined) throw new Error('radians is required');
+
+    var degrees = radians % (2 * Math.PI);
+    return degrees * 180 / Math.PI;
+}
+
+/**
+ * Converts an angle in degrees to radians
+ *
+ * @name degrees2radians
+ * @param {number} degrees angle between 0 and 360 degrees
+ * @returns {number} angle in radians
+ */
+function degrees2radians(degrees) {
+    if (degrees === null || degrees === undefined) throw new Error('degrees is required');
+
+    var radians = degrees % 360;
+    return radians * Math.PI / 180;
+}
+
+
+/**
+ * Converts a distance to the requested unit.
+ * Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
+ *
+ * @param {number} distance to be converted
+ * @param {string} originalUnit of the distance
+ * @param {string} [finalUnit=kilometers] returned unit
+ * @returns {number} the converted distance
+ */
+function convertDistance(distance, originalUnit, finalUnit) {
+    if (distance === null || distance === undefined) throw new Error('distance is required');
+    if (!(distance >= 0)) throw new Error('distance must be a positive number');
+
+    var convertedDistance = radiansToDistance(distanceToRadians(distance, originalUnit), finalUnit || 'kilometers');
+    return convertedDistance;
+}
+
+/**
+ * Converts a area to the requested unit.
+ * Valid units: kilometers, kilometres, meters, metres, centimetres, millimeter, acre, mile, yard, foot, inch
+ * @param {number} area to be converted
+ * @param {string} [originalUnit=meters] of the distance
+ * @param {string} [finalUnit=kilometers] returned unit
+ * @returns {number} the converted distance
+ */
+function convertArea(area, originalUnit, finalUnit) {
+    if (area === null || area === undefined) throw new Error('area is required');
+    if (!(area >= 0)) throw new Error('area must be a positive number');
+
+    var startFactor = areaFactors[originalUnit || 'meters'];
+    if (!startFactor) throw new Error('invalid original units');
+
+    var finalFactor = areaFactors[finalUnit || 'kilometers'];
+    if (!finalFactor) throw new Error('invalid final units');
+
+    return (area / startFactor) * finalFactor;
+}
+
+/**
+ * isNumber
+ *
+ * @param {*} num Number to validate
+ * @returns {boolean} true/false
+ * @example
+ * turf.isNumber(123)
+ * //=true
+ * turf.isNumber('foo')
+ * //=false
+ */
+function isNumber(num) {
+    return !isNaN(num) && num !== null && !Array.isArray(num);
+}
+
+module.exports = {
+    feature: feature,
+    geometry: geometry,
+    featureCollection: featureCollection,
+    geometryCollection: geometryCollection,
+    point: point,
+    multiPoint: multiPoint,
+    lineString: lineString,
+    multiLineString: multiLineString,
+    polygon: polygon,
+    multiPolygon: multiPolygon,
+    radiansToDistance: radiansToDistance,
+    distanceToRadians: distanceToRadians,
+    distanceToDegrees: distanceToDegrees,
+    radians2degrees: radians2degrees,
+    degrees2radians: degrees2radians,
+    bearingToAngle: bearingToAngle,
+    convertDistance: convertDistance,
+    convertArea: convertArea,
+    round: round,
+    isNumber: isNumber
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/@turf/bbox/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/@turf/bbox/index.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var coordEach = __webpack_require__(/*! @turf/meta */ "./node_modules/@turf/bbox/node_modules/@turf/meta/index.js").coordEach;
+
+/**
+ * Takes a set of features, calculates the bbox of all input features, and returns a bounding box.
+ *
+ * @name bbox
+ * @param {FeatureCollection|Feature<any>} geojson input features
+ * @returns {Array<number>} bbox extent in [minX, minY, maxX, maxY] order
+ * @example
+ * var line = turf.lineString([[-74, 40], [-78, 42], [-82, 35]]);
+ * var bbox = turf.bbox(line);
+ * var bboxPolygon = turf.bboxPolygon(bbox);
+ *
+ * //addToMap
+ * var addToMap = [line, bboxPolygon]
+ */
+module.exports = function (geojson) {
+    var bbox = [Infinity, Infinity, -Infinity, -Infinity];
+    coordEach(geojson, function (coord) {
+        if (bbox[0] > coord[0]) bbox[0] = coord[0];
+        if (bbox[1] > coord[1]) bbox[1] = coord[1];
+        if (bbox[2] < coord[0]) bbox[2] = coord[0];
+        if (bbox[3] < coord[1]) bbox[3] = coord[1];
+    });
+    return bbox;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/@turf/bbox/node_modules/@turf/meta/index.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@turf/bbox/node_modules/@turf/meta/index.js ***!
+  \******************************************************************/
+/*! exports provided: coordEach, coordReduce, propEach, propReduce, featureEach, featureReduce, coordAll, geomEach, geomReduce, flattenEach, flattenReduce, segmentEach, segmentReduce, feature, lineString, lineEach, lineReduce */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "coordEach", function() { return coordEach; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "coordReduce", function() { return coordReduce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "propEach", function() { return propEach; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "propReduce", function() { return propReduce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "featureEach", function() { return featureEach; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "featureReduce", function() { return featureReduce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "coordAll", function() { return coordAll; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "geomEach", function() { return geomEach; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "geomReduce", function() { return geomReduce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "flattenEach", function() { return flattenEach; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "flattenReduce", function() { return flattenReduce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "segmentEach", function() { return segmentEach; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "segmentReduce", function() { return segmentReduce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "feature", function() { return feature; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lineString", function() { return lineString; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lineEach", function() { return lineEach; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lineReduce", function() { return lineReduce; });
+/**
+ * GeoJSON BBox
+ *
+ * @private
+ * @typedef {[number, number, number, number]} BBox
+ */
+
+/**
+ * GeoJSON Id
+ *
+ * @private
+ * @typedef {(number|string)} Id
+ */
+
+/**
+ * GeoJSON FeatureCollection
+ *
+ * @private
+ * @typedef {Object} FeatureCollection
+ * @property {string} type
+ * @property {?Id} id
+ * @property {?BBox} bbox
+ * @property {Feature[]} features
+ */
+
+/**
+ * GeoJSON Feature
+ *
+ * @private
+ * @typedef {Object} Feature
+ * @property {string} type
+ * @property {?Id} id
+ * @property {?BBox} bbox
+ * @property {*} properties
+ * @property {Geometry} geometry
+ */
+
+/**
+ * GeoJSON Geometry
+ *
+ * @private
+ * @typedef {Object} Geometry
+ * @property {string} type
+ * @property {any[]} coordinates
+ */
+
+/**
+ * Callback for coordEach
+ *
+ * @callback coordEachCallback
+ * @param {Array<number>} currentCoord The current coordinate being processed.
+ * @param {number} coordIndex The current index of the coordinate being processed.
+ * Starts at index 0.
+ * @param {number} featureIndex The current index of the feature being processed.
+ * @param {number} featureSubIndex The current subIndex of the feature being processed.
+ */
+
+/**
+ * Iterate over coordinates in any GeoJSON object, similar to Array.forEach()
+ *
+ * @name coordEach
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (currentCoord, coordIndex, featureIndex, featureSubIndex)
+ * @param {boolean} [excludeWrapCoord=false] whether or not to include the final coordinate of LinearRings that wraps the ring in its iteration.
+ * @example
+ * var features = turf.featureCollection([
+ *   turf.point([26, 37], {"foo": "bar"}),
+ *   turf.point([36, 53], {"hello": "world"})
+ * ]);
+ *
+ * turf.coordEach(features, function (currentCoord, coordIndex, featureIndex, featureSubIndex) {
+ *   //=currentCoord
+ *   //=coordIndex
+ *   //=featureIndex
+ *   //=featureSubIndex
+ * });
+ */
+function coordEach(geojson, callback, excludeWrapCoord) {
+    // Handles null Geometry -- Skips this GeoJSON
+    if (geojson === null) return;
+    var featureIndex, geometryIndex, j, k, l, geometry, stopG, coords,
+        geometryMaybeCollection,
+        wrapShrink = 0,
+        coordIndex = 0,
+        isGeometryCollection,
+        type = geojson.type,
+        isFeatureCollection = type === 'FeatureCollection',
+        isFeature = type === 'Feature',
+        stop = isFeatureCollection ? geojson.features.length : 1;
+
+    // This logic may look a little weird. The reason why it is that way
+    // is because it's trying to be fast. GeoJSON supports multiple kinds
+    // of objects at its root: FeatureCollection, Features, Geometries.
+    // This function has the responsibility of handling all of them, and that
+    // means that some of the `for` loops you see below actually just don't apply
+    // to certain inputs. For instance, if you give this just a
+    // Point geometry, then both loops are short-circuited and all we do
+    // is gradually rename the input until it's called 'geometry'.
+    //
+    // This also aims to allocate as few resources as possible: just a
+    // few numbers and booleans, rather than any temporary arrays as would
+    // be required with the normalization approach.
+    for (featureIndex = 0; featureIndex < stop; featureIndex++) {
+        geometryMaybeCollection = (isFeatureCollection ? geojson.features[featureIndex].geometry :
+            (isFeature ? geojson.geometry : geojson));
+        isGeometryCollection = (geometryMaybeCollection) ? geometryMaybeCollection.type === 'GeometryCollection' : false;
+        stopG = isGeometryCollection ? geometryMaybeCollection.geometries.length : 1;
+
+        for (geometryIndex = 0; geometryIndex < stopG; geometryIndex++) {
+            var featureSubIndex = 0;
+            geometry = isGeometryCollection ?
+                geometryMaybeCollection.geometries[geometryIndex] : geometryMaybeCollection;
+
+            // Handles null Geometry -- Skips this geometry
+            if (geometry === null) continue;
+            coords = geometry.coordinates;
+            var geomType = geometry.type;
+
+            wrapShrink = (excludeWrapCoord && (geomType === 'Polygon' || geomType === 'MultiPolygon')) ? 1 : 0;
+
+            switch (geomType) {
+            case null:
+                break;
+            case 'Point':
+                callback(coords, coordIndex, featureIndex, featureSubIndex);
+                coordIndex++;
+                featureSubIndex++;
+                break;
+            case 'LineString':
+            case 'MultiPoint':
+                for (j = 0; j < coords.length; j++) {
+                    callback(coords[j], coordIndex, featureIndex, featureSubIndex);
+                    coordIndex++;
+                    if (geomType === 'MultiPoint') featureSubIndex++;
+                }
+                if (geomType === 'LineString') featureSubIndex++;
+                break;
+            case 'Polygon':
+            case 'MultiLineString':
+                for (j = 0; j < coords.length; j++) {
+                    for (k = 0; k < coords[j].length - wrapShrink; k++) {
+                        callback(coords[j][k], coordIndex, featureIndex, featureSubIndex);
+                        coordIndex++;
+                    }
+                    if (geomType === 'MultiLineString') featureSubIndex++;
+                }
+                if (geomType === 'Polygon') featureSubIndex++;
+                break;
+            case 'MultiPolygon':
+                for (j = 0; j < coords.length; j++) {
+                    for (k = 0; k < coords[j].length; k++)
+                        for (l = 0; l < coords[j][k].length - wrapShrink; l++) {
+                            callback(coords[j][k][l], coordIndex, featureIndex, featureSubIndex);
+                            coordIndex++;
+                        }
+                    featureSubIndex++;
+                }
+                break;
+            case 'GeometryCollection':
+                for (j = 0; j < geometry.geometries.length; j++)
+                    coordEach(geometry.geometries[j], callback, excludeWrapCoord);
+                break;
+            default:
+                throw new Error('Unknown Geometry Type');
+            }
+        }
+    }
+}
+
+/**
+ * Callback for coordReduce
+ *
+ * The first time the callback function is called, the values provided as arguments depend
+ * on whether the reduce method has an initialValue argument.
+ *
+ * If an initialValue is provided to the reduce method:
+ *  - The previousValue argument is initialValue.
+ *  - The currentValue argument is the value of the first element present in the array.
+ *
+ * If an initialValue is not provided:
+ *  - The previousValue argument is the value of the first element present in the array.
+ *  - The currentValue argument is the value of the second element present in the array.
+ *
+ * @callback coordReduceCallback
+ * @param {*} previousValue The accumulated value previously returned in the last invocation
+ * of the callback, or initialValue, if supplied.
+ * @param {Array<number>} currentCoord The current coordinate being processed.
+ * @param {number} coordIndex The current index of the coordinate being processed.
+ * Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ * @param {number} featureIndex The current index of the feature being processed.
+ * @param {number} featureSubIndex The current subIndex of the feature being processed.
+ */
+
+/**
+ * Reduce coordinates in any GeoJSON object, similar to Array.reduce()
+ *
+ * @name coordReduce
+ * @param {FeatureCollection|Geometry|Feature} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (previousValue, currentCoord, coordIndex)
+ * @param {*} [initialValue] Value to use as the first argument to the first call of the callback.
+ * @param {boolean} [excludeWrapCoord=false] whether or not to include the final coordinate of LinearRings that wraps the ring in its iteration.
+ * @returns {*} The value that results from the reduction.
+ * @example
+ * var features = turf.featureCollection([
+ *   turf.point([26, 37], {"foo": "bar"}),
+ *   turf.point([36, 53], {"hello": "world"})
+ * ]);
+ *
+ * turf.coordReduce(features, function (previousValue, currentCoord, coordIndex, featureIndex, featureSubIndex) {
+ *   //=previousValue
+ *   //=currentCoord
+ *   //=coordIndex
+ *   //=featureIndex
+ *   //=featureSubIndex
+ *   return currentCoord;
+ * });
+ */
+function coordReduce(geojson, callback, initialValue, excludeWrapCoord) {
+    var previousValue = initialValue;
+    coordEach(geojson, function (currentCoord, coordIndex, featureIndex, featureSubIndex) {
+        if (coordIndex === 0 && initialValue === undefined) previousValue = currentCoord;
+        else previousValue = callback(previousValue, currentCoord, coordIndex, featureIndex, featureSubIndex);
+    }, excludeWrapCoord);
+    return previousValue;
+}
+
+/**
+ * Callback for propEach
+ *
+ * @callback propEachCallback
+ * @param {Object} currentProperties The current properties being processed.
+ * @param {number} featureIndex The index of the current element being processed in the
+ * array.Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ */
+
+/**
+ * Iterate over properties in any GeoJSON object, similar to Array.forEach()
+ *
+ * @name propEach
+ * @param {(FeatureCollection|Feature)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (currentProperties, featureIndex)
+ * @example
+ * var features = turf.featureCollection([
+ *     turf.point([26, 37], {foo: 'bar'}),
+ *     turf.point([36, 53], {hello: 'world'})
+ * ]);
+ *
+ * turf.propEach(features, function (currentProperties, featureIndex) {
+ *   //=currentProperties
+ *   //=featureIndex
+ * });
+ */
+function propEach(geojson, callback) {
+    var i;
+    switch (geojson.type) {
+    case 'FeatureCollection':
+        for (i = 0; i < geojson.features.length; i++) {
+            callback(geojson.features[i].properties, i);
+        }
+        break;
+    case 'Feature':
+        callback(geojson.properties, 0);
+        break;
+    }
+}
+
+
+/**
+ * Callback for propReduce
+ *
+ * The first time the callback function is called, the values provided as arguments depend
+ * on whether the reduce method has an initialValue argument.
+ *
+ * If an initialValue is provided to the reduce method:
+ *  - The previousValue argument is initialValue.
+ *  - The currentValue argument is the value of the first element present in the array.
+ *
+ * If an initialValue is not provided:
+ *  - The previousValue argument is the value of the first element present in the array.
+ *  - The currentValue argument is the value of the second element present in the array.
+ *
+ * @callback propReduceCallback
+ * @param {*} previousValue The accumulated value previously returned in the last invocation
+ * of the callback, or initialValue, if supplied.
+ * @param {*} currentProperties The current properties being processed.
+ * @param {number} featureIndex The index of the current element being processed in the
+ * array.Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ */
+
+/**
+ * Reduce properties in any GeoJSON object into a single value,
+ * similar to how Array.reduce works. However, in this case we lazily run
+ * the reduction, so an array of all properties is unnecessary.
+ *
+ * @name propReduce
+ * @param {(FeatureCollection|Feature)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (previousValue, currentProperties, featureIndex)
+ * @param {*} [initialValue] Value to use as the first argument to the first call of the callback.
+ * @returns {*} The value that results from the reduction.
+ * @example
+ * var features = turf.featureCollection([
+ *     turf.point([26, 37], {foo: 'bar'}),
+ *     turf.point([36, 53], {hello: 'world'})
+ * ]);
+ *
+ * turf.propReduce(features, function (previousValue, currentProperties, featureIndex) {
+ *   //=previousValue
+ *   //=currentProperties
+ *   //=featureIndex
+ *   return currentProperties
+ * });
+ */
+function propReduce(geojson, callback, initialValue) {
+    var previousValue = initialValue;
+    propEach(geojson, function (currentProperties, featureIndex) {
+        if (featureIndex === 0 && initialValue === undefined) previousValue = currentProperties;
+        else previousValue = callback(previousValue, currentProperties, featureIndex);
+    });
+    return previousValue;
+}
+
+/**
+ * Callback for featureEach
+ *
+ * @callback featureEachCallback
+ * @param {Feature<any>} currentFeature The current feature being processed.
+ * @param {number} featureIndex The index of the current element being processed in the
+ * array.Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ */
+
+/**
+ * Iterate over features in any GeoJSON object, similar to
+ * Array.forEach.
+ *
+ * @name featureEach
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (currentFeature, featureIndex)
+ * @example
+ * var features = turf.featureCollection([
+ *   turf.point([26, 37], {foo: 'bar'}),
+ *   turf.point([36, 53], {hello: 'world'})
+ * ]);
+ *
+ * turf.featureEach(features, function (currentFeature, featureIndex) {
+ *   //=currentFeature
+ *   //=featureIndex
+ * });
+ */
+function featureEach(geojson, callback) {
+    if (geojson.type === 'Feature') {
+        callback(geojson, 0);
+    } else if (geojson.type === 'FeatureCollection') {
+        for (var i = 0; i < geojson.features.length; i++) {
+            callback(geojson.features[i], i);
+        }
+    }
+}
+
+/**
+ * Callback for featureReduce
+ *
+ * The first time the callback function is called, the values provided as arguments depend
+ * on whether the reduce method has an initialValue argument.
+ *
+ * If an initialValue is provided to the reduce method:
+ *  - The previousValue argument is initialValue.
+ *  - The currentValue argument is the value of the first element present in the array.
+ *
+ * If an initialValue is not provided:
+ *  - The previousValue argument is the value of the first element present in the array.
+ *  - The currentValue argument is the value of the second element present in the array.
+ *
+ * @callback featureReduceCallback
+ * @param {*} previousValue The accumulated value previously returned in the last invocation
+ * of the callback, or initialValue, if supplied.
+ * @param {Feature} currentFeature The current Feature being processed.
+ * @param {number} featureIndex The index of the current element being processed in the
+ * array.Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ */
+
+/**
+ * Reduce features in any GeoJSON object, similar to Array.reduce().
+ *
+ * @name featureReduce
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (previousValue, currentFeature, featureIndex)
+ * @param {*} [initialValue] Value to use as the first argument to the first call of the callback.
+ * @returns {*} The value that results from the reduction.
+ * @example
+ * var features = turf.featureCollection([
+ *   turf.point([26, 37], {"foo": "bar"}),
+ *   turf.point([36, 53], {"hello": "world"})
+ * ]);
+ *
+ * turf.featureReduce(features, function (previousValue, currentFeature, featureIndex) {
+ *   //=previousValue
+ *   //=currentFeature
+ *   //=featureIndex
+ *   return currentFeature
+ * });
+ */
+function featureReduce(geojson, callback, initialValue) {
+    var previousValue = initialValue;
+    featureEach(geojson, function (currentFeature, featureIndex) {
+        if (featureIndex === 0 && initialValue === undefined) previousValue = currentFeature;
+        else previousValue = callback(previousValue, currentFeature, featureIndex);
+    });
+    return previousValue;
+}
+
+/**
+ * Get all coordinates from any GeoJSON object.
+ *
+ * @name coordAll
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON object
+ * @returns {Array<Array<number>>} coordinate position array
+ * @example
+ * var features = turf.featureCollection([
+ *   turf.point([26, 37], {foo: 'bar'}),
+ *   turf.point([36, 53], {hello: 'world'})
+ * ]);
+ *
+ * var coords = turf.coordAll(features);
+ * //= [[26, 37], [36, 53]]
+ */
+function coordAll(geojson) {
+    var coords = [];
+    coordEach(geojson, function (coord) {
+        coords.push(coord);
+    });
+    return coords;
+}
+
+/**
+ * Callback for geomEach
+ *
+ * @callback geomEachCallback
+ * @param {Geometry} currentGeometry The current geometry being processed.
+ * @param {number} currentIndex The index of the current element being processed in the
+ * array. Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ * @param {number} currentProperties The current feature properties being processed.
+ */
+
+/**
+ * Iterate over each geometry in any GeoJSON object, similar to Array.forEach()
+ *
+ * @name geomEach
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (currentGeometry, featureIndex, currentProperties)
+ * @example
+ * var features = turf.featureCollection([
+ *     turf.point([26, 37], {foo: 'bar'}),
+ *     turf.point([36, 53], {hello: 'world'})
+ * ]);
+ *
+ * turf.geomEach(features, function (currentGeometry, featureIndex, currentProperties) {
+ *   //=currentGeometry
+ *   //=featureIndex
+ *   //=currentProperties
+ * });
+ */
+function geomEach(geojson, callback) {
+    var i, j, g, geometry, stopG,
+        geometryMaybeCollection,
+        isGeometryCollection,
+        geometryProperties,
+        featureIndex = 0,
+        isFeatureCollection = geojson.type === 'FeatureCollection',
+        isFeature = geojson.type === 'Feature',
+        stop = isFeatureCollection ? geojson.features.length : 1;
+
+    // This logic may look a little weird. The reason why it is that way
+    // is because it's trying to be fast. GeoJSON supports multiple kinds
+    // of objects at its root: FeatureCollection, Features, Geometries.
+    // This function has the responsibility of handling all of them, and that
+    // means that some of the `for` loops you see below actually just don't apply
+    // to certain inputs. For instance, if you give this just a
+    // Point geometry, then both loops are short-circuited and all we do
+    // is gradually rename the input until it's called 'geometry'.
+    //
+    // This also aims to allocate as few resources as possible: just a
+    // few numbers and booleans, rather than any temporary arrays as would
+    // be required with the normalization approach.
+    for (i = 0; i < stop; i++) {
+
+        geometryMaybeCollection = (isFeatureCollection ? geojson.features[i].geometry :
+            (isFeature ? geojson.geometry : geojson));
+        geometryProperties = (isFeatureCollection ? geojson.features[i].properties :
+            (isFeature ? geojson.properties : {}));
+        isGeometryCollection = (geometryMaybeCollection) ? geometryMaybeCollection.type === 'GeometryCollection' : false;
+        stopG = isGeometryCollection ? geometryMaybeCollection.geometries.length : 1;
+
+        for (g = 0; g < stopG; g++) {
+            geometry = isGeometryCollection ?
+                geometryMaybeCollection.geometries[g] : geometryMaybeCollection;
+
+            // Handle null Geometry
+            if (geometry === null) {
+                callback(null, featureIndex, geometryProperties);
+                continue;
+            }
+            switch (geometry.type) {
+            case 'Point':
+            case 'LineString':
+            case 'MultiPoint':
+            case 'Polygon':
+            case 'MultiLineString':
+            case 'MultiPolygon': {
+                callback(geometry, featureIndex, geometryProperties);
+                break;
+            }
+            case 'GeometryCollection': {
+                for (j = 0; j < geometry.geometries.length; j++) {
+                    callback(geometry.geometries[j], featureIndex, geometryProperties);
+                }
+                break;
+            }
+            default:
+                throw new Error('Unknown Geometry Type');
+            }
+        }
+        // Only increase `featureIndex` per each feature
+        featureIndex++;
+    }
+}
+
+/**
+ * Callback for geomReduce
+ *
+ * The first time the callback function is called, the values provided as arguments depend
+ * on whether the reduce method has an initialValue argument.
+ *
+ * If an initialValue is provided to the reduce method:
+ *  - The previousValue argument is initialValue.
+ *  - The currentValue argument is the value of the first element present in the array.
+ *
+ * If an initialValue is not provided:
+ *  - The previousValue argument is the value of the first element present in the array.
+ *  - The currentValue argument is the value of the second element present in the array.
+ *
+ * @callback geomReduceCallback
+ * @param {*} previousValue The accumulated value previously returned in the last invocation
+ * of the callback, or initialValue, if supplied.
+ * @param {Geometry} currentGeometry The current Feature being processed.
+ * @param {number} currentIndex The index of the current element being processed in the
+ * array.Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ * @param {Object} currentProperties The current feature properties being processed.
+ */
+
+/**
+ * Reduce geometry in any GeoJSON object, similar to Array.reduce().
+ *
+ * @name geomReduce
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (previousValue, currentGeometry, featureIndex, currentProperties)
+ * @param {*} [initialValue] Value to use as the first argument to the first call of the callback.
+ * @returns {*} The value that results from the reduction.
+ * @example
+ * var features = turf.featureCollection([
+ *     turf.point([26, 37], {foo: 'bar'}),
+ *     turf.point([36, 53], {hello: 'world'})
+ * ]);
+ *
+ * turf.geomReduce(features, function (previousValue, currentGeometry, featureIndex, currentProperties) {
+ *   //=previousValue
+ *   //=currentGeometry
+ *   //=featureIndex
+ *   //=currentProperties
+ *   return currentGeometry
+ * });
+ */
+function geomReduce(geojson, callback, initialValue) {
+    var previousValue = initialValue;
+    geomEach(geojson, function (currentGeometry, currentIndex, currentProperties) {
+        if (currentIndex === 0 && initialValue === undefined) previousValue = currentGeometry;
+        else previousValue = callback(previousValue, currentGeometry, currentIndex, currentProperties);
+    });
+    return previousValue;
+}
+
+/**
+ * Callback for flattenEach
+ *
+ * @callback flattenEachCallback
+ * @param {Feature} currentFeature The current flattened feature being processed.
+ * @param {number} featureIndex The index of the current element being processed in the
+ * array. Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ * @param {number} featureSubIndex The subindex of the current element being processed in the
+ * array. Starts at index 0 and increases if the flattened feature was a multi-geometry.
+ */
+
+/**
+ * Iterate over flattened features in any GeoJSON object, similar to
+ * Array.forEach.
+ *
+ * @name flattenEach
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (currentFeature, featureIndex, featureSubIndex)
+ * @example
+ * var features = turf.featureCollection([
+ *     turf.point([26, 37], {foo: 'bar'}),
+ *     turf.multiPoint([[40, 30], [36, 53]], {hello: 'world'})
+ * ]);
+ *
+ * turf.flattenEach(features, function (currentFeature, featureIndex, featureSubIndex) {
+ *   //=currentFeature
+ *   //=featureIndex
+ *   //=featureSubIndex
+ * });
+ */
+function flattenEach(geojson, callback) {
+    geomEach(geojson, function (geometry, featureIndex, properties) {
+        // Callback for single geometry
+        var type = (geometry === null) ? null : geometry.type;
+        switch (type) {
+        case null:
+        case 'Point':
+        case 'LineString':
+        case 'Polygon':
+            callback(feature(geometry, properties), featureIndex, 0);
+            return;
+        }
+
+        var geomType;
+
+        // Callback for multi-geometry
+        switch (type) {
+        case 'MultiPoint':
+            geomType = 'Point';
+            break;
+        case 'MultiLineString':
+            geomType = 'LineString';
+            break;
+        case 'MultiPolygon':
+            geomType = 'Polygon';
+            break;
+        }
+
+        geometry.coordinates.forEach(function (coordinate, featureSubIndex) {
+            var geom = {
+                type: geomType,
+                coordinates: coordinate
+            };
+            callback(feature(geom, properties), featureIndex, featureSubIndex);
+        });
+
+    });
+}
+
+/**
+ * Callback for flattenReduce
+ *
+ * The first time the callback function is called, the values provided as arguments depend
+ * on whether the reduce method has an initialValue argument.
+ *
+ * If an initialValue is provided to the reduce method:
+ *  - The previousValue argument is initialValue.
+ *  - The currentValue argument is the value of the first element present in the array.
+ *
+ * If an initialValue is not provided:
+ *  - The previousValue argument is the value of the first element present in the array.
+ *  - The currentValue argument is the value of the second element present in the array.
+ *
+ * @callback flattenReduceCallback
+ * @param {*} previousValue The accumulated value previously returned in the last invocation
+ * of the callback, or initialValue, if supplied.
+ * @param {Feature} currentFeature The current Feature being processed.
+ * @param {number} featureIndex The index of the current element being processed in the
+ * array.Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ * @param {number} featureSubIndex The subindex of the current element being processed in the
+ * array. Starts at index 0 and increases if the flattened feature was a multi-geometry.
+ */
+
+/**
+ * Reduce flattened features in any GeoJSON object, similar to Array.reduce().
+ *
+ * @name flattenReduce
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (previousValue, currentFeature, featureIndex, featureSubIndex)
+ * @param {*} [initialValue] Value to use as the first argument to the first call of the callback.
+ * @returns {*} The value that results from the reduction.
+ * @example
+ * var features = turf.featureCollection([
+ *     turf.point([26, 37], {foo: 'bar'}),
+ *     turf.multiPoint([[40, 30], [36, 53]], {hello: 'world'})
+ * ]);
+ *
+ * turf.flattenReduce(features, function (previousValue, currentFeature, featureIndex, featureSubIndex) {
+ *   //=previousValue
+ *   //=currentFeature
+ *   //=featureIndex
+ *   //=featureSubIndex
+ *   return currentFeature
+ * });
+ */
+function flattenReduce(geojson, callback, initialValue) {
+    var previousValue = initialValue;
+    flattenEach(geojson, function (currentFeature, featureIndex, featureSubIndex) {
+        if (featureIndex === 0 && featureSubIndex === 0 && initialValue === undefined) previousValue = currentFeature;
+        else previousValue = callback(previousValue, currentFeature, featureIndex, featureSubIndex);
+    });
+    return previousValue;
+}
+
+/**
+ * Callback for segmentEach
+ *
+ * @callback segmentEachCallback
+ * @param {Feature<LineString>} currentSegment The current segment being processed.
+ * @param {number} featureIndex The featureIndex currently being processed, starts at index 0.
+ * @param {number} featureSubIndex The featureSubIndex currently being processed, starts at index 0.
+ * @param {number} segmentIndex The segmentIndex currently being processed, starts at index 0.
+ * @returns {void}
+ */
+
+/**
+ * Iterate over 2-vertex line segment in any GeoJSON object, similar to Array.forEach()
+ * (Multi)Point geometries do not contain segments therefore they are ignored during this operation.
+ *
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON
+ * @param {Function} callback a method that takes (currentSegment, featureIndex, featureSubIndex)
+ * @returns {void}
+ * @example
+ * var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);
+ *
+ * // Iterate over GeoJSON by 2-vertex segments
+ * turf.segmentEach(polygon, function (currentSegment, featureIndex, featureSubIndex, segmentIndex) {
+ *   //= currentSegment
+ *   //= featureIndex
+ *   //= featureSubIndex
+ *   //= segmentIndex
+ * });
+ *
+ * // Calculate the total number of segments
+ * var total = 0;
+ * turf.segmentEach(polygon, function () {
+ *     total++;
+ * });
+ */
+function segmentEach(geojson, callback) {
+    flattenEach(geojson, function (feature, featureIndex, featureSubIndex) {
+        var segmentIndex = 0;
+
+        // Exclude null Geometries
+        if (!feature.geometry) return;
+        // (Multi)Point geometries do not contain segments therefore they are ignored during this operation.
+        var type = feature.geometry.type;
+        if (type === 'Point' || type === 'MultiPoint') return;
+
+        // Generate 2-vertex line segments
+        coordReduce(feature, function (previousCoords, currentCoord) {
+            var currentSegment = lineString([previousCoords, currentCoord], feature.properties);
+            callback(currentSegment, featureIndex, featureSubIndex, segmentIndex);
+            segmentIndex++;
+            return currentCoord;
+        });
+    });
+}
+
+/**
+ * Callback for segmentReduce
+ *
+ * The first time the callback function is called, the values provided as arguments depend
+ * on whether the reduce method has an initialValue argument.
+ *
+ * If an initialValue is provided to the reduce method:
+ *  - The previousValue argument is initialValue.
+ *  - The currentValue argument is the value of the first element present in the array.
+ *
+ * If an initialValue is not provided:
+ *  - The previousValue argument is the value of the first element present in the array.
+ *  - The currentValue argument is the value of the second element present in the array.
+ *
+ * @callback segmentReduceCallback
+ * @param {*} [previousValue] The accumulated value previously returned in the last invocation
+ * of the callback, or initialValue, if supplied.
+ * @param {Feature<LineString>} [currentSegment] The current segment being processed.
+ * @param {number} featureIndex The featureIndex currently being processed, starts at index 0.
+ * @param {number} featureSubIndex The featureSubIndex currently being processed, starts at index 0.
+ * @param {number} segmentIndex The segmentIndex currently being processed, starts at index 0.
+ */
+
+/**
+ * Reduce 2-vertex line segment in any GeoJSON object, similar to Array.reduce()
+ * (Multi)Point geometries do not contain segments therefore they are ignored during this operation.
+ *
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON
+ * @param {Function} callback a method that takes (previousValue, currentSegment, currentIndex)
+ * @param {*} [initialValue] Value to use as the first argument to the first call of the callback.
+ * @returns {void}
+ * @example
+ * var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);
+ *
+ * // Iterate over GeoJSON by 2-vertex segments
+ * turf.segmentReduce(polygon, function (previousSegment, currentSegment, featureIndex, featureSubIndex, segmentIndex) {
+ *   //= previousSegment
+ *   //= currentSegment
+ *   //= featureIndex
+ *   //= featureSubIndex
+ *   //= segmentInex
+ *   return currentSegment
+ * });
+ *
+ * // Calculate the total number of segments
+ * var initialValue = 0
+ * var total = turf.segmentReduce(polygon, function (previousValue) {
+ *     previousValue++;
+ *     return previousValue;
+ * }, initialValue);
+ */
+function segmentReduce(geojson, callback, initialValue) {
+    var previousValue = initialValue;
+    var started = false;
+    segmentEach(geojson, function (currentSegment, featureIndex, featureSubIndex, segmentIndex) {
+        if (started === false && initialValue === undefined) previousValue = currentSegment;
+        else previousValue = callback(previousValue, currentSegment, featureIndex, featureSubIndex, segmentIndex);
+        started = true;
+    });
+    return previousValue;
+}
+
+/**
+ * Create Feature
+ *
+ * @private
+ * @param {Geometry} geometry GeoJSON Geometry
+ * @param {Object} properties Properties
+ * @returns {Feature} GeoJSON Feature
+ */
+function feature(geometry, properties) {
+    if (geometry === undefined) throw new Error('No geometry passed');
+
+    return {
+        type: 'Feature',
+        properties: properties || {},
+        geometry: geometry
+    };
+}
+
+/**
+ * Create LineString
+ *
+ * @private
+ * @param {Array<Array<number>>} coordinates Line Coordinates
+ * @param {Object} properties Properties
+ * @returns {Feature<LineString>} GeoJSON LineString Feature
+ */
+function lineString(coordinates, properties) {
+    if (!coordinates) throw new Error('No coordinates passed');
+    if (coordinates.length < 2) throw new Error('Coordinates must be an array of two or more positions');
+
+    return {
+        type: 'Feature',
+        properties: properties || {},
+        geometry: {
+            type: 'LineString',
+            coordinates: coordinates
+        }
+    };
+}
+
+
+/**
+ * Callback for lineEach
+ *
+ * @callback lineEachCallback
+ * @param {Feature<LineString>} currentLine The current LineString|LinearRing being processed.
+ * @param {number} lineIndex The index of the current element being processed in the array, starts at index 0.
+ * @param {number} lineSubIndex The sub-index of the current line being processed at index 0
+ */
+
+/**
+ * Iterate over line or ring coordinates in LineString, Polygon, MultiLineString, MultiPolygon Features or Geometries,
+ * similar to Array.forEach.
+ *
+ * @name lineEach
+ * @param {Geometry|Feature<LineString|Polygon|MultiLineString|MultiPolygon>} geojson object
+ * @param {Function} callback a method that takes (currentLine, lineIndex, lineSubIndex)
+ * @example
+ * var mtLn = turf.multiLineString([
+ *   turf.lineString([[26, 37], [35, 45]]),
+ *   turf.lineString([[36, 53], [38, 50], [41, 55]])
+ * ]);
+ *
+ * turf.lineEach(mtLn, function (currentLine, lineIndex) {
+ *   //=currentLine
+ *   //=lineIndex
+ * });
+ */
+function lineEach(geojson, callback) {
+    // validation
+    if (!geojson) throw new Error('geojson is required');
+    var type = geojson.geometry ? geojson.geometry.type : geojson.type;
+    if (!type) throw new Error('invalid geojson');
+    if (type === 'FeatureCollection') throw new Error('FeatureCollection is not supported');
+    if (type === 'GeometryCollection') throw new Error('GeometryCollection is not supported');
+    var coordinates = geojson.geometry ? geojson.geometry.coordinates : geojson.coordinates;
+    if (!coordinates) throw new Error('geojson must contain coordinates');
+
+    switch (type) {
+    case 'LineString':
+        callback(coordinates, 0, 0);
+        return;
+    case 'Polygon':
+    case 'MultiLineString':
+        var subIndex = 0;
+        for (var line = 0; line < coordinates.length; line++) {
+            if (type === 'MultiLineString') subIndex = line;
+            callback(coordinates[line], line, subIndex);
+        }
+        return;
+    case 'MultiPolygon':
+        for (var multi = 0; multi < coordinates.length; multi++) {
+            for (var ring = 0; ring < coordinates[multi].length; ring++) {
+                callback(coordinates[multi][ring], ring, multi);
+            }
+        }
+        return;
+    default:
+        throw new Error(type + ' geometry not supported');
+    }
+}
+
+/**
+ * Callback for lineReduce
+ *
+ * The first time the callback function is called, the values provided as arguments depend
+ * on whether the reduce method has an initialValue argument.
+ *
+ * If an initialValue is provided to the reduce method:
+ *  - The previousValue argument is initialValue.
+ *  - The currentValue argument is the value of the first element present in the array.
+ *
+ * If an initialValue is not provided:
+ *  - The previousValue argument is the value of the first element present in the array.
+ *  - The currentValue argument is the value of the second element present in the array.
+ *
+ * @callback lineReduceCallback
+ * @param {*} previousValue The accumulated value previously returned in the last invocation
+ * of the callback, or initialValue, if supplied.
+ * @param {Feature<LineString>} currentLine The current LineString|LinearRing being processed.
+ * @param {number} lineIndex The index of the current element being processed in the
+ * array. Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ * @param {number} lineSubIndex The sub-index of the current line being processed at index 0
+ */
+
+/**
+ * Reduce features in any GeoJSON object, similar to Array.reduce().
+ *
+ * @name lineReduce
+ * @param {Geometry|Feature<LineString|Polygon|MultiLineString|MultiPolygon>} geojson object
+ * @param {Function} callback a method that takes (previousValue, currentFeature, featureIndex)
+ * @param {*} [initialValue] Value to use as the first argument to the first call of the callback.
+ * @returns {*} The value that results from the reduction.
+ * @example
+ * var mtp = turf.multiPolygon([
+ *   turf.polygon([[[12,48],[2,41],[24,38],[12,48]], [[9,44],[13,41],[13,45],[9,44]]]),
+ *   turf.polygon([[[5, 5], [0, 0], [2, 2], [4, 4], [5, 5]]])
+ * ]);
+ *
+ * turf.lineReduce(mtp, function (previousValue, currentLine, lineIndex, lineSubIndex) {
+ *   //=previousValue
+ *   //=currentLine
+ *   //=lineIndex
+ *   //=lineSubIndex
+ *   return currentLine
+ * }, 2);
+ */
+function lineReduce(geojson, callback, initialValue) {
+    var previousValue = initialValue;
+    lineEach(geojson, function (currentLine, lineIndex, lineSubIndex) {
+        if (lineIndex === 0 && initialValue === undefined) previousValue = currentLine;
+        else previousValue = callback(previousValue, currentLine, lineIndex, lineSubIndex);
+    });
+    return previousValue;
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/@turf/truncate/index.js":
+/*!**********************************************!*\
+  !*** ./node_modules/@turf/truncate/index.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var coordEach = __webpack_require__(/*! @turf/meta */ "./node_modules/@turf/truncate/node_modules/@turf/meta/index.js").coordEach;
+
+/**
+ * Takes a GeoJSON Feature or FeatureCollection and truncates the precision of the geometry.
+ *
+ * @name truncate
+ * @param {FeatureCollection|Feature<any>} geojson any GeoJSON Feature, FeatureCollection, Geometry or GeometryCollection.
+ * @param {number} [precision=6] coordinate decimal precision
+ * @param {number} [coordinates=3] maximum number of coordinates (primarly used to remove z coordinates)
+ * @param {boolean} [mutate=false] allows GeoJSON input to be mutated (significant performance increase if true)
+ * @returns {FeatureCollection|Feature<any>} layer with truncated geometry
+ * @example
+ * var point = turf.point([
+ *     70.46923055566859,
+ *     58.11088890802906,
+ *     1508
+ * ]);
+ *
+ * var truncated = turf.truncate(point);
+ *
+ * //addToMap
+ * var addToMap = [truncated];
+ */
+module.exports = function (geojson, precision, coordinates, mutate) {
+    // default params
+    precision = (precision === undefined || precision === null || isNaN(precision)) ? 6 : precision;
+    coordinates = (coordinates === undefined || coordinates === null || isNaN(coordinates)) ? 3 : coordinates;
+
+    // validation
+    if (!geojson) throw new Error('<geojson> is required');
+    if (typeof precision !== 'number') throw new Error('<precision> must be a number');
+    if (typeof coordinates !== 'number') throw new Error('<coordinates> must be a number');
+
+    // prevent input mutation
+    if (mutate === false || mutate === undefined) geojson = JSON.parse(JSON.stringify(geojson));
+
+    var factor = Math.pow(10, precision);
+
+    // Truncate Coordinates
+    coordEach(geojson, function (coords) {
+        truncate(coords, factor, coordinates);
+    });
+    return geojson;
+};
+
+/**
+ * Truncate Coordinates - Mutates coordinates in place
+ *
+ * @private
+ * @param {Array<any>} coords Geometry Coordinates
+ * @param {number} factor rounding factor for coordinate decimal precision
+ * @param {number} coordinates maximum number of coordinates (primarly used to remove z coordinates)
+ * @returns {Array<any>} mutated coordinates
+ */
+function truncate(coords, factor, coordinates) {
+    // Remove extra coordinates (usually elevation coordinates and more)
+    if (coords.length > coordinates) coords.splice(coordinates, coords.length);
+
+    // Truncate coordinate decimals
+    for (var i = 0; i < coords.length; i++) {
+        coords[i] = Math.round(coords[i] * factor) / factor;
+    }
+    return coords;
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/@turf/truncate/node_modules/@turf/meta/index.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@turf/truncate/node_modules/@turf/meta/index.js ***!
+  \**********************************************************************/
+/*! exports provided: coordEach, coordReduce, propEach, propReduce, featureEach, featureReduce, coordAll, geomEach, geomReduce, flattenEach, flattenReduce, segmentEach, segmentReduce, feature, lineString, lineEach, lineReduce */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "coordEach", function() { return coordEach; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "coordReduce", function() { return coordReduce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "propEach", function() { return propEach; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "propReduce", function() { return propReduce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "featureEach", function() { return featureEach; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "featureReduce", function() { return featureReduce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "coordAll", function() { return coordAll; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "geomEach", function() { return geomEach; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "geomReduce", function() { return geomReduce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "flattenEach", function() { return flattenEach; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "flattenReduce", function() { return flattenReduce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "segmentEach", function() { return segmentEach; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "segmentReduce", function() { return segmentReduce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "feature", function() { return feature; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lineString", function() { return lineString; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lineEach", function() { return lineEach; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lineReduce", function() { return lineReduce; });
+/**
+ * GeoJSON BBox
+ *
+ * @private
+ * @typedef {[number, number, number, number]} BBox
+ */
+
+/**
+ * GeoJSON Id
+ *
+ * @private
+ * @typedef {(number|string)} Id
+ */
+
+/**
+ * GeoJSON FeatureCollection
+ *
+ * @private
+ * @typedef {Object} FeatureCollection
+ * @property {string} type
+ * @property {?Id} id
+ * @property {?BBox} bbox
+ * @property {Feature[]} features
+ */
+
+/**
+ * GeoJSON Feature
+ *
+ * @private
+ * @typedef {Object} Feature
+ * @property {string} type
+ * @property {?Id} id
+ * @property {?BBox} bbox
+ * @property {*} properties
+ * @property {Geometry} geometry
+ */
+
+/**
+ * GeoJSON Geometry
+ *
+ * @private
+ * @typedef {Object} Geometry
+ * @property {string} type
+ * @property {any[]} coordinates
+ */
+
+/**
+ * Callback for coordEach
+ *
+ * @callback coordEachCallback
+ * @param {Array<number>} currentCoord The current coordinate being processed.
+ * @param {number} coordIndex The current index of the coordinate being processed.
+ * Starts at index 0.
+ * @param {number} featureIndex The current index of the feature being processed.
+ * @param {number} featureSubIndex The current subIndex of the feature being processed.
+ */
+
+/**
+ * Iterate over coordinates in any GeoJSON object, similar to Array.forEach()
+ *
+ * @name coordEach
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (currentCoord, coordIndex, featureIndex, featureSubIndex)
+ * @param {boolean} [excludeWrapCoord=false] whether or not to include the final coordinate of LinearRings that wraps the ring in its iteration.
+ * @example
+ * var features = turf.featureCollection([
+ *   turf.point([26, 37], {"foo": "bar"}),
+ *   turf.point([36, 53], {"hello": "world"})
+ * ]);
+ *
+ * turf.coordEach(features, function (currentCoord, coordIndex, featureIndex, featureSubIndex) {
+ *   //=currentCoord
+ *   //=coordIndex
+ *   //=featureIndex
+ *   //=featureSubIndex
+ * });
+ */
+function coordEach(geojson, callback, excludeWrapCoord) {
+    // Handles null Geometry -- Skips this GeoJSON
+    if (geojson === null) return;
+    var featureIndex, geometryIndex, j, k, l, geometry, stopG, coords,
+        geometryMaybeCollection,
+        wrapShrink = 0,
+        coordIndex = 0,
+        isGeometryCollection,
+        type = geojson.type,
+        isFeatureCollection = type === 'FeatureCollection',
+        isFeature = type === 'Feature',
+        stop = isFeatureCollection ? geojson.features.length : 1;
+
+    // This logic may look a little weird. The reason why it is that way
+    // is because it's trying to be fast. GeoJSON supports multiple kinds
+    // of objects at its root: FeatureCollection, Features, Geometries.
+    // This function has the responsibility of handling all of them, and that
+    // means that some of the `for` loops you see below actually just don't apply
+    // to certain inputs. For instance, if you give this just a
+    // Point geometry, then both loops are short-circuited and all we do
+    // is gradually rename the input until it's called 'geometry'.
+    //
+    // This also aims to allocate as few resources as possible: just a
+    // few numbers and booleans, rather than any temporary arrays as would
+    // be required with the normalization approach.
+    for (featureIndex = 0; featureIndex < stop; featureIndex++) {
+        geometryMaybeCollection = (isFeatureCollection ? geojson.features[featureIndex].geometry :
+            (isFeature ? geojson.geometry : geojson));
+        isGeometryCollection = (geometryMaybeCollection) ? geometryMaybeCollection.type === 'GeometryCollection' : false;
+        stopG = isGeometryCollection ? geometryMaybeCollection.geometries.length : 1;
+
+        for (geometryIndex = 0; geometryIndex < stopG; geometryIndex++) {
+            var featureSubIndex = 0;
+            geometry = isGeometryCollection ?
+                geometryMaybeCollection.geometries[geometryIndex] : geometryMaybeCollection;
+
+            // Handles null Geometry -- Skips this geometry
+            if (geometry === null) continue;
+            coords = geometry.coordinates;
+            var geomType = geometry.type;
+
+            wrapShrink = (excludeWrapCoord && (geomType === 'Polygon' || geomType === 'MultiPolygon')) ? 1 : 0;
+
+            switch (geomType) {
+            case null:
+                break;
+            case 'Point':
+                callback(coords, coordIndex, featureIndex, featureSubIndex);
+                coordIndex++;
+                featureSubIndex++;
+                break;
+            case 'LineString':
+            case 'MultiPoint':
+                for (j = 0; j < coords.length; j++) {
+                    callback(coords[j], coordIndex, featureIndex, featureSubIndex);
+                    coordIndex++;
+                    if (geomType === 'MultiPoint') featureSubIndex++;
+                }
+                if (geomType === 'LineString') featureSubIndex++;
+                break;
+            case 'Polygon':
+            case 'MultiLineString':
+                for (j = 0; j < coords.length; j++) {
+                    for (k = 0; k < coords[j].length - wrapShrink; k++) {
+                        callback(coords[j][k], coordIndex, featureIndex, featureSubIndex);
+                        coordIndex++;
+                    }
+                    if (geomType === 'MultiLineString') featureSubIndex++;
+                }
+                if (geomType === 'Polygon') featureSubIndex++;
+                break;
+            case 'MultiPolygon':
+                for (j = 0; j < coords.length; j++) {
+                    for (k = 0; k < coords[j].length; k++)
+                        for (l = 0; l < coords[j][k].length - wrapShrink; l++) {
+                            callback(coords[j][k][l], coordIndex, featureIndex, featureSubIndex);
+                            coordIndex++;
+                        }
+                    featureSubIndex++;
+                }
+                break;
+            case 'GeometryCollection':
+                for (j = 0; j < geometry.geometries.length; j++)
+                    coordEach(geometry.geometries[j], callback, excludeWrapCoord);
+                break;
+            default:
+                throw new Error('Unknown Geometry Type');
+            }
+        }
+    }
+}
+
+/**
+ * Callback for coordReduce
+ *
+ * The first time the callback function is called, the values provided as arguments depend
+ * on whether the reduce method has an initialValue argument.
+ *
+ * If an initialValue is provided to the reduce method:
+ *  - The previousValue argument is initialValue.
+ *  - The currentValue argument is the value of the first element present in the array.
+ *
+ * If an initialValue is not provided:
+ *  - The previousValue argument is the value of the first element present in the array.
+ *  - The currentValue argument is the value of the second element present in the array.
+ *
+ * @callback coordReduceCallback
+ * @param {*} previousValue The accumulated value previously returned in the last invocation
+ * of the callback, or initialValue, if supplied.
+ * @param {Array<number>} currentCoord The current coordinate being processed.
+ * @param {number} coordIndex The current index of the coordinate being processed.
+ * Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ * @param {number} featureIndex The current index of the feature being processed.
+ * @param {number} featureSubIndex The current subIndex of the feature being processed.
+ */
+
+/**
+ * Reduce coordinates in any GeoJSON object, similar to Array.reduce()
+ *
+ * @name coordReduce
+ * @param {FeatureCollection|Geometry|Feature} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (previousValue, currentCoord, coordIndex)
+ * @param {*} [initialValue] Value to use as the first argument to the first call of the callback.
+ * @param {boolean} [excludeWrapCoord=false] whether or not to include the final coordinate of LinearRings that wraps the ring in its iteration.
+ * @returns {*} The value that results from the reduction.
+ * @example
+ * var features = turf.featureCollection([
+ *   turf.point([26, 37], {"foo": "bar"}),
+ *   turf.point([36, 53], {"hello": "world"})
+ * ]);
+ *
+ * turf.coordReduce(features, function (previousValue, currentCoord, coordIndex, featureIndex, featureSubIndex) {
+ *   //=previousValue
+ *   //=currentCoord
+ *   //=coordIndex
+ *   //=featureIndex
+ *   //=featureSubIndex
+ *   return currentCoord;
+ * });
+ */
+function coordReduce(geojson, callback, initialValue, excludeWrapCoord) {
+    var previousValue = initialValue;
+    coordEach(geojson, function (currentCoord, coordIndex, featureIndex, featureSubIndex) {
+        if (coordIndex === 0 && initialValue === undefined) previousValue = currentCoord;
+        else previousValue = callback(previousValue, currentCoord, coordIndex, featureIndex, featureSubIndex);
+    }, excludeWrapCoord);
+    return previousValue;
+}
+
+/**
+ * Callback for propEach
+ *
+ * @callback propEachCallback
+ * @param {Object} currentProperties The current properties being processed.
+ * @param {number} featureIndex The index of the current element being processed in the
+ * array.Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ */
+
+/**
+ * Iterate over properties in any GeoJSON object, similar to Array.forEach()
+ *
+ * @name propEach
+ * @param {(FeatureCollection|Feature)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (currentProperties, featureIndex)
+ * @example
+ * var features = turf.featureCollection([
+ *     turf.point([26, 37], {foo: 'bar'}),
+ *     turf.point([36, 53], {hello: 'world'})
+ * ]);
+ *
+ * turf.propEach(features, function (currentProperties, featureIndex) {
+ *   //=currentProperties
+ *   //=featureIndex
+ * });
+ */
+function propEach(geojson, callback) {
+    var i;
+    switch (geojson.type) {
+    case 'FeatureCollection':
+        for (i = 0; i < geojson.features.length; i++) {
+            callback(geojson.features[i].properties, i);
+        }
+        break;
+    case 'Feature':
+        callback(geojson.properties, 0);
+        break;
+    }
+}
+
+
+/**
+ * Callback for propReduce
+ *
+ * The first time the callback function is called, the values provided as arguments depend
+ * on whether the reduce method has an initialValue argument.
+ *
+ * If an initialValue is provided to the reduce method:
+ *  - The previousValue argument is initialValue.
+ *  - The currentValue argument is the value of the first element present in the array.
+ *
+ * If an initialValue is not provided:
+ *  - The previousValue argument is the value of the first element present in the array.
+ *  - The currentValue argument is the value of the second element present in the array.
+ *
+ * @callback propReduceCallback
+ * @param {*} previousValue The accumulated value previously returned in the last invocation
+ * of the callback, or initialValue, if supplied.
+ * @param {*} currentProperties The current properties being processed.
+ * @param {number} featureIndex The index of the current element being processed in the
+ * array.Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ */
+
+/**
+ * Reduce properties in any GeoJSON object into a single value,
+ * similar to how Array.reduce works. However, in this case we lazily run
+ * the reduction, so an array of all properties is unnecessary.
+ *
+ * @name propReduce
+ * @param {(FeatureCollection|Feature)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (previousValue, currentProperties, featureIndex)
+ * @param {*} [initialValue] Value to use as the first argument to the first call of the callback.
+ * @returns {*} The value that results from the reduction.
+ * @example
+ * var features = turf.featureCollection([
+ *     turf.point([26, 37], {foo: 'bar'}),
+ *     turf.point([36, 53], {hello: 'world'})
+ * ]);
+ *
+ * turf.propReduce(features, function (previousValue, currentProperties, featureIndex) {
+ *   //=previousValue
+ *   //=currentProperties
+ *   //=featureIndex
+ *   return currentProperties
+ * });
+ */
+function propReduce(geojson, callback, initialValue) {
+    var previousValue = initialValue;
+    propEach(geojson, function (currentProperties, featureIndex) {
+        if (featureIndex === 0 && initialValue === undefined) previousValue = currentProperties;
+        else previousValue = callback(previousValue, currentProperties, featureIndex);
+    });
+    return previousValue;
+}
+
+/**
+ * Callback for featureEach
+ *
+ * @callback featureEachCallback
+ * @param {Feature<any>} currentFeature The current feature being processed.
+ * @param {number} featureIndex The index of the current element being processed in the
+ * array.Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ */
+
+/**
+ * Iterate over features in any GeoJSON object, similar to
+ * Array.forEach.
+ *
+ * @name featureEach
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (currentFeature, featureIndex)
+ * @example
+ * var features = turf.featureCollection([
+ *   turf.point([26, 37], {foo: 'bar'}),
+ *   turf.point([36, 53], {hello: 'world'})
+ * ]);
+ *
+ * turf.featureEach(features, function (currentFeature, featureIndex) {
+ *   //=currentFeature
+ *   //=featureIndex
+ * });
+ */
+function featureEach(geojson, callback) {
+    if (geojson.type === 'Feature') {
+        callback(geojson, 0);
+    } else if (geojson.type === 'FeatureCollection') {
+        for (var i = 0; i < geojson.features.length; i++) {
+            callback(geojson.features[i], i);
+        }
+    }
+}
+
+/**
+ * Callback for featureReduce
+ *
+ * The first time the callback function is called, the values provided as arguments depend
+ * on whether the reduce method has an initialValue argument.
+ *
+ * If an initialValue is provided to the reduce method:
+ *  - The previousValue argument is initialValue.
+ *  - The currentValue argument is the value of the first element present in the array.
+ *
+ * If an initialValue is not provided:
+ *  - The previousValue argument is the value of the first element present in the array.
+ *  - The currentValue argument is the value of the second element present in the array.
+ *
+ * @callback featureReduceCallback
+ * @param {*} previousValue The accumulated value previously returned in the last invocation
+ * of the callback, or initialValue, if supplied.
+ * @param {Feature} currentFeature The current Feature being processed.
+ * @param {number} featureIndex The index of the current element being processed in the
+ * array.Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ */
+
+/**
+ * Reduce features in any GeoJSON object, similar to Array.reduce().
+ *
+ * @name featureReduce
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (previousValue, currentFeature, featureIndex)
+ * @param {*} [initialValue] Value to use as the first argument to the first call of the callback.
+ * @returns {*} The value that results from the reduction.
+ * @example
+ * var features = turf.featureCollection([
+ *   turf.point([26, 37], {"foo": "bar"}),
+ *   turf.point([36, 53], {"hello": "world"})
+ * ]);
+ *
+ * turf.featureReduce(features, function (previousValue, currentFeature, featureIndex) {
+ *   //=previousValue
+ *   //=currentFeature
+ *   //=featureIndex
+ *   return currentFeature
+ * });
+ */
+function featureReduce(geojson, callback, initialValue) {
+    var previousValue = initialValue;
+    featureEach(geojson, function (currentFeature, featureIndex) {
+        if (featureIndex === 0 && initialValue === undefined) previousValue = currentFeature;
+        else previousValue = callback(previousValue, currentFeature, featureIndex);
+    });
+    return previousValue;
+}
+
+/**
+ * Get all coordinates from any GeoJSON object.
+ *
+ * @name coordAll
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON object
+ * @returns {Array<Array<number>>} coordinate position array
+ * @example
+ * var features = turf.featureCollection([
+ *   turf.point([26, 37], {foo: 'bar'}),
+ *   turf.point([36, 53], {hello: 'world'})
+ * ]);
+ *
+ * var coords = turf.coordAll(features);
+ * //= [[26, 37], [36, 53]]
+ */
+function coordAll(geojson) {
+    var coords = [];
+    coordEach(geojson, function (coord) {
+        coords.push(coord);
+    });
+    return coords;
+}
+
+/**
+ * Callback for geomEach
+ *
+ * @callback geomEachCallback
+ * @param {Geometry} currentGeometry The current geometry being processed.
+ * @param {number} currentIndex The index of the current element being processed in the
+ * array. Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ * @param {number} currentProperties The current feature properties being processed.
+ */
+
+/**
+ * Iterate over each geometry in any GeoJSON object, similar to Array.forEach()
+ *
+ * @name geomEach
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (currentGeometry, featureIndex, currentProperties)
+ * @example
+ * var features = turf.featureCollection([
+ *     turf.point([26, 37], {foo: 'bar'}),
+ *     turf.point([36, 53], {hello: 'world'})
+ * ]);
+ *
+ * turf.geomEach(features, function (currentGeometry, featureIndex, currentProperties) {
+ *   //=currentGeometry
+ *   //=featureIndex
+ *   //=currentProperties
+ * });
+ */
+function geomEach(geojson, callback) {
+    var i, j, g, geometry, stopG,
+        geometryMaybeCollection,
+        isGeometryCollection,
+        geometryProperties,
+        featureIndex = 0,
+        isFeatureCollection = geojson.type === 'FeatureCollection',
+        isFeature = geojson.type === 'Feature',
+        stop = isFeatureCollection ? geojson.features.length : 1;
+
+    // This logic may look a little weird. The reason why it is that way
+    // is because it's trying to be fast. GeoJSON supports multiple kinds
+    // of objects at its root: FeatureCollection, Features, Geometries.
+    // This function has the responsibility of handling all of them, and that
+    // means that some of the `for` loops you see below actually just don't apply
+    // to certain inputs. For instance, if you give this just a
+    // Point geometry, then both loops are short-circuited and all we do
+    // is gradually rename the input until it's called 'geometry'.
+    //
+    // This also aims to allocate as few resources as possible: just a
+    // few numbers and booleans, rather than any temporary arrays as would
+    // be required with the normalization approach.
+    for (i = 0; i < stop; i++) {
+
+        geometryMaybeCollection = (isFeatureCollection ? geojson.features[i].geometry :
+            (isFeature ? geojson.geometry : geojson));
+        geometryProperties = (isFeatureCollection ? geojson.features[i].properties :
+            (isFeature ? geojson.properties : {}));
+        isGeometryCollection = (geometryMaybeCollection) ? geometryMaybeCollection.type === 'GeometryCollection' : false;
+        stopG = isGeometryCollection ? geometryMaybeCollection.geometries.length : 1;
+
+        for (g = 0; g < stopG; g++) {
+            geometry = isGeometryCollection ?
+                geometryMaybeCollection.geometries[g] : geometryMaybeCollection;
+
+            // Handle null Geometry
+            if (geometry === null) {
+                callback(null, featureIndex, geometryProperties);
+                continue;
+            }
+            switch (geometry.type) {
+            case 'Point':
+            case 'LineString':
+            case 'MultiPoint':
+            case 'Polygon':
+            case 'MultiLineString':
+            case 'MultiPolygon': {
+                callback(geometry, featureIndex, geometryProperties);
+                break;
+            }
+            case 'GeometryCollection': {
+                for (j = 0; j < geometry.geometries.length; j++) {
+                    callback(geometry.geometries[j], featureIndex, geometryProperties);
+                }
+                break;
+            }
+            default:
+                throw new Error('Unknown Geometry Type');
+            }
+        }
+        // Only increase `featureIndex` per each feature
+        featureIndex++;
+    }
+}
+
+/**
+ * Callback for geomReduce
+ *
+ * The first time the callback function is called, the values provided as arguments depend
+ * on whether the reduce method has an initialValue argument.
+ *
+ * If an initialValue is provided to the reduce method:
+ *  - The previousValue argument is initialValue.
+ *  - The currentValue argument is the value of the first element present in the array.
+ *
+ * If an initialValue is not provided:
+ *  - The previousValue argument is the value of the first element present in the array.
+ *  - The currentValue argument is the value of the second element present in the array.
+ *
+ * @callback geomReduceCallback
+ * @param {*} previousValue The accumulated value previously returned in the last invocation
+ * of the callback, or initialValue, if supplied.
+ * @param {Geometry} currentGeometry The current Feature being processed.
+ * @param {number} currentIndex The index of the current element being processed in the
+ * array.Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ * @param {Object} currentProperties The current feature properties being processed.
+ */
+
+/**
+ * Reduce geometry in any GeoJSON object, similar to Array.reduce().
+ *
+ * @name geomReduce
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (previousValue, currentGeometry, featureIndex, currentProperties)
+ * @param {*} [initialValue] Value to use as the first argument to the first call of the callback.
+ * @returns {*} The value that results from the reduction.
+ * @example
+ * var features = turf.featureCollection([
+ *     turf.point([26, 37], {foo: 'bar'}),
+ *     turf.point([36, 53], {hello: 'world'})
+ * ]);
+ *
+ * turf.geomReduce(features, function (previousValue, currentGeometry, featureIndex, currentProperties) {
+ *   //=previousValue
+ *   //=currentGeometry
+ *   //=featureIndex
+ *   //=currentProperties
+ *   return currentGeometry
+ * });
+ */
+function geomReduce(geojson, callback, initialValue) {
+    var previousValue = initialValue;
+    geomEach(geojson, function (currentGeometry, currentIndex, currentProperties) {
+        if (currentIndex === 0 && initialValue === undefined) previousValue = currentGeometry;
+        else previousValue = callback(previousValue, currentGeometry, currentIndex, currentProperties);
+    });
+    return previousValue;
+}
+
+/**
+ * Callback for flattenEach
+ *
+ * @callback flattenEachCallback
+ * @param {Feature} currentFeature The current flattened feature being processed.
+ * @param {number} featureIndex The index of the current element being processed in the
+ * array. Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ * @param {number} featureSubIndex The subindex of the current element being processed in the
+ * array. Starts at index 0 and increases if the flattened feature was a multi-geometry.
+ */
+
+/**
+ * Iterate over flattened features in any GeoJSON object, similar to
+ * Array.forEach.
+ *
+ * @name flattenEach
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (currentFeature, featureIndex, featureSubIndex)
+ * @example
+ * var features = turf.featureCollection([
+ *     turf.point([26, 37], {foo: 'bar'}),
+ *     turf.multiPoint([[40, 30], [36, 53]], {hello: 'world'})
+ * ]);
+ *
+ * turf.flattenEach(features, function (currentFeature, featureIndex, featureSubIndex) {
+ *   //=currentFeature
+ *   //=featureIndex
+ *   //=featureSubIndex
+ * });
+ */
+function flattenEach(geojson, callback) {
+    geomEach(geojson, function (geometry, featureIndex, properties) {
+        // Callback for single geometry
+        var type = (geometry === null) ? null : geometry.type;
+        switch (type) {
+        case null:
+        case 'Point':
+        case 'LineString':
+        case 'Polygon':
+            callback(feature(geometry, properties), featureIndex, 0);
+            return;
+        }
+
+        var geomType;
+
+        // Callback for multi-geometry
+        switch (type) {
+        case 'MultiPoint':
+            geomType = 'Point';
+            break;
+        case 'MultiLineString':
+            geomType = 'LineString';
+            break;
+        case 'MultiPolygon':
+            geomType = 'Polygon';
+            break;
+        }
+
+        geometry.coordinates.forEach(function (coordinate, featureSubIndex) {
+            var geom = {
+                type: geomType,
+                coordinates: coordinate
+            };
+            callback(feature(geom, properties), featureIndex, featureSubIndex);
+        });
+
+    });
+}
+
+/**
+ * Callback for flattenReduce
+ *
+ * The first time the callback function is called, the values provided as arguments depend
+ * on whether the reduce method has an initialValue argument.
+ *
+ * If an initialValue is provided to the reduce method:
+ *  - The previousValue argument is initialValue.
+ *  - The currentValue argument is the value of the first element present in the array.
+ *
+ * If an initialValue is not provided:
+ *  - The previousValue argument is the value of the first element present in the array.
+ *  - The currentValue argument is the value of the second element present in the array.
+ *
+ * @callback flattenReduceCallback
+ * @param {*} previousValue The accumulated value previously returned in the last invocation
+ * of the callback, or initialValue, if supplied.
+ * @param {Feature} currentFeature The current Feature being processed.
+ * @param {number} featureIndex The index of the current element being processed in the
+ * array.Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ * @param {number} featureSubIndex The subindex of the current element being processed in the
+ * array. Starts at index 0 and increases if the flattened feature was a multi-geometry.
+ */
+
+/**
+ * Reduce flattened features in any GeoJSON object, similar to Array.reduce().
+ *
+ * @name flattenReduce
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON object
+ * @param {Function} callback a method that takes (previousValue, currentFeature, featureIndex, featureSubIndex)
+ * @param {*} [initialValue] Value to use as the first argument to the first call of the callback.
+ * @returns {*} The value that results from the reduction.
+ * @example
+ * var features = turf.featureCollection([
+ *     turf.point([26, 37], {foo: 'bar'}),
+ *     turf.multiPoint([[40, 30], [36, 53]], {hello: 'world'})
+ * ]);
+ *
+ * turf.flattenReduce(features, function (previousValue, currentFeature, featureIndex, featureSubIndex) {
+ *   //=previousValue
+ *   //=currentFeature
+ *   //=featureIndex
+ *   //=featureSubIndex
+ *   return currentFeature
+ * });
+ */
+function flattenReduce(geojson, callback, initialValue) {
+    var previousValue = initialValue;
+    flattenEach(geojson, function (currentFeature, featureIndex, featureSubIndex) {
+        if (featureIndex === 0 && featureSubIndex === 0 && initialValue === undefined) previousValue = currentFeature;
+        else previousValue = callback(previousValue, currentFeature, featureIndex, featureSubIndex);
+    });
+    return previousValue;
+}
+
+/**
+ * Callback for segmentEach
+ *
+ * @callback segmentEachCallback
+ * @param {Feature<LineString>} currentSegment The current segment being processed.
+ * @param {number} featureIndex The featureIndex currently being processed, starts at index 0.
+ * @param {number} featureSubIndex The featureSubIndex currently being processed, starts at index 0.
+ * @param {number} segmentIndex The segmentIndex currently being processed, starts at index 0.
+ * @returns {void}
+ */
+
+/**
+ * Iterate over 2-vertex line segment in any GeoJSON object, similar to Array.forEach()
+ * (Multi)Point geometries do not contain segments therefore they are ignored during this operation.
+ *
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON
+ * @param {Function} callback a method that takes (currentSegment, featureIndex, featureSubIndex)
+ * @returns {void}
+ * @example
+ * var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);
+ *
+ * // Iterate over GeoJSON by 2-vertex segments
+ * turf.segmentEach(polygon, function (currentSegment, featureIndex, featureSubIndex, segmentIndex) {
+ *   //= currentSegment
+ *   //= featureIndex
+ *   //= featureSubIndex
+ *   //= segmentIndex
+ * });
+ *
+ * // Calculate the total number of segments
+ * var total = 0;
+ * turf.segmentEach(polygon, function () {
+ *     total++;
+ * });
+ */
+function segmentEach(geojson, callback) {
+    flattenEach(geojson, function (feature, featureIndex, featureSubIndex) {
+        var segmentIndex = 0;
+
+        // Exclude null Geometries
+        if (!feature.geometry) return;
+        // (Multi)Point geometries do not contain segments therefore they are ignored during this operation.
+        var type = feature.geometry.type;
+        if (type === 'Point' || type === 'MultiPoint') return;
+
+        // Generate 2-vertex line segments
+        coordReduce(feature, function (previousCoords, currentCoord) {
+            var currentSegment = lineString([previousCoords, currentCoord], feature.properties);
+            callback(currentSegment, featureIndex, featureSubIndex, segmentIndex);
+            segmentIndex++;
+            return currentCoord;
+        });
+    });
+}
+
+/**
+ * Callback for segmentReduce
+ *
+ * The first time the callback function is called, the values provided as arguments depend
+ * on whether the reduce method has an initialValue argument.
+ *
+ * If an initialValue is provided to the reduce method:
+ *  - The previousValue argument is initialValue.
+ *  - The currentValue argument is the value of the first element present in the array.
+ *
+ * If an initialValue is not provided:
+ *  - The previousValue argument is the value of the first element present in the array.
+ *  - The currentValue argument is the value of the second element present in the array.
+ *
+ * @callback segmentReduceCallback
+ * @param {*} [previousValue] The accumulated value previously returned in the last invocation
+ * of the callback, or initialValue, if supplied.
+ * @param {Feature<LineString>} [currentSegment] The current segment being processed.
+ * @param {number} featureIndex The featureIndex currently being processed, starts at index 0.
+ * @param {number} featureSubIndex The featureSubIndex currently being processed, starts at index 0.
+ * @param {number} segmentIndex The segmentIndex currently being processed, starts at index 0.
+ */
+
+/**
+ * Reduce 2-vertex line segment in any GeoJSON object, similar to Array.reduce()
+ * (Multi)Point geometries do not contain segments therefore they are ignored during this operation.
+ *
+ * @param {(FeatureCollection|Feature|Geometry)} geojson any GeoJSON
+ * @param {Function} callback a method that takes (previousValue, currentSegment, currentIndex)
+ * @param {*} [initialValue] Value to use as the first argument to the first call of the callback.
+ * @returns {void}
+ * @example
+ * var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);
+ *
+ * // Iterate over GeoJSON by 2-vertex segments
+ * turf.segmentReduce(polygon, function (previousSegment, currentSegment, featureIndex, featureSubIndex, segmentIndex) {
+ *   //= previousSegment
+ *   //= currentSegment
+ *   //= featureIndex
+ *   //= featureSubIndex
+ *   //= segmentInex
+ *   return currentSegment
+ * });
+ *
+ * // Calculate the total number of segments
+ * var initialValue = 0
+ * var total = turf.segmentReduce(polygon, function (previousValue) {
+ *     previousValue++;
+ *     return previousValue;
+ * }, initialValue);
+ */
+function segmentReduce(geojson, callback, initialValue) {
+    var previousValue = initialValue;
+    var started = false;
+    segmentEach(geojson, function (currentSegment, featureIndex, featureSubIndex, segmentIndex) {
+        if (started === false && initialValue === undefined) previousValue = currentSegment;
+        else previousValue = callback(previousValue, currentSegment, featureIndex, featureSubIndex, segmentIndex);
+        started = true;
+    });
+    return previousValue;
+}
+
+/**
+ * Create Feature
+ *
+ * @private
+ * @param {Geometry} geometry GeoJSON Geometry
+ * @param {Object} properties Properties
+ * @returns {Feature} GeoJSON Feature
+ */
+function feature(geometry, properties) {
+    if (geometry === undefined) throw new Error('No geometry passed');
+
+    return {
+        type: 'Feature',
+        properties: properties || {},
+        geometry: geometry
+    };
+}
+
+/**
+ * Create LineString
+ *
+ * @private
+ * @param {Array<Array<number>>} coordinates Line Coordinates
+ * @param {Object} properties Properties
+ * @returns {Feature<LineString>} GeoJSON LineString Feature
+ */
+function lineString(coordinates, properties) {
+    if (!coordinates) throw new Error('No coordinates passed');
+    if (coordinates.length < 2) throw new Error('Coordinates must be an array of two or more positions');
+
+    return {
+        type: 'Feature',
+        properties: properties || {},
+        geometry: {
+            type: 'LineString',
+            coordinates: coordinates
+        }
+    };
+}
+
+
+/**
+ * Callback for lineEach
+ *
+ * @callback lineEachCallback
+ * @param {Feature<LineString>} currentLine The current LineString|LinearRing being processed.
+ * @param {number} lineIndex The index of the current element being processed in the array, starts at index 0.
+ * @param {number} lineSubIndex The sub-index of the current line being processed at index 0
+ */
+
+/**
+ * Iterate over line or ring coordinates in LineString, Polygon, MultiLineString, MultiPolygon Features or Geometries,
+ * similar to Array.forEach.
+ *
+ * @name lineEach
+ * @param {Geometry|Feature<LineString|Polygon|MultiLineString|MultiPolygon>} geojson object
+ * @param {Function} callback a method that takes (currentLine, lineIndex, lineSubIndex)
+ * @example
+ * var mtLn = turf.multiLineString([
+ *   turf.lineString([[26, 37], [35, 45]]),
+ *   turf.lineString([[36, 53], [38, 50], [41, 55]])
+ * ]);
+ *
+ * turf.lineEach(mtLn, function (currentLine, lineIndex) {
+ *   //=currentLine
+ *   //=lineIndex
+ * });
+ */
+function lineEach(geojson, callback) {
+    // validation
+    if (!geojson) throw new Error('geojson is required');
+    var type = geojson.geometry ? geojson.geometry.type : geojson.type;
+    if (!type) throw new Error('invalid geojson');
+    if (type === 'FeatureCollection') throw new Error('FeatureCollection is not supported');
+    if (type === 'GeometryCollection') throw new Error('GeometryCollection is not supported');
+    var coordinates = geojson.geometry ? geojson.geometry.coordinates : geojson.coordinates;
+    if (!coordinates) throw new Error('geojson must contain coordinates');
+
+    switch (type) {
+    case 'LineString':
+        callback(coordinates, 0, 0);
+        return;
+    case 'Polygon':
+    case 'MultiLineString':
+        var subIndex = 0;
+        for (var line = 0; line < coordinates.length; line++) {
+            if (type === 'MultiLineString') subIndex = line;
+            callback(coordinates[line], line, subIndex);
+        }
+        return;
+    case 'MultiPolygon':
+        for (var multi = 0; multi < coordinates.length; multi++) {
+            for (var ring = 0; ring < coordinates[multi].length; ring++) {
+                callback(coordinates[multi][ring], ring, multi);
+            }
+        }
+        return;
+    default:
+        throw new Error(type + ' geometry not supported');
+    }
+}
+
+/**
+ * Callback for lineReduce
+ *
+ * The first time the callback function is called, the values provided as arguments depend
+ * on whether the reduce method has an initialValue argument.
+ *
+ * If an initialValue is provided to the reduce method:
+ *  - The previousValue argument is initialValue.
+ *  - The currentValue argument is the value of the first element present in the array.
+ *
+ * If an initialValue is not provided:
+ *  - The previousValue argument is the value of the first element present in the array.
+ *  - The currentValue argument is the value of the second element present in the array.
+ *
+ * @callback lineReduceCallback
+ * @param {*} previousValue The accumulated value previously returned in the last invocation
+ * of the callback, or initialValue, if supplied.
+ * @param {Feature<LineString>} currentLine The current LineString|LinearRing being processed.
+ * @param {number} lineIndex The index of the current element being processed in the
+ * array. Starts at index 0, if an initialValue is provided, and at index 1 otherwise.
+ * @param {number} lineSubIndex The sub-index of the current line being processed at index 0
+ */
+
+/**
+ * Reduce features in any GeoJSON object, similar to Array.reduce().
+ *
+ * @name lineReduce
+ * @param {Geometry|Feature<LineString|Polygon|MultiLineString|MultiPolygon>} geojson object
+ * @param {Function} callback a method that takes (previousValue, currentFeature, featureIndex)
+ * @param {*} [initialValue] Value to use as the first argument to the first call of the callback.
+ * @returns {*} The value that results from the reduction.
+ * @example
+ * var mtp = turf.multiPolygon([
+ *   turf.polygon([[[12,48],[2,41],[24,38],[12,48]], [[9,44],[13,41],[13,45],[9,44]]]),
+ *   turf.polygon([[[5, 5], [0, 0], [2, 2], [4, 4], [5, 5]]])
+ * ]);
+ *
+ * turf.lineReduce(mtp, function (previousValue, currentLine, lineIndex, lineSubIndex) {
+ *   //=previousValue
+ *   //=currentLine
+ *   //=lineIndex
+ *   //=lineSubIndex
+ *   return currentLine
+ * }, 2);
+ */
+function lineReduce(geojson, callback, initialValue) {
+    var previousValue = initialValue;
+    lineEach(geojson, function (currentLine, lineIndex, lineSubIndex) {
+        if (lineIndex === 0 && initialValue === undefined) previousValue = currentLine;
+        else previousValue = callback(previousValue, currentLine, lineIndex, lineSubIndex);
+    });
+    return previousValue;
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/axios/index.js":
 /*!*************************************!*\
   !*** ./node_modules/axios/index.js ***!
@@ -8750,6 +11467,54 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! mapbox-gl */ "./node_modules/mapbox-gl/dist/mapbox-gl.js");
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(mapbox_gl__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var mapbox_gl_circle__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! mapbox-gl-circle */ "./node_modules/mapbox-gl-circle/lib/main.js");
+/* harmony import */ var mapbox_gl_circle__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(mapbox_gl_circle__WEBPACK_IMPORTED_MODULE_3__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -9108,6 +11873,7 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__(/*! ../../../../node_modules/mapbox-gl/dist/mapbox-gl.css */ "./node_modules/mapbox-gl/dist/mapbox-gl.css");
 
+
 Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['year', 'month', 'day'],
@@ -9142,7 +11908,13 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       selectedContest: null,
       tasks: [],
       selectedTask: null,
-      selectedTaskData: null,
+      selectTaskCoords: [],
+      selectedTaskData: [],
+      loadingTasks: false,
+      loadingTask: false,
+      taskWaypoints: [],
+      taskCircles: [],
+      taskTrack: [],
       showTrails: false,
       filterIsland: 'all',
       filterUnknown: false,
@@ -9279,7 +12051,6 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       if (this.selectedContest != null) this.loadTasks();
     },
     selectedTask: function selectedTask() {
-      console.log('selectedTask changed');
       this.loadTask(this.selectedTask);
     }
   },
@@ -9349,12 +12120,12 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     }
   },
   mounted: function mounted() {
-    var that = this;
-    mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.accessToken = 'pk.eyJ1IjoiaXBlYXJ4IiwiYSI6ImNqd2c1dnU3bjFoMmg0NHBzbG9vbmQwbGkifQ.HeNPRpXBkpmC_ljY7QQTRA';
+    var that = this; //mapboxgl.accessToken = 'pk.eyJ1IjoiaXBlYXJ4IiwiYSI6ImNqd2c1dnU3bjFoMmg0NHBzbG9vbmQwbGkifQ.HeNPRpXBkpmC_ljY7QQTRA';
+
     this.map = new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.Map({
       container: 'map',
-      style: 'mapbox://styles/ipearx/ck32sc9mh34gt1cqlyi852vh1',
-      //style:  'http://maps.gliding.net.nz:8080/styles/positron/style.json',
+      //style: 'mapbox://styles/ipearx/ck32sc9mh34gt1cqlyi852vh1',
+      style: 'http://maps.gliding.net.nz:8080/styles/positron/style.json',
       center: [175.409, -40.97435],
       zoom: 5
     });
@@ -9384,6 +12155,10 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     this.loadFleets();
   },
   methods: {
+    selectDay: function selectDay(day_date) {
+      this.flyingDay = day_date;
+      this.loadTracks();
+    },
     showPanel: function showPanel(name) {
       var current_state = this[name]; // first close the other panels
 
@@ -9446,26 +12221,27 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     loadTasks: function loadTasks() {
       var that = this;
       this.loading = true;
+      this.loadingTasks = true;
       window.axios.get('/api/events/' + this.selectedContest.id + '/soaringspot/tasks').then(function (response) {
         that.tasks = response.data.data;
         that.loading = false;
+        that.loadingTasks = false;
       });
     },
     loadTask: function loadTask(task) {
       var that = this;
       this.loading = true;
-      console.log(task); // extract the task ID from the task URL
+      this.loadingTask = true; // extract the task ID from the task URL
 
       var task_url = task._links.self.href.split('/');
 
-      console.log(task_url);
-      var task_id = task_url[task_url.length - 1];
-      console.log(task_url.length);
-      console.log(task_id); // http://58gliding.net.test/api/events/488/soaringspot/tasks/6279921668
+      var task_id = task_url[task_url.length - 1]; // http://58gliding.net.test/api/events/488/soaringspot/tasks/6279921668
 
       window.axios.get('/api/events/' + this.selectedContest.id + '/soaringspot/tasks/' + task_id).then(function (response) {
-        that.task = response.data.data;
+        that.selectedTaskData = response.data.data;
         that.loading = false;
+        that.loadingTask = false;
+        that.drawTask();
       });
     },
     loadTracks: function loadTracks() {
@@ -9711,6 +12487,96 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         center: [lng, lat],
         zoom: scale
       });
+    },
+    drawTask: function drawTask() {
+      var that = this;
+      if (!this.selectedTaskData) return false;
+      this.clearCurrentTask(); // create the waypoints
+
+      this.selectedTaskData.forEach(function (point, index) {
+        var waypoint = that.createWaypointDom(point.name, '000000');
+        var marker = new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.Marker(waypoint, {
+          anchor: 'left',
+          offset: [-3, 4]
+        }).setLngLat([point.lng, point.lat]).addTo(that.map);
+        that.taskWaypoints.push(marker);
+        var myCircle = new mapbox_gl_circle__WEBPACK_IMPORTED_MODULE_3___default.a({
+          lat: point.lat,
+          lng: point.lng
+        }, point.oz_radius1, {
+          editable: false,
+          minRadius: 1500,
+          fillColor: '#E3652B',
+          strokeColor: '#E3652B',
+          strokeWeight: 3,
+          fillOpacity: 0.15
+        }).addTo(that.map);
+        that.taskWaypoints.push(myCircle);
+        that.selectTaskCoords.push([point.lng, point.lat]);
+      });
+      that.map.addLayer({
+        "id": "taskLine",
+        "type": "line",
+        "source": {
+          "type": "geojson",
+          "data": {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+              "type": "LineString",
+              "coordinates": that.selectTaskCoords
+            }
+          }
+        },
+        "layout": {
+          "line-join": "round",
+          "line-cap": "round"
+        },
+        "paint": {
+          "line-color": "#E3652B",
+          "line-width": 4
+        }
+      });
+      this.zoomToTask();
+    },
+    zoomToTask: function zoomToTask() {
+      var coords = this.selectTaskCoords;
+      var bounds = coords.reduce(function (bounds, coord) {
+        return bounds.extend(coord);
+      }, new mapbox_gl__WEBPACK_IMPORTED_MODULE_2___default.a.LngLatBounds(coords[0], coords[0]));
+      this.map.fitBounds(bounds, {
+        padding: 40
+      });
+    },
+    clearCurrentTask: function clearCurrentTask() {
+      var that = this; // drop all existing markers and lines
+
+      for (var i = 0; i < that.taskWaypoints.length; i++) {
+        that.taskWaypoints[i].remove();
+      }
+
+      that.taskWaypoints = [];
+      var taskLineLayer = that.map.getLayer('taskLine');
+
+      if (typeof taskLineLayer !== 'undefined') {
+        that.map.removeLayer('taskLine');
+        that.map.removeSource('taskLine');
+      }
+
+      that.selectTaskCoords = [];
+    },
+    createWaypointDom: function createWaypointDom(label, colour) {
+      var el = document.createElement('div');
+      var el2 = document.createElement('div');
+      var el3 = document.createElement('div');
+      el.appendChild(el2);
+      el.appendChild(el3);
+      el.className = 'waypoint';
+      el2.className = 'waypoint_dot';
+      el3.className = 'waypoint_text';
+      el3.appendChild(document.createTextNode(label));
+      el2.style.backgroundColor = '#' + colour;
+      return el;
     }
   }
 });
@@ -10274,7 +13140,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.fullscreen .main-nav,\n.fullscreen .footer {\n\tdisplay: none !important;\n}\n.mapbox {\n}\nhtml, body, \n.fullscreen,\n.fullscreen .tracking, \n.fullscreen .flex-vertical {\n\theight: 100%;\n}\n.fullscreen .flex-vertical {\n\theight: 100vh; /* Fallback for browsers that do not support Custom Properties */\n\theight: calc(var(--vh, 1vh) * 100);\n}\n.marker_top {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 34px;\n\theight: 34px;\n\tbox-shadow: 0px 0px 15px 0px rgba(0,0,0,0.3);\n}\n.marker_pin {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -17px;\n\tleft: 7px;\n}\n/*.selectedMarker {  }*/\n.selectedMarker .marker_top { \n\tbox-shadow: 0px 0px 15px 0px rgba(0,0,0,0.7);\n}\n.selectedMarker .marker_inner { \n\t-webkit-transform: scale(1.4) translate(0, -9px); \n\t        transform: scale(1.4) translate(0, -9px);\n}\n.fullscreen .maprow\t{\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: horizontal;\n\t-webkit-box-direction: normal;\n\t        flex-direction: row;\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.fullscreen .mapbox, .fullscreen .options {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.tracking .sidepanel {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\twidth: 50px;\n\tbackground-color: #EEE;\n\tborder-left: 1px solid #888;\n}\n.tracking .expanded {\n\twidth: auto;\n}\n.aircraft-badges {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n\theight: 100px;\n\toverflow: scroll;\n\tscrollbar-width: none; /* Firefox */\n\t-ms-overflow-style: none;  /* Internet Explorer 10+ */\n}\n.aircraft-badges::-webkit-scrollbar { /* WebKit */\n\twidth: 0;\n\theight: 0;\n}\n.tracking .aircraft-badge {\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tpadding: 0 3px;\n\tborder-radius: 3px;\n}\n.legend td, .legend th {\n\tpadding: 3px 3px;\n}\n.legend th {\n\ttext-align: center;\n}\n.legend-header {\n\twidth: 100%;\n}\n.hover-row:hover {\n\tbackground-color: #5AF;\n}\n.selected-aircraft .flex-row {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-pack: justify;\n\t        justify-content: space-between;\n\tpadding: 3px 5px;\n\tfont-size: 120%;\n\tmax-width: 100%;\n\tmargin-left: auto;\n\tmargin-right: auto;\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n\tflex-wrap: wrap;\n}\n.selected-aircraft {\n\tborder-top: 1px solid #888;\n}\n.selected-aircraft .detail {\n\tmargin-left: 5px;\n\tmargin-right: 5px;\n}\n.mapboxgl-ctrl-bottom-right {\n\tz-index: 0 !important;\n}\n.mapbox .btn-outline-dark {\n\tbackground-color: #EEE;\n}\n.mapbox .btn-outline-dark:hover {\n\tbackground-color: #000;\n}\n.mapbox .buttons {\n\tposition: absolute;\n\tleft: 50px;\n\ttop: 10px;\n\tz-index: 10;\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n}\n.tracking .options, \n.tracking .day-selector {\n\tpadding: 10px;\n\tposition: absolute;\n\ttop: 43px;\n\tleft: 50px;\n\tz-index: 999;\n\tbackground-color: #FFF;\n\tborder-radius: 5px;\n\tborder: 1px solid #888;\n\tmargin-right: 20px;\n\tmax-height: 80%;\n\toverflow: scroll;\n}\n.flex-vertical {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n}\n", ""]);
+exports.push([module.i, "\n.fullscreen .main-nav,\n.fullscreen .footer {\n\tdisplay: none !important;\n}\n.mapbox {\n}\nhtml, body, \n.fullscreen,\n.fullscreen .tracking, \n.fullscreen .flex-vertical {\n\theight: 100%;\n}\n.fullscreen .flex-vertical {\n\theight: 100vh; /* Fallback for browsers that do not support Custom Properties */\n\theight: calc(var(--vh, 1vh) * 100);\n}\n.marker_top {\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tborder-radius: 50%;\n\tpadding: 5px 0 3px 0;\n\twidth: 34px;\n\theight: 34px;\n\tbox-shadow: 0px 0px 15px 0px rgba(0,0,0,0.3);\n}\n.marker_pin {\n\tposition: absolute;\n\tcontent: '';\n\twidth: 0px;\n\theight: 0px;\n\tborder: 10px solid transparent;\n\tborder-top: 10px solid #A00;\n\tbottom: -17px;\n\tleft: 7px;\n}\n.waypoint_dot {\n\twidth: 8px;\n\theight: 8px;\n\tborder-radius: 8px;\n}\n.waypoint_text {\n\tmargin-top: -12px;\n\tmargin-left: 13px;\n}\n\n/*.selectedMarker {  }*/\n.selectedMarker .marker_top { \n\tbox-shadow: 0px 0px 15px 0px rgba(0,0,0,0.7);\n}\n.selectedMarker .marker_inner { \n\t-webkit-transform: scale(1.4) translate(0, -9px); \n\t        transform: scale(1.4) translate(0, -9px);\n}\n.fullscreen .maprow\t{\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: horizontal;\n\t-webkit-box-direction: normal;\n\t        flex-direction: row;\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.fullscreen .mapbox, .fullscreen .options {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n}\n.tracking .sidepanel {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n\twidth: 50px;\n\tbackground-color: #EEE;\n\tborder-left: 1px solid #888;\n}\n.tracking .expanded {\n\twidth: auto;\n}\n.aircraft-badges {\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n\theight: 100px;\n\toverflow: scroll;\n\tscrollbar-width: none; /* Firefox */\n\t-ms-overflow-style: none;  /* Internet Explorer 10+ */\n}\n.aircraft-badges::-webkit-scrollbar { /* WebKit */\n\twidth: 0;\n\theight: 0;\n}\n.tracking .aircraft-badge {\n\tfont-size: 110%;\n\tfont-weight: bold;\n\ttext-align: center;\n\tbackground-color: #A00;\n\tcolor: #FFF;\n\tpadding: 0 3px;\n\tborder-radius: 3px;\n}\n.legend td, .legend th {\n\tpadding: 3px 3px;\n}\n.legend th {\n\ttext-align: center;\n}\n.legend-header {\n\twidth: 100%;\n}\n.hover-row:hover {\n\tbackground-color: #5AF;\n}\n.selected-aircraft .flex-row {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-pack: justify;\n\t        justify-content: space-between;\n\tpadding: 3px 5px;\n\tfont-size: 120%;\n\tmax-width: 100%;\n\tmargin-left: auto;\n\tmargin-right: auto;\n\t-webkit-box-flex: 1;\n\t        flex-grow: 1;\n\tflex-wrap: wrap;\n}\n.selected-aircraft {\n\tborder-top: 1px solid #888;\n}\n.selected-aircraft .detail {\n\tmargin-left: 5px;\n\tmargin-right: 5px;\n}\n.mapboxgl-ctrl-bottom-right {\n\tz-index: 0 !important;\n}\n.mapbox .btn-outline-dark {\n\tbackground-color: #EEE;\n}\n.mapbox .btn-outline-dark:hover {\n\tbackground-color: #000;\n}\n.mapbox .buttons {\n\tposition: absolute;\n\tleft: 50px;\n\ttop: 10px;\n\tz-index: 10;\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n}\n.mapbox .dayDate {\n\tposition: absolute;\n\tleft: 20px;\n\tbottom: 20px;\n\tz-index: 11;\n\tfont-size: 120%;\n\tfont-weight: bold;\n}\n.tracking .options, \n.tracking .day-selector {\n\tpadding: 10px;\n\tposition: absolute;\n\ttop: 50px;\n\tleft: 50px;\n\tz-index: 999;\n\tbackground-color: #FFF;\n\tborder-radius: 5px;\n\tborder: 1px solid #888;\n\tmargin-right: 20px;\n\tmax-height: 80%;\n\toverflow: scroll;\n}\n.flex-vertical {\n\tdisplay: -webkit-box;\n\tdisplay: flex;\n\t-webkit-box-orient: vertical;\n\t-webkit-box-direction: normal;\n\t        flex-direction: column;\n}\n", ""]);
 
 // exports
 
@@ -10363,6 +13229,466 @@ function toComment(sourceMap) {
 	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
 
 	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/events/events.js":
+/*!***************************************!*\
+  !*** ./node_modules/events/events.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+
+var R = typeof Reflect === 'object' ? Reflect : null
+var ReflectApply = R && typeof R.apply === 'function'
+  ? R.apply
+  : function ReflectApply(target, receiver, args) {
+    return Function.prototype.apply.call(target, receiver, args);
+  }
+
+var ReflectOwnKeys
+if (R && typeof R.ownKeys === 'function') {
+  ReflectOwnKeys = R.ownKeys
+} else if (Object.getOwnPropertySymbols) {
+  ReflectOwnKeys = function ReflectOwnKeys(target) {
+    return Object.getOwnPropertyNames(target)
+      .concat(Object.getOwnPropertySymbols(target));
+  };
+} else {
+  ReflectOwnKeys = function ReflectOwnKeys(target) {
+    return Object.getOwnPropertyNames(target);
+  };
+}
+
+function ProcessEmitWarning(warning) {
+  if (console && console.warn) console.warn(warning);
+}
+
+var NumberIsNaN = Number.isNaN || function NumberIsNaN(value) {
+  return value !== value;
+}
+
+function EventEmitter() {
+  EventEmitter.init.call(this);
+}
+module.exports = EventEmitter;
+
+// Backwards-compat with node 0.10.x
+EventEmitter.EventEmitter = EventEmitter;
+
+EventEmitter.prototype._events = undefined;
+EventEmitter.prototype._eventsCount = 0;
+EventEmitter.prototype._maxListeners = undefined;
+
+// By default EventEmitters will print a warning if more than 10 listeners are
+// added to it. This is a useful default which helps finding memory leaks.
+var defaultMaxListeners = 10;
+
+Object.defineProperty(EventEmitter, 'defaultMaxListeners', {
+  enumerable: true,
+  get: function() {
+    return defaultMaxListeners;
+  },
+  set: function(arg) {
+    if (typeof arg !== 'number' || arg < 0 || NumberIsNaN(arg)) {
+      throw new RangeError('The value of "defaultMaxListeners" is out of range. It must be a non-negative number. Received ' + arg + '.');
+    }
+    defaultMaxListeners = arg;
+  }
+});
+
+EventEmitter.init = function() {
+
+  if (this._events === undefined ||
+      this._events === Object.getPrototypeOf(this)._events) {
+    this._events = Object.create(null);
+    this._eventsCount = 0;
+  }
+
+  this._maxListeners = this._maxListeners || undefined;
+};
+
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+EventEmitter.prototype.setMaxListeners = function setMaxListeners(n) {
+  if (typeof n !== 'number' || n < 0 || NumberIsNaN(n)) {
+    throw new RangeError('The value of "n" is out of range. It must be a non-negative number. Received ' + n + '.');
+  }
+  this._maxListeners = n;
+  return this;
+};
+
+function $getMaxListeners(that) {
+  if (that._maxListeners === undefined)
+    return EventEmitter.defaultMaxListeners;
+  return that._maxListeners;
+}
+
+EventEmitter.prototype.getMaxListeners = function getMaxListeners() {
+  return $getMaxListeners(this);
+};
+
+EventEmitter.prototype.emit = function emit(type) {
+  var args = [];
+  for (var i = 1; i < arguments.length; i++) args.push(arguments[i]);
+  var doError = (type === 'error');
+
+  var events = this._events;
+  if (events !== undefined)
+    doError = (doError && events.error === undefined);
+  else if (!doError)
+    return false;
+
+  // If there is no 'error' event listener then throw.
+  if (doError) {
+    var er;
+    if (args.length > 0)
+      er = args[0];
+    if (er instanceof Error) {
+      // Note: The comments on the `throw` lines are intentional, they show
+      // up in Node's output if this results in an unhandled exception.
+      throw er; // Unhandled 'error' event
+    }
+    // At least give some kind of context to the user
+    var err = new Error('Unhandled error.' + (er ? ' (' + er.message + ')' : ''));
+    err.context = er;
+    throw err; // Unhandled 'error' event
+  }
+
+  var handler = events[type];
+
+  if (handler === undefined)
+    return false;
+
+  if (typeof handler === 'function') {
+    ReflectApply(handler, this, args);
+  } else {
+    var len = handler.length;
+    var listeners = arrayClone(handler, len);
+    for (var i = 0; i < len; ++i)
+      ReflectApply(listeners[i], this, args);
+  }
+
+  return true;
+};
+
+function _addListener(target, type, listener, prepend) {
+  var m;
+  var events;
+  var existing;
+
+  if (typeof listener !== 'function') {
+    throw new TypeError('The "listener" argument must be of type Function. Received type ' + typeof listener);
+  }
+
+  events = target._events;
+  if (events === undefined) {
+    events = target._events = Object.create(null);
+    target._eventsCount = 0;
+  } else {
+    // To avoid recursion in the case that type === "newListener"! Before
+    // adding it to the listeners, first emit "newListener".
+    if (events.newListener !== undefined) {
+      target.emit('newListener', type,
+                  listener.listener ? listener.listener : listener);
+
+      // Re-assign `events` because a newListener handler could have caused the
+      // this._events to be assigned to a new object
+      events = target._events;
+    }
+    existing = events[type];
+  }
+
+  if (existing === undefined) {
+    // Optimize the case of one listener. Don't need the extra array object.
+    existing = events[type] = listener;
+    ++target._eventsCount;
+  } else {
+    if (typeof existing === 'function') {
+      // Adding the second element, need to change to array.
+      existing = events[type] =
+        prepend ? [listener, existing] : [existing, listener];
+      // If we've already got an array, just append.
+    } else if (prepend) {
+      existing.unshift(listener);
+    } else {
+      existing.push(listener);
+    }
+
+    // Check for listener leak
+    m = $getMaxListeners(target);
+    if (m > 0 && existing.length > m && !existing.warned) {
+      existing.warned = true;
+      // No error code for this since it is a Warning
+      // eslint-disable-next-line no-restricted-syntax
+      var w = new Error('Possible EventEmitter memory leak detected. ' +
+                          existing.length + ' ' + String(type) + ' listeners ' +
+                          'added. Use emitter.setMaxListeners() to ' +
+                          'increase limit');
+      w.name = 'MaxListenersExceededWarning';
+      w.emitter = target;
+      w.type = type;
+      w.count = existing.length;
+      ProcessEmitWarning(w);
+    }
+  }
+
+  return target;
+}
+
+EventEmitter.prototype.addListener = function addListener(type, listener) {
+  return _addListener(this, type, listener, false);
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.prependListener =
+    function prependListener(type, listener) {
+      return _addListener(this, type, listener, true);
+    };
+
+function onceWrapper() {
+  var args = [];
+  for (var i = 0; i < arguments.length; i++) args.push(arguments[i]);
+  if (!this.fired) {
+    this.target.removeListener(this.type, this.wrapFn);
+    this.fired = true;
+    ReflectApply(this.listener, this.target, args);
+  }
+}
+
+function _onceWrap(target, type, listener) {
+  var state = { fired: false, wrapFn: undefined, target: target, type: type, listener: listener };
+  var wrapped = onceWrapper.bind(state);
+  wrapped.listener = listener;
+  state.wrapFn = wrapped;
+  return wrapped;
+}
+
+EventEmitter.prototype.once = function once(type, listener) {
+  if (typeof listener !== 'function') {
+    throw new TypeError('The "listener" argument must be of type Function. Received type ' + typeof listener);
+  }
+  this.on(type, _onceWrap(this, type, listener));
+  return this;
+};
+
+EventEmitter.prototype.prependOnceListener =
+    function prependOnceListener(type, listener) {
+      if (typeof listener !== 'function') {
+        throw new TypeError('The "listener" argument must be of type Function. Received type ' + typeof listener);
+      }
+      this.prependListener(type, _onceWrap(this, type, listener));
+      return this;
+    };
+
+// Emits a 'removeListener' event if and only if the listener was removed.
+EventEmitter.prototype.removeListener =
+    function removeListener(type, listener) {
+      var list, events, position, i, originalListener;
+
+      if (typeof listener !== 'function') {
+        throw new TypeError('The "listener" argument must be of type Function. Received type ' + typeof listener);
+      }
+
+      events = this._events;
+      if (events === undefined)
+        return this;
+
+      list = events[type];
+      if (list === undefined)
+        return this;
+
+      if (list === listener || list.listener === listener) {
+        if (--this._eventsCount === 0)
+          this._events = Object.create(null);
+        else {
+          delete events[type];
+          if (events.removeListener)
+            this.emit('removeListener', type, list.listener || listener);
+        }
+      } else if (typeof list !== 'function') {
+        position = -1;
+
+        for (i = list.length - 1; i >= 0; i--) {
+          if (list[i] === listener || list[i].listener === listener) {
+            originalListener = list[i].listener;
+            position = i;
+            break;
+          }
+        }
+
+        if (position < 0)
+          return this;
+
+        if (position === 0)
+          list.shift();
+        else {
+          spliceOne(list, position);
+        }
+
+        if (list.length === 1)
+          events[type] = list[0];
+
+        if (events.removeListener !== undefined)
+          this.emit('removeListener', type, originalListener || listener);
+      }
+
+      return this;
+    };
+
+EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+
+EventEmitter.prototype.removeAllListeners =
+    function removeAllListeners(type) {
+      var listeners, events, i;
+
+      events = this._events;
+      if (events === undefined)
+        return this;
+
+      // not listening for removeListener, no need to emit
+      if (events.removeListener === undefined) {
+        if (arguments.length === 0) {
+          this._events = Object.create(null);
+          this._eventsCount = 0;
+        } else if (events[type] !== undefined) {
+          if (--this._eventsCount === 0)
+            this._events = Object.create(null);
+          else
+            delete events[type];
+        }
+        return this;
+      }
+
+      // emit removeListener for all listeners on all events
+      if (arguments.length === 0) {
+        var keys = Object.keys(events);
+        var key;
+        for (i = 0; i < keys.length; ++i) {
+          key = keys[i];
+          if (key === 'removeListener') continue;
+          this.removeAllListeners(key);
+        }
+        this.removeAllListeners('removeListener');
+        this._events = Object.create(null);
+        this._eventsCount = 0;
+        return this;
+      }
+
+      listeners = events[type];
+
+      if (typeof listeners === 'function') {
+        this.removeListener(type, listeners);
+      } else if (listeners !== undefined) {
+        // LIFO order
+        for (i = listeners.length - 1; i >= 0; i--) {
+          this.removeListener(type, listeners[i]);
+        }
+      }
+
+      return this;
+    };
+
+function _listeners(target, type, unwrap) {
+  var events = target._events;
+
+  if (events === undefined)
+    return [];
+
+  var evlistener = events[type];
+  if (evlistener === undefined)
+    return [];
+
+  if (typeof evlistener === 'function')
+    return unwrap ? [evlistener.listener || evlistener] : [evlistener];
+
+  return unwrap ?
+    unwrapListeners(evlistener) : arrayClone(evlistener, evlistener.length);
+}
+
+EventEmitter.prototype.listeners = function listeners(type) {
+  return _listeners(this, type, true);
+};
+
+EventEmitter.prototype.rawListeners = function rawListeners(type) {
+  return _listeners(this, type, false);
+};
+
+EventEmitter.listenerCount = function(emitter, type) {
+  if (typeof emitter.listenerCount === 'function') {
+    return emitter.listenerCount(type);
+  } else {
+    return listenerCount.call(emitter, type);
+  }
+};
+
+EventEmitter.prototype.listenerCount = listenerCount;
+function listenerCount(type) {
+  var events = this._events;
+
+  if (events !== undefined) {
+    var evlistener = events[type];
+
+    if (typeof evlistener === 'function') {
+      return 1;
+    } else if (evlistener !== undefined) {
+      return evlistener.length;
+    }
+  }
+
+  return 0;
+}
+
+EventEmitter.prototype.eventNames = function eventNames() {
+  return this._eventsCount > 0 ? ReflectOwnKeys(this._events) : [];
+};
+
+function arrayClone(arr, n) {
+  var copy = new Array(n);
+  for (var i = 0; i < n; ++i)
+    copy[i] = arr[i];
+  return copy;
+}
+
+function spliceOne(list, index) {
+  for (; index + 1 < list.length; index++)
+    list[index] = list[index + 1];
+  list.pop();
+}
+
+function unwrapListeners(arr) {
+  var ret = new Array(arr.length);
+  for (var i = 0; i < ret.length; ++i) {
+    ret[i] = arr[i].listener || arr[i];
+  }
+  return ret;
 }
 
 
@@ -27978,6 +31304,2398 @@ module.exports = function isBuffer (obj) {
 }.call(this));
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js"), __webpack_require__(/*! ./../webpack/buildin/module.js */ "./node_modules/webpack/buildin/module.js")(module)))
+
+/***/ }),
+
+/***/ "./node_modules/mapbox-gl-circle/lib/main.js":
+/*!***************************************************!*\
+  !*** ./node_modules/mapbox-gl-circle/lib/main.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const projectVersion = __webpack_require__(/*! ../package.json */ "./node_modules/mapbox-gl-circle/package.json").version;
+const _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
+const turfCircle = __webpack_require__(/*! @turf/circle */ "./node_modules/mapbox-gl-circle/node_modules/@turf/circle/index.js");
+const turfBbox = __webpack_require__(/*! @turf/bbox */ "./node_modules/@turf/bbox/index.js");
+const turfBboxPoly = __webpack_require__(/*! @turf/bbox-polygon */ "./node_modules/@turf/bbox-polygon/index.js");
+const turfTruncate = __webpack_require__(/*! @turf/truncate */ "./node_modules/@turf/truncate/index.js");
+const turfDestination = __webpack_require__(/*! @turf/destination */ "./node_modules/mapbox-gl-circle/node_modules/@turf/destination/index.js");
+const turfDistance = __webpack_require__(/*! @turf/distance */ "./node_modules/mapbox-gl-circle/node_modules/@turf/distance/index.js");
+const turfBearing = __webpack_require__(/*! @turf/bearing */ "./node_modules/mapbox-gl-circle/node_modules/@turf/bearing/index.js");
+const turfHelpers = __webpack_require__(/*! @turf/helpers */ "./node_modules/mapbox-gl-circle/node_modules/@turf/helpers/index.js");
+
+if (window && typeof window.MapboxCircle === 'function') {
+    throw new TypeError('mapbox-gl-circle-' + window.MapboxCircle.VERSION + ' already loaded');
+}
+
+/**
+ * A `google.maps.Circle` replacement for Mapbox GL JS, rendering a "spherical cap" on top of the world.
+ * @class MapboxCircle
+ * @example
+ * var myCircle = new MapboxCircle({lat: 39.984, lng: -75.343}, 25000, {
+ *         editable: true,
+ *         minRadius: 1500,
+ *         fillColor: '#29AB87'
+ *     }).addTo(myMapboxGlMap);
+ *
+ * myCircle.on('centerchanged', function (circleObj) {
+ *         console.log('New center:', circleObj.getCenter());
+ *     });
+ * myCircle.once('radiuschanged', function (circleObj) {
+ *         console.log('New radius (once!):', circleObj.getRadius());
+ *     });
+ * myCircle.on('click', function (mapMouseEvent) {
+ *         console.log('Click:', mapMouseEvent.point);
+ *     });
+ * myCircle.on('contextmenu', function (mapMouseEvent) {
+ *         console.log('Right-click:', mapMouseEvent.lngLat);
+ *     });
+ * @public
+ */
+class MapboxCircle {
+    /**
+     * @return {string} 'mapbox-gl-circle' library version number.
+     */
+    static get VERSION() {
+        return projectVersion;
+    }
+
+    /**
+     * @return {number} Globally unique instance ID.
+     * @private
+     */
+    get _instanceId() {
+        if (this.__instanceId === undefined) {
+            this.__instanceId = MapboxCircle.__MONOSTATE.instanceIdCounter++;
+        }
+        return this.__instanceId;
+    }
+
+    /**
+     * @return {string} Unique circle source ID.
+     * @private
+     */
+    get _circleSourceId() {
+        return 'circle-source-' + this._instanceId;
+    }
+
+    /**
+     * @return {string} Unique circle center handle source ID.
+     * @private
+     */
+    get _circleCenterHandleSourceId() {
+        return 'circle-center-handle-source-' + this._instanceId;
+    }
+
+    /**
+     * @return {string} Unique radius handles source ID.
+     * @private
+     */
+    get _circleRadiusHandlesSourceId() {
+        return 'circle-radius-handles-source-' + this._instanceId;
+    }
+
+    /**
+     * @return {string} Unique circle line-stroke ID.
+     * @private
+     */
+    get _circleStrokeId() {
+        return 'circle-stroke-' + this._instanceId;
+    }
+
+    /**
+     * @return {string} Unique circle fill ID.
+     * @private
+     */
+    get _circleFillId() {
+        return 'circle-fill-' + this._instanceId;
+    }
+
+    /**
+     * @return {string} Unique ID for center handle stroke.
+     * @private
+     */
+    get _circleCenterHandleStrokeId() {
+        return 'circle-center-handle-stroke-' + this._instanceId;
+    }
+
+    /**
+     * @return {string} Unique ID for radius handles stroke.
+     * @private
+     */
+    get _circleRadiusHandlesStrokeId() {
+        return 'circle-radius-handles-stroke-' + this._instanceId;
+    }
+
+    /**
+     * @return {string} Unique circle center handle ID.
+     * @private
+     */
+    get _circleCenterHandleId() {
+        return 'circle-center-handle-' + this._instanceId;
+    }
+
+    /**
+     * @return {string} Unique circle radius handles' ID.
+     * @private
+     */
+    get _circleRadiusHandlesId() {
+        return 'circle-radius-handles-' + this._instanceId;
+    }
+
+    /** @param {mapboxgl.Map} map Target map. */
+    set map(map) {
+        if (!this._map || !map) {
+            this._map = map;
+        } else {
+            throw new TypeError('MapboxCircle.map reassignment.');
+        }
+    }
+
+    /** @return {mapboxgl.Map} Mapbox map. */
+    get map() {
+        return this._map;
+    }
+
+    /** @param {[number,number]} newCenter Center `[lng, lat]` coordinates. */
+    set center(newCenter) {
+        if (this._centerDragActive) {
+            this._editCenterLngLat[0] = newCenter[0];
+            this._editCenterLngLat[1] = newCenter[1];
+        } else {
+            this._currentCenterLngLat[0] = newCenter[0];
+            this._currentCenterLngLat[1] = newCenter[1];
+        }
+        this._updateCircle();
+        this._animate();
+    }
+
+    /** @return {[number,number]} Current center `[lng, lat]` coordinates. */
+    get center() {
+        return this._centerDragActive ? this._editCenterLngLat : this._currentCenterLngLat;
+    }
+
+    /** @param {number} newRadius Meter radius. */
+    set radius(newRadius) {
+        if (this._radiusDragActive) {
+            this._editRadius = Math.min(Math.max(this.options.minRadius, newRadius), this.options.maxRadius);
+        } else {
+            this._currentRadius = Math.min(Math.max(this.options.minRadius, newRadius), this.options.maxRadius);
+        }
+        this._updateCircle();
+        this._animate();
+    }
+
+    /** @return {number} Current circle radius. */
+    get radius() {
+        return this._radiusDragActive ? this._editRadius : this._currentRadius;
+    }
+
+    /** @param {number} newZoom New zoom level. */
+    set zoom(newZoom) {
+        this._zoom = newZoom;
+        if (this.options.refineStroke) {
+            this._updateCircle();
+            this._animate();
+        }
+    }
+
+    /**
+     * @param {{lat: number, lng: number}|[number,number]} center Circle center as an object or `[lng, lat]` coordinates
+     * @param {number} radius Meter radius
+     * @param {?Object} options
+     * @param {?boolean} [options.editable=false] Enable handles for changing center and radius
+     * @param {?number} [options.minRadius=10] Minimum radius on user interaction
+     * @param {?number} [options.maxRadius=1100000] Maximum radius on user interaction
+     * @param {?string} [options.strokeColor='#000000'] Stroke color
+     * @param {?number} [options.strokeWeight=0.5] Stroke weight
+     * @param {?number} [options.strokeOpacity=0.75] Stroke opacity
+     * @param {?string} [options.fillColor='#FB6A4A'] Fill color
+     * @param {?number} [options.fillOpacity=0.25] Fill opacity
+     * @param {?boolean} [options.refineStroke=false] Adjust circle polygon precision based on radius and zoom
+     *     (i.e. prettier circles at the expense of performance)
+     * @param {?Object} [options.properties={}] Property metadata for Mapbox GL JS circle object
+     * @public
+     */
+    constructor(center, radius, options) {
+        /** @const {boolean} */ this.__safariContextMenuEventHackEnabled = false;
+
+        /** @const {EventEmitter} */ this._eventEmitter = new EventEmitter();
+
+        let centerLat = typeof(center.lat) === 'number' ? center.lat : center[1];
+        let centerLng = typeof(center.lng) === 'number' ? center.lng : center[0];
+
+        /** @const {[number,number]} */ this._lastCenterLngLat = [centerLng, centerLat];
+        /** @const {[number,number]} */ this._editCenterLngLat = [centerLng, centerLat];
+        /** @const {[number,number]} */ this._currentCenterLngLat = [centerLng, centerLat];
+        /** @const {number} */ this._lastRadius = Math.round(radius);
+        /** @const {number} */ this._editRadius = Math.round(radius);
+        /** @const {number} */ this._currentRadius = Math.round(radius);
+        /** @const {Object} */ this.options = _.extend({
+            editable: false,
+            strokeColor: '#000000',
+            strokeWeight: 0.5,
+            strokeOpacity: 0.75,
+            fillColor: '#FB6A4A',
+            fillOpacity: 0.25,
+            refineStroke: false,
+            minRadius: 10,
+            maxRadius: 1.1e6,
+            properties: {},
+            debugEl: null
+        }, options);
+
+        /** @const {mapboxgl.Map} */ this._map = undefined;
+        /** @const {number} */ this._zoom = undefined;
+        /** @const {Polygon} */ this._circle = undefined;
+        /** @const {Array<Point>} */ this._handles = undefined;
+        /** @const {boolean} */ this._centerDragActive = false;
+        /** @const {boolean} */ this._radiusDragActive = false;
+        /** @const {Object} */ this._debouncedHandlers = {};
+        /** @const {number} */ this._updateCount = 0;
+
+        [ // Bind all event handlers.
+            '_onZoomEnd',
+            '_onCenterHandleMouseEnter',
+            '_onCenterHandleResumeEvents',
+            '_onCenterHandleSuspendEvents',
+            '_onCenterHandleMouseDown',
+            '_onCenterHandleMouseMove',
+            '_onCenterHandleMouseUpOrMapMouseOut',
+            '_onCenterChanged',
+            '_onCenterHandleMouseLeave',
+            '_onRadiusHandlesMouseEnter',
+            '_onRadiusHandlesSuspendEvents',
+            '_onRadiusHandlesResumeEvents',
+            '_onRadiusHandlesMouseDown',
+            '_onRadiusHandlesMouseMove',
+            '_onRadiusHandlesMouseUpOrMapMouseOut',
+            '_onRadiusChanged',
+            '_onRadiusHandlesMouseLeave',
+            '_onCircleFillMouseMove',
+            '_onCircleFillSuspendEvents',
+            '_onCircleFillResumeEvents',
+            '_onCircleFillContextMenu',
+            '_onCircleFillClick',
+            '_onCircleFillMouseLeave',
+            '_onMapStyleDataLoading'
+        ].forEach((eventHandler) => {
+            this[eventHandler] = this[eventHandler].bind(this);
+        });
+
+        // Initialize circle.
+        this._updateCircle();
+    }
+
+    /**
+     * Return `true` if current browser seems to be Safari.
+     * @return {boolean}
+     * @private
+     */
+    static _checkIfBrowserIsSafari() {
+        return window.navigator.userAgent.indexOf('Chrome') === -1 && window.navigator.userAgent.indexOf('Safari') > -1;
+    }
+
+    /**
+     * Add debounced event handler to map.
+     * @param {string} event Mapbox GL event name
+     * @param {Function} handler Event handler
+     * @private
+     */
+    _mapOnDebounced(event, handler) {
+        let ticking = false;
+        this._debouncedHandlers[handler] = (args) => {
+                if (!ticking) {
+                    requestAnimationFrame(() => {
+                        handler(args);
+                        ticking = false;
+                    });
+                }
+                ticking = true;
+            };
+        this.map.on(event, this._debouncedHandlers[handler]);
+    }
+
+    /**
+     * Remove debounced event handler from map.
+     * @param {string} event Mapbox GL event name
+     * @param {Function} handler Event handler
+     * @private
+     */
+    _mapOffDebounced(event, handler) {
+        this.map.off(event, this._debouncedHandlers[handler]);
+    }
+
+    /**
+     * Re-calculate/update circle polygon and handles.
+     * @private
+     */
+    _updateCircle() {
+        const center = this.center;
+        const radius = this.radius;
+        const zoom = !this._zoom || this._zoom <= 0.1 ? 0.1 : this._zoom;
+        const steps = this.options.refineStroke ? Math.max((Math.sqrt(Math.trunc(radius * 0.25)) * zoom ^ 2), 64) : 64;
+        const unit = 'meters';
+
+        if (!(this._centerDragActive && radius < 10000)) {
+            this._circle = turfCircle(center, radius, steps, unit, this.options.properties);
+        }
+        if (this.options.editable) {
+            this._handles = [
+                turfDestination(center, radius, 0, unit),
+                turfDestination(center, radius, 90, unit),
+                turfDestination(center, radius, 180, unit),
+                turfDestination(center, radius, -90, unit)
+            ];
+        }
+
+        if (this.options.debugEl) {
+            this._updateCount += 1;
+            this.options.debugEl.innerHTML = ('Center: ' + JSON.stringify(this.getCenter()) + ' / Radius: ' + radius +
+                                              ' / Bounds: ' + JSON.stringify(this.getBounds()) + ' / Steps: ' + steps +
+                                              ' / Zoom: ' + zoom.toFixed(2) + ' / ID: ' + this._instanceId +
+                                              ' / #: ' + this._updateCount);
+        }
+    }
+
+    /**
+     * Return GeoJSON for circle and handles.
+     * @private
+     * @return {FeatureCollection}
+     */
+    _getCircleGeoJSON() {
+        return turfHelpers.featureCollection([this._circle]);
+    }
+
+    /**
+     * Return GeoJSON for center handle and stroke.
+     * @private
+     * @return {FeatureCollection}
+     */
+    _getCenterHandleGeoJSON() {
+        if (this._centerDragActive && this.radius < 10000) {
+            return turfHelpers.featureCollection([turfHelpers.point(this.center)]);
+        } else {
+            return turfHelpers.featureCollection([turfHelpers.point(this.center), this._circle]);
+        }
+    }
+
+    /**
+     * Return GeoJSON for radius handles and stroke.
+     * @private
+     * @return {FeatureCollection}
+     */
+    _getRadiusHandlesGeoJSON() {
+        return turfHelpers.featureCollection([...this._handles, this._circle]);
+    }
+
+    /**
+     * Refresh map with GeoJSON for circle/handles.
+     * @private
+     */
+    _animate() {
+        if (!this._centerDragActive && !this._radiusDragActive) {
+            this._map.getSource(this._circleSourceId).setData(this._getCircleGeoJSON());
+        }
+
+        if (this.options.editable) {
+            if (!this._radiusDragActive) {
+                this._map.getSource(this._circleCenterHandleSourceId).setData(this._getCenterHandleGeoJSON());
+            }
+            if (!this._centerDragActive) {
+                this._map.getSource(this._circleRadiusHandlesSourceId).setData(this._getRadiusHandlesGeoJSON());
+            }
+        }
+    }
+
+    /**
+     * Returns true if cursor point is on a center/radius edit handle.
+     * @param {{x: number, y: number}} point
+     * @return {boolean}
+     * @private
+     */
+    _pointOnHandle(point) {
+        return !MapboxCircle.__MONOSTATE.activeEditableCircles.every((circleWithHandles) => {
+            // noinspection JSCheckFunctionSignatures
+            const handleLayersAtCursor = this.map.queryRenderedFeatures(
+                point, {layers: [circleWithHandles._circleCenterHandleId, circleWithHandles._circleRadiusHandlesId]});
+            return handleLayersAtCursor.length === 0;
+        });
+    }
+
+    /**
+     * Broadcast suspend event to other interactive circles, instructing them to stop listening during drag interaction.
+     * @param {string} typeOfHandle 'radius' or 'circle'.
+     * @private
+     */
+    _suspendHandleListeners(typeOfHandle) {
+        MapboxCircle.__MONOSTATE.broadcast.emit('suspendCenterHandleListeners', this._instanceId, typeOfHandle);
+        MapboxCircle.__MONOSTATE.broadcast.emit('suspendRadiusHandlesListeners', this._instanceId, typeOfHandle);
+        MapboxCircle.__MONOSTATE.broadcast.emit('suspendCircleFillListeners', this._instanceId, typeOfHandle);
+    }
+
+    /**
+     * Broadcast resume event to other editable circles, to make them to resume interactivity after a completed drag op.
+     * @param {string} typeOfHandle 'radius' or 'circle'.
+     * @private
+     */
+    _resumeHandleListeners(typeOfHandle) {
+        MapboxCircle.__MONOSTATE.broadcast.emit('resumeCenterHandleListeners', this._instanceId, typeOfHandle);
+        MapboxCircle.__MONOSTATE.broadcast.emit('resumeRadiusHandlesListeners', this._instanceId, typeOfHandle);
+        MapboxCircle.__MONOSTATE.broadcast.emit('resumeCircleFillListeners', this._instanceId, typeOfHandle);
+    }
+
+    /**
+     * Disable map panning, set cursor style and highlight handle with new fill color.
+     * @param {string} layerId
+     * @param {string} cursor
+     * @private
+     */
+    _highlightHandles(layerId, cursor) {
+        this.map.dragPan.disable();
+        this.map.setPaintProperty(layerId, 'circle-color', this.options.fillColor);
+        this.map.getCanvas().style.cursor = cursor;
+    }
+
+    /**
+     * Re-enable map panning, reset cursor icon and restore fill color to white.
+     * @param {string} layerId
+     * @private
+     */
+    _resetHandles(layerId) {
+        this.map.dragPan.enable();
+        this.map.setPaintProperty(layerId, 'circle-color', '#ffffff');
+        this.map.getCanvas().style.cursor = '';
+    }
+
+    /**
+     * Adjust circle precision (steps used to draw the polygon).
+     * @private
+     */
+    _onZoomEnd() {
+        this.zoom = this.map.getZoom();
+    }
+
+    /**
+     * Highlight center handle and disable panning.
+     * @private
+     */
+    _onCenterHandleMouseEnter() {
+        this._highlightHandles(this._circleCenterHandleId, 'move');
+    }
+
+    /**
+     * Stop listening to center handle events, unless it's what the circle is currently busy with.
+     * @param {number} instanceId ID of the circle instance that requested suspension.
+     * @param {string} typeOfHandle 'center' or 'radius'.
+     * @private
+     */
+    _onCenterHandleSuspendEvents(instanceId, typeOfHandle) {
+        if (instanceId !== this._instanceId || typeOfHandle === 'radius') {
+            this._unbindCenterHandleListeners();
+        }
+    }
+
+    /**
+     * Start listening to center handle events again, unless the circle was NOT among those targeted by suspend event.
+     * @param {number} instanceId ID of the circle instance that said it's time to resume listening.
+     * @param {string} typeOfHandle 'center' or 'radius'.
+     * @private
+     */
+    _onCenterHandleResumeEvents(instanceId, typeOfHandle) {
+        if (instanceId !== this._instanceId || typeOfHandle === 'radius') {
+            this._bindCenterHandleListeners();
+        }
+    }
+
+    /**
+     * Highlight center handle, disable panning and add mouse-move listener (emulating drag until mouse-up event).
+     * @private
+     */
+    _onCenterHandleMouseDown() {
+        this._centerDragActive = true;
+        this._mapOnDebounced('mousemove', this._onCenterHandleMouseMove);
+        this.map.addLayer(this._getCenterHandleStrokeLayer(), this._circleCenterHandleId);
+        this._suspendHandleListeners('center');
+        this.map.once('mouseup', this._onCenterHandleMouseUpOrMapMouseOut);
+        this.map.once('mouseout', this._onCenterHandleMouseUpOrMapMouseOut); // Deactivate drag if mouse leaves canvas.
+        this._highlightHandles(this._circleCenterHandleId, 'move');
+    }
+
+    /**
+     * Animate circle center change after _onCenterHandleMouseDown triggers.
+     * @param {MapMouseEvent} event
+     * @private
+     */
+    _onCenterHandleMouseMove(event) {
+        const mousePoint = turfTruncate(turfHelpers.point(this.map.unproject(event.point).toArray()), 6);
+        this.center = mousePoint.geometry.coordinates;
+    }
+
+    /**
+     * Reset center handle, re-enable panning and remove listeners from _onCenterHandleMouseDown.
+     * @param {MapMouseEvent} event
+     * @private
+     */
+    _onCenterHandleMouseUpOrMapMouseOut(event) {
+        if (event.type === 'mouseout') {
+            const toMarker = event.originalEvent.toElement.classList.contains('mapboxgl-marker');
+            const fromCanvas = event.originalEvent.fromElement.classList.contains('mapboxgl-canvas');
+
+            const toCanvas = event.originalEvent.toElement.classList.contains('mapboxgl-canvas');
+            const fromMarker = event.originalEvent.fromElement.classList.contains('mapboxgl-marker');
+
+            if ((fromCanvas && toMarker) || (fromMarker && toCanvas)) {
+                this.map.once('mouseout', this._onCenterHandleMouseUpOrMapMouseOut); // Add back 'once' handler.
+                return;
+            }
+        }
+
+        const newCenter = this.center;
+        this._centerDragActive = false;
+        this._mapOffDebounced('mousemove', this._onCenterHandleMouseMove);
+        switch (event.type) {
+            case 'mouseup': this.map.off('mouseout', this._onCenterHandleMouseUpOrMapMouseOut); break;
+            case 'mouseout': this.map.off('mouseup', this._onCenterHandleMouseUpOrMapMouseOut); break;
+        }
+        this._resumeHandleListeners('center');
+        this.map.removeLayer(this._circleCenterHandleStrokeId);
+        this._resetHandles(this._circleCenterHandleId);
+        if (newCenter[0] !== this._lastCenterLngLat[0] || newCenter[1] !== this._lastCenterLngLat[1]) {
+            this.center = newCenter;
+            this._eventEmitter.emit('centerchanged', this);
+        }
+    }
+
+    /**
+     * Update _lastCenterLngLat on `centerchanged` event.
+     * @private
+     */
+    _onCenterChanged() {
+        this._lastCenterLngLat[0] = this.center[0];
+        this._lastCenterLngLat[1] = this.center[1];
+    }
+
+    /**
+     * Reset center handle and re-enable panning, unless actively dragging.
+     * @private
+     */
+    _onCenterHandleMouseLeave() {
+        if (this._centerDragActive) {
+            setTimeout(() => { // If dragging, wait a bit to see if it just recently stopped.
+                if (!this._centerDragActive) this._resetHandles(this._circleCenterHandleId);
+            }, 125);
+        } else {
+            this._resetHandles(this._circleCenterHandleId);
+        }
+    }
+
+    /**
+     * Return vertical or horizontal resize arrow depending on if mouse is at left-right or top-bottom edit handles.
+     * @param {MapMouseEvent} event
+     * @return {string} 'ew-resize' or 'ns-resize'
+     * @private
+     */
+    _getRadiusHandleCursorStyle(event) {
+        const bearing = turfBearing(event.lngLat.toArray(), this._currentCenterLngLat, true);
+
+        if (bearing > 270+45 || bearing <= 45) { // South.
+            return 'ns-resize';
+        }
+        if (bearing > 45 && bearing <= 90+45) { // West.
+            return 'ew-resize';
+        }
+        if (bearing > 90+45 && bearing <= 180+45) { // North.
+            return 'ns-resize';
+        }
+        if (bearing > 270-45 && bearing <= 270+45) { // East.
+            return 'ew-resize';
+        }
+    }
+
+    /**
+     * Highlight radius handles and disable panning.
+     * @param {MapMouseEvent} event
+     * @private
+     */
+    _onRadiusHandlesMouseEnter(event) {
+        this._highlightHandles(this._circleRadiusHandlesId, this._getRadiusHandleCursorStyle(event));
+    }
+
+    /**
+     * Stop listening to radius handles' events, unless it's what the circle is currently busy with.
+     * @param {number} instanceId ID of the circle instance that requested suspension.
+     * @param {string} typeOfHandle 'center' or 'radius'.
+     * @private
+     */
+    _onRadiusHandlesSuspendEvents(instanceId, typeOfHandle) {
+        if (instanceId !== this._instanceId || typeOfHandle === 'center') {
+            this._unbindRadiusHandlesListeners();
+        }
+    }
+
+    /**
+     * Start listening to radius handles' events again, unless the circle was NOT among those targeted by suspend event.
+     * @param {number} instanceId ID of the circle instance that said it's time to resume listening.
+     * @param {string} typeOfHandle 'center' or 'radius'.
+     * @private
+     */
+    _onRadiusHandlesResumeEvents(instanceId, typeOfHandle) {
+        if (instanceId !== this._instanceId || typeOfHandle === 'center') {
+            this._bindRadiusHandlesListeners();
+        }
+    }
+
+    /**
+     * Highlight radius handles, disable panning and add mouse-move listener (emulating drag until mouse-up event).
+     * @param {MapMouseEvent} event
+     * @private
+     */
+    _onRadiusHandlesMouseDown(event) {
+        this._radiusDragActive = true;
+        this._mapOnDebounced('mousemove', this._onRadiusHandlesMouseMove);
+        this.map.addLayer(this._getRadiusHandlesStrokeLayer(), this._circleRadiusHandlesId);
+        this._suspendHandleListeners('radius');
+        this.map.once('mouseup', this._onRadiusHandlesMouseUpOrMapMouseOut);
+        this.map.once('mouseout', this._onRadiusHandlesMouseUpOrMapMouseOut); // Deactivate drag if mouse leaves canvas.
+        this._highlightHandles(this._circleRadiusHandlesId, this._getRadiusHandleCursorStyle(event));
+    }
+
+    /**
+     * Animate circle radius change after _onRadiusHandlesMouseDown triggers.
+     * @param {MapMouseEvent} event
+     * @private
+     */
+    _onRadiusHandlesMouseMove(event) {
+        const mousePoint = this.map.unproject(event.point).toArray();
+        this.radius = Math.round(turfDistance(this.center, mousePoint, 'meters'));
+    }
+
+    /**
+     * Reset radius handles, re-enable panning and remove listeners from _onRadiusHandlesMouseDown.
+     * @param {MapMouseEvent} event
+     * @private
+     */
+    _onRadiusHandlesMouseUpOrMapMouseOut(event) {
+        if (event.type === 'mouseout') {
+            const toMarker = event.originalEvent.toElement.classList.contains('mapboxgl-marker');
+            const fromCanvas = event.originalEvent.fromElement.classList.contains('mapboxgl-canvas');
+
+            const toCanvas = event.originalEvent.toElement.classList.contains('mapboxgl-canvas');
+            const fromMarker = event.originalEvent.fromElement.classList.contains('mapboxgl-marker');
+
+            if ((fromCanvas && toMarker) || (fromMarker && toCanvas)) {
+                this.map.once('mouseout', this._onRadiusHandlesMouseUpOrMapMouseOut); // Add back 'once' handler.
+                return;
+            }
+        }
+
+        const newRadius = this.radius;
+        this._radiusDragActive = false;
+        this._mapOffDebounced('mousemove', this._onRadiusHandlesMouseMove);
+        this.map.removeLayer(this._circleRadiusHandlesStrokeId);
+        switch (event.type) {
+            case 'mouseup': this.map.off('mouseout', this._onRadiusHandlesMouseUpOrMapMouseOut); break;
+            case 'mouseout': this.map.off('mouseup', this._onRadiusHandlesMouseUpOrMapMouseOut); break;
+        }
+        this._resumeHandleListeners('radius');
+        this._resetHandles(this._circleRadiusHandlesId);
+        if (newRadius !== this._lastRadius) {
+            this.radius = newRadius;
+            this._eventEmitter.emit('radiuschanged', this);
+        }
+    }
+
+    /**
+     * Update _lastRadius on `radiuschanged` event.
+     * @private
+     */
+    _onRadiusChanged() {
+        this._lastRadius = this.radius;
+    }
+
+    /**
+     * Reset radius handles and re-enable panning, unless actively dragging.
+     * @private
+     */
+    _onRadiusHandlesMouseLeave() {
+        if (this._radiusDragActive) {
+            setTimeout(() => { // If dragging, wait a bit to see if it just recently stopped.
+                if (!this._radiusDragActive) this._resetHandles(this._circleRadiusHandlesId);
+            }, 125);
+        } else {
+            this._resetHandles(this._circleRadiusHandlesId);
+        }
+    }
+
+    /**
+     * Set pointer cursor when moving over circle fill, and it's clickable.
+     * @param {MapMouseEvent} event
+     * @private
+     */
+    _onCircleFillMouseMove(event) {
+        if (this._eventEmitter.listeners('click').length > 0 && !this._pointOnHandle(event.point)) {
+            event.target.getCanvas().style.cursor = 'pointer';
+        }
+    }
+
+    /**
+     * Stop listening to circle fill events.
+     * @private
+     */
+    _onCircleFillSuspendEvents() {
+        this._unbindCircleFillListeners();
+    }
+
+    /**
+     * Start listening to circle fill events again.
+     * @private
+     */
+    _onCircleFillResumeEvents() {
+        this._bindCircleFillListeners();
+    }
+
+    /**
+     * Fire 'contextmenu' event.
+     * @param {MapMouseEvent} event
+     * @private
+     */
+    _onCircleFillContextMenu(event) {
+        if (this._pointOnHandle(event.point)) {
+            /* No click events while on a center/radius edit handle. */ return;
+        }
+
+        if (event.originalEvent.ctrlKey && MapboxCircle._checkIfBrowserIsSafari()) {
+            // This hack comes from SPFAM-1090, aimed towards eliminating the extra 'click' event that's
+            // emitted by Safari when performing a right-click by holding the ctrl button.
+            this.__safariContextMenuEventHackEnabled = true;
+        } else {
+            this._eventEmitter.emit('contextmenu', event);
+        }
+    }
+
+    /**
+     * Fire 'click' event.
+     * @param {MapMouseEvent} event
+     * @private
+     */
+    _onCircleFillClick(event) {
+        if (this._pointOnHandle(event.point)) {
+            /* No click events while on a center/radius edit handle. */ return;
+        }
+
+        if (!this.__safariContextMenuEventHackEnabled) {
+            this._eventEmitter.emit('click', event);
+        } else {
+            this._eventEmitter.emit('contextmenu', event);
+            this.__safariContextMenuEventHackEnabled = false;
+        }
+    }
+
+    /**
+     * Remove pointer cursor when leaving circle fill.
+     * @param {MapMouseEvent} event
+     * @private
+     */
+    _onCircleFillMouseLeave(event) {
+        if (this._eventEmitter.listeners('click').length > 0 && !this._pointOnHandle(event.point)) {
+            event.target.getCanvas().style.cursor = '';
+        }
+    }
+
+    /**
+     * When map style is changed, remove circle assets from map and add it back on next MapboxGL 'styledata' event.
+     * @param {MapDataEvent} event
+     * @private
+     */
+    _onMapStyleDataLoading(event) {
+        if (this.map) {
+            this.map.once('styledata', () => {
+                // noinspection JSUnresolvedVariable
+                this.addTo(event.target);
+            });
+            this.remove();
+        }
+    }
+
+    /**
+     * Add all static listeners for center handle.
+     * @param {mapboxgl.Map} [map]
+     * @private
+     */
+    _bindCenterHandleListeners(map) {
+        map = map || this.map;
+        const layerId = this._circleCenterHandleId;
+        map.on('mouseenter', layerId, this._onCenterHandleMouseEnter);
+        map.on('mousedown', layerId, this._onCenterHandleMouseDown);
+        map.on('mouseleave', layerId, this._onCenterHandleMouseLeave);
+    }
+
+    /**
+     * Remove all static listeners for center handle.
+     * @param {mapboxgl.Map} [map]
+     * @private
+     */
+    _unbindCenterHandleListeners(map) {
+        map = map || this.map;
+        const layerId = this._circleCenterHandleId;
+        map.off('mouseenter', layerId, this._onCenterHandleMouseEnter);
+        map.off('mousedown', layerId, this._onCenterHandleMouseDown);
+        map.off('mouseleave', layerId, this._onCenterHandleMouseLeave);
+    }
+
+    /**
+     * Add all static listeners for radius handles.
+     * @param {mapboxgl.Map} [map]
+     * @private
+     */
+    _bindRadiusHandlesListeners(map) {
+        map = map || this.map;
+        const layerId = this._circleRadiusHandlesId;
+        map.on('mouseenter', layerId, this._onRadiusHandlesMouseEnter);
+        map.on('mousedown', layerId, this._onRadiusHandlesMouseDown);
+        map.on('mouseleave', layerId, this._onRadiusHandlesMouseLeave);
+    }
+
+    /**
+     * Remove all static listeners for radius handles.
+     * @param {mapboxgl.Map} [map]
+     * @private
+     */
+    _unbindRadiusHandlesListeners(map) {
+        map = map || this.map;
+        const layerId = this._circleRadiusHandlesId;
+        map.off('mouseenter', layerId, this._onRadiusHandlesMouseEnter);
+        map.off('mousedown', layerId, this._onRadiusHandlesMouseDown);
+        map.off('mouseleave', layerId, this._onRadiusHandlesMouseLeave);
+    }
+
+    /**
+     * Add all click/contextmenu listeners for circle fill layer.
+     * @param {mapboxgl.Map} [map]
+     * @private
+     */
+    _bindCircleFillListeners(map) {
+        map = map || this.map;
+        const layerId = this._circleFillId;
+        map.on('click', layerId, this._onCircleFillClick);
+        map.on('contextmenu', layerId, this._onCircleFillContextMenu);
+        map.on('mousemove', layerId, this._onCircleFillMouseMove);
+        map.on('mouseleave', layerId, this._onCircleFillMouseLeave);
+    }
+
+    /**
+     * Remove all click/contextmenu listeners for circle fill.
+     * @param {mapboxgl.Map} [map]
+     * @private
+     */
+    _unbindCircleFillListeners(map) {
+        map = map || this.map;
+        const layerId = this._circleFillId;
+        map.off('click', layerId, this._onCircleFillClick);
+        map.off('contextmenu', layerId, this._onCircleFillContextMenu);
+        map.off('mousemove', layerId, this._onCircleFillMouseMove);
+        map.off('mouseleave', layerId, this._onCircleFillMouseLeave);
+    }
+
+    /**
+     * Add suspend/resume listeners for `__MONOSTATE.broadcast` event emitter.
+     * @private
+     */
+    _bindBroadcastListeners() {
+        MapboxCircle.__MONOSTATE.broadcast.on('suspendCenterHandleListeners', this._onCenterHandleSuspendEvents);
+        MapboxCircle.__MONOSTATE.broadcast.on('resumeCenterHandleListeners', this._onCenterHandleResumeEvents);
+
+        MapboxCircle.__MONOSTATE.broadcast.on('suspendRadiusHandlesListeners', this._onRadiusHandlesSuspendEvents);
+        MapboxCircle.__MONOSTATE.broadcast.on('resumeRadiusHandlesListeners', this._onRadiusHandlesResumeEvents);
+
+        MapboxCircle.__MONOSTATE.broadcast.on('suspendCircleFillListeners', this._onCircleFillSuspendEvents);
+        MapboxCircle.__MONOSTATE.broadcast.on('resumeCircleFillListeners', this._onCircleFillResumeEvents);
+    }
+
+    /**
+     * Remove suspend/resume handlers from `__MONOSTATE.broadcast` emitter.
+     * @private
+     */
+    _unbindBroadcastListeners() {
+        MapboxCircle.__MONOSTATE.broadcast.removeListener(
+            'suspendCenterHandleListeners', this._onCenterHandleSuspendEvents);
+        MapboxCircle.__MONOSTATE.broadcast.removeListener(
+            'resumeCenterHandleListeners', this._onCenterHandleResumeEvents);
+
+        MapboxCircle.__MONOSTATE.broadcast.removeListener(
+            'suspendRadiusHandlesListeners', this._onRadiusHandlesSuspendEvents);
+        MapboxCircle.__MONOSTATE.broadcast.removeListener(
+            'resumeRadiusHandlesListeners', this._onRadiusHandlesResumeEvents);
+
+        MapboxCircle.__MONOSTATE.broadcast.removeListener(
+            'suspendCircleFillListeners', this._onCircleFillSuspendEvents);
+        MapboxCircle.__MONOSTATE.broadcast.removeListener(
+            'resumeCircleFillListeners', this._onCircleFillResumeEvents);
+    }
+
+    /**
+     * Add circle to `__MONOSTATE.activeEditableCircles` array and increase max broadcasting listeners by 1.
+     * @param {MapboxCircle} circleObject
+     * @private
+     */
+    static _addActiveEditableCircle(circleObject) {
+        MapboxCircle.__MONOSTATE.activeEditableCircles.push(circleObject);
+        MapboxCircle.__MONOSTATE.broadcast.setMaxListeners(
+            MapboxCircle.__MONOSTATE.activeEditableCircles.length);
+    }
+
+    /**
+     * Remove circle from `__MONOSTATE.activeEditableCircles` array and decrease max broadcasting listeners by 1.
+     * @param {MapboxCircle} circleObject
+     * @private
+     */
+    static _removeActiveEditableCircle(circleObject) {
+        MapboxCircle.__MONOSTATE.activeEditableCircles.splice(
+            MapboxCircle.__MONOSTATE.activeEditableCircles.indexOf(circleObject), 1);
+        MapboxCircle.__MONOSTATE.broadcast.setMaxListeners(
+            MapboxCircle.__MONOSTATE.activeEditableCircles.length);
+    }
+
+    /**
+     * @return {Object} GeoJSON map source for the circle.
+     * @private
+     */
+    _getCircleMapSource() {
+        return {
+            type: 'geojson',
+            data: this._getCircleGeoJSON(),
+            buffer: 1
+        };
+    }
+
+    /**
+     * @return {Object} GeoJSON map source for center handle.
+     * @private
+     */
+    _getCenterHandleMapSource() {
+        return {
+            type: 'geojson',
+            data: this._getCenterHandleGeoJSON(),
+            buffer: 1
+        };
+    }
+
+    /**
+     * @return {Object} GeoJSON map source for radius handles.
+     * @private
+     */
+    _getRadiusHandlesMapSource() {
+        return {
+            type: 'geojson',
+            data: this._getRadiusHandlesGeoJSON(),
+            buffer: 1
+        };
+    }
+
+    /**
+     * @return {Object} Style layer for the stroke around the circle.
+     * @private
+     */
+    _getCircleStrokeLayer() {
+        return {
+            id: this._circleStrokeId,
+            type: 'line',
+            source: this._circleSourceId,
+            paint: {
+                'line-color': this.options.strokeColor,
+                'line-width': this.options.strokeWeight,
+                'line-opacity': this.options.strokeOpacity
+            },
+            filter: ['==', '$type', 'Polygon']
+        };
+    }
+
+    /**
+     * @return {Object} Style layer for the circle fill.
+     * @private
+     */
+    _getCircleFillLayer() {
+        return {
+            id: this._circleFillId,
+            type: 'fill',
+            source: this._circleSourceId,
+            paint: {
+                'fill-color': this.options.fillColor,
+                'fill-opacity': this.options.fillOpacity
+            },
+            filter: ['==', '$type', 'Polygon']
+        };
+    }
+
+    /**
+     * @return {Object} Style layer for the center handle's stroke.
+     * @private
+     */
+    _getCenterHandleStrokeLayer() {
+        if (this._centerDragActive && this.radius < 10000) {
+            // Inspired by node_modules/mapbox-gl/src/ui/control/scale_control.js:getDistance
+            const y = this.map._container.clientHeight / 2;
+            const x = this.map._container.clientWidth;
+            const horizontalPixelsPerMeter = x / turfDistance(
+                this.map.unproject([0, y]).toArray(), this.map.unproject([x, y]).toArray(), 'meters');
+            return {
+                id: this._circleCenterHandleStrokeId,
+                type: 'circle',
+                source: this._circleCenterHandleSourceId,
+                paint: {
+                    'circle-radius': horizontalPixelsPerMeter * this.radius,
+                    'circle-opacity': 0,
+                    'circle-stroke-color': this.options.strokeColor,
+                    'circle-stroke-opacity': this.options.strokeOpacity * .5,
+                    'circle-stroke-width': this.options.strokeWeight
+                },
+                filter: ['==', '$type', 'Point']
+            };
+        } else {
+            return {
+                id: this._circleCenterHandleStrokeId,
+                type: 'line',
+                source: this._circleCenterHandleSourceId,
+                paint: {
+                    'line-color': this.options.strokeColor,
+                    'line-width': this.options.strokeWeight,
+                    'line-opacity': this.options.strokeOpacity * 0.5
+                },
+                filter: ['==', '$type', 'Polygon']
+            };
+        }
+    }
+
+    /**
+     * @return {Object} Style layer for the radius handles' stroke.
+     * @private
+     */
+    _getRadiusHandlesStrokeLayer() {
+        return {
+            id: this._circleRadiusHandlesStrokeId,
+            type: 'line',
+            source: this._circleRadiusHandlesSourceId,
+            paint: {
+                'line-color': this.options.strokeColor,
+                'line-width': this.options.strokeWeight,
+                'line-opacity': this.options.strokeOpacity * 0.5
+            },
+            filter: ['==', '$type', 'Polygon']
+        };
+    }
+
+    /**
+     * @return {Object} Default paint style for edit handles.
+     * @private
+     */
+    _getEditHandleDefaultPaintOptions() {
+        return {
+            'circle-color': '#ffffff',
+            'circle-radius': 3.75,
+            'circle-stroke-color': this.options.strokeColor,
+            'circle-stroke-opacity': this.options.strokeOpacity,
+            'circle-stroke-width': this.options.strokeWeight
+        };
+    }
+
+    /**
+     * @return {Object} Style layer for the circle's center handle.
+     * @private
+     */
+    _getCircleCenterHandleLayer() {
+        return {
+            id: this._circleCenterHandleId,
+            type: 'circle',
+            source: this._circleCenterHandleSourceId,
+            paint: this._getEditHandleDefaultPaintOptions(),
+            filter: ['==', '$type', 'Point']
+        };
+    }
+
+    /**
+     * @return {Object} Style layer for the circle's radius handles.
+     * @private
+     */
+    _getCircleRadiusHandlesLayer() {
+        return {
+            id: this._circleRadiusHandlesId,
+            type: 'circle',
+            source: this._circleRadiusHandlesSourceId,
+            paint: this._getEditHandleDefaultPaintOptions(),
+            filter: ['==', '$type', 'Point']
+        };
+    }
+
+    /**
+     * Subscribe to circle event.
+     * @param {string} event Event name; `click`, `contextmenu`, `centerchanged` or `radiuschanged`
+     * @param {Function} fn Event handler, invoked with the target circle as first argument on
+     *     *'centerchanged'* and *'radiuschanged'*, or a *MapMouseEvent* on *'click'* and *'contextmenu'* events
+     * @param {?boolean} [onlyOnce=false] Remove handler after first call
+     * @return {MapboxCircle}
+     * @public
+     */
+    on(event, fn, onlyOnce) {
+        if (onlyOnce) {
+            this._eventEmitter.once(event, fn);
+        } else {
+            this._eventEmitter.addListener(event, fn);
+        }
+        return this;
+    }
+
+    /**
+     * Alias for registering event listener with *onlyOnce=true*, see {@link #on}.
+     * @param {string} event Event name
+     * @param {Function} fn Event handler
+     * @return {MapboxCircle}
+     * @public
+     */
+    once(event, fn) {
+        return this.on(event, fn, true);
+    }
+
+    /**
+     * Unsubscribe to circle event.
+     * @param {string} event Event name
+     * @param {Function} fn Handler to be removed
+     * @return {MapboxCircle}
+     * @public
+     */
+    off(event, fn) {
+        this._eventEmitter.removeListener(event, fn);
+        return this;
+    }
+
+    /**
+     * @param {mapboxgl.Map} map Target map for adding and initializing circle Mapbox GL layers/data/listeners.
+     * @param {?string} [before='waterway-label'] Layer ID to insert the circle layers before; explicitly pass `null` to
+     *     get the circle assets appended at the end of map-layers array
+     * @return {MapboxCircle}
+     * @public
+     */
+    addTo(map, before) {
+        if (typeof before === 'undefined' && map.getLayer('waterway-label')) {
+            before = 'waterway-label';
+        }
+        const addCircleAssetsOnMap = () => {
+            map.addSource(this._circleSourceId, this._getCircleMapSource());
+
+            map.addLayer(this._getCircleStrokeLayer(), before);
+            map.addLayer(this._getCircleFillLayer(), before);
+            this._bindCircleFillListeners(map);
+            map.on('zoomend', this._onZoomEnd);
+
+            if (this.options.editable) {
+                map.addSource(this._circleCenterHandleSourceId, this._getCenterHandleMapSource());
+                map.addSource(this._circleRadiusHandlesSourceId, this._getRadiusHandlesMapSource());
+
+                map.addLayer(this._getCircleCenterHandleLayer());
+                this._bindCenterHandleListeners(map);
+
+                map.addLayer(this._getCircleRadiusHandlesLayer());
+                this._bindRadiusHandlesListeners(map);
+
+                this.on('centerchanged', this._onCenterChanged).on('radiuschanged', this._onRadiusChanged);
+
+                MapboxCircle._addActiveEditableCircle(this);
+                this._bindBroadcastListeners();
+            }
+
+            map.on('styledataloading', this._onMapStyleDataLoading);
+
+            const target = map.getContainer();
+            this.observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    const removedNodes = Array.from(mutation.removedNodes);
+                    const directMatch = removedNodes.indexOf(target) > -1;
+                    const parentMatch = removedNodes.some((parent) => parent.contains(target));
+                    if (directMatch || parentMatch) {
+                        this.remove();
+                    }
+                });
+            });
+
+            let config = {
+                subtree: true,
+                childList: true
+            };
+            this.observer.observe(document.body, config);
+            this.map = map;
+            this.zoom = map.getZoom();
+            this._eventEmitter.emit('rendered', this);
+        };
+
+        // noinspection JSUnresolvedVariable
+        if (map._loaded) {
+            if (map.isStyleLoaded()) {
+                addCircleAssetsOnMap();
+            } else {
+                map.once('render', addCircleAssetsOnMap);
+            }
+        } else {
+            map.once('load', addCircleAssetsOnMap);
+        }
+
+        return this;
+    }
+
+    /**
+     * Remove source data, layers and listeners from map.
+     * @return {MapboxCircle}
+     * @public
+     */
+    remove() {
+        this.map.off('styledataloading', this._onMapStyleDataLoading);
+
+        this.observer.disconnect();
+
+        if (this.options.editable) {
+            this._unbindBroadcastListeners();
+            MapboxCircle._removeActiveEditableCircle(this);
+
+            this.off('radiuschanged', this._onRadiusChanged).off('centerchanged', this._onCenterChanged);
+
+            this._unbindRadiusHandlesListeners();
+            if (this.map.getLayer(this._circleRadiusHandlesId)) {
+                this.map.removeLayer(this._circleRadiusHandlesId);
+            }
+
+            this._unbindCenterHandleListeners();
+            if (this.map.getLayer(this._circleCenterHandleId)) {
+                this.map.removeLayer(this._circleCenterHandleId);
+            }
+
+            if (this.map.getSource(this._circleRadiusHandlesSourceId)) {
+                this.map.removeSource(this._circleRadiusHandlesSourceId);
+            }
+
+            if (this.map.getSource(this._circleCenterHandleSourceId)) {
+                this.map.removeSource(this._circleCenterHandleSourceId);
+            }
+        }
+
+        this.map.off('zoomend', this._onZoomEnd);
+        this._unbindCircleFillListeners();
+        if (this.map.getLayer(this._circleFillId)) {
+            this.map.removeLayer(this._circleFillId);
+        }
+        if (this.map.getLayer(this._circleStrokeId)) {
+            this.map.removeLayer(this._circleStrokeId);
+        }
+
+        if (this.map.getSource(this._circleSourceId)) {
+            this.map.removeSource(this._circleSourceId);
+        }
+
+        this.map = null;
+
+        return this;
+    }
+
+    /**
+     * @return {{lat: number, lng: number}} Circle center position
+     * @public
+     */
+    getCenter() {
+        return {lat: this.center[1], lng: this.center[0]};
+    }
+
+    /**
+     * @param {{lat: number, lng: number}} position
+     * @return {MapboxCircle}
+     * @public
+     */
+    setCenter(position) {
+        const applyUpdate = () => {
+            this.center = [position.lng, position.lat];
+            if (this.center[0] !== this._lastCenterLngLat[0] && this.center[1] !== this._lastCenterLngLat[1]) {
+                this._eventEmitter.emit('centerchanged', this);
+            }
+        };
+
+        if (this.map) {
+            applyUpdate();
+        } else {
+            this.on('rendered', applyUpdate, true);
+        }
+
+        return this;
+    }
+
+    /**
+     * @return {number} Current radius, in meters
+     * @public
+     */
+    getRadius() {
+        return this.radius;
+    }
+
+    /**
+     * @param {number} newRadius Meter radius
+     * @return {MapboxCircle}
+     * @public
+     */
+    setRadius(newRadius) {
+        newRadius = Math.round(newRadius);
+        const applyUpdate = () => {
+            this.radius = newRadius;
+            if (this._lastRadius !== newRadius && this.radius === newRadius) { // `this.radius =` subject to min/max lim
+                this._eventEmitter.emit('radiuschanged', this);
+            }
+        };
+
+        if (this.map) {
+            applyUpdate();
+        } else {
+            this.on('rendered', applyUpdate, true);
+        }
+
+        return this;
+    }
+
+    /**
+     * @return {{sw: {lat: number, lng: number}, ne: {lat: number, lng: number}}} Southwestern/northeastern bounds
+     * @public
+     */
+    getBounds() {
+        const bboxPolyCoordinates = turfTruncate(turfBboxPoly(turfBbox(this._circle)), 6).geometry.coordinates[0];
+        return {
+            sw: {lat: bboxPolyCoordinates[0][1], lng: bboxPolyCoordinates[0][0]},
+            ne: {lat: bboxPolyCoordinates[2][1], lng: bboxPolyCoordinates[2][0]}
+        };
+    }
+}
+
+MapboxCircle.__MONOSTATE = {
+    instanceIdCounter: 0,
+    activeEditableCircles: [],
+    broadcast: new EventEmitter()
+};
+
+module.exports = exports = MapboxCircle;
+
+
+/***/ }),
+
+/***/ "./node_modules/mapbox-gl-circle/node_modules/@turf/bearing/index.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/mapbox-gl-circle/node_modules/@turf/bearing/index.js ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getCoord = __webpack_require__(/*! @turf/invariant */ "./node_modules/mapbox-gl-circle/node_modules/@turf/invariant/index.js").getCoord;
+//http://en.wikipedia.org/wiki/Haversine_formula
+//http://www.movable-type.co.uk/scripts/latlong.html
+
+/**
+ * Takes two {@link Point|points} and finds the geographic bearing between them,
+ * i.e. the angle measured in degrees from the north line (0 degrees)
+ *
+ * @name bearing
+ * @param {Geometry|Feature<Point>|Array<number>} start starting Point
+ * @param {Geometry|Feature<Point>|Array<number>} end ending Point
+ * @param {boolean} [final=false] calculates the final bearing if true
+ * @returns {number} bearing in decimal degrees, between -180 and 180 degrees (positive clockwise)
+ * @example
+ * var point1 = turf.point([-75.343, 39.984]);
+ * var point2 = turf.point([-75.534, 39.123]);
+ *
+ * var bearing = turf.bearing(point1, point2);
+ *
+ * //addToMap
+ * var addToMap = [point1, point2]
+ * point1.properties['marker-color'] = '#f00'
+ * point2.properties['marker-color'] = '#0f0'
+ * point1.properties.bearing = bearing
+ */
+function bearing(start, end, final) {
+    if (final === true) return calculateFinalBearing(start, end);
+
+    var degrees2radians = Math.PI / 180;
+    var radians2degrees = 180 / Math.PI;
+    var coordinates1 = getCoord(start);
+    var coordinates2 = getCoord(end);
+
+    var lon1 = degrees2radians * coordinates1[0];
+    var lon2 = degrees2radians * coordinates2[0];
+    var lat1 = degrees2radians * coordinates1[1];
+    var lat2 = degrees2radians * coordinates2[1];
+    var a = Math.sin(lon2 - lon1) * Math.cos(lat2);
+    var b = Math.cos(lat1) * Math.sin(lat2) -
+        Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+
+    var bear = radians2degrees * Math.atan2(a, b);
+
+    return bear;
+}
+
+/**
+ * Calculates Final Bearing
+ * @private
+ * @param {Feature<Point>} start starting Point
+ * @param {Feature<Point>} end ending Point
+ * @returns {number} bearing
+ */
+function calculateFinalBearing(start, end) {
+    // Swap start & end
+    var bear = bearing(end, start);
+    bear = (bear + 180) % 360;
+    return bear;
+}
+
+module.exports = bearing;
+
+
+/***/ }),
+
+/***/ "./node_modules/mapbox-gl-circle/node_modules/@turf/circle/index.js":
+/*!**************************************************************************!*\
+  !*** ./node_modules/mapbox-gl-circle/node_modules/@turf/circle/index.js ***!
+  \**************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var destination = __webpack_require__(/*! @turf/destination */ "./node_modules/mapbox-gl-circle/node_modules/@turf/destination/index.js");
+var polygon = __webpack_require__(/*! @turf/helpers */ "./node_modules/mapbox-gl-circle/node_modules/@turf/helpers/index.js").polygon;
+
+/**
+ * Takes a {@link Point} and calculates the circle polygon given a radius in degrees, radians, miles, or kilometers; and steps for precision.
+ *
+ * @name circle
+ * @param {Feature<Point>|number[]} center center point
+ * @param {number} radius radius of the circle
+ * @param {number} [steps=64] number of steps
+ * @param {string} [units=kilometers] miles, kilometers, degrees, or radians
+ * @param {Object} [properties={}] properties
+ * @returns {Feature<Polygon>} circle polygon
+ * @example
+ * var center = [-75.343, 39.984];
+ * var radius = 5;
+ * var steps = 10;
+ * var units = 'kilometers';
+ * var properties = {foo: 'bar'};
+ *
+ * var circle = turf.circle(center, radius, steps, units, properties);
+ *
+ * //addToMap
+ * var addToMap = [turf.point(center), circle]
+ */
+module.exports = function (center, radius, steps, units, properties) {
+    // validation
+    if (!center) throw new Error('center is required');
+    if (!radius) throw new Error('radius is required');
+
+    // default params
+    steps = steps || 64;
+    properties = properties || center.properties || {};
+
+    var coordinates = [];
+    for (var i = 0; i < steps; i++) {
+        coordinates.push(destination(center, radius, i * 360 / steps, units).geometry.coordinates);
+    }
+    coordinates.push(coordinates[0]);
+
+    return polygon([coordinates], properties);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mapbox-gl-circle/node_modules/@turf/destination/index.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/mapbox-gl-circle/node_modules/@turf/destination/index.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+//http://en.wikipedia.org/wiki/Haversine_formula
+//http://www.movable-type.co.uk/scripts/latlong.html
+var getCoord = __webpack_require__(/*! @turf/invariant */ "./node_modules/mapbox-gl-circle/node_modules/@turf/invariant/index.js").getCoord;
+var helpers = __webpack_require__(/*! @turf/helpers */ "./node_modules/mapbox-gl-circle/node_modules/@turf/helpers/index.js");
+var point = helpers.point;
+var distanceToRadians = helpers.distanceToRadians;
+
+/**
+ * Takes a {@link Point} and calculates the location of a destination point given a distance in degrees, radians, miles, or kilometers; and bearing in degrees. This uses the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula) to account for global curvature.
+ *
+ * @name destination
+ * @param {Geometry|Feature<Point>|Array<number>} origin starting point
+ * @param {number} distance distance from the origin point
+ * @param {number} bearing ranging from -180 to 180
+ * @param {string} [units=kilometers] miles, kilometers, degrees, or radians
+ * @returns {Feature<Point>} destination point
+ * @example
+ * var point = turf.point([-75.343, 39.984]);
+ * var distance = 50;
+ * var bearing = 90;
+ * var units = 'miles';
+ *
+ * var destination = turf.destination(point, distance, bearing, units);
+ *
+ * //addToMap
+ * var addToMap = [point, destination]
+ * destination.properties['marker-color'] = '#f00';
+ * point.properties['marker-color'] = '#0f0';
+ */
+module.exports = function (origin, distance, bearing, units) {
+    var degrees2radians = Math.PI / 180;
+    var radians2degrees = 180 / Math.PI;
+    var coordinates1 = getCoord(origin);
+    var longitude1 = degrees2radians * coordinates1[0];
+    var latitude1 = degrees2radians * coordinates1[1];
+    var bearing_rad = degrees2radians * bearing;
+
+    var radians = distanceToRadians(distance, units);
+
+    var latitude2 = Math.asin(Math.sin(latitude1) * Math.cos(radians) +
+        Math.cos(latitude1) * Math.sin(radians) * Math.cos(bearing_rad));
+    var longitude2 = longitude1 + Math.atan2(Math.sin(bearing_rad) * Math.sin(radians) * Math.cos(latitude1),
+        Math.cos(radians) - Math.sin(latitude1) * Math.sin(latitude2));
+
+    return point([radians2degrees * longitude2, radians2degrees * latitude2]);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mapbox-gl-circle/node_modules/@turf/distance/index.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/mapbox-gl-circle/node_modules/@turf/distance/index.js ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getCoord = __webpack_require__(/*! @turf/invariant */ "./node_modules/mapbox-gl-circle/node_modules/@turf/invariant/index.js").getCoord;
+var radiansToDistance = __webpack_require__(/*! @turf/helpers */ "./node_modules/mapbox-gl-circle/node_modules/@turf/helpers/index.js").radiansToDistance;
+//http://en.wikipedia.org/wiki/Haversine_formula
+//http://www.movable-type.co.uk/scripts/latlong.html
+
+/**
+ * Calculates the distance between two {@link Point|points} in degrees, radians,
+ * miles, or kilometers. This uses the
+ * [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula)
+ * to account for global curvature.
+ *
+ * @name distance
+ * @param {Geometry|Feature<Point>|Array<number>} from origin point
+ * @param {Geometry|Feature<Point>|Array<number>} to destination point
+ * @param {string} [units=kilometers] can be degrees, radians, miles, or kilometers
+ * @returns {number} distance between the two points
+ * @example
+ * var from = turf.point([-75.343, 39.984]);
+ * var to = turf.point([-75.534, 39.123]);
+ *
+ * var distance = turf.distance(from, to, "miles");
+ *
+ * //addToMap
+ * var addToMap = [from, to];
+ * from.properties.distance = distance;
+ * to.properties.distance = distance;
+ */
+module.exports = function (from, to, units) {
+    var degrees2radians = Math.PI / 180;
+    var coordinates1 = getCoord(from);
+    var coordinates2 = getCoord(to);
+    var dLat = degrees2radians * (coordinates2[1] - coordinates1[1]);
+    var dLon = degrees2radians * (coordinates2[0] - coordinates1[0]);
+    var lat1 = degrees2radians * coordinates1[1];
+    var lat2 = degrees2radians * coordinates2[1];
+
+    var a = Math.pow(Math.sin(dLat / 2), 2) +
+          Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
+
+    return radiansToDistance(2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)), units);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mapbox-gl-circle/node_modules/@turf/helpers/index.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/mapbox-gl-circle/node_modules/@turf/helpers/index.js ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Wraps a GeoJSON {@link Geometry} in a GeoJSON {@link Feature}.
+ *
+ * @name feature
+ * @param {Geometry} geometry input geometry
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {Feature} a GeoJSON Feature
+ * @example
+ * var geometry = {
+ *   "type": "Point",
+ *   "coordinates": [110, 50]
+ * };
+ *
+ * var feature = turf.feature(geometry);
+ *
+ * //=feature
+ */
+function feature(geometry, properties, bbox, id) {
+    if (geometry === undefined) throw new Error('geometry is required');
+    if (properties && properties.constructor !== Object) throw new Error('properties must be an Object');
+    if (bbox && bbox.length !== 4) throw new Error('bbox must be an Array of 4 numbers');
+    if (id && ['string', 'number'].indexOf(typeof id) === -1) throw new Error('id must be a number or a string');
+
+    var feat = {type: 'Feature'};
+    if (id) feat.id = id;
+    if (bbox) feat.bbox = bbox;
+    feat.properties = properties || {};
+    feat.geometry = geometry;
+    return feat;
+}
+
+/**
+ * Creates a GeoJSON {@link Geometry} from a Geometry string type & coordinates.
+ * For GeometryCollection type use `helpers.geometryCollection`
+ *
+ * @name geometry
+ * @param {string} type Geometry Type
+ * @param {Array<number>} coordinates Coordinates
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @returns {Geometry} a GeoJSON Geometry
+ * @example
+ * var type = 'Point';
+ * var coordinates = [110, 50];
+ *
+ * var geometry = turf.geometry(type, coordinates);
+ *
+ * //=geometry
+ */
+function geometry(type, coordinates, bbox) {
+    // Validation
+    if (!type) throw new Error('type is required');
+    if (!coordinates) throw new Error('coordinates is required');
+    if (!Array.isArray(coordinates)) throw new Error('coordinates must be an Array');
+    if (bbox && bbox.length !== 4) throw new Error('bbox must be an Array of 4 numbers');
+
+    var geom;
+    switch (type) {
+    case 'Point': geom = point(coordinates).geometry; break;
+    case 'LineString': geom = lineString(coordinates).geometry; break;
+    case 'Polygon': geom = polygon(coordinates).geometry; break;
+    case 'MultiPoint': geom = multiPoint(coordinates).geometry; break;
+    case 'MultiLineString': geom = multiLineString(coordinates).geometry; break;
+    case 'MultiPolygon': geom = multiPolygon(coordinates).geometry; break;
+    default: throw new Error(type + ' is invalid');
+    }
+    if (bbox) geom.bbox = bbox;
+    return geom;
+}
+
+/**
+ * Takes coordinates and properties (optional) and returns a new {@link Point} feature.
+ *
+ * @name point
+ * @param {Array<number>} coordinates longitude, latitude position (each in decimal degrees)
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {Feature<Point>} a Point feature
+ * @example
+ * var point = turf.point([-75.343, 39.984]);
+ *
+ * //=point
+ */
+function point(coordinates, properties, bbox, id) {
+    if (!coordinates) throw new Error('No coordinates passed');
+    if (coordinates.length === undefined) throw new Error('Coordinates must be an array');
+    if (coordinates.length < 2) throw new Error('Coordinates must be at least 2 numbers long');
+    if (!isNumber(coordinates[0]) || !isNumber(coordinates[1])) throw new Error('Coordinates must contain numbers');
+
+    return feature({
+        type: 'Point',
+        coordinates: coordinates
+    }, properties, bbox, id);
+}
+
+/**
+ * Takes an array of LinearRings and optionally an {@link Object} with properties and returns a {@link Polygon} feature.
+ *
+ * @name polygon
+ * @param {Array<Array<Array<number>>>} coordinates an array of LinearRings
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {Feature<Polygon>} a Polygon feature
+ * @throws {Error} throw an error if a LinearRing of the polygon has too few positions
+ * or if a LinearRing of the Polygon does not have matching Positions at the beginning & end.
+ * @example
+ * var polygon = turf.polygon([[
+ *   [-2.275543, 53.464547],
+ *   [-2.275543, 53.489271],
+ *   [-2.215118, 53.489271],
+ *   [-2.215118, 53.464547],
+ *   [-2.275543, 53.464547]
+ * ]], { name: 'poly1', population: 400});
+ *
+ * //=polygon
+ */
+function polygon(coordinates, properties, bbox, id) {
+    if (!coordinates) throw new Error('No coordinates passed');
+
+    for (var i = 0; i < coordinates.length; i++) {
+        var ring = coordinates[i];
+        if (ring.length < 4) {
+            throw new Error('Each LinearRing of a Polygon must have 4 or more Positions.');
+        }
+        for (var j = 0; j < ring[ring.length - 1].length; j++) {
+            // Check if first point of Polygon contains two numbers
+            if (i === 0 && j === 0 && !isNumber(ring[0][0]) || !isNumber(ring[0][1])) throw new Error('Coordinates must contain numbers');
+            if (ring[ring.length - 1][j] !== ring[0][j]) {
+                throw new Error('First and last Position are not equivalent.');
+            }
+        }
+    }
+
+    return feature({
+        type: 'Polygon',
+        coordinates: coordinates
+    }, properties, bbox, id);
+}
+
+/**
+ * Creates a {@link LineString} based on a
+ * coordinate array. Properties can be added optionally.
+ *
+ * @name lineString
+ * @param {Array<Array<number>>} coordinates an array of Positions
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {Feature<LineString>} a LineString feature
+ * @throws {Error} if no coordinates are passed
+ * @example
+ * var linestring1 = turf.lineString([
+ *   [-21.964416, 64.148203],
+ *   [-21.956176, 64.141316],
+ *   [-21.93901, 64.135924],
+ *   [-21.927337, 64.136673]
+ * ]);
+ * var linestring2 = turf.lineString([
+ *   [-21.929054, 64.127985],
+ *   [-21.912918, 64.134726],
+ *   [-21.916007, 64.141016],
+ *   [-21.930084, 64.14446]
+ * ], {name: 'line 1', distance: 145});
+ *
+ * //=linestring1
+ *
+ * //=linestring2
+ */
+function lineString(coordinates, properties, bbox, id) {
+    if (!coordinates) throw new Error('No coordinates passed');
+    if (coordinates.length < 2) throw new Error('Coordinates must be an array of two or more positions');
+    // Check if first point of LineString contains two numbers
+    if (!isNumber(coordinates[0][1]) || !isNumber(coordinates[0][1])) throw new Error('Coordinates must contain numbers');
+
+    return feature({
+        type: 'LineString',
+        coordinates: coordinates
+    }, properties, bbox, id);
+}
+
+/**
+ * Takes one or more {@link Feature|Features} and creates a {@link FeatureCollection}.
+ *
+ * @name featureCollection
+ * @param {Feature[]} features input features
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {FeatureCollection} a FeatureCollection of input features
+ * @example
+ * var features = [
+ *  turf.point([-75.343, 39.984], {name: 'Location A'}),
+ *  turf.point([-75.833, 39.284], {name: 'Location B'}),
+ *  turf.point([-75.534, 39.123], {name: 'Location C'})
+ * ];
+ *
+ * var collection = turf.featureCollection(features);
+ *
+ * //=collection
+ */
+function featureCollection(features, bbox, id) {
+    if (!features) throw new Error('No features passed');
+    if (!Array.isArray(features)) throw new Error('features must be an Array');
+    if (bbox && bbox.length !== 4) throw new Error('bbox must be an Array of 4 numbers');
+    if (id && ['string', 'number'].indexOf(typeof id) === -1) throw new Error('id must be a number or a string');
+
+    var fc = {type: 'FeatureCollection'};
+    if (id) fc.id = id;
+    if (bbox) fc.bbox = bbox;
+    fc.features = features;
+    return fc;
+}
+
+/**
+ * Creates a {@link Feature<MultiLineString>} based on a
+ * coordinate array. Properties can be added optionally.
+ *
+ * @name multiLineString
+ * @param {Array<Array<Array<number>>>} coordinates an array of LineStrings
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {Feature<MultiLineString>} a MultiLineString feature
+ * @throws {Error} if no coordinates are passed
+ * @example
+ * var multiLine = turf.multiLineString([[[0,0],[10,10]]]);
+ *
+ * //=multiLine
+ */
+function multiLineString(coordinates, properties, bbox, id) {
+    if (!coordinates) throw new Error('No coordinates passed');
+
+    return feature({
+        type: 'MultiLineString',
+        coordinates: coordinates
+    }, properties, bbox, id);
+}
+
+/**
+ * Creates a {@link Feature<MultiPoint>} based on a
+ * coordinate array. Properties can be added optionally.
+ *
+ * @name multiPoint
+ * @param {Array<Array<number>>} coordinates an array of Positions
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {Feature<MultiPoint>} a MultiPoint feature
+ * @throws {Error} if no coordinates are passed
+ * @example
+ * var multiPt = turf.multiPoint([[0,0],[10,10]]);
+ *
+ * //=multiPt
+ */
+function multiPoint(coordinates, properties, bbox, id) {
+    if (!coordinates) throw new Error('No coordinates passed');
+
+    return feature({
+        type: 'MultiPoint',
+        coordinates: coordinates
+    }, properties, bbox, id);
+}
+
+/**
+ * Creates a {@link Feature<MultiPolygon>} based on a
+ * coordinate array. Properties can be added optionally.
+ *
+ * @name multiPolygon
+ * @param {Array<Array<Array<Array<number>>>>} coordinates an array of Polygons
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {Feature<MultiPolygon>} a multipolygon feature
+ * @throws {Error} if no coordinates are passed
+ * @example
+ * var multiPoly = turf.multiPolygon([[[[0,0],[0,10],[10,10],[10,0],[0,0]]]]);
+ *
+ * //=multiPoly
+ *
+ */
+function multiPolygon(coordinates, properties, bbox, id) {
+    if (!coordinates) throw new Error('No coordinates passed');
+
+    return feature({
+        type: 'MultiPolygon',
+        coordinates: coordinates
+    }, properties, bbox, id);
+}
+
+/**
+ * Creates a {@link Feature<GeometryCollection>} based on a
+ * coordinate array. Properties can be added optionally.
+ *
+ * @name geometryCollection
+ * @param {Array<Geometry>} geometries an array of GeoJSON Geometries
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Array<number>} [bbox] BBox [west, south, east, north]
+ * @param {string|number} [id] Identifier
+ * @returns {Feature<GeometryCollection>} a GeoJSON GeometryCollection Feature
+ * @example
+ * var pt = {
+ *     "type": "Point",
+ *       "coordinates": [100, 0]
+ *     };
+ * var line = {
+ *     "type": "LineString",
+ *     "coordinates": [ [101, 0], [102, 1] ]
+ *   };
+ * var collection = turf.geometryCollection([pt, line]);
+ *
+ * //=collection
+ */
+function geometryCollection(geometries, properties, bbox, id) {
+    if (!geometries) throw new Error('geometries is required');
+    if (!Array.isArray(geometries)) throw new Error('geometries must be an Array');
+
+    return feature({
+        type: 'GeometryCollection',
+        geometries: geometries
+    }, properties, bbox, id);
+}
+
+// https://en.wikipedia.org/wiki/Great-circle_distance#Radius_for_spherical_Earth
+var factors = {
+    miles: 3960,
+    nauticalmiles: 3441.145,
+    degrees: 57.2957795,
+    radians: 1,
+    inches: 250905600,
+    yards: 6969600,
+    meters: 6373000,
+    metres: 6373000,
+    centimeters: 6.373e+8,
+    centimetres: 6.373e+8,
+    kilometers: 6373,
+    kilometres: 6373,
+    feet: 20908792.65
+};
+
+var areaFactors = {
+    kilometers: 0.000001,
+    kilometres: 0.000001,
+    meters: 1,
+    metres: 1,
+    centimetres: 10000,
+    millimeter: 1000000,
+    acres: 0.000247105,
+    miles: 3.86e-7,
+    yards: 1.195990046,
+    feet: 10.763910417,
+    inches: 1550.003100006
+};
+/**
+ * Round number to precision
+ *
+ * @param {number} num Number
+ * @param {number} [precision=0] Precision
+ * @returns {number} rounded number
+ * @example
+ * turf.round(120.4321)
+ * //=120
+ *
+ * turf.round(120.4321, 2)
+ * //=120.43
+ */
+function round(num, precision) {
+    if (num === undefined || num === null || isNaN(num)) throw new Error('num is required');
+    if (precision && !(precision >= 0)) throw new Error('precision must be a positive number');
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(num * multiplier) / multiplier;
+}
+
+/**
+ * Convert a distance measurement (assuming a spherical Earth) from radians to a more friendly unit.
+ * Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
+ *
+ * @name radiansToDistance
+ * @param {number} radians in radians across the sphere
+ * @param {string} [units=kilometers] can be degrees, radians, miles, or kilometers inches, yards, metres, meters, kilometres, kilometers.
+ * @returns {number} distance
+ */
+function radiansToDistance(radians, units) {
+    if (radians === undefined || radians === null) throw new Error('radians is required');
+
+    var factor = factors[units || 'kilometers'];
+    if (!factor) throw new Error('units is invalid');
+    return radians * factor;
+}
+
+/**
+ * Convert a distance measurement (assuming a spherical Earth) from a real-world unit into radians
+ * Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
+ *
+ * @name distanceToRadians
+ * @param {number} distance in real units
+ * @param {string} [units=kilometers] can be degrees, radians, miles, or kilometers inches, yards, metres, meters, kilometres, kilometers.
+ * @returns {number} radians
+ */
+function distanceToRadians(distance, units) {
+    if (distance === undefined || distance === null) throw new Error('distance is required');
+
+    var factor = factors[units || 'kilometers'];
+    if (!factor) throw new Error('units is invalid');
+    return distance / factor;
+}
+
+/**
+ * Convert a distance measurement (assuming a spherical Earth) from a real-world unit into degrees
+ * Valid units: miles, nauticalmiles, inches, yards, meters, metres, centimeters, kilometres, feet
+ *
+ * @name distanceToDegrees
+ * @param {number} distance in real units
+ * @param {string} [units=kilometers] can be degrees, radians, miles, or kilometers inches, yards, metres, meters, kilometres, kilometers.
+ * @returns {number} degrees
+ */
+function distanceToDegrees(distance, units) {
+    return radians2degrees(distanceToRadians(distance, units));
+}
+
+/**
+ * Converts any bearing angle from the north line direction (positive clockwise)
+ * and returns an angle between 0-360 degrees (positive clockwise), 0 being the north line
+ *
+ * @name bearingToAngle
+ * @param {number} bearing angle, between -180 and +180 degrees
+ * @returns {number} angle between 0 and 360 degrees
+ */
+function bearingToAngle(bearing) {
+    if (bearing === null || bearing === undefined) throw new Error('bearing is required');
+
+    var angle = bearing % 360;
+    if (angle < 0) angle += 360;
+    return angle;
+}
+
+/**
+ * Converts an angle in radians to degrees
+ *
+ * @name radians2degrees
+ * @param {number} radians angle in radians
+ * @returns {number} degrees between 0 and 360 degrees
+ */
+function radians2degrees(radians) {
+    if (radians === null || radians === undefined) throw new Error('radians is required');
+
+    var degrees = radians % (2 * Math.PI);
+    return degrees * 180 / Math.PI;
+}
+
+/**
+ * Converts an angle in degrees to radians
+ *
+ * @name degrees2radians
+ * @param {number} degrees angle between 0 and 360 degrees
+ * @returns {number} angle in radians
+ */
+function degrees2radians(degrees) {
+    if (degrees === null || degrees === undefined) throw new Error('degrees is required');
+
+    var radians = degrees % 360;
+    return radians * Math.PI / 180;
+}
+
+
+/**
+ * Converts a distance to the requested unit.
+ * Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
+ *
+ * @param {number} distance to be converted
+ * @param {string} originalUnit of the distance
+ * @param {string} [finalUnit=kilometers] returned unit
+ * @returns {number} the converted distance
+ */
+function convertDistance(distance, originalUnit, finalUnit) {
+    if (distance === null || distance === undefined) throw new Error('distance is required');
+    if (!(distance >= 0)) throw new Error('distance must be a positive number');
+
+    var convertedDistance = radiansToDistance(distanceToRadians(distance, originalUnit), finalUnit || 'kilometers');
+    return convertedDistance;
+}
+
+/**
+ * Converts a area to the requested unit.
+ * Valid units: kilometers, kilometres, meters, metres, centimetres, millimeter, acre, mile, yard, foot, inch
+ * @param {number} area to be converted
+ * @param {string} [originalUnit=meters] of the distance
+ * @param {string} [finalUnit=kilometers] returned unit
+ * @returns {number} the converted distance
+ */
+function convertArea(area, originalUnit, finalUnit) {
+    if (area === null || area === undefined) throw new Error('area is required');
+    if (!(area >= 0)) throw new Error('area must be a positive number');
+
+    var startFactor = areaFactors[originalUnit || 'meters'];
+    if (!startFactor) throw new Error('invalid original units');
+
+    var finalFactor = areaFactors[finalUnit || 'kilometers'];
+    if (!finalFactor) throw new Error('invalid final units');
+
+    return (area / startFactor) * finalFactor;
+}
+
+/**
+ * isNumber
+ *
+ * @param {*} num Number to validate
+ * @returns {boolean} true/false
+ * @example
+ * turf.isNumber(123)
+ * //=true
+ * turf.isNumber('foo')
+ * //=false
+ */
+function isNumber(num) {
+    return !isNaN(num) && num !== null && !Array.isArray(num);
+}
+
+module.exports = {
+    feature: feature,
+    geometry: geometry,
+    featureCollection: featureCollection,
+    geometryCollection: geometryCollection,
+    point: point,
+    multiPoint: multiPoint,
+    lineString: lineString,
+    multiLineString: multiLineString,
+    polygon: polygon,
+    multiPolygon: multiPolygon,
+    radiansToDistance: radiansToDistance,
+    distanceToRadians: distanceToRadians,
+    distanceToDegrees: distanceToDegrees,
+    radians2degrees: radians2degrees,
+    degrees2radians: degrees2radians,
+    bearingToAngle: bearingToAngle,
+    convertDistance: convertDistance,
+    convertArea: convertArea,
+    round: round,
+    isNumber: isNumber
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mapbox-gl-circle/node_modules/@turf/invariant/index.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/mapbox-gl-circle/node_modules/@turf/invariant/index.js ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Unwrap a coordinate from a Point Feature, Geometry or a single coordinate.
+ *
+ * @name getCoord
+ * @param {Array<number>|Geometry<Point>|Feature<Point>} obj Object
+ * @returns {Array<number>} coordinates
+ * @example
+ * var pt = turf.point([10, 10]);
+ *
+ * var coord = turf.getCoord(pt);
+ * //= [10, 10]
+ */
+function getCoord(obj) {
+    if (!obj) throw new Error('obj is required');
+
+    var coordinates = getCoords(obj);
+
+    // getCoord() must contain at least two numbers (Point)
+    if (coordinates.length > 1 &&
+        typeof coordinates[0] === 'number' &&
+        typeof coordinates[1] === 'number') {
+        return coordinates;
+    } else {
+        throw new Error('Coordinate is not a valid Point');
+    }
+}
+
+/**
+ * Unwrap coordinates from a Feature, Geometry Object or an Array of numbers
+ *
+ * @name getCoords
+ * @param {Array<number>|Geometry|Feature} obj Object
+ * @returns {Array<number>} coordinates
+ * @example
+ * var poly = turf.polygon([[[119.32, -8.7], [119.55, -8.69], [119.51, -8.54], [119.32, -8.7]]]);
+ *
+ * var coord = turf.getCoords(poly);
+ * //= [[[119.32, -8.7], [119.55, -8.69], [119.51, -8.54], [119.32, -8.7]]]
+ */
+function getCoords(obj) {
+    if (!obj) throw new Error('obj is required');
+    var coordinates;
+
+    // Array of numbers
+    if (obj.length) {
+        coordinates = obj;
+
+    // Geometry Object
+    } else if (obj.coordinates) {
+        coordinates = obj.coordinates;
+
+    // Feature
+    } else if (obj.geometry && obj.geometry.coordinates) {
+        coordinates = obj.geometry.coordinates;
+    }
+    // Checks if coordinates contains a number
+    if (coordinates) {
+        containsNumber(coordinates);
+        return coordinates;
+    }
+    throw new Error('No valid coordinates');
+}
+
+/**
+ * Checks if coordinates contains a number
+ *
+ * @name containsNumber
+ * @param {Array<any>} coordinates GeoJSON Coordinates
+ * @returns {boolean} true if Array contains a number
+ */
+function containsNumber(coordinates) {
+    if (coordinates.length > 1 &&
+        typeof coordinates[0] === 'number' &&
+        typeof coordinates[1] === 'number') {
+        return true;
+    }
+
+    if (Array.isArray(coordinates[0]) && coordinates[0].length) {
+        return containsNumber(coordinates[0]);
+    }
+    throw new Error('coordinates must only contain numbers');
+}
+
+/**
+ * Enforce expectations about types of GeoJSON objects for Turf.
+ *
+ * @name geojsonType
+ * @param {GeoJSON} value any GeoJSON object
+ * @param {string} type expected GeoJSON type
+ * @param {string} name name of calling function
+ * @throws {Error} if value is not the expected type.
+ */
+function geojsonType(value, type, name) {
+    if (!type || !name) throw new Error('type and name required');
+
+    if (!value || value.type !== type) {
+        throw new Error('Invalid input to ' + name + ': must be a ' + type + ', given ' + value.type);
+    }
+}
+
+/**
+ * Enforce expectations about types of {@link Feature} inputs for Turf.
+ * Internally this uses {@link geojsonType} to judge geometry types.
+ *
+ * @name featureOf
+ * @param {Feature} feature a feature with an expected geometry type
+ * @param {string} type expected GeoJSON type
+ * @param {string} name name of calling function
+ * @throws {Error} error if value is not the expected type.
+ */
+function featureOf(feature, type, name) {
+    if (!feature) throw new Error('No feature passed');
+    if (!name) throw new Error('.featureOf() requires a name');
+    if (!feature || feature.type !== 'Feature' || !feature.geometry) {
+        throw new Error('Invalid input to ' + name + ', Feature with geometry required');
+    }
+    if (!feature.geometry || feature.geometry.type !== type) {
+        throw new Error('Invalid input to ' + name + ': must be a ' + type + ', given ' + feature.geometry.type);
+    }
+}
+
+/**
+ * Enforce expectations about types of {@link FeatureCollection} inputs for Turf.
+ * Internally this uses {@link geojsonType} to judge geometry types.
+ *
+ * @name collectionOf
+ * @param {FeatureCollection} featureCollection a FeatureCollection for which features will be judged
+ * @param {string} type expected GeoJSON type
+ * @param {string} name name of calling function
+ * @throws {Error} if value is not the expected type.
+ */
+function collectionOf(featureCollection, type, name) {
+    if (!featureCollection) throw new Error('No featureCollection passed');
+    if (!name) throw new Error('.collectionOf() requires a name');
+    if (!featureCollection || featureCollection.type !== 'FeatureCollection') {
+        throw new Error('Invalid input to ' + name + ', FeatureCollection required');
+    }
+    for (var i = 0; i < featureCollection.features.length; i++) {
+        var feature = featureCollection.features[i];
+        if (!feature || feature.type !== 'Feature' || !feature.geometry) {
+            throw new Error('Invalid input to ' + name + ', Feature with geometry required');
+        }
+        if (!feature.geometry || feature.geometry.type !== type) {
+            throw new Error('Invalid input to ' + name + ': must be a ' + type + ', given ' + feature.geometry.type);
+        }
+    }
+}
+
+/**
+ * Get Geometry from Feature or Geometry Object
+ *
+ * @param {Feature|Geometry} geojson GeoJSON Feature or Geometry Object
+ * @returns {Geometry|null} GeoJSON Geometry Object
+ * @throws {Error} if geojson is not a Feature or Geometry Object
+ * @example
+ * var point = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [110, 40]
+ *   }
+ * }
+ * var geom = turf.getGeom(point)
+ * //={"type": "Point", "coordinates": [110, 40]}
+ */
+function getGeom(geojson) {
+    if (!geojson) throw new Error('geojson is required');
+    if (geojson.geometry !== undefined) return geojson.geometry;
+    if (geojson.coordinates || geojson.geometries) return geojson;
+    throw new Error('geojson must be a valid Feature or Geometry Object');
+}
+
+/**
+ * Get Geometry Type from Feature or Geometry Object
+ *
+ * @param {Feature|Geometry} geojson GeoJSON Feature or Geometry Object
+ * @returns {string} GeoJSON Geometry Type
+ * @throws {Error} if geojson is not a Feature or Geometry Object
+ * @example
+ * var point = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [110, 40]
+ *   }
+ * }
+ * var geom = turf.getGeomType(point)
+ * //="Point"
+ */
+function getGeomType(geojson) {
+    if (!geojson) throw new Error('geojson is required');
+    var geom = getGeom(geojson);
+    if (geom) return geom.type;
+}
+
+module.exports = {
+    geojsonType: geojsonType,
+    collectionOf: collectionOf,
+    featureOf: featureOf,
+    getCoord: getCoord,
+    getCoords: getCoords,
+    containsNumber: containsNumber,
+    getGeom: getGeom,
+    getGeomType: getGeomType
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mapbox-gl-circle/package.json":
+/*!****************************************************!*\
+  !*** ./node_modules/mapbox-gl-circle/package.json ***!
+  \****************************************************/
+/*! exports provided: _from, _id, _inBundle, _integrity, _location, _phantomChildren, _requested, _requiredBy, _resolved, _shasum, _spec, _where, author, browserify, bugs, bundleDependencies, dependencies, deprecated, description, devDependencies, directories, engines, files, homepage, keywords, license, main, name, optionalDependencies, repository, scripts, version, default */
+/***/ (function(module) {
+
+module.exports = {"_from":"mapbox-gl-circle","_id":"mapbox-gl-circle@1.6.5","_inBundle":false,"_integrity":"sha512-VHA6lgxZE/WFtBXmMveU2zt7ZeVcBHe42k4U4b8xGEnrDSQs4/++EBPVywEMNqi01XQrbf1eiAhsIDZasR4drw==","_location":"/mapbox-gl-circle","_phantomChildren":{"@mapbox/geojson-area":"0.2.2","@mapbox/gl-matrix":"0.0.1","@mapbox/mapbox-gl-supported":"1.4.1","@mapbox/point-geometry":"0.1.0","@mapbox/shelf-pack":"3.2.0","@mapbox/tiny-sdf":"1.1.1","@mapbox/unitbezier":"0.0.0","@mapbox/vector-tile":"1.3.1","@mapbox/whoots-js":"3.1.0","JSV":"4.0.2","brfs":"1.6.1","bubleify":"0.7.0","concat-stream":"1.6.2","csscolorparser":"1.0.3","earcut":"2.2.1","geojson-vt":"3.2.1","gray-matter":"3.1.1","grid-index":"1.1.0","nomnom":"1.8.1","package-json-versionify":"1.0.4","pbf":"3.2.1","rw":"1.3.3","sharkdown":"0.1.1","shuffle-seed":"1.1.6","sort-object":"0.3.2","through2":"2.0.5","unassertify":"2.1.1","unflowify":"1.0.1","vt-pbf":"3.1.1","webworkify":"1.5.0"},"_requested":{"type":"tag","registry":true,"raw":"mapbox-gl-circle","name":"mapbox-gl-circle","escapedName":"mapbox-gl-circle","rawSpec":"","saveSpec":null,"fetchSpec":"latest"},"_requiredBy":["#USER","/"],"_resolved":"https://registry.npmjs.org/mapbox-gl-circle/-/mapbox-gl-circle-1.6.5.tgz","_shasum":"f252957cd29cb5bf601228bc8e39e3af1f298afc","_spec":"mapbox-gl-circle","_where":"/Users/tim/Sites/58.gliding.net.nz","author":{"name":"Smith Micro Software, Inc."},"browserify":{"transform":["babelify"]},"bugs":{"url":"https://github.com/smithmicro/mapbox-gl-circle/issues"},"bundleDependencies":false,"dependencies":{"@turf/bbox":"^4.7.3","@turf/bbox-polygon":"^4.7.3","@turf/bearing":"^4.5.2","@turf/circle":"^4.7.3","@turf/destination":"^4.7.3","@turf/distance":"^4.7.3","@turf/helpers":"^4.7.3","@turf/truncate":"^4.7.3","core-util-is":"^1.0.2","debug":"^3.0.0","events":"^1.1.1","fsevents":"^1.1.2","glob":"^7.1.2","inflight":"^1.0.6","inherits":"^2.0.3","jsonparse":"^1.3.1","lodash":"^4.17.5","lodash.debounce":"^4.0.8","mapbox-gl":"^0.44.1","minimatch":"^3.0.4","once":"^1.4.0","punycode":"^2.1.0","readable-stream":"^2.3.3","string_decoder":"^1.0.3","through2":"^2.0.3","util-deprecate":"^1.0.2","wrappy":"^1.0.2","xtend":"^4.0.1","yarn":"^0.27.5"},"deprecated":false,"description":"A google.maps.Circle replacement for Mapbox GL JS API","devDependencies":{"async-each":"^1.0.1","babel-preset-es2015":"^6.24.1","babelify":"^7.3.0","brfs":"^1.4.4","browserify":"^14.5.0","buble":"^0.15.2","budo":"^10.0.4","documentation":"^5.1.0","eslint":"^4.18.1","eslint-config-google":"^0.9.1","esutils":"^2.0.2","magic-string":"^0.22.4","uglify-js":"^3.3.12","vlq":"^0.2.3","watchify":"^3.10.0"},"directories":{"example":"example","lib":"lib"},"engines":{"node":">=7.6.0","npm":">=5.3.0"},"files":["lib/","example/","dist/"],"homepage":"https://github.com/smithmicro/mapbox-gl-circle#readme","keywords":["mapbox","circle","osm","gl"],"license":"ISC","main":"lib/main.js","name":"mapbox-gl-circle","optionalDependencies":{"core-util-is":"^1.0.2","debug":"^3.0.0","fsevents":"^1.1.2","glob":"^7.1.2","inflight":"^1.0.6","inherits":"^2.0.3","jsonparse":"^1.3.1","minimatch":"^3.0.4","once":"^1.4.0","punycode":"^2.1.0","readable-stream":"^2.3.3","string_decoder":"^1.0.3","through2":"^2.0.3","util-deprecate":"^1.0.2","wrappy":"^1.0.2","xtend":"^4.0.1","yarn":"^0.27.5"},"repository":{"type":"git","url":"git+ssh://git@github.com/smithmicro/mapbox-gl-circle.git"},"scripts":{"browserify":"mkdir -p dist && browserify lib/main.js -o dist/mapbox-gl-circle-${BUILD_VERSION:-dev}.js --debug --delay=0 -v","docs":"documentation lint lib/main.js && documentation readme lib/main.js --access public --section=Usage","lint":"eslint lib","prepare":"mkdir -p dist && browserify --standalone MapboxCircle -t [ babelify --presets [ es2015 ] ] lib/main.js | uglifyjs -c -m > dist/mapbox-gl-circle-${BUILD_VERSION:-dev}.min.js && cp -f dist/mapbox-gl-circle-${BUILD_VERSION:-dev}.min.js dist/mapbox-gl-circle.min.js","start":"budo example/index.js --live --force-default-index --title budo/mapbox-gl-circle --verbose -- -t brfs","watchify":"mkdir -p dist && watchify lib/main.js -o dist/mapbox-gl-circle-${BUILD_VERSION:-dev}.js --debug -v"},"version":"1.6.5"};
 
 /***/ }),
 
@@ -61536,15 +67254,18 @@ var render = function() {
               }
             }),
             _vm._v(" "),
-            _c("button", {
-              staticClass:
-                "settings-button fa fa-calendar btn btn-outline-dark ml-2",
-              on: {
-                click: function($event) {
-                  return _vm.showPanel("showDaySelector")
+            _c(
+              "button",
+              {
+                staticClass: "settings-button btn btn-outline-dark ml-2",
+                on: {
+                  click: function($event) {
+                    return _vm.showPanel("showDaySelector")
+                  }
                 }
-              }
-            }),
+              },
+              [_c("span", { staticClass: "fa fa-calendar" })]
+            ),
             _vm._v(" "),
             _c("button", {
               staticClass:
@@ -61584,7 +67305,13 @@ var render = function() {
                 _vm._v(" Loading...")
               ]
             )
-          ])
+          ]),
+          _vm._v(" "),
+          _vm.flyingDay
+            ? _c("div", { staticClass: "dayDate" }, [
+                _vm._v(_vm._s(_vm.formatDate(_vm.flyingDay)))
+              ])
+            : _vm._e()
         ]),
         _vm._v(" "),
         _c(
@@ -62091,28 +67818,85 @@ var render = function() {
                   }
                 },
                 [_vm._v("Close")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  staticClass: "btn btn-outline-dark btn-sm mb-2",
+                  attrs: { href: "/tracking2/" + _vm.flyingDay }
+                },
+                [_vm._v("Go to Day URL")]
               )
             ]),
             _vm._v(" "),
             _c(
               "div",
               { staticClass: "list-group" },
-              _vm._l(_vm.days, function(day, index) {
-                return _c(
-                  "a",
-                  {
-                    staticClass: "list-group-item list-group-item-action",
-                    class: [
-                      day.day_date == _vm.flyingDay
-                        ? "btn-secondary"
-                        : "btn-outline-dark"
-                    ],
-                    attrs: { href: "/tracking2/" + day.day_date }
-                  },
-                  [_vm._v(_vm._s(_vm.formatDate(day.day_date)) + "\n\t\t\t")]
-                )
-              }),
-              0
+              [
+                _vm._l(_vm.days, function(day, index) {
+                  return _c(
+                    "a",
+                    {
+                      staticClass: "list-group-item list-group-item-action",
+                      class: [
+                        day.day_date == _vm.flyingDay
+                          ? "btn-secondary"
+                          : "btn-outline-dark"
+                      ],
+                      on: {
+                        click: function($event) {
+                          return _vm.selectDay(day.day_date)
+                        }
+                      }
+                    },
+                    [_vm._v(_vm._s(_vm.formatDate(day.day_date)) + "\n\t\t\t")]
+                  )
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "list-group-item" }, [
+                  _c("div", { staticClass: "row" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.flyingDay,
+                          expression: "flyingDay"
+                        }
+                      ],
+                      staticClass: "form-control col-8 mr-2",
+                      attrs: { type: "text" },
+                      domProps: { value: _vm.flyingDay },
+                      on: {
+                        blur: function($event) {
+                          return _vm.selectDay(_vm.flyingDay)
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.flyingDay = $event.target.value
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-outline-dark col-3",
+                        on: {
+                          click: function($event) {
+                            return _vm.selectDay(_vm.flyingDay)
+                          }
+                        }
+                      },
+                      [_vm._v("Go")]
+                    )
+                  ])
+                ])
+              ],
+              2
             )
           ]
         )
@@ -62186,6 +67970,19 @@ var render = function() {
         staticClass: "day-selector"
       },
       [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-outline-dark btn-sm mb-2",
+            on: {
+              click: function($event) {
+                _vm.showTaskSelector = !_vm.showTaskSelector
+              }
+            }
+          },
+          [_vm._v("Close")]
+        ),
+        _vm._v(" "),
         _vm.contests
           ? _c("div", [
               _c("div", { staticClass: "label" }, [_vm._v("Choose a contest")]),
@@ -62201,6 +67998,7 @@ var render = function() {
                       expression: "selectedContest"
                     }
                   ],
+                  staticClass: "form-control",
                   attrs: { name: "contest" },
                   on: {
                     change: function($event) {
@@ -62236,59 +68034,120 @@ var render = function() {
                 ? _c("div", [
                     _c("div", { staticClass: "label" }, [_vm._v("Tasks")]),
                     _vm._v(" "),
-                    _c(
-                      "select",
-                      {
-                        directives: [
+                    _vm.loadingTasks
+                      ? _c("div", [
+                          _c("span", { staticClass: "fa fa-spin" }),
+                          _vm._v(" Loading...")
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    !_vm.loadingTasks
+                      ? _c(
+                          "select",
                           {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.selectedTask,
-                            expression: "selectedTask"
-                          }
-                        ],
-                        attrs: { name: "task" },
-                        on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.selectedTask = $event.target.multiple
-                              ? $$selectedVal
-                              : $$selectedVal[0]
-                          }
-                        }
-                      },
-                      [
-                        _c("option", { domProps: { value: null } }, [
-                          _vm._v("Select a Task")
-                        ]),
-                        _vm._v(" "),
-                        _vm._l(_vm.tasks, function(task) {
-                          return _c("option", { domProps: { value: task } }, [
-                            !task.class_name
-                              ? _c("span", [_vm._v(_vm._s(task.class_type))])
-                              : _vm._e(),
-                            _vm._v(
-                              " " +
-                                _vm._s(task.class_name) +
-                                " : Task " +
-                                _vm._s(task.task_number) +
-                                " " +
-                                _vm._s(task.task_date) +
-                                " " +
-                                _vm._s(task.task_name)
-                            )
-                          ])
-                        })
-                      ],
-                      2
-                    )
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.selectedTask,
+                                expression: "selectedTask"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { name: "task" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.selectedTask = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { domProps: { value: null } }, [
+                              _vm._v("Select a Task")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.tasks, function(task) {
+                              return _c(
+                                "option",
+                                { domProps: { value: task } },
+                                [
+                                  !task.class_name
+                                    ? _c("span", [
+                                        _vm._v(_vm._s(task.class_type))
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(
+                                    " " +
+                                      _vm._s(task.class_name) +
+                                      " : Task " +
+                                      _vm._s(task.task_number) +
+                                      " " +
+                                      _vm._s(task.task_date) +
+                                      " " +
+                                      _vm._s(task.task_name)
+                                  )
+                                ]
+                              )
+                            })
+                          ],
+                          2
+                        )
+                      : _vm._e()
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.selectedTask
+                ? _c("div", [
+                    _c("div", { staticClass: "label" }, [
+                      _vm._v("\n\t\t\t\t\tTask Loaded\n\t\t\t\t")
+                    ]),
+                    _vm._v(" "),
+                    _vm.loadingTask
+                      ? _c("div", [
+                          _c("span", { staticClass: "fa fa-spin" }),
+                          _vm._v(" Loading...")
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    !_vm.loadingTask
+                      ? _c("div", [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-outline-dark btn-sm mr-2",
+                              on: {
+                                click: function($event) {
+                                  return _vm.zoomToTask()
+                                }
+                              }
+                            },
+                            [_vm._v("Zoom to task")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-outline-dark btn-sm mr-2",
+                              on: {
+                                click: function($event) {
+                                  return _vm.clearCurrentTask()
+                                }
+                              }
+                            },
+                            [_vm._v("Remove Task")]
+                          )
+                        ])
+                      : _vm._e()
                   ])
                 : _vm._e()
             ])
@@ -78304,7 +84163,7 @@ module.exports = {
     },
     shortDateToNow: function shortDateToNow(date) {
       var dateString = this.dateToNow(date);
-      dateString = dateString.replace(" seconds", "s").replace(" minutes", "m").replace(" hours", "h").replace(" second", "s").replace(" minute", "m").replace(" hour", "h");
+      dateString = dateString.replace(" seconds", " secs").replace(" minutes", " mins").replace(" hours", " hrs").replace(" second", " sec").replace(" minute", " min").replace(" hour", " hr");
       return dateString;
     },
     dateDifferenceMoment: function dateDifferenceMoment(moment_date) {
