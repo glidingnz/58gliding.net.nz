@@ -453,6 +453,10 @@ html, body,
 
 				// watch for a change to the selected contest
 				if (this.selectedContest!=null) this.loadTasks();
+			},
+			selectedTask: function() {
+				console.log('selectedTask changed');
+				this.loadTask(this.selectedTask);
 			}
 		},
 		computed: {
@@ -628,6 +632,25 @@ html, body,
 			window.axios.get('/api/events/' + this.selectedContest.id + '/soaringspot/tasks').then(function (response) {
 
 				that.tasks = response.data.data;
+				that.loading=false;
+			});
+		},
+		loadTask: function(task) {
+			var that = this;
+			this.loading=true;
+			console.log(task);
+
+			// extract the task ID from the task URL
+			var task_url = task._links.self.href.split('/');
+			console.log(task_url);
+			var task_id = task_url[task_url.length-1];
+			console.log(task_url.length);
+			console.log(task_id);
+
+			// http://58gliding.net.test/api/events/488/soaringspot/tasks/6279921668
+			window.axios.get('/api/events/' + this.selectedContest.id + '/soaringspot/tasks/' + task_id).then(function (response) {
+
+				that.task = response.data.data;
 				that.loading=false;
 			});
 		},

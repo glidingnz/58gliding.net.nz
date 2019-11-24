@@ -90,6 +90,42 @@ class SoaringSpotAPIController extends AppBaseController
 		}
 		return $this->error();
 	}
+
+
+	// load a task
+	public function task($event_id, $task_id) {
+
+		if ($event = Event::where('id', $event_id)->first()->makeVisible(['soaringspot_api_secret'])) {
+			if ($this->generate_signature($event))
+			{
+				$client = new GuzzleHttp\Client();
+				$auth_header = 'http://api.soaringspot.com/v1/hmac/v1 ClientID="'.$event->soaringspot_api_client_id.'", Signature="'.$this->signature.'", Nonce="'.$this->nonce.'", Created="'.$this->date.'"';
+				$result = $client->request('GET', 'http://api.soaringspot.com/v1/tasks/' . $task_id . '/points', [
+					'json' => [],
+					'headers' => [
+						'Authorization' => $auth_header
+					]
+				]);
+
+				$task_body = $result->getBody()->getContents();
+				$task_data = json_decode($task_body, true);
+				//print_r($task_data);
+
+				if (isset($task_data['_embedded']['http://api.soaringspot.com/rel/points'])) {
+					$points = $task_data['_embedded']['http://api.soaringspot.com/rel/points'];
+
+					// turn radians into decimals
+					foreach ($points AS $key=>$point) {
+						$points[$key]['lat'] = round(rad2deg($point['latitude']), 6);
+						$points[$key]['lng'] = round(rad2deg($point['longitude']), 6);
+					}
+
+					return $this->success($points);
+				}
+			}
+		}
+		return $this->error();
+	}
 	
 
 }
