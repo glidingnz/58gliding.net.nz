@@ -618,6 +618,7 @@ html, body,
 		selectDay: function(day_date) {
 			this.flyingDay = day_date;
 			this.loadTracks();
+			this.showDaySelector = false;
 		},
 		showPanel: function(name) {
 
@@ -1045,6 +1046,7 @@ html, body,
 			this.map.fitBounds(bounds, {
 				padding: 40
 			});
+			this.showTaskSelector = false;
 		},
 		clearCurrentTask: function() {
 			var that = this;
@@ -1059,6 +1061,7 @@ html, body,
 				that.map.removeSource('taskLine');
 			}
 			that.selectTaskCoords = [];
+			this.showTaskSelector = false;
 		},
 		createWaypointDom: function(label, colour) {
 			var el = document.createElement('div');
