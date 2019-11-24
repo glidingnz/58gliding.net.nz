@@ -1047,6 +1047,7 @@ html, body,
 				padding: 40
 			});
 			this.showTaskSelector = false;
+			this.optionZoomToSelected = false;
 		},
 		clearCurrentTask: function() {
 			var that = this;
