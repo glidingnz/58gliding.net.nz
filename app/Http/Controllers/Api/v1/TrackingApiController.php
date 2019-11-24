@@ -263,7 +263,10 @@ class TrackingApiController extends ApiController
 						// check the table exists, otherwise make it
 						if (!$this->check_table_exists($nzdate)) $this->make_table($nzdate);
 
-						if (DB::connection('ogn')->insert('insert into '. $table_name .' (thetime, alt, loc, hex, speed, course, type, rego) values (?, ?, POINT(?,?), ?, ?, ?, ?, ?)', [$thetimestamp, $pointAltitude, $pointLat, $pointLon, $aircraft['flarm'], $pointSpeed, $pointCourse, 7, $rego]))
+						$hex = $aircraft['flarm'];
+						if ($hex==null) $hex='';
+
+						if (DB::connection('ogn')->insert('insert into '. $table_name .' (thetime, alt, loc, hex, speed, course, type, rego) values (?, ?, POINT(?,?), ?, ?, ?, ?, ?)', [$thetimestamp, $pointAltitude, $pointLat, $pointLon, $hex, $pointSpeed, $pointCourse, 7, $rego]))
 						{
 							$goodPointsList .= $pointId.",";
 						}
