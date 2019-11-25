@@ -498,6 +498,9 @@ class TrackingApiController extends ApiController
 				{
 					$obj = json_decode($json);
 
+					Log::info('US SPOT');
+					Log::info($obj);
+
 					// check if we have messages for this ID
 					if (isset($obj->response->feedMessageResponse))
 					{
