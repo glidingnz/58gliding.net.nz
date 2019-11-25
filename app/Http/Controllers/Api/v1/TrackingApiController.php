@@ -207,7 +207,7 @@ class TrackingApiController extends ApiController
 
 			$xml = simplexml_load_string($request->getContent());
 
-			//Log::info(print_r($xml, 1));
+			Log::info(print_r($xml, 1));
 			
 			// Get device identification
 			$deviceId = $xml->devId;
@@ -515,10 +515,15 @@ class TrackingApiController extends ApiController
 							// check the table exists, otherwise make it
 							if (!$this->check_table_exists($nzdate)) $this->make_table($nzdate);
 
+							$alt = null;
+							if (isset($point->altitude) && $point->altitude>0) {
+								$alt = $point->altitude;
+							}
+
 							$ping = DB::connection('ogn')->table($table_name)->where('thetime', $thetimestamp)->where('type', 2)->first();
 
 							if (!$ping) {
-								DB::connection('ogn')->insert('insert into '. $table_name .' (thetime, alt, loc, hex, speed, course, type, rego) values (?, ?, POINT(?,?), ?, ?, ?, ?, ?)', [$thetimestamp, NULL, $point->latitude, $point->longitude, $aircraft['flarm'], NULL, NULL, 2, substr($aircraft['rego'], 3,3)]);
+								DB::connection('ogn')->insert('insert into '. $table_name .' (thetime, alt, loc, hex, speed, course, type, rego) values (?, ?, POINT(?,?), ?, ?, ?, ?, ?)', [$thetimestamp, $alt, $point->latitude, $point->longitude, $aircraft['flarm'], NULL, NULL, 2, substr($aircraft['rego'], 3,3)]);
 							} 
 						}
 					}
