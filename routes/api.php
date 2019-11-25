@@ -41,14 +41,15 @@ Route::group(['prefix'=>'v2', 'namespace' => 'Api\v2'], function()
 {
 	// all pings for all aircraft on a specific day
 	Route::get('/tracking/{dayDate}/{points}',  'Tracking2ApiController@points'); 
-	Route::get('/tracking/{dayDate}/aircraft/{key}',  'Tracking2ApiController@aircraft'); 
+	Route::get('/tracking/{dayDate}/aircraft/{key}',  'Tracking2ApiController@aircraft');
 });
 
 
 /* v1 API */
 Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 {
-
+	Route::get('/fetchspots',  'TrackingApiController@fetchSpots');
+	
 	Route::get('/aircraft/{rego}', 'AircraftApiController@rego')
 		->where('rego','(?i)ZK-[A-Z]{3}(?-i)');
 
