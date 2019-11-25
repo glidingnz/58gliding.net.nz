@@ -207,8 +207,13 @@ class TrackingApiController extends ApiController
 
 			$xml = simplexml_load_string($request->getContent());
 
-			Log::info(print_r($xml, 1));
 			
+			if (!isset($xml->devId)) {
+				Log::info("Couldn't find devId on btraced XML");
+				Log::info(print_r($xml, 1));
+				return null;
+			}
+
 			// Get device identification
 			$deviceId = $xml->devId;
 			
@@ -494,6 +499,9 @@ class TrackingApiController extends ApiController
 			{
 				// create the correct URL for this aircraft
 				$aircraft_url = str_replace('FEED_ID_HERE', $aircraft['spot_feed_id'], $this->url);
+				Log::info('fetching spot');
+				Log::info($aircraft_url);
+
 				if ($json = file_get_contents($aircraft_url))
 				{
 					$obj = json_decode($json);
