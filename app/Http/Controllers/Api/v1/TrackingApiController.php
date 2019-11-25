@@ -492,6 +492,8 @@ class TrackingApiController extends ApiController
 		$queryAircraft = Aircraft::query();
 		$queryAircraft->where('spot_feed_id','<>','');
 
+		Log::info('Fetching US Spots');
+
 		if ($aircrafts = $queryAircraft->get())
 		{
 			// fetch each spot
@@ -499,14 +501,11 @@ class TrackingApiController extends ApiController
 			{
 				// create the correct URL for this aircraft
 				$aircraft_url = str_replace('FEED_ID_HERE', $aircraft['spot_feed_id'], $this->url);
-				Log::info('fetching spot');
-				Log::info($aircraft_url);
+				
 
 				if ($json = file_get_contents($aircraft_url))
 				{
 					$obj = json_decode($json);
-
-					Log::info('US SPOT');
 
 					// check if we have messages for this ID
 					if (isset($obj->response->feedMessageResponse))
@@ -527,10 +526,13 @@ class TrackingApiController extends ApiController
 								$alt = $point->altitude;
 							}
 
+							$hex = $aircraft['flarm'];
+							if ($hex==null) $hex=substr($aircraft['rego'], 3,3);
+
 							$ping = DB::connection('ogn')->table($table_name)->where('thetime', $thetimestamp)->where('type', 2)->first();
 
 							if (!$ping) {
-								DB::connection('ogn')->insert('insert into '. $table_name .' (thetime, alt, loc, hex, speed, course, type, rego) values (?, ?, POINT(?,?), ?, ?, ?, ?, ?)', [$thetimestamp, $alt, $point->latitude, $point->longitude, $aircraft['flarm'], NULL, NULL, 2, substr($aircraft['rego'], 3,3)]);
+								DB::connection('ogn')->insert('insert into '. $table_name .' (thetime, alt, loc, hex, speed, course, type, rego) values (?, ?, POINT(?,?), ?, ?, ?, ?, ?)', [$thetimestamp, $alt, $point->latitude, $point->longitude, $hex, NULL, NULL, 2, substr($aircraft['rego'], 3,3)]);
 							} 
 						}
 					}
