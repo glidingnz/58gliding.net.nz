@@ -150,8 +150,8 @@ html, body,
 }
 .mapbox .dayDate {
 	position: absolute;
-	left: 20px;
-	bottom: 20px;
+	left: 10px;
+	bottom: 35px;
 	z-index: 11;
 	font-size: 120%;
 	font-weight: bold;
@@ -424,7 +424,8 @@ html, body,
 				selectedAircraftKey: null,
 				selectedAircraftTrack: [], // all the track data
 				selectedAircraftTrackGeoJson: [], // used by mapbox
-				selectedMarker: null,
+				selectedMarker: null, // the larger marker on the map showing the selected point.
+				selectedPoint: null, // the details of the currently selected point. Defaults to the last point received.
 				//selectedAltitudes: [], // selected items altitude data for the chart
 				flyingDay: null,
 				'map': {},
@@ -672,7 +673,8 @@ html, body,
 				if (point.aircraft.contest_id) return point.aircraft.contest_id;
 			}
 			if (point.rego) return point.rego;
-			return '*' + point.key.substring(0,2);
+			if (point.key.length==6) return '*' + point.key.substring(4,6);
+			return '?';
 		},
 		loadContests: function() {
 			var that = this;

@@ -65,7 +65,6 @@
 					<li class="nav-item"><a class="nav-link" href="{{ url('/aircraft')}}">Aircraft</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/members')}}">Members</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/tracking')}}">Tracking</a></li>
-					<li class="nav-item"><a class="nav-link" href="{{ url('/tracking2')}}">T2</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/cups')}}">Waypoints</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/contests')}}">Contests</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/events')}}">Events</a></li>
