@@ -716,8 +716,8 @@ html, body,
 		loadTracks: function() {
 			this.loading=true;
 
-			var pings = 25;
-			if (this.showTrails==false) pings=3;
+			var pings = 5;
+			//if (this.showTrails==false) pings=3;
 			var that = this;
 
 			window.axios.get('/api/v2/tracking/' + that.flyingDay + '/' + pings).then(function (response) {
