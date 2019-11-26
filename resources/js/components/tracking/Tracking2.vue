@@ -614,6 +614,10 @@ html, body,
 		// load the list of aircraft filters
 		this.loadFleets();
 
+		window.onresize = _.debounce(() => {
+			that.map.resize();
+		}, 100)
+
 	},
 	methods: {
 		selectDay: function(day_date) {
