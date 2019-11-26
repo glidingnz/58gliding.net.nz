@@ -15,6 +15,7 @@ use DateTime;
 use DateTimeZone;
 use Log;
 use SRTMGeoTIFFReader;
+use Carbon\Carbon;
 
 include(app_path() . '/Classes/SRTMGeoTIFFReader.php');
 
@@ -146,35 +147,14 @@ class Tracking2ApiController extends ApiController
 		{
 			if ($pings = DB::connection('ogn')->select(implode($queries, ' UNION ALL '), $keys))
 			{
-
-				// walk through all pings backwards and work out course directions from previous points
-				$index = count($pings);
-				while($index) {
-					$ping = $pings[--$index];
-					// work out the direction from previous point, if it exists AND if we don't have direction from the GPS for this point.
-					if (isset($previous_point[$ping->thekey]) && $ping->course==null) {
-
-						$ping->course = $this->angle(
-							$previous_point[$ping->thekey]->lat,
-							$previous_point[$ping->thekey]->lng,
-							$ping->lat,
-							$ping->lng);
-					}
-					$previous_point[$ping->thekey] = $ping;
-				}
+				$points = $this->_process_points_from_previous($pings);
 
 				// go through the correct direction and add to the list of points
-				foreach($pings AS $ping)
+				foreach($points AS $point)
 				{
-					// round the lat and long to 6 digits, so we don't transmit unnecessary data
-					$ping->lat = round($ping->lat, 6);
-					$ping->lng = round($ping->lng, 6);
-					$ping->gl = $this->_get_ground_level($ping->lat, $ping->lng);
-
-					$unique_aircraft[$ping->thekey]->points[] = $ping;
-
-					// remove the key to save data transfer, as we already have it as the index key
-					unset($ping->thekey);
+					$point = $this->_process_point($point);
+					$unique_aircraft[$point->thekey]->points[] = $point;
+					unset($point->thekey);
 				}
 			}
 		}
@@ -183,6 +163,8 @@ class Tracking2ApiController extends ApiController
 		//return $this->success($unique_aircraft);
 		return $this->success(array_values($unique_aircraft));
 	}
+
+
 
 
 	public function aircraft(Request $request, $dayDate, $key)
@@ -216,24 +198,85 @@ class Tracking2ApiController extends ApiController
 		$query .= " OR hex=?)";
 		$keys[]=$hex;
 
-		if ($request->has('from')) {
-			$query .= " AND thetime>?";
-			$keys[]=$request->input('from');
-		}
-
+		// if ($request->has('from')) {
+		// 	$query .= " AND thetime>?";
+		// 	$keys[]=$request->input('from');
+		// }
 
 		$query .= " ORDER BY thetime DESC";
 		$points = DB::connection('ogn')->select($query, $keys);
 
 		if ($points)
 		{
-			return $this->success($points);
+			$points = $this->_process_points_from_previous($points);
+			$points_to_output = Array();
+
+			if ($request->has('from') && $request->input('from')!=0) {
+				$from_time = new Carbon($request->input('from'));
+				//echo $from_time . '<br>';
+			}
+
+			foreach ($points AS $key=>$point)
+			{
+				$thekey = $points[$key]->thekey;
+				$points[$key] = $this->_process_point($point);
+				// remove the key to save data transfer, as we already have it as the index key
+				unset($points[$key]->thekey);
+
+				// filter out any points that are too old, so we don't transfer unnecessary data
+				$thetime = new Carbon($point->thetime);
+				//echo $thetime . '<br>';
+				if (!isset($from_time) || $thetime->gt($from_time))
+				{
+					$points_to_output[] = $point;
+				}
+				
+			}
+
+			return $this->success(Array('thekey'=>$thekey, 'points'=>$points_to_output));
 		}
 
 		return $this->success(Array());
 		
 	}
 
+	// walk through all points backwards and work out course directions from previous points
+	protected function _process_points_from_previous($points)
+	{
+		$index = count($points);
+		while($index) {
+			$point = $points[--$index];
+			// work out the direction from previous point, if it exists AND if we don't have direction from the GPS for this point.
+			if (isset($previous_point[$point->thekey])) {
+				if ($point->course==null)
+				{
+					$point->course = $this->angle(
+						$previous_point[$point->thekey]->lat,
+						$previous_point[$point->thekey]->lng,
+						$point->lat,
+						$point->lng);
+				}
+				
+			}
+			$previous_point[$point->thekey] = $point;
+		}
+		return $points;
+	}
+
+	/**
+	 * Process the points given and calculate any extra data needed 
+	 * such as course direction, speed and vertical speed from previous points
+	 * @param  [type] $points [description]
+	 * @return [type]         [description]
+	 */
+	protected function _process_point($point) 
+	{
+		// round the lat and long to 6 digits, so we don't transmit unnecessary data
+		$point->lat = round($point->lat, 6);
+		$point->lng = round($point->lng, 6);
+		$point->gl = $this->_get_ground_level($point->lat, $point->lng);
+		return $point;
+	}
 
 
 	protected function _get_table_name($dayDate)

@@ -22,15 +22,24 @@ html, body,
 
 .marker_top {
 	background-color: #A00;
+	border-radius: 50%;
+	width: 34px;
+	height: 34px;
+	box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.3);
+	padding-top: 2px;
+	padding-left: 2px;
+}
+.marker_top_inner {
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	padding: 5px 0 2px 0;
 	color: #FFF;
 	font-size: 110%;
 	font-weight: bold;
 	text-align: center;
-	border-radius: 50%;
-	padding: 5px 0 3px 0;
-	width: 34px;
-	height: 34px;
-	box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.3);
+	position: absolute;
+	z-index: 2;
 }
 .marker_pin {
 	position: absolute;
@@ -234,7 +243,7 @@ html, body,
 			</div>
 		</div>
 
-		<div class="selected-aircraft" v-if="selectedAircraft">
+		<div class="selected-aircraft" v-if="selectedAircraft && selectedPoint">
 
 			<div v-if="showAircraftDetails" class="flex-row">
 				<div class="detail" v-if="selectedAircraft.aircraft">{{ selectedAircraft.aircraft.rego }}</div>
@@ -250,25 +259,28 @@ html, body,
 				<div class="detail">
 					<label for="follow"><input name="follow" id="follow" type="checkbox" v-on:click="follow()" v-model="optionFollow" :value="true"> Follow</label>
 				</div>
-				<div class="detail">{{formatAltitudeFeet(heightAgl(selectedAircraft.points[0].alt, selectedAircraft.points[0].gl))}} AGL</div>
-				<div class="detail">{{formatAltitudeFeet(selectedAircraft.points[0].alt)}} QNH</div>
-				<div class="detail" v-if="selectedAircraft.points[0].vspeed!=null">
-					<span class="fa fa-arrow-up" v-show="selectedAircraft.points[0].vspeed>0"></span>
-					<span class="fa fa-arrow-down" v-show="selectedAircraft.points[0].vspeed<0"></span>
-					{{ Math.round(selectedAircraft.points[0].vspeed * 1.944) }} kt
+				<div class="detail">{{formatAltitudeFeet(heightAgl(selectedPoint.alt, selectedPoint.gl))}} AGL</div>
+				<div class="detail">{{formatAltitudeFeet(selectedPoint.alt)}} QNH</div>
+				<div class="detail" v-if="selectedPoint.vspeed!=null">
+					<span class="fa fa-arrow-up" v-show="selectedPoint.vspeed>0"></span>
+					<span class="fa fa-arrow-down" v-show="selectedPoint.vspeed<0"></span>
+					{{ Math.round(selectedPoint.vspeed * 1.944) }} kt
 				</div>
-				<div class="detail">{{shortDateToNow(createDateFromMysql(selectedAircraft.points[0].thetime))}}</div>
-				<div class="detail">{{formatType(selectedAircraft.points[0].type)}}</div>
+				<div class="detail" v-if="selectedPoint.course!=null">
+					{{selectedPoint.course}}&deg;
+				</div>
+				<div class="detail">{{shortDateToNow(createDateFromMysql(selectedPoint.thetime))}}</div>
+				<div class="detail">{{formatType(selectedPoint.type)}}</div>
 				<div class="detail">
 					<button class="fa fa-map-marker btn-outline-dark btn btn-xs  ml-2 mt-1 pr-2 pl-2" v-on:click="showCoordDetails=!showCoordDetails" v-bind:class="[showCoordDetails ? 'active' : '']"></button>
 				</div>
 			</div>
 
 			<div v-if="showCoordDetails" class="flex-row">
-				<div class="detail">Lat {{ selectedAircraft.points[0].lat.toFixed(5)}}</div>
-				<div class="detail">Lng {{ selectedAircraft.points[0].lng.toFixed(5) }}</div>
-				<div class="detail"><a v-bind:href="'https://www.google.com/maps/place/' + selectedAircraft.points[0].lat + '+' + selectedAircraft.points[0].lng + '/'">Google Maps</a></div>
-				<div class="detail"><a v-bind:href="'http://maps.apple.com/?q=' + selectedAircraft.points[0].lat + ',' + selectedAircraft.points[0].lng">Apple Maps</a></div>
+				<div class="detail">Lat {{ selectedPoint.lat.toFixed(5)}}</div>
+				<div class="detail">Lng {{ selectedPoint.lng.toFixed(5) }}</div>
+				<div class="detail"><a v-bind:href="'https://www.google.com/maps/place/' + selectedPoint.lat + '+' + selectedPoint.lng + '/'">Google Maps</a></div>
+				<div class="detail"><a v-bind:href="'http://maps.apple.com/?q=' + selectedPoint.lat + ',' + selectedPoint.lng">Apple Maps</a></div>
 			</div>
 			<div v-if="showCoordDetails" class="flex-row">
 				
@@ -614,6 +626,7 @@ html, body,
 		// load the list of aircraft filters
 		this.loadFleets();
 
+		// fix bug with window resizing
 		window.onresize = _.debounce(() => {
 			that.map.resize();
 		}, 100)
@@ -709,7 +722,6 @@ html, body,
 			var task_url = task._links.self.href.split('/');
 			var task_id = task_url[task_url.length-1];
 
-			// http://58gliding.net.test/api/events/488/soaringspot/tasks/6279921668
 			window.axios.get('/api/events/' + this.selectedContest.id + '/soaringspot/tasks/' + task_id).then(function (response) {
 
 				that.selectedTaskData = response.data.data;
@@ -748,7 +760,6 @@ html, body,
 			if (this.selectedAircraftKey==aircraft.key) {
 				// get the last point retreived
 				from = this.selectedAircraftTrack[0].thetime;
-
 			} else {
 				that.selectedAircraftTrack = [];
 			}
@@ -760,8 +771,7 @@ html, body,
 			window.axios.get('/api/v2/tracking/' + that.flyingDay + '/aircraft/' + aircraft.key + '?from=' + from).then(function (response) {
 
 				that.loading=false;
-				var newData = response.data.data;
-
+				var newData = response.data.data.points;
 
 				// setup the geojson object if it hasn't been yet
 				if (from==0) {
@@ -803,6 +813,9 @@ html, body,
 				}
 
 
+				// set the selected point to the latest point given
+				that.selectedPoint = that.selectedAircraftTrack[0];
+
 				if (that.optionZoomToSelected && from==0) {
 					var coords = that.selectedAircraftTrackGeoJson.features[0].geometry.coordinates; // shortcut
 
@@ -839,13 +852,17 @@ html, body,
 		createMarkers() {
 			var that = this;
 
-			that.filteredAircraft.forEach(function (aircraft) { 
+			that.filteredAircraft.forEach(function (aircraft) {
+
+				if (typeof aircraft.points=='undefined') return false;
+
 				var el = that.createMarkerDom(that.getLabel(aircraft), aircraft.colour, 'aircraftMarker');
 				el.addEventListener('click', () => 
 					{ 
 						that.selectAircraft(aircraft);
 					}
 				); 
+
 				var marker = new mapboxgl.Marker(el, {
 						anchor: 'bottom',
 						offset: [0, -5]
@@ -865,15 +882,18 @@ html, body,
 			var el = document.createElement('div');
 			var el2 = document.createElement('div');
 			var pingTop = document.createElement('div');
+			var pingTopInner = document.createElement('div');
 			var pinBottom = document.createElement('div');
 			el.className = className;
 			el.appendChild(el2);
 			el2.className = 'marker_inner';
 			pingTop.className = 'marker_top';
+			pingTopInner.className = 'marker_top_inner';
 			pinBottom.className = 'marker_pin';
+			pingTop.appendChild(pingTopInner);
 			el2.appendChild(pingTop);
 			el2.appendChild(pinBottom);
-			pingTop.appendChild(document.createTextNode(label));
+			pingTopInner.appendChild(document.createTextNode(label));
 			pinBottom.style.borderTopColor = '#'+colour;
 			pingTop.style.backgroundColor = '#'+colour;
 			return el;
@@ -978,6 +998,7 @@ html, body,
 		},
 		showPoint: function(object) {
 			const point = this.selectedAircraftTrack.find( point => point.unixtime == object.x );
+			this.selectedPoint = point; // update the selected point details
 			this.selectedMarker.setLngLat([point.lng, point.lat]);
 		},
 		zoomTo: function(lat, lng, scale) {
