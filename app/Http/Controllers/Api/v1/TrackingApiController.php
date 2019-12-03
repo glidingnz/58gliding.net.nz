@@ -474,7 +474,7 @@ class TrackingApiController extends ApiController
 			PRIMARY KEY (`id`),
 			KEY `dateindex` (`thetime`),
 			KEY `hexindex2` (`hex`,`thetime`),
-			KEY `regohexindex2` (`rego`,`hex`,`thetime`),
+			KEY `regohexindex` (`rego`,`hex`,`thetime`),
 			SPATIAL KEY `loc` (`loc`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 		DB::connection('ogn')->statement($query);
