@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Auth;
 use DB;
+use App;
 
 class ApiController extends Controller
 {
@@ -12,7 +13,11 @@ class ApiController extends Controller
 
 	public function __construct()
 	{
-		DB::enableQueryLog();
+		if (App::environment('local') || isset($_GET['test'])) {
+			// The environment is local
+			DB::enableQueryLog();
+			DB::connection('ogn')->enableQueryLog();
+		}
 		$this->data['success']=false;
 		$this->data['http_code']=500;
 
@@ -81,10 +86,27 @@ class ApiController extends Controller
 
 	protected function _get_db_queries()
 	{
-		$this->data['queries']=DB::getQueryLog();
-		$this->data['queries_total']=count(DB::getQueryLog());
+		$this->data['queries_db']=DB::getQueryLog();
+		$this->data['queries_db_total']=count(DB::getQueryLog());
+		$this->data['queries_ogn']=DB::connection('ogn')->getQueryLog();
+		$this->data['queries_ogn_total']=count(DB::connection('ogn')->getQueryLog());
+
+		foreach($this->data['queries_db'] as $key=>$query) {
+			$query_string = str_replace(array('?'), array('\'%s\''), $query['query']);
+			$query_string = vsprintf($query_string, $query['bindings']);
+			$this->data['queries_db'][$key]['raw'] = $query_string;
+		}
+		foreach($this->data['queries_ogn'] as $key=>$query) {
+			$query_string = str_replace(array('?'), array('\'%s\''), $query['query']);
+			$query_string = vsprintf($query_string, $query['bindings']);
+			$this->data['queries_ogn'][$key]['raw'] = $query_string;
+		}
+
 		$total_time = 0;
-		foreach ($this->data['queries'] AS $query) {
+		foreach ($this->data['queries_db'] AS $query) {
+			$total_time += $query['time'];
+		}
+		foreach ($this->data['queries_ogn'] AS $query) {
 			$total_time += $query['time'];
 		}
 		$this->data['queries_time_seconds']=round($total_time/1000, 4);
