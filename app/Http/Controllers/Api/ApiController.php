@@ -13,7 +13,7 @@ class ApiController extends Controller
 
 	public function __construct()
 	{
-		if (App::environment('local') || isset($_GET['test'])) {
+		if (App::environment('local') || env('APP_DEBUG')) {
 			// The environment is local
 			DB::enableQueryLog();
 			DB::connection('ogn')->enableQueryLog();
@@ -41,9 +41,7 @@ class ApiController extends Controller
 		$this->data['data'] = $data;
 		$this->data['success']=true;
 		$this->data['http_code']=200;
-		if (env('APP_DEBUG')) {
-			$this->_get_db_queries();
-		}
+		$this->_get_db_queries();
 
 		return $this->data;
 	}
@@ -86,6 +84,11 @@ class ApiController extends Controller
 
 	protected function _get_db_queries()
 	{
+
+		if (!(App::environment('local') || env('APP_DEBUG'))) {
+			return null;
+		}
+
 		$this->data['queries_db']=DB::getQueryLog();
 		$this->data['queries_db_total']=count(DB::getQueryLog());
 		$this->data['queries_ogn']=DB::connection('ogn')->getQueryLog();
