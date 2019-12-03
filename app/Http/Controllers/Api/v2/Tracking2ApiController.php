@@ -16,6 +16,7 @@ use DateTimeZone;
 use Log;
 use SRTMGeoTIFFReader;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 include(app_path() . '/Classes/SRTMGeoTIFFReader.php');
 
@@ -51,6 +52,13 @@ class Tracking2ApiController extends ApiController
 	 */
 	public function points($dayDate, $points=5)
 	{
+		// check cache first
+		$aircraft_with_points_key = 'aircraft-with-'.$points.'-points-'.$dayDate;
+		if (Cache::has($aircraft_with_points_key)) {
+			return $this->success(array_values(Cache::get($aircraft_with_points_key)));
+		}
+
+
 		$points = (int)$points; // ensure $pointsPerHex is an integer
 		if (!$table_name = $this->_get_table_name($dayDate)) return $this->error(); 
 		if (!Schema::connection('ogn')->hasTable($table_name)) return $this->not_found("Day Not Found");
@@ -59,60 +67,71 @@ class Tracking2ApiController extends ApiController
 		$hexes_to_load = [];
 		$regos_to_load = [];
 
+		$unique_aircraft_key = 'unique-aircraft-'.$dayDate;
+
 		// fetch all individual aircraft
-		$results = DB::connection('ogn')->select('select distinct rego, hex FROM `'.$table_name.'`');
-		foreach ($results as $key=>$result)
+		if (Cache::has($unique_aircraft_key))
 		{
-			// work out the key for this aircraft
-			if ($result->rego!=null) $key = $result->rego;
-			else $key = $result->hex;
-
-			$aircraft[$key] = $result;
-			$aircraft[$key]->key = $key;
-			$aircraft[$key]->colour = $this->colours[crc32($key) % count($this->colours)];
-
-			// add to the list of aircraft to search for
-			if ($result->rego!=null) $regos_to_load[] = 'ZK-' . $result->rego;
-			if ($result->hex!=null) $hexes_to_load[] = $result->hex;
-		}
-
-
-		// load all aircraft from their hexes
-		if (count($hexes_to_load)>0) {
-			if ($aircraft_details = Aircraft::select('id', 'rego', 'contest_id', 'model', 'class', 'towplane', 'flarm', 'spot_esn')->whereIn('flarm', $hexes_to_load)->orWhereIn('rego', $regos_to_load)->get())
+			$unique_aircraft = Cache::get($unique_aircraft_key);
+		} 
+		else
+		{
+			$results = DB::connection('ogn')->select('select distinct rego, hex FROM `'.$table_name.'`');
+			foreach ($results as $key=>$result)
 			{
-				foreach ($aircraft_details AS $aircraft_detail)
-				{
-					foreach ($aircraft AS $key=>$craft)
-					{
-						// check for matching hex keys
-						if ($aircraft_detail->flarm==$craft->hex && $craft->hex!='') {
-							$aircraft[$key]->aircraft = $aircraft_detail;
-						}
-						// check for matching regos
-						if ($aircraft_detail->rego=='ZK-' . $craft->rego && $craft->rego!=null) {
-							$aircraft[$key]->aircraft = $aircraft_detail;
-						}
-					}
+				// work out the key for this aircraft
+				if ($result->rego!=null) $key = $result->rego;
+				else $key = $result->hex;
 
+				$aircraft[$key] = $result;
+				$aircraft[$key]->key = $key;
+				$aircraft[$key]->colour = $this->colours[crc32($key) % count($this->colours)];
+
+				// add to the list of aircraft to search for
+				if ($result->rego!=null) $regos_to_load[] = 'ZK-' . $result->rego;
+				if ($result->hex!=null) $hexes_to_load[] = $result->hex;
+			}
+
+
+			// load all aircraft from their hexes
+			if (count($hexes_to_load)>0) {
+				if ($aircraft_details = Aircraft::select('id', 'rego', 'contest_id', 'model', 'class', 'towplane', 'flarm', 'spot_esn')->whereIn('flarm', $hexes_to_load)->orWhereIn('rego', $regos_to_load)->get())
+				{
+					foreach ($aircraft_details AS $aircraft_detail)
+					{
+						foreach ($aircraft AS $key=>$craft)
+						{
+							// check for matching hex keys
+							if ($aircraft_detail->flarm==$craft->hex && $craft->hex!='') {
+								$aircraft[$key]->aircraft = $aircraft_detail;
+							}
+							// check for matching regos
+							if ($aircraft_detail->rego=='ZK-' . $craft->rego && $craft->rego!=null) {
+								$aircraft[$key]->aircraft = $aircraft_detail;
+							}
+						}
+
+					}
 				}
 			}
-		}
 
-		// de-duplicate any aircraft into a new array:
-		$unique_aircraft = [];
-		// first ensure all aircraft have their rego
-		foreach ($aircraft AS $key=>$craft) {
-			if ($craft->rego==null && isset($craft->aircraft) && isset($craft->aircraft->rego)) {
-				$aircraft[$key]->rego = substr($craft->aircraft->rego, 3, 3);
+			// de-duplicate any aircraft into a new array:
+			$unique_aircraft = [];
+			// first ensure all aircraft have their rego
+			foreach ($aircraft AS $key=>$craft) {
+				if ($craft->rego==null && isset($craft->aircraft) && isset($craft->aircraft->rego)) {
+					$aircraft[$key]->rego = substr($craft->aircraft->rego, 3, 3);
+				}
 			}
-		}
-		// then create an array of aircraft again from that list
-		foreach ($aircraft AS $key=>$craft) {
-			if ($craft->rego!=null) $new_key = $craft->rego;
-			else $new_key = $craft->hex;
-			$craft->key = $new_key;
-			$unique_aircraft[$new_key] = $craft;
+			// then create an array of aircraft again from that list
+			foreach ($aircraft AS $key=>$craft) {
+				if ($craft->rego!=null) $new_key = $craft->rego;
+				else $new_key = $craft->hex;
+				$craft->key = $new_key;
+				$unique_aircraft[$new_key] = $craft;
+			}
+
+			Cache::put($unique_aircraft_key, $unique_aircraft, 56);
 		}
 
 
@@ -161,6 +180,7 @@ class Tracking2ApiController extends ApiController
 
 		// strip out the array keys for javascript
 		//return $this->success($unique_aircraft);
+		Cache::put($aircraft_with_points_key, $unique_aircraft, 14);
 		return $this->success(array_values($unique_aircraft));
 	}
 
