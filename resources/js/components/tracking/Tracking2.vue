@@ -632,6 +632,10 @@ html, body,
 				}
 			}
 		});
+		that.map.on('style.load', function () {
+			// Triggered when `setStyle` is called.
+			that.drawTask();
+		});
 
 		// only try and put things on the map once it's loaded
 		this.map.on('load', this.mapLoaded);
@@ -1103,13 +1107,16 @@ html, body,
 		},
 		clearCurrentTask: function() {
 			var that = this;
-			// drop all existing markers and lines
-			for (var i=0; i<that.taskWaypoints.length; i++) {
-				that.taskWaypoints[i].remove();
-			}
-			that.taskWaypoints=[];
 			var taskLineLayer = that.map.getLayer('taskLine');
 			if (typeof taskLineLayer !== 'undefined') {
+
+				// drop all existing markers and lines
+				for (var i=0; i<that.taskWaypoints.length; i++) {
+					that.taskWaypoints[i].remove();
+				}
+				that.taskWaypoints=[];
+
+				
 				that.map.removeLayer('taskLine');
 				that.map.removeSource('taskLine');
 			}

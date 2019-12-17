@@ -12177,6 +12177,10 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
           that.map.panTo([that.selectedAircraft.points[0].lng, that.selectedAircraft.points[0].lat]);
         }
       }
+    });
+    that.map.on('style.load', function () {
+      // Triggered when `setStyle` is called.
+      that.drawTask();
     }); // only try and put things on the map once it's loaded
 
     this.map.on('load', this.mapLoaded); // check if the legend should be open or not
@@ -12604,16 +12608,16 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       this.optionZoomToSelected = false;
     },
     clearCurrentTask: function clearCurrentTask() {
-      var that = this; // drop all existing markers and lines
-
-      for (var i = 0; i < that.taskWaypoints.length; i++) {
-        that.taskWaypoints[i].remove();
-      }
-
-      that.taskWaypoints = [];
+      var that = this;
       var taskLineLayer = that.map.getLayer('taskLine');
 
       if (typeof taskLineLayer !== 'undefined') {
+        // drop all existing markers and lines
+        for (var i = 0; i < that.taskWaypoints.length; i++) {
+          that.taskWaypoints[i].remove();
+        }
+
+        that.taskWaypoints = [];
         that.map.removeLayer('taskLine');
         that.map.removeSource('taskLine');
       }
