@@ -183,6 +183,14 @@ html, body,
 	display: flex;
 	flex-direction: column;
 }
+.tracking h4 {
+	font-size: 120%;
+	color: #888;
+}
+.tracking .chart-container {
+	margin-left: 0;
+	margin-right: 0;
+}
 </style>
 
 <template>
@@ -201,7 +209,7 @@ html, body,
 					</button>
 					<button class="settings-button fa fa-search-plus btn btn-outline-dark ml-2" v-on:click="showPanel('showZoomMenu')"></button>
 					<button class="settings-button fa fa-route btn btn-outline-dark ml-2" v-on:click="showPanel('showTaskSelector')"></button>
-					
+
 					<div class="loading ml-2 mt-1" v-show="loading"><span class=" fas fa-sync fa-spin"></span> Loading...</div>
 				</div>
 				<div class="dayDate" v-if="flyingDay">{{formatDate(flyingDay)}}</div>
@@ -392,6 +400,15 @@ html, body,
 		<hr>
 		<h4>Options</h4>
 
+			<div>
+				<div class="btn-group mb-0" role="group">
+					<button type="button" class="btn btn-sm mb-2" v-bind:class="[ currentStyle=='terrain' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="changeStyle('terrain')">Terrain</button>
+					<button type="button" class="btn btn-sm mb-2" v-bind:class="[ currentStyle=='satellite' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="changeStyle('satellite')">Satellite</button>
+					<button type="button" class="btn btn-sm mb-2" v-bind:class="[ currentStyle=='map' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="changeStyle('map')">Fast</button>
+					<button type="button" class="btn btn-sm mb-2" v-bind:class="[ currentStyle=='contours' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="changeStyle('contours')">Topo</button>
+				</div>
+			</div>
+
 			<label for="zoomToSelected"><input name="zoomToSelected" id="zoomToSelected" type="checkbox" class="" v-model="optionZoomToSelected" :value="true"> Zoom To Selected</label>
 
 			<label for="live"><input name="live" id="live" type="checkbox" class="" v-model="optionLive" :value="true"> Live Updates</label>
@@ -464,6 +481,14 @@ html, body,
 				mapMarkers: [],
 				mapFlying: false,
 				fitBoundsStarted: false,
+
+				currentStyle: 'terrain',
+				mapStyles: {
+					terrain: 'mapbox://styles/ipearx/ck32sc9mh34gt1cqlyi852vh1',
+					map: 'mapbox://styles/ipearx/ck49a1qq604ck1co7r9uwpi5k',
+					satellite: 'mapbox://styles/ipearx/ck499vvka09bc1cn6bmofjh21',
+					contours: 'mapbox://styles/ipearx/ck32s9fvj2k6s1cp2zih1vfim'
+				},
 
 				fleets: [], // the list of fleets available to select
 				selectedFleet: null, // the currently selected fleet item in the select
@@ -593,7 +618,7 @@ html, body,
 		mapboxgl.accessToken = 'pk.eyJ1IjoiaXBlYXJ4IiwiYSI6ImNqd2c1dnU3bjFoMmg0NHBzbG9vbmQwbGkifQ.HeNPRpXBkpmC_ljY7QQTRA';
 		this.map = new mapboxgl.Map({
 			container: 'map',
-			style: 'mapbox://styles/ipearx/ck32sc9mh34gt1cqlyi852vh1',
+			style: that.mapStyles[that.currentStyle],
 			//style:  'http://maps.gliding.net.nz:8080/styles/positron/style.json',
 			center: [175.409, -40.97435],
 			zoom: 5
@@ -1103,7 +1128,12 @@ html, body,
 			el3.appendChild(document.createTextNode(label));
 			el2.style.backgroundColor = '#'+colour;
 			return el;
+		},
+		changeStyle: function(style) {
+			this.currentStyle = style;
+			this.map.setStyle(this.mapStyles[style]);
 		}
+
 	}
 }
 </script>
