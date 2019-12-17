@@ -322,7 +322,7 @@ html, body,
 
 		<div class="list-group" >
 			<button class="btn btn-outline-dark btn-sm mb-2" v-on:click="showDaySelector = !showDaySelector">Close</button>
-			<a v-bind:href="'/tracking2/' + flyingDay" class="btn btn-outline-dark btn-sm mb-2" >Go to Day URL</a>
+			<a v-bind:href="'/tracking/' + flyingDay" class="btn btn-outline-dark btn-sm mb-2" >Go to Day URL</a>
 		</div>
 
 		<div class="list-group">
