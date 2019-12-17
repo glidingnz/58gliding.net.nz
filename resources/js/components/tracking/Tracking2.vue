@@ -216,6 +216,7 @@ html, body,
 
 			</div>
 
+
 			<div class="sidepanel" v-bind:class="[showLegend ? 'expanded' : '']">
 				<table class="legend legend-header">
 					<tr>
@@ -223,7 +224,10 @@ html, body,
 							<button class="fa fa-angle-double-left btn btn-xs btn-outline-dark ml-2 mt-1 pr-2 pl-2" v-if="!showLegend" v-on:click="showLegend=!showLegend" ></button>
 						</th>
 						<th v-show="showLegend">Reg</th>
-						<th v-show="showLegend">AGL</th>
+						<th v-show="showLegend" v-on:click="showAgl = !showAgl">
+							<span v-show="showAgl">AGL</span>
+							<span v-show="!showAgl">QNH</span>
+						</th>
 						<th v-show="showLegend">Seen</th>
 						<th v-show="showLegend">
 							<button class="fa fa-angle-double-right btn btn-xs btn-outline-dark ml-2 mt-1 pr-2 pl-2" v-on:click="showLegend=!showLegend" ></button>
@@ -240,8 +244,18 @@ html, body,
 								</div>
 							</td>
 							<td v-show="showLegend">
-								<span v-if="craft.points[0].gl && craft.points[0].alt">{{formatAltitudeFeet(heightAgl(craft.points[0].alt, craft.points[0].gl))}}</span>
-								<span v-if="craft.points[0].gl===null || craft.points[0].alt==null">n/a</span>
+								<span v-if="showAgl && craft.points[0].alt">
+									<span v-if="craft.points[0].gl">
+										{{formatAltitudeFeet(heightAgl(craft.points[0].alt, craft.points[0].gl))}}
+									</span>
+									<span v-if="!craft.points[0].gl">
+										?
+									</span>
+								</span>
+								<span v-if="!showAgl && craft.points[0].alt">
+									{{formatAltitudeFeet(craft.points[0].alt)}}
+								</span>
+								<span v-if="craft.points[0].alt==null">n/a</span>
 								
 							</td>
 							<td v-show="showLegend">{{shortDateToNow(createDateFromMysql(craft.points[0].thetime))}}</td>
@@ -447,9 +461,13 @@ html, body,
 				showLegend: true,
 				showCoordDetails: false,
 				showAircraftDetails: false,
+
+				showAgl: true,
+
 				optionZoomToSelected: true,
 				optionLive: true,
 				optionFollow: false,
+				selectedAircraft: null,
 				selectedAircraftKey: null,
 				selectedAircraftTrack: [], // all the track data
 				selectedAircraftTrackGeoJson: [], // used by mapbox
@@ -484,7 +502,7 @@ html, body,
 
 				currentStyle: 'terrain',
 				mapStyles: {
-					terrain: 'mapbox://styles/ipearx/ck32sc9mh34gt1cqlyi852vh1',
+					terrain: 'mapbox://styles/ipearx/ck49l0wrr0jqn1cmjarpcbmko',
 					map: 'mapbox://styles/ipearx/ck49a1qq604ck1co7r9uwpi5k',
 					satellite: 'mapbox://styles/ipearx/ck499vvka09bc1cn6bmofjh21',
 					contours: 'mapbox://styles/ipearx/ck32s9fvj2k6s1cp2zih1vfim'
@@ -550,11 +568,6 @@ html, body,
 			}
 		},
 		computed: {
-			selectedAircraft: function() {
-				if (!this.selectedAircraftKey) return false;
-				var searchKey = this.selectedAircraftKey;
-				return this.aircraft.find( ({ key }) => key === searchKey );
-			},
 			filteredAircraft: function() {
 				var that = this;
 				return _.orderBy(this.aircraft.filter(function(craft) {
@@ -633,8 +646,14 @@ html, body,
 			}
 		});
 		that.map.on('style.load', function () {
+			console.log('style loaded');
+
+
 			// Triggered when `setStyle` is called.
-			that.drawTask();
+			if (that.selectedTask) that.drawTask();
+
+			if (that.selectedAircraft) that.createSelectedTrack();
+			if (that.aircraft) that.createTracks();
 		});
 
 		// only try and put things on the map once it's loaded
@@ -758,6 +777,8 @@ html, body,
 				that.loadingTask = false;
 
 				that.drawTask();
+				that.zoomToTask();
+
 			});
 		},
 		loadTracks: function() {
@@ -785,15 +806,17 @@ html, body,
 			var that = this;
 			var from = 0;
 
+			this.selectedAircraft = aircraft;
+
 			// check if we already have some data
-			if (this.selectedAircraftKey==aircraft.key) {
+			if (this.selectedAircraftKey==this.selectedAircraft.key) {
 				// get the last point retreived
 				from = this.selectedAircraftTrack[0].thetime;
 			} else {
 				that.selectedAircraftTrack = [];
 			}
 
-			this.selectedAircraftKey=aircraft.key;
+			this.selectedAircraftKey=this.selectedAircraft.key;
 			this.loading=true;
 
 			// load the data
@@ -809,7 +832,7 @@ html, body,
 						'features': [{
 							'type': 'Feature',
 							'properties': {
-								'color': '#' + aircraft.colour
+								'color': '#' + that.selectedAircraft.colour
 							},
 							'geometry': {
 								'type': 'LineString',
@@ -832,7 +855,7 @@ html, body,
 
 				if (from==0) {
 					// create a new track
-					that.createSelectedTrack(aircraft);
+					that.createSelectedTrack();
 					// create a new marker
 					that.createSelectedMarker();
 				} else {
@@ -927,7 +950,7 @@ html, body,
 			pingTop.style.backgroundColor = '#'+colour;
 			return el;
 		},
-		createSelectedTrack(aircraft) {
+		createSelectedTrack() {
 			var that = this;
 
 			// delete existing selected track
@@ -1091,8 +1114,6 @@ html, body,
 				}
 			});
 
-			this.zoomToTask();
-
 		},
 		zoomToTask: function() {
 			var coords = this.selectTaskCoords;
@@ -1107,16 +1128,13 @@ html, body,
 		},
 		clearCurrentTask: function() {
 			var that = this;
+			// drop all existing markers and lines
+			for (var i=0; i<that.taskWaypoints.length; i++) {
+				that.taskWaypoints[i].remove();
+			}
+			that.taskWaypoints=[];
 			var taskLineLayer = that.map.getLayer('taskLine');
 			if (typeof taskLineLayer !== 'undefined') {
-
-				// drop all existing markers and lines
-				for (var i=0; i<that.taskWaypoints.length; i++) {
-					that.taskWaypoints[i].remove();
-				}
-				that.taskWaypoints=[];
-
-				
 				that.map.removeLayer('taskLine');
 				that.map.removeSource('taskLine');
 			}
@@ -1137,6 +1155,7 @@ html, body,
 			return el;
 		},
 		changeStyle: function(style) {
+			this.clearCurrentTask();
 			this.currentStyle = style;
 			this.map.setStyle(this.mapStyles[style]);
 		}

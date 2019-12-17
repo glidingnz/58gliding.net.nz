@@ -11896,6 +11896,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -11917,9 +11931,11 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       showLegend: true,
       showCoordDetails: false,
       showAircraftDetails: false,
+      showAgl: true,
       optionZoomToSelected: true,
       optionLive: true,
       optionFollow: false,
+      selectedAircraft: null,
       selectedAircraftKey: null,
       selectedAircraftTrack: [],
       // all the track data
@@ -11955,7 +11971,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       fitBoundsStarted: false,
       currentStyle: 'terrain',
       mapStyles: {
-        terrain: 'mapbox://styles/ipearx/ck32sc9mh34gt1cqlyi852vh1',
+        terrain: 'mapbox://styles/ipearx/ck49l0wrr0jqn1cmjarpcbmko',
         map: 'mapbox://styles/ipearx/ck49a1qq604ck1co7r9uwpi5k',
         satellite: 'mapbox://styles/ipearx/ck499vvka09bc1cn6bmofjh21',
         contours: 'mapbox://styles/ipearx/ck32s9fvj2k6s1cp2zih1vfim'
@@ -12094,14 +12110,6 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     }
   },
   computed: {
-    selectedAircraft: function selectedAircraft() {
-      if (!this.selectedAircraftKey) return false;
-      var searchKey = this.selectedAircraftKey;
-      return this.aircraft.find(function (_ref) {
-        var key = _ref.key;
-        return key === searchKey;
-      });
-    },
     filteredAircraft: function filteredAircraft() {
       var that = this;
       return _.orderBy(this.aircraft.filter(function (craft) {
@@ -12179,8 +12187,11 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       }
     });
     that.map.on('style.load', function () {
-      // Triggered when `setStyle` is called.
-      that.drawTask();
+      console.log('style loaded'); // Triggered when `setStyle` is called.
+
+      if (that.selectedTask) that.drawTask();
+      if (that.selectedAircraft) that.createSelectedTrack();
+      if (that.aircraft) that.createTracks();
     }); // only try and put things on the map once it's loaded
 
     this.map.on('load', this.mapLoaded); // check if the legend should be open or not
@@ -12290,6 +12301,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         that.loading = false;
         that.loadingTask = false;
         that.drawTask();
+        that.zoomToTask();
       });
     },
     loadTracks: function loadTracks() {
@@ -12311,16 +12323,17 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
     },
     selectAircraft: function selectAircraft(aircraft) {
       var that = this;
-      var from = 0; // check if we already have some data
+      var from = 0;
+      this.selectedAircraft = aircraft; // check if we already have some data
 
-      if (this.selectedAircraftKey == aircraft.key) {
+      if (this.selectedAircraftKey == this.selectedAircraft.key) {
         // get the last point retreived
         from = this.selectedAircraftTrack[0].thetime;
       } else {
         that.selectedAircraftTrack = [];
       }
 
-      this.selectedAircraftKey = aircraft.key;
+      this.selectedAircraftKey = this.selectedAircraft.key;
       this.loading = true; // load the data
 
       window.axios.get('/api/v2/tracking/' + that.flyingDay + '/aircraft/' + aircraft.key + '?from=' + from).then(function (response) {
@@ -12333,7 +12346,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
             'features': [{
               'type': 'Feature',
               'properties': {
-                'color': '#' + aircraft.colour
+                'color': '#' + that.selectedAircraft.colour
               },
               'geometry': {
                 'type': 'LineString',
@@ -12355,7 +12368,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
 
         if (from == 0) {
           // create a new track
-          that.createSelectedTrack(aircraft); // create a new marker
+          that.createSelectedTrack(); // create a new marker
 
           that.createSelectedMarker();
         } else {
@@ -12434,7 +12447,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       pingTop.style.backgroundColor = '#' + colour;
       return el;
     },
-    createSelectedTrack: function createSelectedTrack(aircraft) {
+    createSelectedTrack: function createSelectedTrack() {
       var that = this; // delete existing selected track
 
       var mapLayer = this.map.getLayer('selectedTrack');
@@ -12594,7 +12607,6 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
           "line-width": 4
         }
       });
-      this.zoomToTask();
     },
     zoomToTask: function zoomToTask() {
       var coords = this.selectTaskCoords;
@@ -12608,16 +12620,16 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       this.optionZoomToSelected = false;
     },
     clearCurrentTask: function clearCurrentTask() {
-      var that = this;
+      var that = this; // drop all existing markers and lines
+
+      for (var i = 0; i < that.taskWaypoints.length; i++) {
+        that.taskWaypoints[i].remove();
+      }
+
+      that.taskWaypoints = [];
       var taskLineLayer = that.map.getLayer('taskLine');
 
       if (typeof taskLineLayer !== 'undefined') {
-        // drop all existing markers and lines
-        for (var i = 0; i < that.taskWaypoints.length; i++) {
-          that.taskWaypoints[i].remove();
-        }
-
-        that.taskWaypoints = [];
         that.map.removeLayer('taskLine');
         that.map.removeSource('taskLine');
       }
@@ -12639,6 +12651,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       return el;
     },
     changeStyle: function changeStyle(style) {
+      this.clearCurrentTask();
       this.currentStyle = style;
       this.map.setStyle(this.mapStyles[style]);
     }
@@ -67439,9 +67452,44 @@ var render = function() {
                         value: _vm.showLegend,
                         expression: "showLegend"
                       }
-                    ]
+                    ],
+                    on: {
+                      click: function($event) {
+                        _vm.showAgl = !_vm.showAgl
+                      }
+                    }
                   },
-                  [_vm._v("AGL")]
+                  [
+                    _c(
+                      "span",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.showAgl,
+                            expression: "showAgl"
+                          }
+                        ]
+                      },
+                      [_vm._v("AGL")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "span",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: !_vm.showAgl,
+                            expression: "!showAgl"
+                          }
+                        ]
+                      },
+                      [_vm._v("QNH")]
+                    )
+                  ]
                 ),
                 _vm._v(" "),
                 _c(
@@ -67532,22 +67580,49 @@ var render = function() {
                           ]
                         },
                         [
-                          craft.points[0].gl && craft.points[0].alt
+                          _vm.showAgl && craft.points[0].alt
+                            ? _c("span", [
+                                craft.points[0].gl
+                                  ? _c("span", [
+                                      _vm._v(
+                                        "\n\t\t\t\t\t\t\t\t\t\t" +
+                                          _vm._s(
+                                            _vm.formatAltitudeFeet(
+                                              _vm.heightAgl(
+                                                craft.points[0].alt,
+                                                craft.points[0].gl
+                                              )
+                                            )
+                                          ) +
+                                          "\n\t\t\t\t\t\t\t\t\t"
+                                      )
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                !craft.points[0].gl
+                                  ? _c("span", [
+                                      _vm._v(
+                                        "\n\t\t\t\t\t\t\t\t\t\t?\n\t\t\t\t\t\t\t\t\t"
+                                      )
+                                    ])
+                                  : _vm._e()
+                              ])
+                            : _vm._e(),
+                          _vm._v(" "),
+                          !_vm.showAgl && craft.points[0].alt
                             ? _c("span", [
                                 _vm._v(
-                                  _vm._s(
-                                    _vm.formatAltitudeFeet(
-                                      _vm.heightAgl(
-                                        craft.points[0].alt,
-                                        craft.points[0].gl
+                                  "\n\t\t\t\t\t\t\t\t\t" +
+                                    _vm._s(
+                                      _vm.formatAltitudeFeet(
+                                        craft.points[0].alt
                                       )
-                                    )
-                                  )
+                                    ) +
+                                    "\n\t\t\t\t\t\t\t\t"
                                 )
                               ])
                             : _vm._e(),
                           _vm._v(" "),
-                          craft.points[0].gl === null ||
                           craft.points[0].alt == null
                             ? _c("span", [_vm._v("n/a")])
                             : _vm._e()
