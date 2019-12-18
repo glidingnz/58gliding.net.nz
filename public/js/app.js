@@ -11935,7 +11935,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       showCoordDetails: false,
       showAircraftDetails: false,
       legendShowAgl: true,
-      legendSort: ['that.aircraft.contest_id', 'key'],
+      legendSort: ['that.aircraft.legend'],
       optionZoomToSelected: true,
       optionLive: true,
       optionFollow: false,

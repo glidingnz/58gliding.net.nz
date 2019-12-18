@@ -466,7 +466,7 @@ html, body,
 				showAircraftDetails: false,
 
 				legendShowAgl: true,
-				legendSort: ['that.aircraft.contest_id', 'key'],
+				legendSort: ['that.aircraft.legend'],
 
 				optionZoomToSelected: true,
 				optionLive: true,
