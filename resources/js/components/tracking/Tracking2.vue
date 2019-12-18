@@ -223,10 +223,11 @@ html, body,
 						<th v-show="!showLegend">
 							<button class="fa fa-angle-double-left btn btn-xs btn-outline-dark ml-2 mt-1 pr-2 pl-2" v-if="!showLegend" v-on:click="showLegend=!showLegend" ></button>
 						</th>
-						<th v-show="showLegend">Reg</th>
-						<th v-show="showLegend" v-on:click="showAgl = !showAgl">
-							<span v-show="showAgl">AGL</span>
-							<span v-show="!showAgl">QNH</span>
+						<th v-show="showLegend" v-on:click="legendSort=['that.aircraft.legend']">Reg</th>
+						<th v-show="showLegend" 
+							v-on:click="legendShowAgl = !legendShowAgl; legendSort=['that.aircraft.points[0].alt']">
+							<a href="javascript:void(0)" v-show="legendShowAgl">AGL</a>
+							<a href="javascript:void(0)" v-show="!legendShowAgl">QNH</a>
 						</th>
 						<th v-show="showLegend">Seen</th>
 						<th v-show="showLegend">
@@ -240,11 +241,11 @@ html, body,
 							<td>
 								<div class="aircraft-badge" 
 									v-bind:style="{backgroundColor: '#'+craft.colour}">
-									{{getLabel(craft)}}
+									{{craft.legend}}
 								</div>
 							</td>
 							<td v-show="showLegend">
-								<span v-if="showAgl && craft.points[0].alt">
+								<span v-if="legendShowAgl && craft.points[0].alt">
 									<span v-if="craft.points[0].gl">
 										{{formatAltitudeFeet(heightAgl(craft.points[0].alt, craft.points[0].gl))}}
 									</span>
@@ -252,7 +253,7 @@ html, body,
 										?
 									</span>
 								</span>
-								<span v-if="!showAgl && craft.points[0].alt">
+								<span v-if="!legendShowAgl && craft.points[0].alt">
 									{{formatAltitudeFeet(craft.points[0].alt)}}
 								</span>
 								<span v-if="craft.points[0].alt==null">n/a</span>
@@ -261,6 +262,8 @@ html, body,
 							<td v-show="showLegend">{{shortDateToNow(createDateFromMysql(craft.points[0].thetime))}}</td>
 						</tr>
 					</table>
+					{{legendSort}}
+
 				</div>
 			</div>
 		</div>
@@ -462,7 +465,8 @@ html, body,
 				showCoordDetails: false,
 				showAircraftDetails: false,
 
-				showAgl: true,
+				legendShowAgl: true,
+				legendSort: ['that.aircraft.contest_id', 'key'],
 
 				optionZoomToSelected: true,
 				optionLive: true,
@@ -570,6 +574,7 @@ html, body,
 		computed: {
 			filteredAircraft: function() {
 				var that = this;
+				console.log(that.aircraft);
 				return _.orderBy(this.aircraft.filter(function(craft) {
 
 					if (that.filterIsland=='north') {
@@ -597,7 +602,7 @@ html, body,
 
 					return true;
 
-				}), ['aircraft.contest_id', 'key']);
+				}), that.legendSort);
 			},
 			altitudes: function() {
 				var that = this;
@@ -732,14 +737,6 @@ html, body,
 
 				that.loadTracks();
 			});
-		},
-		getLabel: function(point) {
-			if (point.aircraft) {
-				if (point.aircraft.contest_id) return point.aircraft.contest_id;
-			}
-			if (point.rego) return point.rego;
-			if (point.key.length==6) return '*' + point.key.substring(4,6);
-			return '?';
 		},
 		loadContests: function() {
 			var that = this;
@@ -893,7 +890,7 @@ html, body,
 			if (this.selectedMarker) this.selectedMarker.remove();
 
 			var aircraft = this.selectedAircraft;
-			var el = that.createMarkerDom(that.getLabel(aircraft), aircraft.colour, 'selectedMarker');
+			var el = that.createMarkerDom(aircraft.legend, aircraft.colour, 'selectedMarker');
 			this.selectedMarker = new mapboxgl.Marker(el, {
 					anchor: 'bottom',
 					offset: [0, -5]
@@ -908,7 +905,7 @@ html, body,
 
 				if (typeof aircraft.points=='undefined') return false;
 
-				var el = that.createMarkerDom(that.getLabel(aircraft), aircraft.colour, 'aircraftMarker');
+				var el = that.createMarkerDom(aircraft.legend, aircraft.colour, 'aircraftMarker');
 				el.addEventListener('click', () => 
 					{ 
 						that.selectAircraft(aircraft);

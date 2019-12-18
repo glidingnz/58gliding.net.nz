@@ -128,6 +128,21 @@ class Tracking2ApiController extends ApiController
 				if ($craft->rego!=null) $new_key = $craft->rego;
 				else $new_key = $craft->hex;
 				$craft->key = $new_key;
+
+				// Figure out the short name for the legend.
+				// Unidentified FLARM aircraft use the last 2 digits with a * on front
+				if (isset($craft->aircraft)) {
+					if (isset($craft->aircraft->contest_id)) {
+						$craft->legend = $craft->aircraft->contest_id;
+					} else {
+						$craft->legend = substr($craft->aircraft->rego, 3, 3);
+					}
+				} elseif (strlen($craft->key)==6) {
+					$craft->legend = '*' . substr($craft->key, 4, 6);
+				} else {
+					$craft->legend = '?';
+				}
+
 				$unique_aircraft[$new_key] = $craft;
 			}
 
