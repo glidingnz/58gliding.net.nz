@@ -24,14 +24,14 @@ class AppBaseController extends Api\ApiController
     {
 		$response = ResponseUtil::makeResponse($message, $result);
 		$this->_get_db_queries();
-		$response['queries'] = $this->data['queries'];
+		if (isset($this->data['queries'])) $response['queries'] = $this->data['queries'];
         return Response::json($response);
     }
 
     public function sendError($error, $code = 404)
     {
 		$this->_get_db_queries();
-		$result['data'] = $this->data['queries'];
+		if (isset($this->data['queries'])) $result['data'] = $this->data['queries'];
 
         return Response::json(ResponseUtil::makeError($error), $code);
     }
