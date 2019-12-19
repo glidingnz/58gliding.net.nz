@@ -11909,10 +11909,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 
 
 
@@ -11935,7 +11931,8 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       showCoordDetails: false,
       showAircraftDetails: false,
       legendShowAgl: true,
-      legendSort: ['that.aircraft.legend'],
+      legendSort: ['legend'],
+      legendSortDirection: ['asc'],
       optionZoomToSelected: true,
       optionLive: true,
       optionFollow: false,
@@ -12145,7 +12142,7 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         }
 
         return true;
-      }), that.legendSort);
+      }), that.legendSort, that.legendSortDirection);
     },
     altitudes: function altitudes() {
       var that = this;
@@ -67436,7 +67433,8 @@ var render = function() {
                     ],
                     on: {
                       click: function($event) {
-                        _vm.legendSort = ["that.aircraft.legend"]
+                        _vm.legendSort = ["hasAircraft", "legend"]
+                        _vm.legendSortDirection = ["desc", "asc"]
                       }
                     }
                   },
@@ -67457,7 +67455,6 @@ var render = function() {
                     on: {
                       click: function($event) {
                         _vm.legendShowAgl = !_vm.legendShowAgl
-                        _vm.legendSort = ["that.aircraft.points[0].alt"]
                       }
                     }
                   },
@@ -67473,7 +67470,13 @@ var render = function() {
                             expression: "legendShowAgl"
                           }
                         ],
-                        attrs: { href: "javascript:void(0)" }
+                        attrs: { href: "javascript:void(0)" },
+                        on: {
+                          click: function($event) {
+                            _vm.legendSort = ["hasAlt, alt"]
+                            _vm.legendSortDirection = ["asc", "desc"]
+                          }
+                        }
                       },
                       [_vm._v("AGL")]
                     ),
@@ -67489,7 +67492,13 @@ var render = function() {
                             expression: "!legendShowAgl"
                           }
                         ],
-                        attrs: { href: "javascript:void(0)" }
+                        attrs: { href: "javascript:void(0)" },
+                        on: {
+                          click: function($event) {
+                            _vm.legendSort = ["hasAgl, agl"]
+                            _vm.legendSortDirection = ["asc", "desc"]
+                          }
+                        }
                       },
                       [_vm._v("QNH")]
                     )
@@ -67506,7 +67515,13 @@ var render = function() {
                         value: _vm.showLegend,
                         expression: "showLegend"
                       }
-                    ]
+                    ],
+                    on: {
+                      click: function($event) {
+                        _vm.legendSort = ["lastSeen"]
+                        _vm.legendSortDirection = ["desc"]
+                      }
+                    }
                   },
                   [_vm._v("Seen")]
                 ),
@@ -67584,51 +67599,32 @@ var render = function() {
                           ]
                         },
                         [
-                          _vm.legendShowAgl && craft.points[0].alt
+                          _vm.legendShowAgl
                             ? _c("span", [
-                                craft.points[0].gl
+                                craft.agl != null
                                   ? _c("span", [
                                       _vm._v(
-                                        "\n\t\t\t\t\t\t\t\t\t\t" +
-                                          _vm._s(
-                                            _vm.formatAltitudeFeet(
-                                              _vm.heightAgl(
-                                                craft.points[0].alt,
-                                                craft.points[0].gl
-                                              )
-                                            )
-                                          ) +
-                                          "\n\t\t\t\t\t\t\t\t\t"
-                                      )
-                                    ])
-                                  : _vm._e(),
-                                _vm._v(" "),
-                                !craft.points[0].gl
-                                  ? _c("span", [
-                                      _vm._v(
-                                        "\n\t\t\t\t\t\t\t\t\t\t?\n\t\t\t\t\t\t\t\t\t"
+                                        _vm._s(
+                                          _vm.formatAltitudeFeet(craft.agl)
+                                        )
                                       )
                                     ])
                                   : _vm._e()
                               ])
                             : _vm._e(),
                           _vm._v(" "),
-                          !_vm.legendShowAgl && craft.points[0].alt
+                          !_vm.legendShowAgl
                             ? _c("span", [
-                                _vm._v(
-                                  "\n\t\t\t\t\t\t\t\t\t" +
-                                    _vm._s(
-                                      _vm.formatAltitudeFeet(
-                                        craft.points[0].alt
+                                craft.alt != null
+                                  ? _c("span", [
+                                      _vm._v(
+                                        _vm._s(
+                                          _vm.formatAltitudeFeet(craft.alt)
+                                        )
                                       )
-                                    ) +
-                                    "\n\t\t\t\t\t\t\t\t"
-                                )
+                                    ])
+                                  : _vm._e()
                               ])
-                            : _vm._e(),
-                          _vm._v(" "),
-                          craft.points[0].alt == null
-                            ? _c("span", [_vm._v("n/a")])
                             : _vm._e()
                         ]
                       ),

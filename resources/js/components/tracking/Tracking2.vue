@@ -223,13 +223,13 @@ html, body,
 						<th v-show="!showLegend">
 							<button class="fa fa-angle-double-left btn btn-xs btn-outline-dark ml-2 mt-1 pr-2 pl-2" v-if="!showLegend" v-on:click="showLegend=!showLegend" ></button>
 						</th>
-						<th v-show="showLegend" v-on:click="legendSort=['that.aircraft.legend']">Reg</th>
+						<th v-show="showLegend" v-on:click="legendSort=['hasAircraft','legend']; legendSortDirection=['desc','asc']">Reg</th>
 						<th v-show="showLegend" 
-							v-on:click="legendShowAgl = !legendShowAgl; legendSort=['that.aircraft.points[0].alt']">
-							<a href="javascript:void(0)" v-show="legendShowAgl">AGL</a>
-							<a href="javascript:void(0)" v-show="!legendShowAgl">QNH</a>
+							v-on:click="legendShowAgl = !legendShowAgl;">
+							<a href="javascript:void(0)" v-show="legendShowAgl" v-on:click="legendSort=['hasAlt, alt']; legendSortDirection=['asc','desc']">AGL</a>
+							<a href="javascript:void(0)" v-show="!legendShowAgl" v-on:click="legendSort=['hasAgl, agl']; legendSortDirection=['asc','desc']">QNH</a>
 						</th>
-						<th v-show="showLegend">Seen</th>
+						<th v-show="showLegend" v-on:click="legendSort=['lastSeen']; legendSortDirection=['desc']">Seen</th>
 						<th v-show="showLegend">
 							<button class="fa fa-angle-double-right btn btn-xs btn-outline-dark ml-2 mt-1 pr-2 pl-2" v-on:click="showLegend=!showLegend" ></button>
 						</th>
@@ -245,19 +245,15 @@ html, body,
 								</div>
 							</td>
 							<td v-show="showLegend">
-								<span v-if="legendShowAgl && craft.points[0].alt">
-									<span v-if="craft.points[0].gl">
-										{{formatAltitudeFeet(heightAgl(craft.points[0].alt, craft.points[0].gl))}}
-									</span>
-									<span v-if="!craft.points[0].gl">
-										?
-									</span>
+
+								<span v-if="legendShowAgl">
+									<span v-if="craft.agl!=null">{{formatAltitudeFeet(craft.agl)}}</span>
 								</span>
-								<span v-if="!legendShowAgl && craft.points[0].alt">
-									{{formatAltitudeFeet(craft.points[0].alt)}}
+
+								<span v-if="!legendShowAgl">
+									<span v-if="craft.alt!=null">{{formatAltitudeFeet(craft.alt)}}</span>
 								</span>
-								<span v-if="craft.points[0].alt==null">n/a</span>
-								
+
 							</td>
 							<td v-show="showLegend">{{shortDateToNow(createDateFromMysql(craft.points[0].thetime))}}</td>
 						</tr>
@@ -466,7 +462,8 @@ html, body,
 				showAircraftDetails: false,
 
 				legendShowAgl: true,
-				legendSort: ['that.aircraft.legend'],
+				legendSort: ['legend'],
+				legendSortDirection: ['asc'],
 
 				optionZoomToSelected: true,
 				optionLive: true,
@@ -602,7 +599,7 @@ html, body,
 
 					return true;
 
-				}), that.legendSort);
+				}), that.legendSort, that.legendSortDirection);
 			},
 			altitudes: function() {
 				var that = this;
