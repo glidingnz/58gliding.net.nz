@@ -311,11 +311,7 @@ html, body,
 				<altitude-chart :values="altitudes" @showpoint="showPoint" :height="100"></altitude-chart>  <!-- @showpoint="showPoint" @mouseout="mouseOut" @clickpoint="clickPoint" -->
 
 			</div>
-
-
-
 		</div>
-
 	</div>
 
 
@@ -574,8 +570,6 @@ html, body,
 		computed: {
 			filteredAircraft: function() {
 				var that = this;
-				console.log(that.legendSort);
-				console.log(that.legendSortDirection);
 				return _.orderBy(this.aircraft.filter(function(craft) {
 
 					if (that.filterIsland=='north') {
@@ -647,14 +641,11 @@ html, body,
 			if (that.fitBoundsStarted) {
 				that.fitBoundsStarted=false;
 				if (that.optionFollow && that.selectedAircraft) {
-					that.map.panTo([that.selectedAircraft.points[0].lng, that.selectedAircraft.points[0].lat]);
+					that.map.panTo([that.selectedAircraftTrack[0].lng, that.selectedAircraftTrack[0].lat]);
 				}
 			}
 		});
 		that.map.on('style.load', function () {
-			console.log('style loaded');
-
-
 			// Triggered when `setStyle` is called.
 			if (that.selectedTask) that.drawTask();
 
@@ -922,7 +913,7 @@ html, body,
 				that.mapMarkers.push(marker);
 
 				if (that.optionFollow && that.selectedAircraft) {
-					that.map.panTo([that.selectedAircraft.points[0].lng, that.selectedAircraft.points[0].lat]);
+					that.map.panTo([that.selectedAircraftTrack[0].lng, that.selectedAircraftTrack[0].lat]);
 				}
 
 				that.createSelectedMarker();
@@ -1034,11 +1025,11 @@ html, body,
 		},
 		follow: function() {
 			var that = this;
-			Vue.nextTick(function () {
+			setTimeout(() => {
 				if (that.optionFollow) {
-					that.map.panTo([that.selectedAircraft.points[0].lng, that.selectedAircraft.points[0].lat]);
+					that.map.panTo([that.selectedAircraftTrack[0].lng, that.selectedAircraftTrack[0].lat]);
 				}
-			});
+			}, 20);
 		},
 		loadFleets: function() {
 			var that=this;
