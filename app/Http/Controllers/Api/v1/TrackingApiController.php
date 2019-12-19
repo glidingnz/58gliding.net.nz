@@ -507,7 +507,6 @@ class TrackingApiController extends ApiController
 				if ($json = file_get_contents($aircraft_url))
 				{
 					$obj = json_decode($json);
-					Log::info($obj);
 
 					// check if we have messages for this ID
 					if (isset($obj->response->feedMessageResponse))
