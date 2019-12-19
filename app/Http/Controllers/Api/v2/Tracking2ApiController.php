@@ -54,9 +54,9 @@ class Tracking2ApiController extends ApiController
 	{
 		// check cache first
 		$aircraft_with_points_key = 'aircraft-with-'.$points.'-points-'.$dayDate;
-		// if (Cache::has($aircraft_with_points_key)) {
-		// 	return $this->success(array_values(Cache::get($aircraft_with_points_key)));
-		// }
+		if (Cache::has($aircraft_with_points_key)) {
+			return $this->success(array_values(Cache::get($aircraft_with_points_key)));
+		}
 
 
 		$points = (int)$points; // ensure $pointsPerHex is an integer
@@ -218,8 +218,6 @@ class Tracking2ApiController extends ApiController
 
 			$unique_aircraft[$key]->lastSeen = strtotime($craft->points[0]->thetime);
 		}
-		
-
 
 		// strip out the array keys for javascript
 		//return $this->success($unique_aircraft);
@@ -288,7 +286,6 @@ class Tracking2ApiController extends ApiController
 
 				// filter out any points that are too old, so we don't transfer unnecessary data
 				$thetime = new Carbon($point->thetime);
-				//echo $thetime . '<br>';
 				if (!isset($from_time) || $thetime->gt($from_time))
 				{
 					$points_to_output[] = $point;
