@@ -285,6 +285,9 @@ html, body,
 				</div>
 				<div class="detail">{{formatAltitudeFeet(heightAgl(selectedPoint.alt, selectedPoint.gl))}} AGL</div>
 				<div class="detail">{{formatAltitudeFeet(selectedPoint.alt)}} QNH</div>
+				<div class="detail" v-if="selectedPoint.speed!=null">
+					GS {{ Math.round(selectedPoint.speed / 1.852) }} kt
+				</div>
 				<div class="detail" v-if="selectedPoint.vspeed!=null">
 					<span class="fa fa-arrow-up" v-show="selectedPoint.vspeed>0"></span>
 					<span class="fa fa-arrow-down" v-show="selectedPoint.vspeed<0"></span>
