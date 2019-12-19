@@ -507,6 +507,7 @@ class TrackingApiController extends ApiController
 				if ($json = file_get_contents($aircraft_url))
 				{
 					$obj = json_decode($json);
+					Log::info($obj);
 
 					// check if we have messages for this ID
 					if (isset($obj->response->feedMessageResponse))
@@ -514,10 +515,13 @@ class TrackingApiController extends ApiController
 						// loop through them all
 						foreach ($obj->response->feedMessageResponse->messages->message AS $point)
 						{
+							if (!isset($point->unixTime)) continue;
+							
 							$thetimestamp = date("Y-m-d H:i:s", $point->unixTime); // TOFIX
 							$nzdate = new DateTime('@' . $point->unixTime);
 							$nzdate->setTimezone(new DateTimeZone('Pacific/Auckland'));
 							$table_name = 'data' . $nzdate->format('Ymd');
+
 
 							// check the table exists, otherwise make it
 							if (!$this->check_table_exists($nzdate)) $this->make_table($nzdate);
