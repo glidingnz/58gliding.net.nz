@@ -226,8 +226,8 @@ html, body,
 						<th v-show="showLegend" v-on:click="legendSort=['hasAircraft','legend']; legendSortDirection=['desc','asc']">Reg</th>
 						<th v-show="showLegend" 
 							v-on:click="legendShowAgl = !legendShowAgl;">
-							<a href="javascript:void(0)" v-show="legendShowAgl" v-on:click="legendSort=['hasAlt, alt']; legendSortDirection=['asc','desc']">AGL</a>
-							<a href="javascript:void(0)" v-show="!legendShowAgl" v-on:click="legendSort=['hasAgl, agl']; legendSortDirection=['asc','desc']">QNH</a>
+							<a href="javascript:void(0)" v-show="legendShowAgl" v-on:click="legendSort=['hasAlt','alt']; legendSortDirection=['desc','desc']">AGL</a>
+							<a href="javascript:void(0)" v-show="!legendShowAgl" v-on:click="legendSort=['hasAgl','agl']; legendSortDirection=['desc','desc']">QNH</a>
 						</th>
 						<th v-show="showLegend" v-on:click="legendSort=['lastSeen']; legendSortDirection=['desc']">Seen</th>
 						<th v-show="showLegend">
@@ -248,17 +248,16 @@ html, body,
 
 								<span v-if="legendShowAgl">
 									<span v-if="craft.agl!=null">{{formatAltitudeFeet(craft.agl)}}</span>
-								</span>
+								</span> 
 
 								<span v-if="!legendShowAgl">
-									<span v-if="craft.alt!=null">{{formatAltitudeFeet(craft.alt)}}</span>
+									<span v-if="craft.alt!=null">{{formatAltitudeFeet(craft.alt)}}</span> 
 								</span>
 
 							</td>
 							<td v-show="showLegend">{{shortDateToNow(createDateFromMysql(craft.points[0].thetime))}}</td>
 						</tr>
 					</table>
-					{{legendSort}}
 
 				</div>
 			</div>
@@ -462,8 +461,8 @@ html, body,
 				showAircraftDetails: false,
 
 				legendShowAgl: true,
-				legendSort: ['legend'],
-				legendSortDirection: ['asc'],
+				legendSort: ['hasAircraft','legend'],
+				legendSortDirection: ['desc','asc'],
 
 				optionZoomToSelected: true,
 				optionLive: true,
@@ -571,7 +570,8 @@ html, body,
 		computed: {
 			filteredAircraft: function() {
 				var that = this;
-				console.log(that.aircraft);
+				console.log(that.legendSort);
+				console.log(that.legendSortDirection);
 				return _.orderBy(this.aircraft.filter(function(craft) {
 
 					if (that.filterIsland=='north') {

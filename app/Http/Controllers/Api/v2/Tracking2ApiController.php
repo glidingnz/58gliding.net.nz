@@ -201,20 +201,20 @@ class Tracking2ApiController extends ApiController
 			$unique_aircraft[$key]->alt = $craft->points[0]->alt;
 			$unique_aircraft[$key]->gl = $craft->points[0]->gl;
 			$unique_aircraft[$key]->agl = null;
-			if ($unique_aircraft[$key]->gl!=null && $unique_aircraft[$key]->alt!=null)
+			if ($unique_aircraft[$key]->gl!==null && $unique_aircraft[$key]->alt!==null)
 			{
 				$unique_aircraft[$key]->agl = $craft->alt - $craft->gl;
 				if ($unique_aircraft[$key]->agl<0) $unique_aircraft[$key]->agl=0;
 			}
 
-			if ($unique_aircraft[$key]->alt==null) $unique_aircraft[$key]->hasAlt = false;
+			if ($unique_aircraft[$key]->alt===null) $unique_aircraft[$key]->hasAlt = false;
 			else $unique_aircraft[$key]->hasAlt = true;
 
-			if ($unique_aircraft[$key]->agl==null) $unique_aircraft[$key]->hasAgl = false;
+			if ($unique_aircraft[$key]->agl===null) $unique_aircraft[$key]->hasAgl = false;
 			else $unique_aircraft[$key]->hasAgl = true;
 
-			if (isset($unique_aircraft[$key]->aircraft)) $unique_aircraft[$key]->hasAircarft = true;
-			else $unique_aircraft[$key]->hasAircarft = false;
+			if (isset($unique_aircraft[$key]->aircraft)) $unique_aircraft[$key]->hasAircraft = true;
+			else $unique_aircraft[$key]->hasAircraft = false;
 
 			$unique_aircraft[$key]->lastSeen = strtotime($craft->points[0]->thetime);
 		}

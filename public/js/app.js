@@ -11908,7 +11908,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 
@@ -11931,8 +11930,8 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       showCoordDetails: false,
       showAircraftDetails: false,
       legendShowAgl: true,
-      legendSort: ['legend'],
-      legendSortDirection: ['asc'],
+      legendSort: ['hasAircraft', 'legend'],
+      legendSortDirection: ['desc', 'asc'],
       optionZoomToSelected: true,
       optionLive: true,
       optionFollow: false,
@@ -12113,7 +12112,8 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
   computed: {
     filteredAircraft: function filteredAircraft() {
       var that = this;
-      console.log(that.aircraft);
+      console.log(that.legendSort);
+      console.log(that.legendSortDirection);
       return _.orderBy(this.aircraft.filter(function (craft) {
         if (that.filterIsland == 'north') {
           if (craft.points[0].lat < -40.29 && craft.points[0].lng < 174.36) return false;
@@ -67473,8 +67473,8 @@ var render = function() {
                         attrs: { href: "javascript:void(0)" },
                         on: {
                           click: function($event) {
-                            _vm.legendSort = ["hasAlt, alt"]
-                            _vm.legendSortDirection = ["asc", "desc"]
+                            _vm.legendSort = ["hasAlt", "alt"]
+                            _vm.legendSortDirection = ["desc", "desc"]
                           }
                         }
                       },
@@ -67495,8 +67495,8 @@ var render = function() {
                         attrs: { href: "javascript:void(0)" },
                         on: {
                           click: function($event) {
-                            _vm.legendSort = ["hasAgl, agl"]
-                            _vm.legendSortDirection = ["asc", "desc"]
+                            _vm.legendSort = ["hasAgl", "agl"]
+                            _vm.legendSortDirection = ["desc", "desc"]
                           }
                         }
                       },
@@ -67655,8 +67655,7 @@ var render = function() {
                   )
                 }),
                 0
-              ),
-              _vm._v("\n\t\t\t\t\t" + _vm._s(_vm.legendSort) + "\n\n\t\t\t\t")
+              )
             ])
           ]
         )
