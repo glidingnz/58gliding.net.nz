@@ -223,13 +223,17 @@ html, body,
 						<th v-show="!showLegend">
 							<button class="fa fa-angle-double-left btn btn-xs btn-outline-dark ml-2 mt-1 pr-2 pl-2" v-if="!showLegend" v-on:click="showLegend=!showLegend" ></button>
 						</th>
-						<th v-show="showLegend" v-on:click="legendSort=['hasAircraft','legend']; legendSortDirection=['desc','asc']">Reg</th>
+						<th v-show="showLegend" v-on:click="legendSort=['hasAircraft','legend']; legendSortDirection=['desc','asc']">
+							<a href="javascript:void(0)">Reg</a>
+						</th>
 						<th v-show="showLegend" 
 							v-on:click="legendShowAgl = !legendShowAgl;">
 							<a href="javascript:void(0)" v-show="legendShowAgl" v-on:click="legendSort=['hasAlt','alt']; legendSortDirection=['desc','desc']">AGL</a>
 							<a href="javascript:void(0)" v-show="!legendShowAgl" v-on:click="legendSort=['hasAgl','agl']; legendSortDirection=['desc','desc']">QNH</a>
 						</th>
-						<th v-show="showLegend" v-on:click="legendSort=['lastSeen']; legendSortDirection=['desc']">Seen</th>
+						<th v-show="showLegend" v-on:click="legendSort=['lastSeen']; legendSortDirection=['desc']">
+							<a href="javascript:void(0)">Seen</a>
+						</th>
 						<th v-show="showLegend">
 							<button class="fa fa-angle-double-right btn btn-xs btn-outline-dark ml-2 mt-1 pr-2 pl-2" v-on:click="showLegend=!showLegend" ></button>
 						</th>
