@@ -49,7 +49,6 @@ Route::match(['post','patch'],'/contestentries/savedata', 'Apps\ContestEntriesCo
 Route::match(['post','get'],'/contestentries/loaddata', 'Apps\ContestEntriesController@loaddata')->name('contestentries.loaddata');
 Route::match(['post','patch'],'/contestentries/contestentries/savedata', 'Apps\ContestEntriesController@savedata')->name('contestentries.savedata');
 Route::match(['post','get'],'/contestentries/contestentries/loaddata', 'Apps\ContestEntriesController@loaddata')->name('contestentries.loaddata');
-Route::resource('/contestentries', 'Apps\ContestEntriesController');
 
 Route::get('/tracking', 'Apps\TrackingController@mapbox');
 Route::get('/tracking/{year}-{month}-{day}', 'Apps\TrackingController@mapboxDay');
@@ -73,6 +72,7 @@ Route::get('/events/{slug}', 'Apps\EventsController@viewEvent');
 
 Route::get('/members', 'Apps\MembersController@index');
 Route::group(['middleware' => ['auth']], function () {
+	Route::resource('/contestentries', 'Apps\ContestEntriesController');
 	Route::get('/user/account', 'UserController@view_account');
 	Route::post('/update-account', 'UserController@update_account');
 
