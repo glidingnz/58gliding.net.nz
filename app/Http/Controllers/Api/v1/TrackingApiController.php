@@ -241,7 +241,7 @@ class TrackingApiController extends ApiController
 					$pointDate = date("Y-m-d H:i:s", trim($point->date));
 					$pointLat = $point->lat;
 					$pointLon = $point->lon;
-					$pointSpeed = $point->speed;
+					$pointSpeed = $point->speed * 3.6; // convert from m/s to km/h
 					$pointCourse = $point->course;
 					$pointHAccu = $point->haccu;
 					$pointBatt = $point->bat;
@@ -432,7 +432,7 @@ class TrackingApiController extends ApiController
 								$location->geometry->coordinates[1], 
 								$location->geometry->coordinates[0], 
 								$aircraft['flarm'], 
-								$location->properties->speed, 
+								$location->properties->speed * 3.6, // convert from m/s to km/h
 								NULL, 
 								4, 
 								$rego
