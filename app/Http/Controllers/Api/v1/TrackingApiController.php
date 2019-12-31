@@ -28,6 +28,7 @@ include(app_path() . '/Classes/SRTMGeoTIFFReader.php');
  * 6) InReach (NZ)
  * 7) btraced mobile app
  * 8) manual insertion API
+ * 9) MT600 Chinese tracker
  */
 
 class TrackingApiController extends ApiController
@@ -111,6 +112,14 @@ class TrackingApiController extends ApiController
 		}
 		return $this->success();
 
+	}
+
+
+	// Chinese tracker mt600
+	public function mt600(Request $request)
+	{
+		$request_data = $request->json()->all();
+		Log::info($request_data);
 	}
 
 
