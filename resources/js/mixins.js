@@ -165,6 +165,7 @@ module.exports = {
 				case 6: return 'InReach NZ'; break;
 				case 7: return 'Btraced'; break;
 				case 8: return 'GlidingOps'; break;
+				case 9: return 'MT600'; break;
 				default: return 'Unknown'; break;
 			}
 		}
