@@ -14,16 +14,17 @@
 
 				<table class="table table-striped">
 					<tr>
-						<th colspan=2>Aircraft Tracking</th>
+						<th colspan=3>Aircraft Tracking</th>
 						<th>Example</th>
 					</tr>
 					<tr>
 						<td class="table-label">FLARM Code</td>
 						<td><input type="text" v-model="aircraft.flarm" class="form-control"></td>
+						<td><button class="btn btn-primary btn-sm" v-on:click="save()">Save</button></td>
 						<td>A1B2C3</td>
 					</tr>
 					<tr>
-						<td colspan="3">
+						<td colspan="4">
 						The 6 letter hex code that is configured in your FLARM device. Best practice is to match your transponder code.
 						We automatically pull these in from the <a href="http://wiki.glidernet.org/ddb">Open Glider Network</a>. Ensure your aircraft is added there as well.
 						</td>
@@ -31,25 +32,22 @@
 					<tr>
 						<td class="table-label">SPOT ESN or InReach ID</td>
 						<td><input type="text" v-model="aircraft.spot_esn" class="form-control"></td>
+						<td><button class="btn btn-primary btn-sm" v-on:click="save()">Save</button></td>
 						<td>Spot: 0-8765432 &nbsp; InReach: 300134363320790</td>
 					</tr>
 					<tr>
-						<td class="table-label">MT600 Tracker Code</td>
-						<td><input type="text" v-model="aircraft.mt600" class="form-control"></td>
-						<td>IMEI code e.g. 861585042912480</td>
-					</tr>
-					<tr>
-						<td colspan="3">
+						<td colspan="4">
 						This code is the ID for your SPOT device. Found under the battery cover. Used to receive data from <a href="https://spotnz.com/home.html">SPOTNZ</a>. SPOTNZ are an alternative SPOT service provider here in NZ. Contact them and let them know you want your SPOT added to the Gliding New Zealand group. Slightly more expensive per month, but able to choose which months you're using it.
-						</td>
+						</td> 
 					</tr>
 					<tr>
 						<td class="table-label">SPOT Feed</td>
 						<td><input type="text" v-model="aircraft.spot_feed_id" class="form-control"></td>
+						<td><button class="btn btn-primary btn-sm" v-on:click="save()">Save</button></td>
 						<td>0ZPRRtaEBnfAausjhDxp5qnNA5VCLN2Yq</td>
 					</tr>
 					<tr>
-						<td colspan="3">
+						<td colspan="4">
 							This is your SPOT shared page code. Used to receive data from the main <a href="https://login.findmespot.com/spot-main-web/auth/login.html">SPOT website</a>.
 							<a v-on:click="showSpotInstructions=!showSpotInstructions">Show Instructions</a>
 						</td>
@@ -112,27 +110,35 @@
 					<tr>
 						<td class="table-label">Particle.io</td>
 						<td><input type="text" v-model="aircraft.particle_id" class="form-control"></td>
+						<td><button class="btn btn-primary btn-sm" v-on:click="save()">Save</button></td>
 						<td>290037000747373334363431</td>
 					</tr>
 					<tr>
-						<td colspan="3">
+						<td colspan="4">
 						This code is for a particle.io electron cellular tracker. <a href="mailto:tim@pear.co.nz">Contact Tim for more information</a>
 						</td>
+					</tr>
+
+					<tr>
+						<td class="table-label">MT600 Tracker Code</td>
+						<td><input type="text" v-model="aircraft.mt600" class="form-control"></td>
+						<td><button class="btn btn-primary btn-sm" v-on:click="save()">Save</button></td>
+						<td>IMEI code e.g. 861585042912480</td>
 					</tr>
 					<tr>
 						<td class="table-label" colspan=3>Overland iPhone App <a href="https://overland.p3k.app">overland.p3k.app</a></td>
 					</tr>
 					<tr>
-						<td colspan="3">
+						<td colspan="4">
 						For free tracking on an iPhone try <a href="https://overland.p3k.app">Overland</a>. Use the endpoint URL of: <br> http://gliding.net.nz/overland<br>
-												And Device ID of your 3 letter registration e.g. GBA
+												And Device ID of your 3 letter registration e.g. GBA. <a href="http://gliding.co.nz/how-to-set-up-cell-tracking/">Full instructions...</a>
 						</td>
 					</tr>
 					<tr>
 						<td class="table-label" colspan=3>Btraced Android and iPhone App <a href="https://www.btraced.com">www.btraced.com</a></td>
 					</tr>
 					<tr>
-						<td colspan="3">
+						<td colspan="4">
 							<b>Under "Upload Settings" set:</b><br>
 							Upload Format: XML<br>
 							Custom Server Address: http://gliding.net.nz/btraced/REGO<br>
@@ -142,14 +148,10 @@
 							Use Time Filter: Tick yes<br>
 							Time Interval: 10, 20 or 30 seconds. Please don't use 5 or less.<br>
 							<br>
-							<a href="https://imgur.com/a/9H8Df8y">View these instructions with pictures</a>
+							<a href="http://gliding.co.nz/how-to-set-up-cell-tracking/">Full instructions...</a>
 						</td>
 					</tr>
-					<tr>
-						<td></td>
-						<td><button class="btn btn-primary btn-sm" v-on:click="save()">Save Changes</button></td>
-						<td colspan="2"></td>
-					</tr>
+
 				</table>
 
 
