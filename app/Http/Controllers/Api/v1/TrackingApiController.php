@@ -47,9 +47,10 @@ class TrackingApiController extends ApiController
 	/**
 	 * Manual insertion API
 	 * 
-	 * {"aircraft":"ZK-GGR","points": [{"utctime":1542638495,"lat":-41.2334745,"lon":174.348365,"alt":345.1,"speed":25,"course":180,"vspeed":5.3},{"utctime":1542638496,"lat":-41.2334343,"lon":174.32545,"alt":345.1,"speed":25,"course":180,"vspeed":5.3}]}
+	 * {"aircraft":"ZK-GGR","type":8, "points": [{"utctime":1542638495,"lat":-41.2334745,"lon":174.348365,"alt":345.1,"speed":25,"course":180,"vspeed":5.3},{"utctime":1542638496,"lat":-41.2334343,"lon":174.32545,"alt":345.1,"speed":25,"course":180,"vspeed":5.3}]}
 	 * 
 	 * aircraft: can be "ZK-GGR" or "GGR" or the FLARM hex code of the aircraft. If using registration, it must be in the gliding.net.nz aircraft DB.
+	 * type: should be 8 unless a specific custom type is used.
 	 * points: an array of points, consisting of the following:
 	 * 	utctime: unix timestamp
 	 * 	lat/lon: decimal format
@@ -79,6 +80,11 @@ class TrackingApiController extends ApiController
 		}
 
 		$hex = $aircraft->flarm;
+		$type=8;
+		if (isset($data->type) && is_numeric($data->type) && $data->type>=8) 
+		{
+			$type = $data->type;
+		}
 
 		foreach ($data->points AS $point)
 		{
@@ -108,7 +114,7 @@ class TrackingApiController extends ApiController
 
 			if (!$this->check_table_exists($nzdate)) $this->make_table($nzdate);
 
-			DB::connection('ogn')->insert('insert into '. $table_name .' (thetime, alt, loc, hex, speed, course, type, rego, vspeed) values (?, ?, POINT(?,?), ?, ?, ?, ?, ?, ?)', [$thetimestamp, $alt, $lat, $lon, $hex, $speed, $course, 8, substr($aircraft['rego'], 3,3), $vspeed]);
+			DB::connection('ogn')->insert('insert into '. $table_name .' (thetime, alt, loc, hex, speed, course, type, rego, vspeed) values (?, ?, POINT(?,?), ?, ?, ?, ?, ?, ?)', [$thetimestamp, $alt, $lat, $lon, $hex, $speed, $course, $type, substr($aircraft['rego'], 3,3), $vspeed]);
 		}
 		return $this->success();
 

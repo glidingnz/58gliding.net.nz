@@ -34,6 +34,11 @@
 						<td>Spot: 0-8765432 &nbsp; InReach: 300134363320790</td>
 					</tr>
 					<tr>
+						<td class="table-label">MT600 Tracker Code</td>
+						<td><input type="text" v-model="aircraft.mt600" class="form-control"></td>
+						<td>IMEI code e.g. 861585042912480</td>
+					</tr>
+					<tr>
 						<td colspan="3">
 						This code is the ID for your SPOT device. Found under the battery cover. Used to receive data from <a href="https://spotnz.com/home.html">SPOTNZ</a>. SPOTNZ are an alternative SPOT service provider here in NZ. Contact them and let them know you want your SPOT added to the Gliding New Zealand group. Slightly more expensive per month, but able to choose which months you're using it.
 						</td>
