@@ -121,11 +121,85 @@ class TrackingApiController extends ApiController
 	}
 
 
-	// Chinese tracker mt600
+	/* Chinese tracker mt600
+
+Example string:
+861585042912483$211051.00,A,3744.2431,S,17544.3354,E,,153.28,69.8,311219
+
+(
+    [0] => 861585042912483$211051.00 	ID & time
+    [1] => A 							GPS Status
+    [2] => 3744.2431 					Latitude
+    [3] => S 							
+    [4] => 17544.3354 					Longitude
+    [5] => E 		
+    [6] => 								Speed Over Ground knots
+    [7] => 153.28						Course Over Ground degrees
+    [8] => 69.8							Altitude meters
+    [9] => 311219						Date DDMMYY
+ */
 	public function mt600(Request $request)
 	{
 		$request_data = $request->json()->all();
 		Log::info($request_data);
+
+		$data = explode(',', $request_data['data']);
+		if (!isset($data[0])) return false;
+
+		// get the timestamp
+		$first_chunk = explode('$', $data[0]);
+
+		if (!isset($first_chunk[0])) return false;
+
+		$output['imei'] = $first_chunk[0];
+
+		// find the aircraft
+		$aircraft = Aircraft::where('mt600','=',$output['imei'])->first();
+		if (!$aircraft) $this->error('aircraft not found');
+
+
+		$utc_time = $first_chunk[1];
+		$lat = $data[2];
+		$long = $data[4];
+		$speed = $data[6]; 
+		if ($speed) {
+			$speed = $speed * 1.852; // convert knots to km/h
+		}
+		$course = $data[7];
+		$alt = $data[8];
+		$date = $data[9];
+
+		// convert lat and long to decimal minutes
+		$lat_degrees = substr($lat, 0, strlen($lat)-7);
+		$long_degrees = substr($long, 0, strlen($long)-7);
+
+		$lat_minutes = substr($lat, strlen($lat)-7);
+		$long_minutes = substr($long, strlen($long)-7);
+		
+		$lat_decimal = $lat_degrees + ($lat_minutes/60);
+		$long_decimal = $long_degrees + ($long_minutes/60);
+
+		if ($data[3]=='S') $lat_decimal = -$lat_decimal;
+		if ($data[5]=='W') $long_decimal = -$long_decimal;
+
+		$lat = $lat_decimal;
+		$long = $long_decimal;
+
+		$year = '20' . substr($date, 4, 2);
+		$month = substr($date, 2, 2);
+		$day = substr($date, 0, 2);
+		$hours = substr($utc_time, 0, 2);
+		$mins = substr($utc_time, 2, 2);
+		$secs = substr($utc_time, 4, 2);
+
+		if ($aircraft['flarm']==null) $hex = $aircraft['rego'];
+		else $hex = $aircraft['flarm'];
+
+		$timestamp = $year . '-' . $month . '-' . $day . ' ' . $hours . ':' . $mins . ':' . $secs;
+		$table_name = 'data' . $year.$month.$day;
+
+		DB::connection('ogn')->insert('insert into '. $table_name .' (thetime, alt, loc, hex, speed, course, type, rego, vspeed) values (?, ?, POINT(?,?), ?, ?, ?, ?, ?, ?)', [$timestamp, $alt, $lat, $long, $hex, $speed, $course, 9, substr($aircraft['rego'], 3,3), null]);
+		return $this->success();
 	}
 
 

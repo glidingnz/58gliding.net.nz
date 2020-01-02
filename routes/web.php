@@ -61,7 +61,7 @@ Route::get('/ratings-report', 'Apps\MembersController@ratingsReport');
 Route::POST('/overland', 'Api\v1\TrackingApiController@overland'); // special route for overland cell phone tracking app. Easier to type than API URL.
 Route::POST('/btraced/{rego}', 'Api\v1\TrackingApiController@btraced'); // special route for btraced cell phone tracking app. Easier to type than API URL.
 Route::GET('/btraced/{rego}', 'Api\v1\TrackingApiController@btraced'); // special route for btraced cell phone tracking app. Easier to type than API URL.
-Route::GET('/mt600/{rego}', 'Api\v1\TrackingApiController@mt600'); // special route for MT600 Chinese trackers. Easier to type than API URL.
+Route::POST('/mt600', 'Api\v1\TrackingApiController@mt600'); // special route for MT600 Chinese trackers. Easier to type than API URL.
 
 Route::get('/api-control', 'HomeController@api_controller');
 

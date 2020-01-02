@@ -21,6 +21,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
        'overland', 
        'btraced', 
+       'mt600', 
        'btraced/*'
     ];
 }

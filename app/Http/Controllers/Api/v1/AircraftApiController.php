@@ -188,6 +188,7 @@ class AircraftApiController extends ApiController
 			if ($request->exists('spot_active')) $aircraft->spot_active = $request->get('spot_active');
 			if ($request->exists('particle_id')) $aircraft->particle_id = $request->get('particle_id');
 			if ($request->exists('flarm')) $aircraft->flarm = $request->get('flarm');
+			if ($request->exists('mt600')) $aircraft->mt600 = $request->get('mt600');
 
 			// aircraft details
 			if ($request->exists('electric')) $aircraft->electric = $request->get('electric');
