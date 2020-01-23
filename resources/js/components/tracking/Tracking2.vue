@@ -314,7 +314,7 @@ html, body,
 				<div class="detail">{{shortDateToNow(createDateFromMysql(selectedPoint.thetime))}}</div>
 				<div class="detail">{{formatType(selectedPoint.type)}}</div>
 				<div class="detail">
-					<button class="fa fa-map-marker btn-outline-dark btn btn-xs  ml-2 mt-1 pr-2 pl-2" v-on:click="showCoordDetails=!showCoordDetails" v-bind:class="[showCoordDetails ? 'active' : '']"></button>
+					<button class="fa fa-chart-line btn-outline-dark btn btn-xs  ml-2 mt-1 pr-2 pl-2" v-on:click="showCoordDetails=!showCoordDetails" v-bind:class="[showCoordDetails ? 'active' : '']"></button>
 				</div>
 			</div>
 

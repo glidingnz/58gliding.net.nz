@@ -135,7 +135,7 @@ div.chart {
 				positioner: function () {
 					return {
 						//right aligned
-						x: this.chart.chartWidth - this.label.width,
+						x: 100,
 						y: 10 // align to title
 					};
 				},
@@ -143,13 +143,13 @@ div.chart {
 				backgroundColor: 'none',
 				pointFormat: '{point.x:%A, %b %e, %Y} : {point.y}',
 				formatter: function () {
-					return Highcharts.dateFormat('%e-%b %H:%M:%S ',this.point.x) + ' | ' +  this.point.y + ' feet';
+					return Highcharts.dateFormat('%H:%M:%S ',this.point.x);
 				},
 				dateTimeLabelFormats: "%A, %b %e, %Y",
 				headerFormat: '',
 				shadow: false,
 				style: {
-					fontSize: '18px'
+					fontSize: '15px'
 				}
 			},
 			responsive: {
