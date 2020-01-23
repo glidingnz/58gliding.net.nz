@@ -317,7 +317,22 @@ class Tracking2ApiController extends ApiController
 						$point->lat,
 						$point->lng);
 				}
-				
+
+				// check for altitude change if not given
+				if ($point->vspeed==null && $point->alt!=null && $previous_point[$point->thekey]->alt!=null) {
+					// altitude difference
+					$alt_difference = $point->alt - $previous_point[$point->thekey]->alt;
+					// time difference
+					$now_time = new Carbon($point->thetime);
+					$previous_time = new Carbon( $previous_point[$point->thekey]->thetime);
+					$seconds_difference = $now_time->diffInSeconds($previous_time);
+
+					// only show vertical speed if less than 2 minutes between data
+					if ($seconds_difference<120 && $seconds_difference>0) {
+						// calculate the vertical speed difference
+						$point->vspeed= $alt_difference / $seconds_difference;
+					}
+				}
 			}
 			$previous_point[$point->thekey] = $point;
 		}
