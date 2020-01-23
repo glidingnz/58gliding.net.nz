@@ -51,6 +51,17 @@ html, body,
 	bottom: -17px;
 	left: 7px;
 }
+.marker_alt {
+	position: absolute;
+	top: -34px;
+	left: 10px;
+	padding-left: 10px;
+	padding-right: 2px;
+	background-color: #FFF;
+	border-radius: 5px;
+	z-index: -1;
+}
+
 .waypoint_dot {
 	width: 8px;
 	height: 8px;
@@ -892,7 +903,7 @@ html, body,
 			if (this.selectedMarker) this.selectedMarker.remove();
 
 			var aircraft = this.selectedAircraft;
-			var el = that.createMarkerDom(aircraft.legend, aircraft.colour, 'selectedMarker');
+			var el = that.createMarkerDom(aircraft.legend, aircraft.colour, 'selectedMarker', that.selectedAircraftTrack[0].alt);
 			this.selectedMarker = new mapboxgl.Marker(el, {
 					anchor: 'bottom',
 					offset: [0, -5]
@@ -907,7 +918,7 @@ html, body,
 
 				if (typeof aircraft.points=='undefined') return false;
 
-				var el = that.createMarkerDom(aircraft.legend, aircraft.colour, 'aircraftMarker');
+				var el = that.createMarkerDom(aircraft.legend, aircraft.colour, 'aircraftMarker', aircraft.alt);
 				el.addEventListener('click', () => 
 					{ 
 						that.selectAircraft(aircraft);
@@ -929,24 +940,29 @@ html, body,
 				that.createSelectedMarker();
 			});
 		},
-		createMarkerDom: function(label, colour, className) {
+		createMarkerDom: function(label, colour, className, alt) {
 			var el = document.createElement('div');
 			var el2 = document.createElement('div');
 			var pingTop = document.createElement('div');
 			var pingTopInner = document.createElement('div');
 			var pinBottom = document.createElement('div');
+			var altText = document.createElement('div');
 			el.className = className;
 			el.appendChild(el2);
 			el2.className = 'marker_inner';
 			pingTop.className = 'marker_top';
 			pingTopInner.className = 'marker_top_inner';
 			pinBottom.className = 'marker_pin';
+			altText.className = 'marker_alt';
 			pingTop.appendChild(pingTopInner);
 			el2.appendChild(pingTop);
 			el2.appendChild(pinBottom);
 			pingTopInner.appendChild(document.createTextNode(label));
 			pinBottom.style.borderTopColor = '#'+colour;
 			pingTop.style.backgroundColor = '#'+colour;
+			pinBottom.appendChild(altText);
+
+			if (alt!=null) altText.appendChild(document.createTextNode(this.formatAltitudeFeetShort(alt)));
 			return el;
 		},
 		createSelectedTrack() {
@@ -1051,6 +1067,7 @@ html, body,
 			const point = this.selectedAircraftTrack.find( point => point.unixtime == object.x );
 			this.selectedPoint = point; // update the selected point details
 			this.selectedMarker.setLngLat([point.lng, point.lat]);
+			if (point.alt!=null) this.selectedMarker.getElement().getElementsByClassName("marker_alt")[0].textContent = this.formatAltitudeFeetShort(point.alt);
 		},
 		zoomTo: function(lat, lng, scale) {
 			this.map.flyTo({
