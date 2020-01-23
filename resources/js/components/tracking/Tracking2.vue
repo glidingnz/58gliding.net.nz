@@ -291,7 +291,11 @@ html, body,
 				<div class="detail" v-if="selectedPoint.vspeed!=null">
 					<span class="fa fa-arrow-up" v-show="selectedPoint.vspeed>0"></span>
 					<span class="fa fa-arrow-down" v-show="selectedPoint.vspeed<0"></span>
+					<span class="fa fa-arrows-alt-v" v-show="selectedPoint.vspeed==0"></span>
 					{{ Math.round(selectedPoint.vspeed * 1.944) }} kt
+				</div>
+				<div class="detail" v-if="selectedPoint.vspeed==null">
+					<span class="fa fa-arrows-alt-v"></span> n/a
 				</div>
 				<div class="detail" v-if="selectedPoint.course!=null">
 					{{selectedPoint.course}}&deg;
@@ -803,7 +807,10 @@ html, body,
 			// check if we already have some data
 			if (this.selectedAircraftKey==this.selectedAircraft.key) {
 				// get the last point retreived
-				from = this.selectedAircraftTrack[0].thetime;
+				if (that.selectedAircraftTrack.length>0 && typeof this.selectedAircraftTrack[0].thetime!=='undefined') {
+					from = this.selectedAircraftTrack[0].thetime;
+				}
+				
 			} else {
 				that.selectedAircraftTrack = [];
 			}
