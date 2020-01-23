@@ -147,8 +147,14 @@ module.exports = {
 			return eventUrl;
 		},
 		formatAltitudeFeet: function(meters) {
+			if (meters==null) return 'n/a';
 			var feet = meters * 3.28084;
-			return Math.round(feet) + "ft";
+			return this.numberWithCommas(Math.round(feet)) + "ft";
+		},
+		formatAltitudeFeetShort: function(meters) {
+			if (meters==null) return '';
+			var feet = meters * 3.28084;
+			return this.numberWithCommas(Math.round(feet)) + "'";
 		},
 		heightAgl: function(alt, gl) {
 			var agl = alt - gl;
@@ -168,6 +174,9 @@ module.exports = {
 				case 9: return 'MT600'; break;
 				default: return 'Unknown'; break;
 			}
+		},
+		numberWithCommas: function(x) {
+			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 		}
 	}
 }

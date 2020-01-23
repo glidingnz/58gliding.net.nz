@@ -962,7 +962,7 @@ html, body,
 			pingTop.style.backgroundColor = '#'+colour;
 			pinBottom.appendChild(altText);
 
-			if (alt!=null) altText.appendChild(document.createTextNode(this.formatAltitudeFeetShort(alt)));
+			altText.appendChild(document.createTextNode(this.formatAltitudeFeetShort(alt)));
 			return el;
 		},
 		createSelectedTrack() {
@@ -1067,7 +1067,7 @@ html, body,
 			const point = this.selectedAircraftTrack.find( point => point.unixtime == object.x );
 			this.selectedPoint = point; // update the selected point details
 			this.selectedMarker.setLngLat([point.lng, point.lat]);
-			if (point.alt!=null) this.selectedMarker.getElement().getElementsByClassName("marker_alt")[0].textContent = this.formatAltitudeFeetShort(point.alt);
+			this.selectedMarker.getElement().getElementsByClassName("marker_alt")[0].textContent = this.formatAltitudeFeetShort(point.alt);
 		},
 		zoomTo: function(lat, lng, scale) {
 			this.map.flyTo({
