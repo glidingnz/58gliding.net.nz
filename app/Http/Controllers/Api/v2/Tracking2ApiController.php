@@ -260,22 +260,25 @@ class Tracking2ApiController extends ApiController
 		$query .= " OR hex=?)";
 		$keys[]=$hex;
 
-		// if ($request->has('from')) {
-		// 	$query .= " AND thetime>?";
-		// 	$keys[]=$request->input('from');
-		// }
-
 		$query .= " ORDER BY thetime DESC";
 		$points = DB::connection('ogn')->select($query, $keys);
 
 		if ($points)
 		{
+
+			// create moving average of altitude, last 3 points
+			for ($i = 0; $i < sizeof($points)-3; $i++)
+			{
+				$mean = ($points[$i]->alt + $points[$i+1]->alt + $points[$i+2]->alt)/3.0;
+				$points[$i]->altAvg = round($mean, 2);
+			}
+
+
 			$points = $this->_process_points_from_previous($points);
 			$points_to_output = Array();
 
 			if ($request->has('from') && $request->input('from')!=0) {
 				$from_time = new Carbon($request->input('from'));
-				//echo $from_time . '<br>';
 			}
 
 			foreach ($points AS $key=>$point)
@@ -291,8 +294,8 @@ class Tracking2ApiController extends ApiController
 				{
 					$points_to_output[] = $point;
 				}
-				
 			}
+
 
 			return $this->success(Array('thekey'=>$thekey, 'points'=>$points_to_output));
 		}
@@ -319,9 +322,10 @@ class Tracking2ApiController extends ApiController
 				}
 
 				// check for altitude change if not given
-				if ($point->vspeed==null && $point->alt!=null && $previous_point[$point->thekey]->alt!=null) {
+				if (isset($point->altAvg) && isset($previous_point[$point->thekey]->altAvg) && $point->vspeed==null && $point->altAvg!=null && $previous_point[$point->thekey]->altAvg!=null) {
+					$point->found_alt = true;
 					// altitude difference
-					$alt_difference = $point->alt - $previous_point[$point->thekey]->alt;
+					$alt_difference = $point->altAvg - $previous_point[$point->thekey]->altAvg;
 					// time difference
 					$now_time = new Carbon($point->thetime);
 					$previous_time = new Carbon( $previous_point[$point->thekey]->thetime);
@@ -330,7 +334,9 @@ class Tracking2ApiController extends ApiController
 					// only show vertical speed if less than 2 minutes between data
 					if ($seconds_difference<120 && $seconds_difference>0) {
 						// calculate the vertical speed difference
-						$point->vspeed= $alt_difference / $seconds_difference;
+						$point->vspeed = $alt_difference / $seconds_difference;
+						$point->alt_difference = $alt_difference;
+						$point->seconds_difference = $seconds_difference;
 					}
 				}
 			}
