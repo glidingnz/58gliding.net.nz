@@ -196,7 +196,13 @@ Example string:
 		else $hex = $aircraft['flarm'];
 
 		$timestamp = $year . '-' . $month . '-' . $day . ' ' . $hours . ':' . $mins . ':' . $secs;
-		$table_name = 'data' . $year.$month.$day;
+
+		// figure out table name
+		$nzdate = DateTime::createFromFormat("Y-m-d H:i:s", $timestamp);
+		$nzdate->setTimezone(new DateTimeZone('Pacific/Auckland')); // convert UTC to NZ time
+		$table_name = 'data' . $nzdate->format('Ymd');
+		
+		if (!$this->check_table_exists($nzdate)) $this->make_table($nzdate);
 
 		DB::connection('ogn')->insert('insert into '. $table_name .' (thetime, alt, loc, hex, speed, course, type, rego, vspeed) values (?, ?, POINT(?,?), ?, ?, ?, ?, ?, ?)', [$timestamp, $alt, $lat, $long, $hex, $speed, $course, 9, substr($aircraft['rego'], 3,3), null]);
 		return $this->success();
@@ -216,7 +222,6 @@ Example string:
 		//   'published_at' => '2018-11-15T08:35:51.773Z',
 		//   'coreid' => '29003700074XXXXXXXXXX',
 		// )
-
 
 		if (!$request->isMethod('post')) {
 			$request_data = $request->json()->all();
