@@ -19,38 +19,47 @@
 					</tr>
 					<tr>
 						<td class="table-label">FLARM Code</td>
-						<td><input type="text" v-model="aircraft.flarm" class="form-control"></td>
+						<td style="min-width: 200px;"><input type="text" v-model="aircraft.flarm" class="form-control" ></td>
 						<td><button class="btn btn-primary btn-sm" v-on:click="save()">Save</button></td>
-						<td>A1B2C3</td>
-					</tr>
-					<tr>
-						<td colspan="4">
-						The 6 letter hex code that is configured in your FLARM device. Best practice is to match your transponder code.
-						We automatically pull these in from the <a href="http://wiki.glidernet.org/ddb">Open Glider Network</a>. Ensure your aircraft is added there as well.
+						<td>
+							e.g. A1B2C3
+							<br>
+							The 6 letter hex code that is configured in your FLARM device. Best practice is to match your transponder code.
+							We automatically pull these in from the <a href="http://wiki.glidernet.org/ddb">Open Glider Network</a>. Ensure your aircraft is added there as well.
 						</td>
 					</tr>
 					<tr>
-						<td class="table-label">SPOT ESN or InReach ID</td>
+						<td class="table-label">trackme.nz SPOT ESN or InReach ID IMEI</td>
 						<td><input type="text" v-model="aircraft.spot_esn" class="form-control"></td>
 						<td><button class="btn btn-primary btn-sm" v-on:click="save()">Save</button></td>
-						<td>Spot: 0-8765432 &nbsp; InReach: 300134363320790</td>
+						<td>
+							e.g. Spot: 0-8765432 &nbsp; InReach: 300134363320790
+							<br>
+							This code is the ID for your SPOT device. Found under the battery cover. Used to receive data from <a href="https://trackme.nz">trackme.nz</a> (formally SPOTNZ). TrackMe are an alternative SPOT service provider here in NZ. Contact them and let them know you want your SPOT added to the Gliding New Zealand group. Slightly more expensive per month, but able to choose which months you're using it.
+						</td>
 					</tr>
 					<tr>
-						<td colspan="4">
-						This code is the ID for your SPOT device. Found under the battery cover. Used to receive data from <a href="https://spotnz.com/home.html">SPOTNZ</a>. SPOTNZ are an alternative SPOT service provider here in NZ. Contact them and let them know you want your SPOT added to the Gliding New Zealand group. Slightly more expensive per month, but able to choose which months you're using it.
-						</td> 
-					</tr>
-					<tr>
-						<td class="table-label">SPOT Feed</td>
+						<td class="table-label">US SPOT Feed</td>
 						<td><input type="text" v-model="aircraft.spot_feed_id" class="form-control"></td>
 						<td><button class="btn btn-primary btn-sm" v-on:click="save()">Save</button></td>
-						<td>0ZPRRtaEBnfAausjhDxp5qnNA5VCLN2Yq</td>
-					</tr>
-					<tr>
-						<td colspan="4">
+						<td>
+							e.g. 0ZPRRtaEBnfAausjhDxp5qnNA5VCLN2Yq
+							<br>
 							This is your SPOT shared page code. Used to receive data from the main <a href="https://login.findmespot.com/spot-main-web/auth/login.html">SPOT website</a>.
 							<a v-on:click="showSpotInstructions=!showSpotInstructions">Show Instructions</a>
 						</td>
+					</tr>
+					<tr>
+						<td class="table-label">US InReach Share Name</td>
+						<td><input type="text" v-model="aircraft.inreach_share" class="form-control"></td>
+						<td><button class="btn btn-primary btn-sm" v-on:click="save()">Save</button></td>
+						<td>e.g. 'timbromhead' taken from https://share.garmin.com/timbromhead</td>
+					</tr>
+					<tr>
+						<td class="table-label">US InReach IMEI</td>
+						<td><input type="text" v-model="aircraft.inreach_imei" class="form-control"></td>
+						<td><button class="btn btn-primary btn-sm" v-on:click="save()">Save</button></td>
+						<td>The actual device ID (IMEI) e.g. 300434030128761</td>
 					</tr>
 					<tr v-if="showSpotInstructions">
 						<td colspan="4">
@@ -111,14 +120,12 @@
 						<td class="table-label">Particle.io</td>
 						<td><input type="text" v-model="aircraft.particle_id" class="form-control"></td>
 						<td><button class="btn btn-primary btn-sm" v-on:click="save()">Save</button></td>
-						<td>290037000747373334363431</td>
-					</tr>
-					<tr>
-						<td colspan="4">
-						This code is for a particle.io electron cellular tracker. <a href="mailto:tim@pear.co.nz">Contact Tim for more information</a>
+						<td>
+							e.g. 290037000747373334363431
+							<br>
+							This code is for a particle.io electron cellular tracker. <a href="mailto:tim@pear.co.nz">Contact Tim for more information</a>
 						</td>
 					</tr>
-
 					<tr>
 						<td class="table-label">MT600 Tracker Code</td>
 						<td><input type="text" v-model="aircraft.mt600" class="form-control"></td>
@@ -126,32 +133,15 @@
 						<td>IMEI code e.g. 861585042912480</td>
 					</tr>
 					<tr>
-						<td class="table-label" colspan=3>Overland iPhone App <a href="https://overland.p3k.app">overland.p3k.app</a></td>
-					</tr>
-					<tr>
-						<td colspan="4">
-						For free tracking on an iPhone try <a href="https://overland.p3k.app">Overland</a>. Use the endpoint URL of: <br> http://gliding.net.nz/overland<br>
-												And Device ID of your 3 letter registration e.g. GBA. <a href="http://gliding.co.nz/how-to-set-up-cell-tracking/">Full instructions...</a>
-						</td>
-					</tr>
-					<tr>
-						<td class="table-label" colspan=3>Btraced Android and iPhone App <a href="https://www.btraced.com">www.btraced.com</a></td>
-					</tr>
-					<tr>
-						<td colspan="4">
-							<b>Under "Upload Settings" set:</b><br>
-							Upload Format: XML<br>
-							Custom Server Address: http://gliding.net.nz/btraced/REGO<br>
-							where REGO should be 3 letters e.g. http://gliding.net.nz/btraced/gba<br><br>
 
-							<b>Under "GPS Settings" set:</b><br>
-							Use Time Filter: Tick yes<br>
-							Time Interval: 10, 20 or 30 seconds. Please don't use 5 or less.<br>
+						<td class="table-label">Cellular Tracking</td>
+						<td class="table-label" colspan=3>
+							We recommend Btraced available for Android and iPhone for a small fee (less than $5) <br>
+							<a href="https://www.btraced.com">www.btraced.com</a>
 							<br>
-							<a href="http://gliding.co.nz/how-to-set-up-cell-tracking/">Full instructions...</a>
+							<a href="http://gliding.co.nz/how-to-set-up-cell-tracking/">Setup Instructions</a>
 						</td>
 					</tr>
-
 				</table>
 
 

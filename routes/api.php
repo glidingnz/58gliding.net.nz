@@ -49,6 +49,7 @@ Route::group(['prefix'=>'v2', 'namespace' => 'Api\v2'], function()
 Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 {
 	Route::get('/fetchspots',  'TrackingApiController@fetchSpots');
+	Route::get('/fetchinreach',  'TrackingApiController@fetchInReach');
 	
 	Route::get('/aircraft/{rego}', 'AircraftApiController@rego')
 		->where('rego','(?i)ZK-[A-Z]{3}(?-i)');

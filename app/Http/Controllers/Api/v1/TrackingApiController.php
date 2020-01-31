@@ -29,6 +29,7 @@ include(app_path() . '/Classes/SRTMGeoTIFFReader.php');
  * 7) btraced mobile app
  * 8) manual insertion API
  * 9) MT600 Chinese tracker
+ * 10) InReach (US)
  */
 
 class TrackingApiController extends ApiController
@@ -42,6 +43,7 @@ class TrackingApiController extends ApiController
 	// dev local feed
 	//var $url="http://spots.dev/FEED_ID_HERE/feed.json";
 	var $url="https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/FEED_ID_HERE/message.json";
+	var $inreach_url="https://inreach.garmin.com/feed/Share/FEED_ID_HERE";
 
 
 	/**
@@ -575,6 +577,113 @@ Example string:
 
 		$query = "INSERT INTO days SET day_date={$nzdate->format('Ymd')}";
 		DB::connection('ogn')->statement($query);
+	}
+
+	public function fetchInReach()
+	{
+		// Example feed
+		// https://inreach.garmin.com/feed/Share/keithessex?d1=2017-07-15T00:01z
+		// 
+		// 
+		// get the list of active InReaches
+
+		Log::info('Fetching US InReach');
+
+		$spots = Array();
+		$data = Array();
+		$queryAircraft = Aircraft::query();
+		$queryAircraft->where('inreach_share','<>','');
+
+		if ($aircrafts = $queryAircraft->get())
+		{
+			// fetch each inreach
+			foreach ($aircrafts AS $aircraft)
+			{
+				$utc_date = new DateTime();
+				$date_string = $utc_date->format('Y-m-d') . 'T00:01z';
+
+				// create the correct URL for this aircraft
+				
+				$aircraft_url = str_replace('FEED_ID_HERE', $aircraft['inreach_share'], $this->inreach_url) . '?d1=' . $date_string;
+
+				Log::info($aircraft_url);
+				// create UTC date
+				
+
+				if ($xml = file_get_contents($aircraft_url))
+				{
+
+					$obj = simplexml_load_string($xml);
+
+					if ($obj === false) {
+						Log::info("Failed loading XML: ");
+						foreach(libxml_get_errors() as $error) {
+							Log::info( $error->message);
+						}
+						continue;
+					}
+
+					if (isset($obj->Document->Folder)) {
+						echo 'found folder!';
+						foreach ($obj->Document->Folder->Placemark AS $placemark)
+						{
+							foreach ($placemark->ExtendedData AS $point)
+							{
+								foreach ($point->Data AS $data)
+								{
+									foreach ($data->attributes() AS $key=>$value)
+									{
+										echo $key . ' ' . $value . "\n";
+									}
+								}
+							}
+						}
+					}
+
+					exit();
+
+
+					// check if we have messages for this ID
+					if (isset($obj->response->feedMessageResponse))
+					{
+						// loop through them all
+						foreach ($obj->response->feedMessageResponse->messages->message AS $point)
+						{
+							if (!isset($point->unixTime)) continue;
+							
+							$thetimestamp = date("Y-m-d H:i:s", $point->unixTime); // TOFIX
+							$nzdate = new DateTime('@' . $point->unixTime);
+							$nzdate->setTimezone(new DateTimeZone('Pacific/Auckland'));
+							$table_name = 'data' . $nzdate->format('Ymd');
+
+
+							// check the table exists, otherwise make it
+							if (!$this->check_table_exists($nzdate)) $this->make_table($nzdate);
+
+							$alt = null;
+							if (isset($point->altitude) && $point->altitude>0) {
+								$alt = $point->altitude;
+							}
+
+							$hex = $aircraft['flarm'];
+							if ($hex==null) $hex=substr($aircraft['rego'], 3,3);
+
+							$ping = DB::connection('ogn')->table($table_name)->where('thetime', $thetimestamp)->where('type', 2)->first();
+
+							if (!$ping) {
+								DB::connection('ogn')->insert('insert into '. $table_name .' (thetime, alt, loc, hex, speed, course, type, rego) values (?, ?, POINT(?,?), ?, ?, ?, ?, ?)', [$thetimestamp, $alt, $point->latitude, $point->longitude, $hex, NULL, NULL, 2, substr($aircraft['rego'], 3,3)]);
+							} 
+						}
+					}
+
+				}
+
+				// wait for 3 seconds between each aircraft to not overload SPOT servers
+				sleep(3);
+			}
+		}
+		return $this->success($data, FALSE);
+		//return $this->error(); 
 	}
 
 
