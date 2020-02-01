@@ -10,6 +10,7 @@ use App\Models\TrackingDay;
 use App\Models\Aircraft;
 use App\Models\Ping;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use Schema;
 use DateTime;
 use DateTimeZone;
@@ -44,6 +45,7 @@ class TrackingApiController extends ApiController
 	//var $url="http://spots.dev/FEED_ID_HERE/feed.json";
 	var $url="https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/FEED_ID_HERE/message.json";
 	var $inreach_url="https://inreach.garmin.com/feed/Share/FEED_ID_HERE";
+	// var $inreach_url="http://58gliding.net.test/feed-4.kml"; // for testing
 
 
 	/**
@@ -599,20 +601,18 @@ Example string:
 			// fetch each inreach
 			foreach ($aircrafts AS $aircraft)
 			{
-				$utc_date = new DateTime();
-				$date_string = $utc_date->format('Y-m-d') . 'T00:01z';
+				$utc_date = new Carbon();
+				$utc_date->subHours(24);
+				$date_string = $utc_date->format('Y-m-d') . 'T00:00z';
 
 				// create the correct URL for this aircraft
-				
-				$aircraft_url = str_replace('FEED_ID_HERE', $aircraft['inreach_share'], $this->inreach_url) . '?d1=' . $date_string;
+				$aircraft_url = str_replace('FEED_ID_HERE', $aircraft['inreach_share'], $this->inreach_url) . '?d1=' . $date_string . '&imei=' . $aircraft['inreach_imei'];
 
 				Log::info($aircraft_url);
 				// create UTC date
-				
 
 				if ($xml = file_get_contents($aircraft_url))
 				{
-
 					$obj = simplexml_load_string($xml);
 
 					if ($obj === false) {
@@ -624,66 +624,87 @@ Example string:
 					}
 
 					if (isset($obj->Document->Folder)) {
-						echo 'found folder!';
 						foreach ($obj->Document->Folder->Placemark AS $placemark)
 						{
 							foreach ($placemark->ExtendedData AS $point)
 							{
+
+								// the data we need to extract
+								$thetimestamp = null;
+								$lat = null;
+								$lng = null;
+								$alt = null;
+								$speed = null;
+								$course = null;
+
+								// For each point, loop through the individual pieces of data
 								foreach ($point->Data AS $data)
 								{
-									foreach ($data->attributes() AS $key=>$value)
+
+									$param_name = '';
+									foreach ($data->attributes() AS $name)
 									{
-										echo $key . ' ' . $value . "\n";
+										$param_name = $name;
+									}
+
+									switch($param_name)
+									{
+										case 'Time UTC': // e.g. 1/31/2020 12:08:30 AM
+											echo $data->value . ' ';
+											$thetime = Carbon::createFromFormat('n/j/Y h:i:s A', trim($data->value));
+											//$thetime = Carbon::createFromFormat('n/j/Y h:i:s A', '1/31/2010 12:08:30 AM');
+											$thetimestamp = $thetime->format('Y,m,d H:i:s');
+											echo $thetimestamp . "<br>\n";
+											break;
+										case 'Latitude':
+											$lat = $data->value;
+											break;
+										case 'Longitude': // e.g. 176.328700
+											$lng = $data->value;
+											break;
+										case 'Elevation': // e.g. 2973.66 m from MSL
+											$split_string = explode(' ', $data->value);
+											$alt = $split_string[0];
+											break;
+										case 'Velocity': // e.g. 144.2 km/h
+											$split_string = explode(' ', $data->value);
+											$speed = $split_string[0];
+											break;
+										case 'Course': // e.g. 135.00 ° True
+											$split_string = explode(' ', $data->value);
+											$course = $split_string[0];
+											break;
+										default:
+											break;
 									}
 								}
+								
+								// get the hex code for the aircraft
+								$hex = $aircraft['flarm'];
+								if ($hex==null) $hex=substr($aircraft['rego'], 3,3);
+
+								// create the table name with the NZ timezone
+								$thetime->setTimezone(new DateTimeZone('Pacific/Auckland'));
+								$table_name = 'data' . $thetime->format('Ymd');
+								if (!$this->check_table_exists($thetime)) $this->make_table($thetime);
+
+								// check this hasn't been inserted yet
+								$ping = DB::connection('ogn')->table($table_name)->where('thetime', $thetimestamp)->where('type', 10)->first();
+
+								if (!$ping) {
+									DB::connection('ogn')->insert('insert into '. $table_name .' (thetime, alt, loc, hex, speed, course, type, rego) values (?, ?, POINT(?,?), ?, ?, ?, ?, ?)', [$thetimestamp, $alt, $lat, $lng, $hex, $speed, $course, 10, substr($aircraft['rego'], 3,3)]);
+								} 
+
 							}
 						}
 					}
-
-					exit();
-
-
-					// check if we have messages for this ID
-					if (isset($obj->response->feedMessageResponse))
-					{
-						// loop through them all
-						foreach ($obj->response->feedMessageResponse->messages->message AS $point)
-						{
-							if (!isset($point->unixTime)) continue;
-							
-							$thetimestamp = date("Y-m-d H:i:s", $point->unixTime); // TOFIX
-							$nzdate = new DateTime('@' . $point->unixTime);
-							$nzdate->setTimezone(new DateTimeZone('Pacific/Auckland'));
-							$table_name = 'data' . $nzdate->format('Ymd');
-
-
-							// check the table exists, otherwise make it
-							if (!$this->check_table_exists($nzdate)) $this->make_table($nzdate);
-
-							$alt = null;
-							if (isset($point->altitude) && $point->altitude>0) {
-								$alt = $point->altitude;
-							}
-
-							$hex = $aircraft['flarm'];
-							if ($hex==null) $hex=substr($aircraft['rego'], 3,3);
-
-							$ping = DB::connection('ogn')->table($table_name)->where('thetime', $thetimestamp)->where('type', 2)->first();
-
-							if (!$ping) {
-								DB::connection('ogn')->insert('insert into '. $table_name .' (thetime, alt, loc, hex, speed, course, type, rego) values (?, ?, POINT(?,?), ?, ?, ?, ?, ?)', [$thetimestamp, $alt, $point->latitude, $point->longitude, $hex, NULL, NULL, 2, substr($aircraft['rego'], 3,3)]);
-							} 
-						}
-					}
-
 				}
 
-				// wait for 3 seconds between each aircraft to not overload SPOT servers
+				// wait for 3 seconds between each aircraft to not overload Garmin servers
 				sleep(3);
 			}
 		}
 		return $this->success($data, FALSE);
-		//return $this->error(); 
 	}
 
 
