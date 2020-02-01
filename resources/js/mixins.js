@@ -172,6 +172,7 @@ module.exports = {
 				case 7: return 'Btraced'; break;
 				case 8: return 'GlidingOps'; break;
 				case 9: return 'MT600'; break;
+				case 10: return 'InReach US'; break;
 				default: return 'Unknown'; break;
 			}
 		},
