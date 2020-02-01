@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call('App\Http\Controllers\AdminController@email_address_changes')->dailyAt('23:55')->timezone('Pacific/Auckland');
         $schedule->call('App\Http\Controllers\Api\v1\TrackingApiController@fetchSpots')->everyFiveMinutes();
+        $schedule->call('App\Http\Controllers\Api\v1\TrackingApiController@fetchInReach')->everyFiveMinutes();
     }
 
     /**
