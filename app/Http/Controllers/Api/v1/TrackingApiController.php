@@ -304,7 +304,7 @@ Example string:
 		{
 
 			$xml = simplexml_load_string($request->getContent());
-
+			Log::info(print_r($xml, 1));
 			
 			if (!isset($xml->devId)) {
 				Log::info("Couldn't find devId on btraced XML");
