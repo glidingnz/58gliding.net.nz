@@ -9318,6 +9318,29 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked.js");
@@ -9419,6 +9442,22 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../mixins.js */ "./resources/js/mixins.js");
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -9848,6 +9887,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked.js");
@@ -9900,6 +9940,7 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
 
     if (this.get_url_param('type')) this.state.type = this.get_url_param('type');
     if (this.get_url_param('timerange')) this.state.timerange = this.get_url_param('timerange');
+    if (this.get_url_param('pageView')) this.state.pageView = this.get_url_param('pageView');
     History.Adapter.bind(window, 'statechange', function () {
       var state = History.getState();
       that.state = state.data;
@@ -9981,7 +10022,7 @@ var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked
       this.load();
     },
     stateChanged: function stateChanged() {
-      History.pushState(this.state, null, "?gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
+      History.pushState(this.state, null, "?gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange + "&pageView=" + this.state.pageView);
       this.load();
     },
     eventAdded: function eventAdded(event) {
@@ -63852,6 +63893,113 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "form-group col-md-4" }, [
+          _c(
+            "label",
+            {
+              staticClass: "col-xs-6 col-form-label",
+              attrs: { for: "website" }
+            },
+            [_vm._v("Contact Name (Warning: Public)")]
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-xs-6 flex" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.event.organiser_name,
+                  expression: "event.organiser_name"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { id: "contact-name", type: "text" },
+              domProps: { value: _vm.event.organiser_name },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.event, "organiser_name", $event.target.value)
+                }
+              }
+            })
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group col-md-4" }, [
+          _c(
+            "label",
+            {
+              staticClass: "col-xs-6 col-form-label",
+              attrs: { for: "website" }
+            },
+            [_vm._v("Phone (Warning: Public)")]
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-xs-6 flex" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.event.organiser_phone,
+                  expression: "event.organiser_phone"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { id: "contact-phone", type: "text" },
+              domProps: { value: _vm.event.organiser_phone },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.event, "organiser_phone", $event.target.value)
+                }
+              }
+            })
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group col-md-4" }, [
+          _c(
+            "label",
+            {
+              staticClass: "col-xs-6 col-form-label",
+              attrs: { for: "website" }
+            },
+            [_vm._v("Contact Email (Warning: Public)")]
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-xs-6 flex" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.event.email,
+                  expression: "event.email"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { id: "website", type: "text" },
+              domProps: { value: _vm.event.email },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.event, "email", $event.target.value)
+                }
+              }
+            })
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
         _c("div", { staticClass: "col-md-6" }, [
           _c("div", { staticClass: "row" }, [
             _c("div", { staticClass: "col-6" }, [
@@ -64559,6 +64707,42 @@ var render = function() {
                     )
                   ])
                 ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.event.organiser_name
+              ? _c("div", { staticClass: "row mb-2" }, [
+                  _c("div", { staticClass: "col-4 label" }, [
+                    _vm._v("Contact Name")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-8" }, [
+                    _vm._v(_vm._s(_vm.event.organiser_name))
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.event.organiser_phone
+              ? _c("div", { staticClass: "row mb-2" }, [
+                  _c("div", { staticClass: "col-4 label" }, [
+                    _vm._v("Contact Phone ")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-8" }, [
+                    _vm._v(_vm._s(_vm.event.organiser_phone))
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.event.email
+              ? _c("div", { staticClass: "row mb-2" }, [
+                  _c("div", { staticClass: "col-4 label" }, [_vm._v("Email")]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-8" }, [
+                    _c("a", { attrs: { href: "mailto:" + _vm.event.email } }, [
+                      _vm._v(_vm._s(_vm.event.email))
+                    ])
+                  ])
+                ])
               : _vm._e()
           ])
         ])
@@ -64719,7 +64903,7 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v("Upzcoming")]
+                  [_vm._v("Upcoming")]
                 )
               ]
             ),
@@ -64886,10 +65070,16 @@ var render = function() {
               ]),
               _vm._v(" "),
               event.org
-                ? _c("span", [_vm._v(_vm._s(event.org.name))])
+                ? _c("span", { staticClass: "mr-4" }, [
+                    _vm._v(_vm._s(event.org.name))
+                  ])
                 : _vm._e(),
               _vm._v(" "),
-              event.org == null ? _c("span", [_vm._v("GNZ")]) : _vm._e()
+              event.org == null
+                ? _c("span", { staticClass: "mr-4" }, [_vm._v("GNZ")])
+                : _vm._e(),
+              _vm._v(" "),
+              _c("span", [_vm._v(_vm._s(event.location))])
             ]),
             _vm._v(" "),
             _c("div", [

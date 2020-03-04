@@ -221,6 +221,7 @@ export default {
 		}
 		if (this.get_url_param('type')) this.state.type = this.get_url_param('type');
 		if (this.get_url_param('timerange')) this.state.timerange = this.get_url_param('timerange');
+		if (this.get_url_param('pageView')) this.state.pageView = this.get_url_param('pageView');
 
 		History.Adapter.bind(window, 'statechange', function() {
 			var state = History.getState();
@@ -310,7 +311,7 @@ export default {
 			this.load();
 		},
 		stateChanged: function() {
-			History.pushState(this.state, null, "?gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
+			History.pushState(this.state, null, "?gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange + "&pageView=" + this.state.pageView);
 			this.load();
 		},
 		eventAdded: function(event) {

@@ -121,6 +121,29 @@
 
 		</div>
 
+		<div class="row">
+
+			<div class="form-group col-md-4">
+				<label for="website" class="col-xs-6 col-form-label">Contact Name (Warning: Public)</label>
+				<div class="col-xs-6 flex">
+					<input class="form-control" id="contact-name" type="text" v-model="event.organiser_name">
+				</div>
+			</div>
+			<div class="form-group col-md-4">
+				<label for="website" class="col-xs-6 col-form-label">Phone (Warning: Public)</label>
+				<div class="col-xs-6 flex">
+					<input class="form-control" id="contact-phone" type="text" v-model="event.organiser_phone">
+				</div>
+			</div>
+			<div class="form-group col-md-4">
+				<label for="website" class="col-xs-6 col-form-label">Contact Email (Warning: Public)</label>
+				<div class="col-xs-6 flex">
+					<input class="form-control" id="website" type="text" v-model="event.email">
+				</div>
+			</div>
+
+		</div>
+
 
 		<div class="row">
 

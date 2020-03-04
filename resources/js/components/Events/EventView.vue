@@ -104,6 +104,22 @@
 						<div class="col-8"><a :href="'http://instagram.com/' + event.instagram">{{event.instagram}}</a></div>
 					</div>
 
+					<div class="row mb-2" v-if="event.organiser_name">
+						<div class="col-4 label">Contact Name</div>
+						<div class="col-8">{{event.organiser_name}}</div>
+					</div>
+
+					<div class="row mb-2" v-if="event.organiser_phone">
+						<div class="col-4 label">Contact Phone </div>
+						<div class="col-8">{{event.organiser_phone}}</div>
+					</div>
+
+
+					<div class="row mb-2" v-if="event.email">
+						<div class="col-4 label">Email</div>
+						<div class="col-8"><a :href="'mailto:' + event.email">{{event.email}}</a></div>
+					</div>
+
 				</div>
 			</div>
 		</div>
