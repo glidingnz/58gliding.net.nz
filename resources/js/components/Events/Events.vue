@@ -64,7 +64,7 @@
 
 			<div class="btn-group mr-2" role="group">
 				<button type="button" class="btn btn-sm" v-bind:class="[ state.timerange=='past' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.timerange='past'; stateChanged()">Past</button>
-				<button type="button" class="btn btn-sm" v-bind:class="[ state.timerange=='future' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.timerange='future'; stateChanged()">Upzcoming</button>
+				<button type="button" class="btn btn-sm" v-bind:class="[ state.timerange=='future' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.timerange='future'; stateChanged()">Upcoming</button>
 			</div>
 
 			<div class="btn-group mr-2 " role="group">
@@ -96,8 +96,9 @@
 				<span class="mr-4">
 					<span v-html="formatEventTypeIcon(event.type)"></span> {{formatEventType(event.type)}}
 				</span>
-				<span v-if="event.org">{{event.org.name}}</span>
-				<span v-if="event.org==null">GNZ</span>
+				<span v-if="event.org" class="mr-4">{{event.org.name}}</span>
+				<span v-if="event.org==null" class="mr-4">GNZ</span>
+				<span>{{event.location}}</span>
 			</h5>
 			
 			<div>
