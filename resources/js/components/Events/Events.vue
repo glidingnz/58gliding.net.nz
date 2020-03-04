@@ -34,6 +34,12 @@
 	.day-today:after {
 		content: ' : Today';
 	}
+	.event-summary {
+		max-width: 50em;
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: 4em;
+	}
 </style>
 
 <template>
@@ -51,13 +57,14 @@
 		<div>
 
 			<div class="btn-group mr-2" role="group">
-				<button type="button" class="btn btn-sm" v-bind:class="[ showCalendar==false ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="showCalendar=false; stateChanged()">View as List</button>
-				<button type="button" class="btn btn-sm" v-bind:class="[ showCalendar==true ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="showCalendar=true; stateChanged()">Calendar</button>
+				<button type="button" class="btn btn-sm" v-bind:class="[ state.pageView=='summary' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.pageView='summary'; stateChanged()">Summary</button>
+				<button type="button" class="btn btn-sm" v-bind:class="[ state.pageView=='list' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.pageView='list'; stateChanged()">List</button>
+				<button type="button" class="btn btn-sm" v-bind:class="[ state.pageView=='calendar' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.pageView='calendar'; stateChanged()">Calendar</button>
 			</div>
 
 			<div class="btn-group mr-2" role="group">
 				<button type="button" class="btn btn-sm" v-bind:class="[ state.timerange=='past' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.timerange='past'; stateChanged()">Past</button>
-				<button type="button" class="btn btn-sm" v-bind:class="[ state.timerange=='future' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.timerange='future'; stateChanged()">Upcoming</button>
+				<button type="button" class="btn btn-sm" v-bind:class="[ state.timerange=='future' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="state.timerange='future'; stateChanged()">Upzcoming</button>
 			</div>
 
 			<div class="btn-group mr-2 " role="group">
@@ -78,7 +85,32 @@
 
 	</nav>
 
-	<table v-show="events.length>0 && !showCalendar" class="table  collapsable calendar-table">
+	
+	<div v-show="events.length>0 && state.pageView=='summary'">
+		<div v-for="event in events" class="event-summary">
+			<h2><a :href="getEventURL(event, orgId)">{{event.name}}</a></h2>
+			<h5>
+				{{formatDate(event.start_date)}}<span v-if="event.end_date && event.start_date!=event.end_date"> - {{formatDate(event.end_date)}}</span>
+			</h5>
+			<h5>
+				<span class="mr-4">
+					<span v-html="formatEventTypeIcon(event.type)"></span> {{formatEventType(event.type)}}
+				</span>
+				<span v-if="event.org">{{event.org.name}}</span>
+				<span v-if="event.org==null">GNZ</span>
+			</h5>
+			
+			<div>
+				<div v-if="event.details" v-html="compiledMarkdown(event.details)" style="max-height: 100px; overflow: hidden;"></div>
+				<a :href="getEventURL(event, orgId)">Full Details &raquo;</a>
+			</div>
+
+		</div>
+		
+	</div>
+
+
+	<table v-show="events.length>0 && state.pageView=='list'" class="table  collapsable calendar-table">
 		<tr>
 			<th>Event Name</th>
 			<th>Type</th>
@@ -110,7 +142,7 @@
 
 	<p v-show="events.length==0">No events. Check your filters above.</p>
 
-	<v-calendar :rows="6" v-if="events.length>0 && showCalendar" class="custom_calendar" style="max-width: 100%;" :first-day-of-week="2" ref="calendar" is-expanded  :attributes='attributes'>
+	<v-calendar :rows="6" v-if="events.length>0 && state.pageView=='calendar'" class="custom_calendar" style="max-width: 100%;" :first-day-of-week="2" ref="calendar" is-expanded  :attributes='attributes'>
 		<template slot='day-content' slot-scope="props">
 			<div class="day-cell" v-if="props.day.inMonth">
 				<span :class="props.day.isToday ? 'day-today' : ''">{{props.day.day}}</span>
@@ -141,6 +173,7 @@
 
 <script>
 import common from '../../mixins.js';
+var marked = require('marked');
 export default {
 	mixins: [common],
 	props: ['orgId', 'orgName', 'eventId'],
@@ -150,7 +183,8 @@ export default {
 				gnz: true,
 				other: true, // show other clubs or not
 				type: 'all',
-				timerange: 'future'
+				timerange: 'future',
+				pageView: 'summary'
 			},
 			events: [],
 			newDutyName: '',
@@ -159,7 +193,6 @@ export default {
 			dont_reload: false,
 			showAddCalendar: false,
 			attributes: [],
-			showCalendar: true,
 		}
 	},
 	computed: {
@@ -196,12 +229,15 @@ export default {
 		//this.dont_reload=true; // make sure we dont do a double load on page launch
 
 		// Set up the initial state in the URL
-		History.replaceState(this.state, null, "?gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange);
+		History.replaceState(this.state, null, "?gnz=" + this.state.gnz + "&other=" + this.state.other + "&type=" + this.state.type + "&timerange=" + this.state.timerange + "&pageView=" + this.state.pageView);
 
 		this.load();
 
 	},
 	methods: {
+		compiledMarkdown: function (details) {
+			return marked(details, { sanitize: true })
+		},
 		load: function() {
 			var that = this;
 
