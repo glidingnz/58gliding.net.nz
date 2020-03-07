@@ -22,4 +22,12 @@ class Member extends Model
 		parent::boot();
 	}
 
+	public function orgs()
+	{
+		return $this->belongsToMany('App\Models\Org')
+			->withTimestamps()
+			->using('App\Models\MemberOrg')
+			->withPivot('join_date', 'end_date', 'resigned_comment');
+	}
+
 }

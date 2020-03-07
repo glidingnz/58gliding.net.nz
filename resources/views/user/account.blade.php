@@ -153,9 +153,12 @@
 		</tr>
 	</table>
 
-	<hr>
+	<?php print_r($member); ?>
+
 
 	<?php if ($member) { ?>
+		<hr>
+
 		<h2>GNZ Details</h2>
 
 		<div class="row gnz-details">
