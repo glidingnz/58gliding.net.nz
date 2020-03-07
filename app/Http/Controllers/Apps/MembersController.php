@@ -18,6 +18,11 @@ class MembersController extends Controller
 		return view('members/members-list');
 	}
 
+	public function join()
+	{
+		return view('members/join');
+	}
+
 
 	public function email()
 	{

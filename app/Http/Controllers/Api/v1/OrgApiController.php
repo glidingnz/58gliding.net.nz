@@ -10,6 +10,7 @@ use App\Models\Org;
 
 class OrgApiController extends ApiController
 {
+
 	/**
 	 * Display a listing of the resource.
 	 *

@@ -186,7 +186,6 @@ class Membersv2 extends Migration
 			$orgs_gnz_code[$org->gnz_code] = $org;
 		}
 
-
 		// get all members, and store club details
 		$members = DB::table('gnz_member')->get();
 		foreach ($members AS $member)

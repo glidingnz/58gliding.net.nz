@@ -72,6 +72,8 @@ Route::get('/events/', 'Apps\EventsController@index');
 Route::get('/events/{slug}', 'Apps\EventsController@viewEvent');
 
 Route::get('/members', 'Apps\MembersController@index');
+Route::get('/members/join', 'Apps\MembersController@join');
+
 Route::group(['middleware' => ['auth']], function () {
 	Route::resource('/contestentries', 'Apps\ContestEntriesController');
 	Route::get('/user/account', 'UserController@view_account');

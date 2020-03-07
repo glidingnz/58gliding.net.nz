@@ -23,7 +23,6 @@ use Gate;
 class MembersApiController extends ApiController
 {
 
-
 	/**
 	 * Display the specified resource.
 	 *

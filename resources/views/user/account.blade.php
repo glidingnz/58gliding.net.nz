@@ -153,8 +153,6 @@
 		</tr>
 	</table>
 
-	<?php print_r($member); ?>
-
 
 	<?php if ($member) { ?>
 		<hr>

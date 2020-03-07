@@ -107,7 +107,13 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 
 
 
+
 	Route::group(['middleware' => ['auth:api']], function () {
+
+
+		Route::post('/membership/',  'MembershipApiController@create'); // create a new relationship between member and organisation
+		Route::post('/users/{userID}/membership',  'MembershipApiController@get'); //  get a list of orgs this member belongs to
+		
 
 		Route::get('/ratings/report',  'RatingMemberApiController@ratingsReport');
 		Route::get('/members/export/{format}', 'MembersApiController@export');

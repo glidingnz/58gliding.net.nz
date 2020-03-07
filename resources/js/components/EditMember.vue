@@ -154,7 +154,7 @@
 				<tr>
 					<th colspan="2">Affiliation</th>
 				</tr>
-				<tr>
+				<!-- <tr>
 					<td class="table-label col-xs-6">Membership Type</td>
 					<td>
 
@@ -206,7 +206,7 @@
 				<tr  v-if="showAdmin" >
 					<td class="table-label col-xs-6">Resigned Comments</td>
 					<td><input type="text" v-model="member.resigned_comment" class="form-control"></td>
-				</tr>
+				</tr> -->
 
 				<tr  v-if="showAdmin" >
 					<td></td>
