@@ -40,8 +40,7 @@ class Org extends Model
 	{
 		return $this->belongsToMany('App\Models\Member')
 			->withTimestamps()
-			->using('App\Models\MemberOrg')
-			->withPivot('join_date', 'end_date', 'resigned_comment');
+			->using('App\Models\MemberOrg');
 	}
 
 	/*

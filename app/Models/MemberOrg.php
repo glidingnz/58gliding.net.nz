@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\Model;
 
-class MemberOrg extends Pivot
+class MemberOrg extends Model
 {
-	
+	protected $table="member_org";
 }

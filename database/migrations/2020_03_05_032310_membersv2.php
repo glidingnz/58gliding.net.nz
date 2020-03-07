@@ -6,6 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use App\Models\Membertype;
 use App\Models\Position;
 use App\Models\Org;
+use App\Models\MemberOrg;
 
 class Membersv2 extends Migration
 {
@@ -21,8 +22,8 @@ class Membersv2 extends Migration
 			Schema::create('member_org', function (Blueprint $table) {
 				$table->increments('id');
 				$table->integer('member_id');
-				$table->integer('membertype_id');
 				$table->integer('org_id');
+				$table->integer('membertype_id')->nullable();
 				$table->date('join_date')->nullable();
 				$table->date('end_date')->nullable();
 				$table->text('resigned_comment')->nullable();
@@ -89,7 +90,7 @@ class Membersv2 extends Migration
 				$rating->save();
 			}
 		}
-
+ 
 
 		// Member Club Positions e.g. Secratary, CFI etc
 		if (!Schema::hasTable('member_membertype')) {
@@ -186,19 +187,41 @@ class Membersv2 extends Migration
 		}
 
 
-		// get all members
+		// get all members, and store club details
 		$members = DB::table('gnz_member')->get();
 		foreach ($members AS $member)
 		{
+			// handle previous clubs
+			if ($member->previous_clubs!=null && $member->previous_clubs!='')
+			{
+				$prev_clubs = explode(' ', $member->previous_clubs);
+				foreach ($prev_clubs AS $prev_club)
+				{
+					if (isset($orgs_gnz_code[$prev_club]))
+					{
+						$memberOrg = new memberOrg();
+						$memberOrg->org_id = $orgs_gnz_code[$prev_club]->id;
+						$memberOrg->member_id = $member->id;
+						$memberOrg->save();
+					}
+				}
+			}
+
+			// handle current club
 			if ($member->club!=null && $member->club!='')
 			{
 				if (isset($orgs_gnz_code[$member->club]))
 				{
-					$member->orgs()->save($orgs_gnz_code[$member->club]);
+					$memberOrg = new memberOrg();
+					$memberOrg->org_id = $orgs_gnz_code[$member->club]->id;
+					$memberOrg->member_id = $member->id;
+					$memberOrg->join_date = $member->date_joined;
+					$memberOrg->end_date = $member->resigned;
+					$memberOrg->resigned_comment = $member->resigned_comment;
+					$memberOrg->save();
 				}
 			}
 		}
-
 
 
 	}
