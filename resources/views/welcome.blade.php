@@ -44,7 +44,7 @@
 					<a class="list-group-item" href="/members"><span class="fa fa-users"></span> Membership List</a>
 					<a class="list-group-item" href="/events"><span class="fa fa-calendar-day"></span>Events Calendar</a>
 					<a class="list-group-item" href="/flying-days"><span class="fa fa-calendar-alt"></span>Flying Days</a>
-					<a class="list-group-item" href="/members/join"><span class="fa universal-access"></span>Join <?php echo $org->name; ?></a>
+					<a class="list-group-item" href="/members/join"><span class="fa fa-universal-access"></span>Join <?php echo $org->name; ?></a>
 				</div>
 			</div>
 		<?php } ?>
