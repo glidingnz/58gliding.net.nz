@@ -98,6 +98,7 @@
 						<li class="nav-item"><a class="nav-link " href="{{ url('/register') }}">Register</a></li>
 					@else
 					@can('admin') <li class="nav-item"><a class="nav-link" href="{{ url('/admin') }}">Admin</a></li> @endcan
+					@can('club-admin') <li class="nav-item"><a class="nav-link" href="{{ url('/club-admin') }}">Club Admin</a></li> @endcan
 					<li class="nav-item"><a class="nav-link" href="{{ url('/user/account') }}"><span class="fa fa-user"></span> {{ Auth::user()->first_name }} </a></li>
 					<li class="nav-item">
 						<a class="nav-link" href="{{ url('/logout') }}"

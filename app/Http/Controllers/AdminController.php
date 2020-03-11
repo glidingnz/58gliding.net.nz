@@ -26,6 +26,18 @@ class AdminController extends Controller
 		return view('admin/admin');
 	}
 
+	public function club_admin()
+	{
+		if (Gate::denies('club-admin')) return abort(403);
+		return view('admin/club-admin');
+	}
+
+	public function club_member_types()
+	{
+		if (Gate::denies('club-admin')) return abort(403);
+		return view('admin/club-member-types');
+	}
+
 	public function import_flarm()
 	{
 		if (Gate::denies('admin')) return abort(403);

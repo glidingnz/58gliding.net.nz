@@ -79,6 +79,8 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/user/account', 'UserController@view_account');
 	Route::post('/update-account', 'UserController@update_account');
 
+	Route::get('/club-admin', 'AdminController@club_admin');
+	Route::get('/club-admin/member-types', 'AdminController@club_member_types');
 	Route::get('/admin', 'AdminController@index');
 	Route::get('/admin/users', 'AdminUsersController@index');
 	Route::get('/admin/users/{user}/roles', 'AdminUsersController@roles');

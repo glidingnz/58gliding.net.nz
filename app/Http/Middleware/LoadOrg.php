@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use App\Models\Org;
+use App\Models\Setting;
 use App\Facades\Messages;
 
 class LoadOrg
@@ -26,8 +27,14 @@ class LoadOrg
 			$subdomain = 'gnz';
 		}
 		
-		$org = Org::where('slug', $subdomain)->first();
-		$request->attributes->add(['_ORG' => $org]);
+		if ($org = Org::where('slug', $subdomain)->first())
+		{
+			// get all settings for the org
+			$settings = Setting::where('org_id', $org->id)->get();
+
+			$request->attributes->add(['_ORG' => $org]);
+		}
+
 		return $next($request);
 	}
 }

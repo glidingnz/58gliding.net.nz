@@ -75,6 +75,8 @@ Vue.component('fleets', require('./components/aircraft/Fleets.vue').default);
 Vue.component('add-fleet-panel', require('./components/aircraft/AddFleetPanel.vue').default);
 Vue.component('edit-fleet', require('./components/aircraft/EditFleet.vue').default);
 Vue.component('member-join', require('./components/members/Join.vue').default);
+Vue.component('edit-settings', require('./components/admin/EditSettings.vue').default);
+Vue.component('edit-member-types', require('./components/admin/MemberTypes.vue').default);
 
 /** common components  */
 Vue.component('autosize-textarea', require('./components/widgets/AutosizeTextarea.vue').default);

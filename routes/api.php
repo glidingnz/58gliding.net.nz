@@ -105,10 +105,19 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 	Route::post('/fleets/{fleet_id}/add',  'FleetsApiController@add');
 	Route::post('/fleets/{fleet_id}/remove',  'FleetsApiController@remove');
 
+	// get settings
+	Route::get('/orgs/{id}/settings',  'SettingsApiController@org'); // for an org
 
 
+	Route::get('/membertypes', 'MembertypeApiController@index');
 
 	Route::group(['middleware' => ['auth:api']], function () {
+
+		Route::post('/orgs/{id}/settings',  'SettingsApiController@insert');
+
+		Route::resource('/membertypes', 'MembertypeApiController', ['only' => [
+			'store', 'create', 'destroy', 'put'
+		]]);
 
 
 		Route::post('/membership/',  'MembershipApiController@create'); // create a new relationship between member and organisation
