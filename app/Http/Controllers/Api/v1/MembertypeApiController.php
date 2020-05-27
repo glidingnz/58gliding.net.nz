@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Api\ApiController;
 use App\Models\Membertype;
 use Auth;
+use Gate;
 
 class MembertypeApiController extends ApiController
 {
@@ -54,6 +55,10 @@ class MembertypeApiController extends ApiController
 	*/
 	public function destroy(Request $request, $membertype_id)
 	{
+		if (Gate::denies('club-admin')) {
+			return $this->denied();
+		}
+
 		if ($membertype = Membertype::find($membertype_id))
 		{
 			if ($membertype->delete())
@@ -65,6 +70,40 @@ class MembertypeApiController extends ApiController
 	}
 
 
+
+	/**
+	* Update a membertype.
+	*
+	* @param  int  $id
+	* @return \Illuminate\Http\Response
+	*/
+	public function update($membertype_id, Request $request)
+	{
+
+		if (Gate::denies('club-admin')) {
+			return $this->denied();
+		}
+
+		if (!$membertype = Membertype::find($membertype_id))
+		{
+			return $this->error('Membertype not found');
+		}
+
+		if (!$request->input('name')) return $this->error('Name is required');
+
+		// create a slug if one doesn't exist. Will use 'sluggable' trait to set the slug
+		if ($request->input('name')!=$membertype->name && $request->input('slug')!='')
+		{
+			$membertype->slug = $request->input('name', '');
+		}
+
+		$membertype->name = $request->input('name');
+		$membertype->save();
+
+		return $this->success();
+	}
+
+
 	/**
 	* Create a membertype.
 	*
@@ -73,6 +112,10 @@ class MembertypeApiController extends ApiController
 	*/
 	public function store(Request $request)
 	{
+		if (Gate::denies('club-admin')) {
+			return $this->denied();
+		}
+
 		$input = $request->all();
 		if (!$request->input('name')) return $this->error('Name is required');
 
