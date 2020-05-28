@@ -53,14 +53,14 @@
 					<td class="table-label col-xs-6">Date of Birth</td>
 					<td>
 						<input v-if="showAdmin" type="text" v-model="member.date_of_birth" class="form-control">
-						<span v-if="showAdmin">{{member.date_of_birth}}</span>
+						<span v-if="!showAdmin">{{member.date_of_birth}}</span>
 					</td>
 				</tr>
 				<tr>
 					<td class="table-label col-xs-6">OO Number</td>
 					<td>
 						<input type="text" v-model="member.observer_number" class="form-control" v-if="showAdmin">
-						<span v-if="showAdmin">{{member.observer_number}}</span>
+						<span v-if="!showAdmin">{{member.observer_number}}</span>
 					</td>
 				</tr>
 				<tr>
@@ -122,40 +122,17 @@
 
 			<table class="table table-striped">
 				<tr>
-					<th colspan="2">Account Details</th>
+					<th colspan="2">GNZ Details</th>
 				</tr>
 				<tr>
 					<td class="table-label col-xs-6">GNZ Number</td>
 					<td>
 						<input type="text" v-model="member.nzga_number" class="form-control" v-if="showAdmin">
-						<span v-if="showAdmin">{{member.nzga_number}}</span>
+						<span v-if="!showAdmin">{{member.nzga_number}}</span>
 					</td>
 				</tr>
-				<tr v-if="showAdmin">
-					<td class="table-label col-xs-6">Access Level (old system)</td>
-					<td>{{member.access_level}}</td>
-				</tr>
-				<tr v-if="showAdmin">
-					<td class="table-label col-xs-6">Created</td>
-					<td>{{member.created}}</td>
-				</tr>
-				<tr v-if="showAdmin">
-					<td class="table-label col-xs-6">Modified</td>
-					<td>{{member.modified}}</td>
-				</tr>
 				<tr>
-					<td></td>
-					<td><button class="btn btn-primary btn-sm" v-on:click="saveMember()">Save Changes</button></td>
-				</tr>
-			</table>
-
-
-			<table class="table table-striped">
-				<tr>
-					<th colspan="2">Affiliation</th>
-				</tr>
-				<!-- <tr>
-					<td class="table-label col-xs-6">Membership Type</td>
+					<td class="table-label col-xs-6">GNZ Membership Type</td>
 					<td>
 
 						<select v-model="member.membership_type" class="form-control" v-if="showAdmin">
@@ -171,10 +148,47 @@
 							<option value="">None</option>
 						</select>
 
-						<span v-if="showAdmin">{{member.membership_type}}</span>
+						<span v-if="!showAdmin">{{member.membership_type}}</span>
 
 					</td>
 				</tr>
+				<tr v-if="showAdmin">
+					<td class="table-label col-xs-6">Created</td>
+					<td>{{member.created}}</td>
+				</tr>
+				<tr v-if="showAdmin">
+					<td class="table-label col-xs-6">Modified</td>
+					<td>{{member.modified}}</td>
+				</tr>
+				<tr>
+					<td class="table-label col-xs-6">Comments</td>
+					<td><textarea class="form-control" cols="30" rows="5" v-model="member.comments"></textarea></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><button class="btn btn-primary btn-sm" v-on:click="saveMember()">Save Changes</button></td>
+				</tr>
+			</table>
+
+
+			<table class="table table-striped">
+				<tr>
+					<th colspan="2">Affiliation</th>
+				</tr>
+
+				<tr v-for="affiliate in member.affiliates">
+					<td class="table-label col-xs-6">{{affiliate.org.name}}</td>
+					<td>
+						<div>Joined {{formatDate(affiliate.join_date)}}</div>
+						<div v-if="affiliate.end_date">
+							Resigned 2007-01-10
+						</div>
+						<div v-if="affiliate.resigned_comment">
+							{{affiliate.resigned_comment}}
+						</div>
+					</td>
+				</tr>
+				<!-- 
 				<tr>
 					<td class="table-label col-xs-6">Club</td>
 					<td>
@@ -215,12 +229,6 @@
 			</table>
 
 			<table class="table table-striped" v-if="showAdmin" >
-				<tr>
-					<th colspan="2">Comments</th>
-				</tr>
-				<tr>
-					<td colspan="2"><textarea class="form-control" cols="30" rows="5" v-model="member.comments"></textarea></td>
-				</tr>
 				<tr>
 					<td class="col-xs-6"></td>
 					<td><button class="btn btn-primary btn-sm" v-on:click="saveMember()">Save Changes</button></td>

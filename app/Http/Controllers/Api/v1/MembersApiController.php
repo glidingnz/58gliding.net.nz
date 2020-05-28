@@ -33,7 +33,7 @@ class MembersApiController extends ApiController
 	{
 		$memberUtilities = new MemberUtilities();
 
-		if ($member = Member::with('affiliates')->find($id))
+		if ($member = Member::with('affiliates.org')->find($id))
 		{
 			return $this->success($member);
 		}
