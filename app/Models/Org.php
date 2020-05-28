@@ -40,7 +40,7 @@ class Org extends Model
 	{
 		return $this->belongsToMany('App\Models\Member')
 			->withTimestamps()
-			->using('App\Models\MemberOrg');
+			->using('App\Models\Affiliate');
 	}
 
 	/*

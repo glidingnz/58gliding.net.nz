@@ -6,7 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use App\Models\Membertype;
 use App\Models\Position;
 use App\Models\Org;
-use App\Models\MemberOrg;
+use App\Models\Affiliate;
 
 class Membersv2 extends Migration
 {
@@ -17,9 +17,9 @@ class Membersv2 extends Migration
 	 */
 	public function up()
 	{
-		// Table to link a member with an organisation
-		if (!Schema::hasTable('member_org')) {
-			Schema::create('member_org', function (Blueprint $table) {
+		// Table to link a member with an organisation, and track membership history
+		if (!Schema::hasTable('affiliates')) {
+			Schema::create('affiliates', function (Blueprint $table) {
 				$table->increments('id');
 				$table->integer('member_id');
 				$table->integer('org_id');
@@ -198,10 +198,10 @@ class Membersv2 extends Migration
 				{
 					if (isset($orgs_gnz_code[$prev_club]))
 					{
-						$memberOrg = new memberOrg();
-						$memberOrg->org_id = $orgs_gnz_code[$prev_club]->id;
-						$memberOrg->member_id = $member->id;
-						$memberOrg->save();
+						$affiliate = new Affiliate();
+						$affiliate->org_id = $orgs_gnz_code[$prev_club]->id;
+						$affiliate->member_id = $member->id;
+						$affiliate->save();
 					}
 				}
 			}
@@ -211,13 +211,13 @@ class Membersv2 extends Migration
 			{
 				if (isset($orgs_gnz_code[$member->club]))
 				{
-					$memberOrg = new memberOrg();
-					$memberOrg->org_id = $orgs_gnz_code[$member->club]->id;
-					$memberOrg->member_id = $member->id;
-					$memberOrg->join_date = $member->date_joined;
-					$memberOrg->end_date = $member->resigned;
-					$memberOrg->resigned_comment = $member->resigned_comment;
-					$memberOrg->save();
+					$affiliate = new Affiliate();
+					$affiliate->org_id = $orgs_gnz_code[$member->club]->id;
+					$affiliate->member_id = $member->id;
+					$affiliate->join_date = $member->date_joined;
+					$affiliate->end_date = $member->resigned;
+					$affiliate->resigned_comment = $member->resigned_comment;
+					$affiliate->save();
 				}
 			}
 		}
@@ -232,7 +232,7 @@ class Membersv2 extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('member_org');
+		Schema::drop('affiliates');
 		Schema::drop('membertypes');
 		Schema::drop('member_membertype');
 		Schema::drop('positions');

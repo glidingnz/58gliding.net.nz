@@ -26,7 +26,12 @@ class Member extends Model
 	{
 		return $this->belongsToMany('App\Models\Org')
 			->withTimestamps()
-			->using('App\Models\MemberOrg');
+			->using('App\Models\Affiliate');
+	}
+
+	public function affiliates()
+	{
+		return $this->hasMany('App\Models\Affiliate');
 	}
 
 }
