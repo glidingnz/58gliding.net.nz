@@ -15,7 +15,7 @@
 					<input type="text" v-model="newBadge.badge_number" class="form-control" size="5" placeholder="Badge Number (if relevant)">
 				</td>
 				<td>
-					<input type="text" v-model="newBadge.date_awarded" class="form-control" size="5" placeholder="YYYY-MM-DD">
+					<input type="text" v-model="newBadge.awarded_date" class="form-control" size="5" placeholder="YYYY-MM-DD">
 				</td>
 				<td>
 					<button v-on:click="addAchievement()" class="btn btn-primary">Add Badge</button>
@@ -60,7 +60,7 @@
 				newBadge: {
 					id:null,
 					badge_number:null,
-					date_awarded: null,
+					awarded_date: null,
 					member_id: this.memberId
 				}
 			}
