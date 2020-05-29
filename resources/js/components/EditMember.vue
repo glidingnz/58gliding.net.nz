@@ -173,7 +173,7 @@
 
 			<table class="table table-striped">
 				<tr>
-					<th colspan="2">Affiliation</th>
+					<th colspan="2">Affiliations</th>
 				</tr>
 
 				<tr v-for="affiliate in member.affiliates">
@@ -181,7 +181,7 @@
 					<td>
 						<div>Joined {{formatDate(affiliate.join_date)}}</div>
 						<div v-if="affiliate.end_date">
-							Resigned 2007-01-10
+							Resigned {{formatDate(affiliate.end_date)}}
 						</div>
 						<div v-if="affiliate.resigned_comment">
 							{{affiliate.resigned_comment}}
@@ -224,13 +224,6 @@
 
 				<tr  v-if="showAdmin" >
 					<td></td>
-					<td><button class="btn btn-primary btn-sm" v-on:click="saveMember()">Save Changes</button></td>
-				</tr>
-			</table>
-
-			<table class="table table-striped" v-if="showAdmin" >
-				<tr>
-					<td class="col-xs-6"></td>
 					<td><button class="btn btn-primary btn-sm" v-on:click="saveMember()">Save Changes</button></td>
 				</tr>
 			</table>
