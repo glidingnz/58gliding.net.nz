@@ -114,6 +114,9 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 	Route::group(['middleware' => ['auth:api']], function () {
 
 		Route::post('/orgs/{id}/settings',  'SettingsApiController@insert');
+		Route::resource('/affiliates', 'AffiliatesApiController', ['only' => [
+			'update'
+		]]);
 
 		Route::resource('/membertypes', 'MembertypeApiController', ['only' => [
 			'store', 'create', 'destroy', 'update'

@@ -171,22 +171,41 @@
 			</table>
 
 
-			<table class="table table-striped">
+			<table class="table table-striped table-sm">
 				<tr>
-					<th colspan="2">Affiliations</th>
+					<th colspan="3">Affiliations</th>
 				</tr>
 
-				<tr v-for="affiliate in member.affiliates">
-					<td class="table-label col-xs-6">{{affiliate.org.name}}</td>
-					<td>
-						<div>Joined {{formatDate(affiliate.join_date)}}</div>
-						<div v-if="affiliate.end_date">
-							Resigned {{formatDate(affiliate.end_date)}}
-						</div>
-						<div v-if="affiliate.resigned_comment">
-							{{affiliate.resigned_comment}}
-						</div>
-					</td>
+
+				<template v-for="affiliate in member.affiliates">
+					
+					<tr>
+						<td class="table-label col-xs-6">{{affiliate.org.name}}</td>
+						<td>Joined</td>
+						<td>
+							<input type="text" v-model="affiliate.join_date" class="form-control">
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>End Date <button v-if="!affiliate.end_date" class="btn btn-danger btn-sm" v-on:click="resignAffiliate(affiliate)">Resign Now</button></td>
+						<td>
+							<input type="text" v-model="affiliate.end_date" class="form-control">
+						</td>
+					</tr>
+					<tr v-if="affiliate.end_date">
+						<td></td>
+						<td>Resigned Comment</td>
+						<td>
+							<input type="text" v-model="affiliate.resigned_comment" class="form-control">
+						</td>
+					</tr>
+				</template>
+
+				<tr>
+					<td></td>
+					<td></td>
+					<td><button class="btn btn-primary btn-sm" v-on:click="saveMember()">Save Changes</button></td>
 				</tr>
 				<!-- 
 				<tr>
@@ -222,10 +241,6 @@
 					<td><input type="text" v-model="member.resigned_comment" class="form-control"></td>
 				</tr> -->
 
-				<tr  v-if="showAdmin" >
-					<td></td>
-					<td><button class="btn btn-primary btn-sm" v-on:click="saveMember()">Save Changes</button></td>
-				</tr>
 			</table>
 
 			
@@ -272,9 +287,23 @@
 				});
 			},
 			saveMember: function() {
+				var that=this;
+
 				window.axios.put('/api/v1/members/' + this.memberId, this.member).then(function (response) {
+					for(var i=0; i<that.member.affiliates.length; i++)
+					{
+						that.updateAffiliate(that.member.affiliates[i])
+					}
 					messages.$emit('success', 'Member Updated');
 				});
+			},
+			updateAffiliate: function(affiliate) {
+				window.axios.put('/api/v1/affiliates/' + affiliate.id, affiliate).then(function (response) {
+					messages.$emit('success', 'Affiliate Updated');
+				});
+			},
+			resignAffiliate: function(affiliate) {
+				affiliate.end_date = Vue.prototype.$moment().format('YYYY-MM-DD');
 			}
 		}
 	}
