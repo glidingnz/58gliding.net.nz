@@ -11,6 +11,7 @@ use App\Models\Org;
 use App\Models\Role;
 use App\Models\RoleUser;
 use App\Models\Member;
+use App\Models\Affiliate;
 
 use Auth;
 
@@ -147,11 +148,17 @@ class AuthServiceProvider extends ServiceProvider
 					return true;
 				}
 
-				// check if this user is in the GNZ DB as a member
-				$member = Member::where('club', $org->gnz_code)->where('nzga_number', $user->gnz_id)->first();
-				if ($member) {
-					$user->variable_name = true;
-					return true;
+				// check if this user is in the GNZ DB as a current member
+				// first get the member ID
+				if ($member = Member::where('nzga_number', $user->gnz_id)->first())
+				{
+					// get the affiliate details
+					$affiliate = Affiliate::where('org_id', $org->id)->where('member_id', $member->id)->whereNotNull('end_date')->first();
+
+					if ($affiliate) {
+						$user->variable_name = true;
+						return true;
+					}
 				}
 			}
 
