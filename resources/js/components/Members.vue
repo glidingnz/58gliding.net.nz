@@ -32,9 +32,9 @@
 
 	<div class="container-fluid clearfix">
 
-		<select name="org" v-model="state.org" class="col-xs-12 col-sm-4 form-control custom-select custom-select-sm float-right" style="width: auto; margin-bottom: 20px;">
+		<select name="org" v-model="state.org_id" class="col-xs-12 col-sm-4 form-control custom-select custom-select-sm float-right" style="width: auto; margin-bottom: 20px;">
 			<option v-bind:value="null">All Clubs</option>
-			<option v-for="org in orgs" v-bind:value="org.gnz_code">{{org.name}}</option>
+			<option v-for="org in orgs" v-bind:value="org.id">{{org.name}}</option>
 		</select>
 
 		<div class="filter-buttons nav nav-pills col-xs-12 col-sm-8" role="group">
@@ -208,7 +208,8 @@
 					type: 'all',
 					page: 1,
 					search: '',
-					org: null
+					org: null,
+					org_id: null
 				},
 				last_page: 1,
 				total: 0,

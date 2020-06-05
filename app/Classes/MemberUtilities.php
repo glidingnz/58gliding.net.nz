@@ -3,6 +3,7 @@ namespace App\Classes;
 
 use App\Models\Member;
 use App\Models\Org;
+use App\Models\Affiliate;
 use DateTime;
 use DB;
 use Gate;
@@ -15,7 +16,23 @@ class MemberUtilities {
 	 */
 	public function get_filtered_members($request)
 	{
-		$query = Member::query();
+
+		// Create the query. We use the affilliates table as the base for the query, so we can filter to specific organisations.
+		// 
+		$query = Affiliate::query();
+		$query->selectRaw("gnz_member.*, GROUP_CONCAT(DISTINCT org_id SEPARATOR ',') AS org_ids,  GROUP_CONCAT(DISTINCT orgs.name SEPARATOR ', ') AS org_names");
+		$query->leftJoin('gnz_member', 'gnz_member.id', '=', 'affiliates.member_id');
+		$query->leftJoin('orgs', 'orgs.id', '=', 'affiliates.org_id');
+		$query->groupBy('member_id');
+
+
+		if (!$request->input('resigned'))
+		{
+			$query->where('affiliates.resigned','==',0);
+		}
+
+
+
 		$query->orderBy('last_name');
 
 		if ($request->input('search'))
@@ -25,52 +42,67 @@ class MemberUtilities {
 				$query->where('first_name','like',$s);
 				$query->orWhere('last_name','like',$s);
 				$query->orWhere('nzga_number','like',$s);
-				$query->orWhere('club','like',$s);
 			});
 		}
 
-		if (!$request->input('resigned'))
+		// see if we have an ORG code e.g. "PKO", get the ID for it
+		if ($request->input('org') && $request->input('org')!='null')
 		{
-			$query->where(function($query) {
-				$query->where('membership_type','!=','Resigned');
-			});
+			if ($org = Org::where('gnz_code', $request->input('org'))->first())
+			{
+				$org_id = $org->id;
+			}
+			
 		}
-
 
 		// see if we are given an ORG ID e.g. 14
 		if ($request->has('org_id'))
 		{
-			$org = Org::where('id', $request->input('org_id'))->first();
-			$org_gnz_code = $org->gnz_code;
+			$org_id = $request->input('org_id');
 		}
 
-		// see if we have an ORG code e.g. "PKO"
-		if ($request->input('org') && $request->input('org')!='null')
-		{
-			$org_gnz_code = $request->input('org');
-		}
 
-		// process either of the two above
-		if (isset($org_gnz_code))
+		if (isset($org_id))
 		{
-			switch ($org_gnz_code)
+			switch ($org_id)
 			{
-				case 'MSC':
-					$query->whereIn('club',['AKL','AAV','PKO','TPO','TGA','TRK']);
+				case 26: // MSC Matamata Soaring Centre
+					$query->whereIn('affiliates.org_id',[3,2,14,18,19,17]);
 					break;
-				case 'GSC':
-					$query->whereIn('club',['GWR','WLN']);
+				case 28: // Greytown Soaring Centre
+					$query->whereIn('affiliates.org_id',[22, 20]);
 					break;
-				case 'OSC':
-					$query->whereIn('club',['MLB','WLN', 'NLN', 'CTY', 'COT', 'SCY', 'OGC', 'CLV']);
+				case 27: // 'OSC' Omarama Soaring Centre
+					$query->whereIn('affiliates.org_id',[10,20, 11, 4, 5, 16, 13, 23]);
 					break;
 				default:
 					// for most normal clubs
-					$query->where('club','=',$org_gnz_code);
+					$query->where('affiliates.org_id','=',$org_id);
 					break;
 			}
-
 		}
+
+
+		// process either of the two above
+		// if (isset($org_gnz_code))
+		// {
+		// 	switch ($org_gnz_code)
+		// 	{
+		// 		case 'MSC':
+		// 			$query->whereIn('club',['AKL','AAV','PKO','TPO','TGA','TRK']);
+		// 			break;
+		// 		case 'GSC':
+		// 			$query->whereIn('club',['GWR','WLN']);
+		// 			break;
+		// 		case 'OSC':
+		// 			$query->whereIn('club',['MLB','WLN', 'NLN', 'CTY', 'COT', 'SCY', 'OGC', 'CLV']);
+		// 			break;
+		// 		default:
+		// 			// for most normal clubs
+		// 			$query->where('club','=',$org_gnz_code);
+		// 			break;
+		// 	}
+		// }
 
 		switch ($request->input('type'))
 		{

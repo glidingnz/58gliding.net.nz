@@ -27,6 +27,7 @@ class Membersv2 extends Migration
 				$table->date('join_date')->nullable();
 				$table->date('end_date')->nullable();
 				$table->text('resigned_comment')->nullable();
+				$table->boolean('resigned')->default(false);
 				$table->timestamps();
 			});
 		}
@@ -201,6 +202,15 @@ class Membersv2 extends Migration
 						$affiliate = new Affiliate();
 						$affiliate->org_id = $orgs_gnz_code[$prev_club]->id;
 						$affiliate->member_id = $member->id;
+						$affiliate->resigned = true; // previous clubs are always resigned?
+
+						// figure out if the resigned date applies
+						if ($member->membership_type!=='resigned' && sizeof($prev_clubs)==1)
+						{
+							// if there are multiple previous clubs, then we have no way of knowing which one had the expiry date. So only do this if there is only 1 previous club.
+							$affiliate->end_date = $member->resigned;
+						}
+
 						$affiliate->save();
 					}
 				}
@@ -217,6 +227,9 @@ class Membersv2 extends Migration
 					$affiliate->join_date = $member->date_joined;
 					$affiliate->end_date = $member->resigned;
 					$affiliate->resigned_comment = $member->resigned_comment;
+
+					if ($member->membership_type=='Resigned') $affiliate->resigned=true;
+
 					$affiliate->save();
 				}
 			}
