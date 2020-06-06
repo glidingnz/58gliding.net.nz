@@ -33,11 +33,6 @@ class AchievementsApiController extends ApiController
 
 		if (!isset($member)) return $this->not_found();
 
-		// ensure we have imported all existing badges from the GNZ system
-		$importer = new BadgeImporter;
-		$importer->load_badges();
-		$importer->import_member_badges($member);
-
 
 		$query = BadgeMember::query();
 		$query->with('badge');
