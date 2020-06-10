@@ -33,7 +33,6 @@ class AchievementsApiController extends ApiController
 
 		if (!isset($member)) return $this->not_found();
 
-
 		$query = BadgeMember::query();
 		$query->with('badge');
 		$query->leftJoin('badges', 'badges.id', '=', 'badge_member.badge_id');
