@@ -4453,6 +4453,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -4461,10 +4463,13 @@ __webpack_require__.r(__webpack_exports__);
     return {
       achievements: [],
       badges: [],
-      showEdit: false
+      awardsOfficer: false,
+      clubAdmin: false
     };
   },
   mounted: function mounted() {
+    if (window.Laravel.awardsOfficer) this.awardsOfficer = true;
+    if (window.Laravel.clubAdmin) this.clubAdmin = true;
     this.load();
   },
   computed: {
@@ -54874,6 +54879,19 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _vm.awardsOfficer || _vm.clubAdmin
+      ? _c("p", [
+          _c(
+            "a",
+            {
+              staticClass: "btn btn-outline-dark",
+              attrs: { href: "/members/" + _vm.memberId + "/achievements/edit" }
+            },
+            [_vm._v("Edit Achievements")]
+          )
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _vm.achievements.length == 0
       ? _c("div", [_c("p", [_vm._v("No achievements yet!")])])
       : _vm._e(),

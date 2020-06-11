@@ -72,6 +72,7 @@
 		methods: {
 			load: function() {
 				var that = this;
+
 				window.axios.get('/api/v1/achievements?member_id=' + this.memberId).then(function (response) {
 					that.results = response.data.data;
 				});

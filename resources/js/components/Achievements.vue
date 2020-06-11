@@ -15,6 +15,8 @@
 <template>
 	<div>
 
+		<p v-if="awardsOfficer || clubAdmin"><a class="btn btn-outline-dark"  :href="'/members/' + memberId + '/achievements/edit'"">Edit Achievements</a></p>
+
 		<div v-if="achievements.length==0">
 			<p>No achievements yet!</p>
 		</div>
@@ -45,10 +47,13 @@
 			return {
 				achievements: [],
 				badges: [],
-				showEdit: false
+				awardsOfficer: false,
+				clubAdmin: false
 			}
 		},
 		mounted() {
+			if (window.Laravel.awardsOfficer) this.awardsOfficer=true;
+			if (window.Laravel.clubAdmin) this.clubAdmin=true;
 			this.load();
 		},
 		computed: {
