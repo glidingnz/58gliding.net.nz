@@ -4458,7 +4458,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
-  props: ['memberId'],
+  props: ['memberId', 'allowsEdit'],
   data: function data() {
     return {
       achievements: [],
@@ -4468,8 +4468,10 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
+    // get permissions we need to show things
     if (window.Laravel.awardsOfficer) this.awardsOfficer = true;
     if (window.Laravel.clubAdmin) this.clubAdmin = true;
+    console.log(this.allowsEdit);
     this.load();
   },
   computed: {
@@ -54879,7 +54881,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _vm.awardsOfficer || _vm.clubAdmin
+    _vm.allowsEdit
       ? _c("p", [
           _c(
             "a",

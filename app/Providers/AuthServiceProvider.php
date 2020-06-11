@@ -212,6 +212,7 @@ class AuthServiceProvider extends ServiceProvider
 			if (isset($user->can_edit_achievements)) return $user->can_edit_achievements;
 
 			if (Gate::allows('admin')) return true; // check if admin first!
+			if (Gate::allows('edit-awards')) return true; // check if awards officer
 
 			// ensure the user is a GNZ coach
 			if ($user->gnz_id>0 && $user->gnz_active==1)
