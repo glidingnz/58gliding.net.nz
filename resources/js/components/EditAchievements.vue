@@ -67,7 +67,6 @@
 			}
 		},
 		mounted() {
-			console.log(window.Laravel.editAwards);
 			if (window.Laravel.editAwards) this.editAwards=true;
 			this.load();
 			this.loadBadges();

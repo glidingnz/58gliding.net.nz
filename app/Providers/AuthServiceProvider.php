@@ -183,7 +183,7 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 
-		// Only the awards officer is allowed to edit awards.
+		// Only the awards officer is allowed to edit FAI awards.
 		Gate::define('edit-awards', function($user) {
 			// check if we've already approved this
 			if (isset($user->can_edit_awards)) return $user->can_edit_awards;
@@ -207,18 +207,33 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 
-		// Admins and GNZ members that are coaches are allowed to edit achievements
-		Gate::define('edit-achievements', function(&$user) {
+		// Admins, GNZ members that are coaches and club admins are allowed to edit non FAI achievements
+		// User is the current user
+		// Member is the user we want to edit achievements of
+		Gate::define('edit-achievements', function(&$user, $member) {
 			if (isset($user->can_edit_achievements)) return $user->can_edit_achievements;
 
 			if (Gate::allows('admin')) return true; // check if admin first!
 			if (Gate::allows('edit-awards')) return true; // check if awards officer
 
+			// get the target member's club
+			$org = Org::where('gnz_code', $member->club)->first();
+
+			// if the current user is a club admin for our target member
+			if (Gate::allows('club-admin', $org)) {
+				$user->can_edit_achievements=true;
+				return true;
+			}
+
 			// ensure the user is a GNZ coach
 			if ($user->gnz_id>0 && $user->gnz_active==1)
 			{
-				$member = Member::where('nzga_number', $user->gnz_id)->where('coach', true)->first();
-				if ($member)
+				// load the current user membership details and current organisation
+				$user_member = Member::where('nzga_number', $user->gnz_id)->first();
+
+
+				// if this user is a coach, all OK
+				if ($user_member->coach==true)
 				{
 					$user->can_edit_achievements=true;
 					return true;

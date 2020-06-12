@@ -48,14 +48,15 @@
 				achievements: [],
 				badges: [],
 				awardsOfficer: false,
+				editAchievements: false,
 				clubAdmin: false
 			}
 		},
 		mounted() {
 			// get permissions we need to show things
 			if (window.Laravel.awardsOfficer) this.awardsOfficer=true;
+			if (window.Laravel.editAchievements) this.editAchievements=true;
 			if (window.Laravel.clubAdmin) this.clubAdmin=true;
-			console.log(this.allowsEdit);
 			this.load();
 		},
 		computed: {

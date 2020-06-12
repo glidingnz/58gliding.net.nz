@@ -64,11 +64,15 @@ class AchievementsApiController extends ApiController
 	 */
 	public function store(Request $request)
 	{
-		// check user has permission
-		if (Gate::denies('edit-achievements')) return $this->denied();
-
 		if (!$request->input('member_id')) return $this->error("member_id is required");
 		if (!$request->input('badge_id')) return $this->error("badge_id is required");
+
+		// get the current member
+		$member = Member::find($request->input('member_id'));
+		if (!$member) return $this->not_found('Member Not Found');
+
+		// check current user has permission to edit this member achievements
+		if (Gate::denies('edit-achievements', $member)) return $this->denied();
 
 		// get the badge we are trying to add to this member
 		if ($badge = Badge::where('id', $request->input('badge_id'))->first())
@@ -98,16 +102,21 @@ class AchievementsApiController extends ApiController
 
 	public function update(Request $request, $id)
 	{
-		// check user has permission
-		if (Gate::denies('edit-achievements')) return $this->denied();
 
 		if (!$request->input('member_id')) return $this->error("member_id is required");
 		if (!$request->input('badge_id')) return $this->error("badge_id is required");
 
+		// get the current member
+		$member = Member::find($request->input('member_id'));
+		if (!$member) return $this->not_found('Member Not Found');
+
+		// check current user has permission to edit this member achievements
+		if (Gate::denies('edit-achievements', $member)) return $this->denied();
+
 		// check member exists
 		if (!$item = BadgeMember::find($id))
 		{
-			return $this->not_found();
+			return $this->not_found('Badge/Member Not Found');
 		}
 
 		$item->member_id=$request->input('member_id');

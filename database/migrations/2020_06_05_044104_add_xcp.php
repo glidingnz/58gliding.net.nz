@@ -21,9 +21,9 @@ class AddXcp extends Migration
 	{
 
 		// create the new ratings
-		if (!Rating::where('name', '=', 'XCP Cross Country Pilot')->exists()) {
+		if (!Rating::where('name', '=', 'Cross Country Pilot XCP')->exists()) {
 			$rating = new Rating;
-			$rating->name = "XCP Cross Country Pilot";
+			$rating->name = "Cross Country Pilot XCP";
 			$rating->default_expires = null;
 			$rating->save();
 		}
@@ -148,6 +148,8 @@ class AddXcp extends Migration
 		$qgp_badge = Badge::where('name', 'QGP')->first();
 		// then delete all badges
 		BadgeMember::where('badge_id', $qgp_badge->id)->delete();
+		// then delete the badge itself, as it's a rating rather than a badge
+		Badge::where('id', $qgp_badge->id)->delete();
 	}
 
 	/**
