@@ -44,7 +44,7 @@
 				'admin' => (Auth::user()!=null && Auth::user()->can('admin')) ? true : false,
 				'clubAdmin' => (Auth::user()!=null && Auth::user()->can('club-admin')) ? true : false,
 				'clubMember' => (Auth::user()!=null && Auth::user()->can('club-member')) ? true : false,
-				'awardsOfficer' => (Auth::user()!=null && Auth::user()->can('awards-officer')) ? true : false,
+				'editAwards' => (Auth::user()!=null && Auth::user()->can('edit-awards')) ? true : false,
 				'viewMembership' => (Auth::user()!=null && Auth::user()->can('view-membership')) ? true : false,
 				'apple_auth' =>  env('APPLE_MAPS_AUTHORISATION_CALLBACK'),
 			]); ?>

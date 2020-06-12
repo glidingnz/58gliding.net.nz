@@ -4938,12 +4938,13 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
-  props: ['memberId'],
+  props: ['memberId', 'allowsEdit'],
   data: function data() {
     return {
       results: [],
       badges: [],
       showEdit: false,
+      editAwards: false,
       newBadge: {
         id: null,
         badge_number: null,
@@ -4953,6 +4954,8 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
+    console.log(window.Laravel.editAwards);
+    if (window.Laravel.editAwards) this.editAwards = true;
     this.load();
     this.loadBadges();
   },
@@ -4965,7 +4968,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     loadBadges: function loadBadges() {
       var that = this;
-      window.axios.get('/api/v1/badges?exclude=fai').then(function (response) {
+      var url = '/api/v1/badges';
+      if (!this.editAwards) url += '?exclude=fai';
+      window.axios.get(url).then(function (response) {
         that.badges = response.data.data;
       });
     },

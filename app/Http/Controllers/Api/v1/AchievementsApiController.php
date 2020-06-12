@@ -70,16 +70,27 @@ class AchievementsApiController extends ApiController
 		if (!$request->input('member_id')) return $this->error("member_id is required");
 		if (!$request->input('badge_id')) return $this->error("badge_id is required");
 
-		$item = new BadgeMember;
-		$item->member_id=$request->input('member_id');
-		$item->badge_id=$request->input('badge_id');
-		$item->comments='';
-		if ($request->input('awarded_date')) $item->awarded_date=$request->input('awarded_date');
-		if ($request->input('badge_number')) $item->badge_number=$request->input('badge_number');
-		if ($item->save())
+		// get the badge we are trying to add to this member
+		if ($badge = Badge::where('id', $request->input('badge_id'))->first())
 		{
-			return $this->success($item);
+			// check if badge is FAI award, and if so that we are have permission to edit it
+			if ($badge->type=='FAI Badges')
+			{
+				if (Gate::denies('edit-awards')) return $this->denied();
+			}
+
+			$item = new BadgeMember;
+			$item->member_id=$request->input('member_id');
+			$item->badge_id=$request->input('badge_id');
+			$item->comments='';
+			if ($request->input('awarded_date')) $item->awarded_date=$request->input('awarded_date');
+			if ($request->input('badge_number')) $item->badge_number=$request->input('badge_number');
+			if ($item->save())
+			{
+				return $this->success($item);
+			}
 		}
+
 		return $this->error();
 	}
 

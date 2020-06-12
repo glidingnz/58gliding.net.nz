@@ -51,12 +51,13 @@
 
 	export default {
 		mixins: [common],
-		props: ['memberId'],
+		props: ['memberId', 'allowsEdit'],
 		data() {
 			return {
 				results: [],
 				badges: [],
 				showEdit: false,
+				editAwards: false,
 				newBadge: {
 					id:null,
 					badge_number:null,
@@ -66,6 +67,8 @@
 			}
 		},
 		mounted() {
+			console.log(window.Laravel.editAwards);
+			if (window.Laravel.editAwards) this.editAwards=true;
 			this.load();
 			this.loadBadges();
 		},
@@ -79,7 +82,9 @@
 			},
 			loadBadges: function() {
 				var that = this;
-				window.axios.get('/api/v1/badges?exclude=fai').then(function (response) {
+				var url = '/api/v1/badges';
+				if (!this.editAwards) url += '?exclude=fai';
+				window.axios.get(url).then(function (response) {
 					that.badges = response.data.data;
 				});
 			},

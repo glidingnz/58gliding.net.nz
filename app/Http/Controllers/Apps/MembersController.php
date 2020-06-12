@@ -63,6 +63,18 @@ class MembersController extends Controller
 	}
 
 
+	public function edit_achievements($id)
+	{
+		$data['member'] = Member::findOrFail($id);
+		$data['allows_edit']=false;
+
+		if (Gate::denies('edit-achievements', $data['member'])) {
+			abort(403);
+		}
+
+		return view('members/achievements-edit', $data);
+	}
+
 	/**
 	 * View the users ratings
 	 */
@@ -134,17 +146,6 @@ class MembersController extends Controller
 	}
 
 
-
-	public function edit_achievements($id)
-	{
-		$member = Member::findOrFail($id);
-
-		if (Gate::denies('edit-achievements', $member)) { // and awards? TBC
-			abort(403);
-		}
-
-		return view('members/achievements-edit', Array('member_id'=>$id, 'member'=>$member));
-	}
 
 
 	// Download, then delete the temporary exported file
