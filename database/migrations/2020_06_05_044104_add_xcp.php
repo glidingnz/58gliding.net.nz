@@ -21,9 +21,9 @@ class AddXcp extends Migration
 	{
 
 		// create the new ratings
-		if (!Rating::where('name', '=', 'Cross Country Pilot XCP')->exists()) {
+		if (!Rating::where('name', '=', 'XCP')->exists()) {
 			$rating = new Rating;
-			$rating->name = "Cross Country Pilot XCP";
+			$rating->name = "XCP";
 			$rating->default_expires = null;
 			$rating->save();
 		}
@@ -58,7 +58,7 @@ class AddXcp extends Migration
 
 
 		// get the ratings for later
-		$xcp = Rating::where('name', "XCP Cross Country Pilot")->first();
+		$xcp = Rating::where('name', "XCP")->first();
 		$sop = Rating::where('name', "Solo Pilot")->first();
 		$srp = Rating::where('name', "Soaring Pilot")->first();
 		$tp = Rating::where('name', "Task Pilot")->first();
@@ -145,11 +145,14 @@ class AddXcp extends Migration
 
 		// remove QGP from badges system
 		// first get the QGP badge number
-		$qgp_badge = Badge::where('name', 'QGP')->first();
-		// then delete all badges
-		BadgeMember::where('badge_id', $qgp_badge->id)->delete();
-		// then delete the badge itself, as it's a rating rather than a badge
-		Badge::where('id', $qgp_badge->id)->delete();
+		if ($qgp_badge = Badge::where('name', 'QGP')->first())
+		{
+			// then delete all badges
+			BadgeMember::where('badge_id', $qgp_badge->id)->delete();
+			// then delete the badge itself, as it's a rating rather than a badge
+			Badge::where('id', $qgp_badge->id)->delete();
+		}
+
 	}
 
 	/**
@@ -165,7 +168,7 @@ class AddXcp extends Migration
 		});
 
 		// delete all automatically imported ratings
-		$xcp = Rating::where('name', "XCP Cross Country Pilot")->first();
+		$xcp = Rating::where('name', "XCP")->first();
 		$qgp = Rating::where('name', "QGP")->first();
 		$sop = Rating::where('name', "Solo Pilot")->first();
 		$srp = Rating::where('name', "Soaring Pilot")->first();
