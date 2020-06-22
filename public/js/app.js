@@ -4464,14 +4464,15 @@ __webpack_require__.r(__webpack_exports__);
       achievements: [],
       badges: [],
       awardsOfficer: false,
+      editAchievements: false,
       clubAdmin: false
     };
   },
   mounted: function mounted() {
     // get permissions we need to show things
     if (window.Laravel.awardsOfficer) this.awardsOfficer = true;
+    if (window.Laravel.editAchievements) this.editAchievements = true;
     if (window.Laravel.clubAdmin) this.clubAdmin = true;
-    console.log(this.allowsEdit);
     this.load();
   },
   computed: {
@@ -4954,7 +4955,6 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
-    console.log(window.Laravel.editAwards);
     if (window.Laravel.editAwards) this.editAwards = true;
     this.load();
     this.loadBadges();
@@ -5700,153 +5700,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
-  props: ['memberId'],
+  props: ['memberId', 'showEdit'],
   data: function data() {
     return {
-      results: [],
-      showEdit: false
+      results: []
     };
   },
   mounted: function mounted() {
     this.loadMember();
-    if (window.Laravel.allowsEdit == true) this.showEdit = true;
   },
   methods: {
     loadMember: function loadMember() {
@@ -56287,12 +56151,13 @@ var render = function() {
   return _c("div", [
     _c("h1", { staticClass: "results-title" }, [
       _c("a", { attrs: { href: "/members" } }, [_vm._v("Members")]),
-      _vm._v(
-        " » " +
-          _vm._s(_vm.member.first_name) +
-          " " +
-          _vm._s(_vm.member.last_name)
-      )
+      _vm._v(" » "),
+      _c("a", { attrs: { href: "/members/" + _vm.member.id } }, [
+        _vm._v(
+          _vm._s(_vm.member.first_name) + " " + _vm._s(_vm.member.last_name)
+        )
+      ]),
+      _vm._v(" » Edit")
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
@@ -57588,23 +57453,7 @@ var render = function() {
             staticStyle: { float: "right", "margin-left": "10px" },
             attrs: { href: "/members/" + _vm.results.id + "/edit" }
           },
-          [_vm._v("Edit " + _vm._s(_vm.results.first_name))]
-        )
-      : _vm._e(),
-    _vm._v(" "),
-    _vm.showEdit
-      ? _c(
-          "a",
-          {
-            staticClass: "btn btn-outline-dark",
-            staticStyle: { float: "right", "margin-left": "10px" },
-            attrs: {
-              href:
-                "http://members.gliding.co.nz/index.php?r=member/update&id=" +
-                _vm.results.id
-            }
-          },
-          [_vm._v("Old Edit")]
+          [_vm._v("Edit Member")]
         )
       : _vm._e(),
     _vm._v(" "),
@@ -57781,192 +57630,12 @@ var render = function() {
               _vm._v(_vm._s(_vm.results.comments))
             ])
           ])
-        ]),
-        _vm._v(" "),
-        _c("table", { staticClass: "table table-striped" }, [
-          _vm._m(4),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [_vm._v("Instructor")]),
-            _vm._v(" "),
-            _c("td", [
-              _c("span", {
-                domProps: {
-                  innerHTML: _vm._s(_vm.formatBoolean(_vm.results.instructor))
-                }
-              })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("Instructor Rating")
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c("span", {
-                domProps: {
-                  innerHTML: _vm._s(
-                    _vm.formatBoolean(_vm.results.instructor_rating)
-                  )
-                }
-              })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [_vm._v("Aerotow")]),
-            _vm._v(" "),
-            _c("td", [
-              _c("span", {
-                domProps: {
-                  innerHTML: _vm._s(_vm.formatBoolean(_vm.results.aero_tow))
-                }
-              })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [_vm._v("Winch Rating")]),
-            _vm._v(" "),
-            _c("td", [
-              _c("span", {
-                domProps: {
-                  innerHTML: _vm._s(_vm.formatBoolean(_vm.results.winch_rating))
-                }
-              })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [_vm._v("Self Launch")]),
-            _vm._v(" "),
-            _c("td", [
-              _c("span", {
-                domProps: {
-                  innerHTML: _vm._s(_vm.formatBoolean(_vm.results.self_launch))
-                }
-              })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("Auto Tow Instructor")
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c("span", {
-                domProps: {
-                  innerHTML: _vm._s(_vm.formatBoolean(_vm.results.auto_tow))
-                }
-              })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("Auto Tow Instructor")
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c("span", {
-                domProps: {
-                  innerHTML: _vm._s(_vm.formatBoolean(_vm.results.auto_tow))
-                }
-              })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("Aero Instructor")
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c("span", {
-                domProps: {
-                  innerHTML: _vm._s(
-                    _vm.formatBoolean(_vm.results.aero_instructor)
-                  )
-                }
-              })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("Advanced Aero Instructor")
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c("span", {
-                domProps: {
-                  innerHTML: _vm._s(
-                    _vm.formatBoolean(_vm.results.advanced_aero_instructor)
-                  )
-                }
-              })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("Instructor Trainer")
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c("span", {
-                domProps: {
-                  innerHTML: _vm._s(
-                    _vm.formatBoolean(_vm.results.instructor_trainer)
-                  )
-                }
-              })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [_vm._v("Tow Pilot")]),
-            _vm._v(" "),
-            _c("td", [
-              _c("span", {
-                domProps: {
-                  innerHTML: _vm._s(_vm.formatBoolean(_vm.results.tow_pilot))
-                }
-              })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("Tow Pilot Instructor")
-            ]),
-            _vm._v(" "),
-            _c("td", [
-              _c("span", {
-                domProps: {
-                  innerHTML: _vm._s(
-                    _vm.formatBoolean(_vm.results.tow_pilot_instructor)
-                  )
-                }
-              })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("Insttrain (OLD: for info only)")
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.insttrain))])
-          ])
         ])
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "col-sm-6 col-xs-12" }, [
         _c("table", { staticClass: "table table-striped" }, [
-          _vm._m(5),
+          _vm._m(4),
           _vm._v(" "),
           _c("tr", [
             _c("td", { staticClass: "table-label" }, [_vm._v("GNZ Number")]),
@@ -57994,7 +57663,7 @@ var render = function() {
         ]),
         _vm._v(" "),
         _c("table", { staticClass: "table table-striped" }, [
-          _vm._m(6),
+          _vm._m(5),
           _vm._v(" "),
           _c("tr", [
             _c("td", { staticClass: "table-label" }, [
@@ -58047,132 +57716,6 @@ var render = function() {
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(_vm.results.resigned_comment))])
           ])
-        ]),
-        _vm._v(" "),
-        _c("table", { staticClass: "table table-striped" }, [
-          _vm._m(7),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [_vm._v("QGP Number")]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.qgp_number))])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [_vm._v("QGP Date")]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.qgp_date))])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [_vm._v("Silver Cert #")]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.silver_certificate_number))])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("Silver Duration")
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.silver_duration))])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("Silver Distance")
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.silver_distance))])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [_vm._v("Silver Height")]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.silver_height))])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [_vm._v("Gold Badge #")]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.gold_certificate_number))])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [_vm._v("Gold Distance")]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.gold_distance))])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [_vm._v("Gold Height")]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.gold_height))])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("Diamond Distance #")
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.diamond_distance_number))])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("Diamond Height #")
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.diamond_height_number))])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("Diamond Height #")
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.diamond_height_number))])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("Diamond Goal #")
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.diamond_goal_number))])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("1000km Flight #")
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.flight_1000km_number))])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("1250km Flight #")
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.flight_1250km_number))])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("1500km Flight #")
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.flight_1500km_number))])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", { staticClass: "table-label" }, [
-              _vm._v("Other FAI Awards or Diplomas")
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.results.awards))])
-          ])
         ])
       ])
     ])
@@ -58214,14 +57757,6 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("tr", [
-      _c("th", { attrs: { colspan: "2" } }, [_vm._v("Ratings")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", [
       _c("th", { attrs: { colspan: "2" } }, [_vm._v("Account Details")])
     ])
   },
@@ -58232,12 +57767,6 @@ var staticRenderFns = [
     return _c("tr", [
       _c("th", { attrs: { colspan: "2" } }, [_vm._v("Affiliation")])
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", [_c("th", { attrs: { colspan: "2" } }, [_vm._v("Awards")])])
   }
 ]
 render._withStripped = true

@@ -1,6 +1,6 @@
 <template>
 <div>
-	<h1 class="results-title"><a href="/members">Members</a> &raquo; {{member.first_name}} {{member.last_name}}</h1>
+	<h1 class="results-title"><a href="/members">Members</a> &raquo; <a :href="'/members/' + member.id">{{member.first_name}} {{member.last_name}}</a> &raquo; Edit</h1>
 
 	<div class="row">
 		<div class="col-sm-6 col-xs-12">
