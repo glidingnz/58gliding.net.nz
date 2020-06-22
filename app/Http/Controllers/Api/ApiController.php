@@ -94,13 +94,16 @@ class ApiController extends Controller
 		$this->data['queries_ogn']=DB::connection('ogn')->getQueryLog();
 		$this->data['queries_ogn_total']=count(DB::connection('ogn')->getQueryLog());
 
+
 		foreach($this->data['queries_db'] as $key=>$query) {
 			$query_string = str_replace(array('?'), array('\'%s\''), $query['query']);
+			$query_string = str_replace(array('%'), array('%%'), $query['query']); // fix to ensure any existing % are ignored by vsprintf next
 			$query_string = vsprintf($query_string, $query['bindings']);
 			$this->data['queries_db'][$key]['raw'] = $query_string;
 		}
 		foreach($this->data['queries_ogn'] as $key=>$query) {
 			$query_string = str_replace(array('?'), array('\'%s\''), $query['query']);
+			$query_string = str_replace(array('%'), array('%%'), $query['query']); // fix to ensure any existing % are ignored by vsprintf next
 			$query_string = vsprintf($query_string, $query['bindings']);
 			$this->data['queries_ogn'][$key]['raw'] = $query_string;
 		}
