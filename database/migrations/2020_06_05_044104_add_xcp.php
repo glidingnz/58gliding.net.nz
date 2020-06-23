@@ -153,6 +153,11 @@ class AddXcp extends Migration
 			Badge::where('id', $qgp_badge->id)->delete();
 		}
 
+		// add an index to the member_rating table, as we'll be joining onto it a lot
+		Schema::table('rating_member', function ($table) {
+			$table->index('member_id');
+		});
+
 	}
 
 	/**
@@ -181,5 +186,10 @@ class AddXcp extends Migration
 		RatingMember::where('rating_id', $srp->id)->delete();
 		RatingMember::where('rating_id', $tp->id)->delete();
 		RatingMember::where('rating_id', $ap->id)->delete();
+
+		// remove index
+		Schema::table('rating_member', function ($table) {
+			$table->dropIndex(['member_id']);
+		});
 	}
 }

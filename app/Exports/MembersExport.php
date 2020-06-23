@@ -5,6 +5,8 @@ namespace App\Exports;
 use App\Models\Member;
 use App\Models\Rating;
 use App\Models\RatingMember;
+use App\Models\Badges;
+use App\Models\BadgeMember;
 use Schema;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\Exportable;
@@ -40,13 +42,7 @@ class MembersExport implements FromCollection, WithHeadings, WithMapping
 	
 	public function headings(): array
 	{
-		//$columns = Schema::getColumnListing('gnz_member');
-		// remove hidden columns
-		//unset($columns[3]); // password
-		//unset($columns[4]); // salt
-
-		// remove all award columns
-
+		// specify column headings
 		$columns[] = 'id';
 		$columns[] = 'nzga_number';
 		$columns[] = 'non_member';
@@ -73,6 +69,13 @@ class MembersExport implements FromCollection, WithHeadings, WithMapping
 		$columns[] = 'resigned';
 		$columns[] = 'previous_clubs';
 		$columns[] = 'resigned_comment';
+		$columns[] = 'qgp_number';
+		$columns[] = 'date_of_qgp';
+		$columns[] = 'xcp_number';
+		$columns[] = 'date_of_xcp';
+		$columns[] = 'coach';
+		$columns[] = 'contest_pilot';
+		$columns[] = 'comments';
 		// $columns[] = 'instructor';
 		// $columns[] = 'instructor_rating';
 		// $columns[] = 'aero_tow';
@@ -82,10 +85,6 @@ class MembersExport implements FromCollection, WithHeadings, WithMapping
 		// $columns[] = 'observer_number';
 		// $columns[] = 'tow_pilot';
 		// $columns[] = 'awards';
-		$columns[] = 'qgp_number';
-		$columns[] = 'date_of_qgp';
-		$columns[] = 'xcp_number';
-		$columns[] = 'date_of_xcp';
 		// $columns[] = 'silver_certificate_number';
 		// $columns[] = 'silver_duration';
 		// $columns[] = 'silver_distance';
@@ -101,15 +100,12 @@ class MembersExport implements FromCollection, WithHeadings, WithMapping
 		// $columns[] = 'flight_1250km_number';
 		// $columns[] = 'flight_1500km_number';
 		// $columns[] = 'pending_approval';
-		// $columns[] = 'comments';
 		// $columns[] = 'instructor_trainer';
 		// $columns[] = 'tow_pilot_instructor';
 		// $columns[] = 'aero_instructor';
 		// $columns[] = 'advanced_aero_instructor';
 		// $columns[] = 'auto_tow';
-		// $columns[] = 'coach';
 		// $columns[] = 'privacy';
-		// $columns[] = 'contest_pilot';
 		
 		return $columns;
 	}
@@ -143,6 +139,20 @@ class MembersExport implements FromCollection, WithHeadings, WithMapping
 			} 
 		}
 
+		// for each member, get their awards
+		$badges = BadgeMember::with(['badge'])->where('member_id', $member->id)->get();
+
+		foreach ($badges AS $badge)
+		{
+			switch ($badge->badge->name)
+			{
+				case 'QGP': 
+					$qgp = $rating->number; 
+					$qgp_date = $rating->awarded;
+					break;
+			}
+		}
+
 		return [
 			$member->id,
 			$member->nzga_number,
@@ -173,7 +183,10 @@ class MembersExport implements FromCollection, WithHeadings, WithMapping
 			$qgp,
 			$qgp_date,
 			$xcp,
-			$xcp_date
+			$xcp_date,
+			$member->coach,
+			$member->contest_pilot,
+			$member->comments,
 		];
 	}
 }
