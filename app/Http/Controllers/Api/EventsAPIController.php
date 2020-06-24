@@ -128,7 +128,9 @@ class EventsAPIController extends AppBaseController
 		$event->slug = $slug;
 
 		// default the end date to the start date unless given otherwise
-		$event->end_date = $request->input('end_date', $request->input('start_date', null));
+		$event->end_date = $request->input('end_date', null); // default to null if none
+		if ($event->end_date==null || $event->end_date=='null') $event->end_date = $request->input('start_date', null); // if null, make start date
+
 		$event->type = $request->input('type', $request->input('type', 'other'));
 		if ($request->input('org_id')==null) {
 			$event->org_id = $slug;

@@ -332,7 +332,12 @@ export default {
 			// shallow copy the object so we can alter the dates
 			let event = Object.assign({}, this.event);
 			event.start_date = this.apiDateFormat(event.start_date);
-			event.end_date = this.apiDateFormat(event.end_date);
+			if (that.hasEndDate) {
+				event.end_date = this.apiDateFormat(event.end_date);
+			} else {
+				event.end_date = event.start_date;
+			}
+			
 			event.earlybird = this.apiDateFormat(event.earlybird);
 
 			window.axios.put('/api/events/' + this.eventId, event).then(function (response) {
