@@ -281,6 +281,7 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 
+		// can see all GNZ membership details, but not edit
 		Gate::define('membership-view', function(&$user) {
 			if (isset($user->can_view_membership) && $user->can_view_membership==true) return true;
 
@@ -295,6 +296,7 @@ class AuthServiceProvider extends ServiceProvider
 			}
 			return false;
 		});
+
 
 		Gate::define('waypoint-admin', function(&$user) {
 

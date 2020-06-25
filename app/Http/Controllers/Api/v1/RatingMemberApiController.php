@@ -26,7 +26,13 @@ class RatingMemberApiController extends ApiController
 	public function index(Request $request, $member_id)
 	{
 
-		if (Gate::denies('club-member')) return $this->denied();
+		// only club members (and thus club admins or admins), awards officer or membership viewers can view ratings
+		if(!(Gate::check('club-member') || 
+			Gate::check('edit-awards') || 
+			Gate::check('membership-view')))
+		{
+			return $this->denied();
+		}
 
 		// check the member exists first
 		if (!$member = Member::where('id', $member_id)->first())
