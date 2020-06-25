@@ -15,7 +15,7 @@
 					<input type="text" v-model="newBadge.badge_number" class="form-control" size="5" placeholder="Badge Number (if relevant)">
 				</td>
 				<td>
-					<input type="text" v-model="newBadge.awarded_date" class="form-control" size="5" placeholder="YYYY-MM-DD">
+					<v-date-picker v-model="new_awarded_date" :locale="{ id: 'nz', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }"></v-date-picker>
 				</td>
 				<td>
 					<button v-on:click="addAchievement()" class="btn btn-primary">Add Badge</button>
@@ -32,7 +32,9 @@
 			<tr v-for="result in results">
 				<td>{{result.badge.name}}</td>
 				<td>{{result.badge_number}}</td>
-				<td>{{result.awarded_date}}</td>
+				<td>
+					<span v-if="result.awarded_date">{{formatDate(result.awarded_date)}}</span>
+				</td>
 				<td>{{result.badge.type}}</td>
 				<td><button v-on:click="deleteAchievement(result.id)" class="btn btn-outline-dark btn-sm"><i class="fa fa-times"></i></button></td>
 			</tr>
@@ -48,6 +50,8 @@
 
 <script>
 	import common from '../mixins.js';
+	import VCalendar from 'v-calendar';
+	import moment from 'moment';
 
 	export default {
 		mixins: [common],
@@ -58,6 +62,7 @@
 				badges: [],
 				showEdit: false,
 				editAwards: false,
+				new_awarded_date: null,
 				newBadge: {
 					id:null,
 					badge_number:null,
@@ -67,6 +72,7 @@
 			}
 		},
 		mounted() {
+			this.new_awarded_date = new Date();
 			if (window.Laravel.editAwards) this.editAwards=true;
 			this.load();
 			this.loadBadges();
@@ -89,14 +95,14 @@
 			},
 			addAchievement: function() {
 				var that = this;
+				this.newBadge.awarded_date = this.$moment(this.new_awarded_date).format('YYYY-MM-DD');
 				window.axios.post('/api/v1/achievements', this.newBadge).then(function (response) {
 					that.load();
 				});
 			},
 			deleteAchievement: function(achievement_id) {
 				var that = this;
-				var data = {};
-				window.axios.delete('/api/v1/achievements/' + achievement_id, data).then(function (response) {
+				window.axios.delete('/api/v1/achievements/' + achievement_id).then(function (response) {
 					that.load();
 				});
 			}

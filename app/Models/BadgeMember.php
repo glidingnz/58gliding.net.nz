@@ -13,4 +13,8 @@ class BadgeMember extends Model
 	{
 		return $this->belongsTo(Badge::class);
 	}
+	public function member()
+	{
+		return $this->belongsTo(Member::class);
+	}
 }

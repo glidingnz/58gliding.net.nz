@@ -138,14 +138,15 @@ class AchievementsApiController extends ApiController
 	 */
 	public function destroy($id)
 	{
-		// check user has permission
-		if (Gate::denies('edit-achievements')) return $this->denied();
-
 		// check member exists
-		if (!$item = BadgeMember::find($id))
+		if (!$item = BadgeMember::with('member')->find($id))
 		{
 			return $this->not_found();
 		}
+
+		// check user has permission
+		if (Gate::denies('edit-achievements', $item->member)) return $this->denied();
+
 
 		if (!$badge = Badge::find($item->badge_id))
 		{

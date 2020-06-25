@@ -4888,6 +4888,12 @@ var Highcharts = __webpack_require__(/*! highcharts */ "./node_modules/highchart
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins.js */ "./resources/js/mixins.js");
 /* harmony import */ var _mixins_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_mixins_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var v_calendar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! v-calendar */ "./node_modules/v-calendar/lib/v-calendar.umd.min.js");
+/* harmony import */ var v_calendar__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(v_calendar__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
+//
+//
 //
 //
 //
@@ -4937,6 +4943,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
   props: ['memberId', 'allowsEdit'],
@@ -4946,6 +4954,7 @@ __webpack_require__.r(__webpack_exports__);
       badges: [],
       showEdit: false,
       editAwards: false,
+      new_awarded_date: null,
       newBadge: {
         id: null,
         badge_number: null,
@@ -4955,6 +4964,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
+    this.new_awarded_date = new Date();
     if (window.Laravel.editAwards) this.editAwards = true;
     this.load();
     this.loadBadges();
@@ -4976,14 +4986,14 @@ __webpack_require__.r(__webpack_exports__);
     },
     addAchievement: function addAchievement() {
       var that = this;
+      this.newBadge.awarded_date = this.$moment(this.new_awarded_date).format('YYYY-MM-DD');
       window.axios.post('/api/v1/achievements', this.newBadge).then(function (response) {
         that.load();
       });
     },
     deleteAchievement: function deleteAchievement(achievement_id) {
       var that = this;
-      var data = {};
-      window.axios["delete"]('/api/v1/achievements/' + achievement_id, data).then(function (response) {
+      window.axios["delete"]('/api/v1/achievements/' + achievement_id).then(function (response) {
         that.load();
       });
     }
@@ -55424,29 +55434,28 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
-          _c("td", [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.newBadge.awarded_date,
-                  expression: "newBadge.awarded_date"
-                }
-              ],
-              staticClass: "form-control",
-              attrs: { type: "text", size: "5", placeholder: "YYYY-MM-DD" },
-              domProps: { value: _vm.newBadge.awarded_date },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
+          _c(
+            "td",
+            [
+              _c("v-date-picker", {
+                attrs: {
+                  locale: {
+                    id: "nz",
+                    firstDayOfWeek: 2,
+                    masks: { weekdays: "WW", L: "DD/MM/YYYY" }
                   }
-                  _vm.$set(_vm.newBadge, "awarded_date", $event.target.value)
+                },
+                model: {
+                  value: _vm.new_awarded_date,
+                  callback: function($$v) {
+                    _vm.new_awarded_date = $$v
+                  },
+                  expression: "new_awarded_date"
                 }
-              }
-            })
-          ]),
+              })
+            ],
+            1
+          ),
           _vm._v(" "),
           _c("td", [
             _c(
@@ -55474,7 +55483,13 @@ var render = function() {
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(result.badge_number))]),
             _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(result.awarded_date))]),
+            _c("td", [
+              result.awarded_date
+                ? _c("span", [
+                    _vm._v(_vm._s(_vm.formatDate(result.awarded_date)))
+                  ])
+                : _vm._e()
+            ]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(result.badge.type))]),
             _vm._v(" "),

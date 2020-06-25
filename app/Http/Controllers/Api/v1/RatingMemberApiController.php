@@ -76,18 +76,21 @@ class RatingMemberApiController extends ApiController
 	 */
 	public function get(Request $request, $member_id, $rating_member_id)
 	{
-		// only club members (and thus club admins or admins), awards officer or membership viewers can view ratings
-		if(!(Gate::check('club-member', $member_org) || 
-			Gate::check('edit-awards') || 
-			Gate::check('membership-view')))
-		{
-			return $this->denied();
-		}
-
 
 		$rating_member = RatingMember::where('id', $rating_member_id)
 			->with(['rating', 'member', 'uploads'])
 			->first();
+
+		if (!$member_org = Org::where('gnz_code', $rating_member->member->club)->first())
+		{
+			return $this->denied();
+		}
+		// only club admins, awards officer can view ratings including medical documents
+		if(!(Gate::check('club-admin', $member_org) || 
+			Gate::check('edit-awards')))
+		{
+			return $this->denied();
+		}
 
 		if ($auth_member = Member::where('id', $rating_member->authorising_member_id)->first())
 		{
@@ -123,8 +126,6 @@ class RatingMemberApiController extends ApiController
 		$org = $request->get('_ORG');
 
 		$user =  Auth::user();
-		// check user has permission
-		if (Gate::denies('club-admin')) return $this->denied();
 
 		if (!$request->input('rating_id')) return $this->error("rating_id is required");
 		if (!$request->input('member_id')) return $this->error("member_id is required");
@@ -144,6 +145,18 @@ class RatingMemberApiController extends ApiController
 		{
 			return $this->error('Member not found');
 		}
+
+		if (!$member_org = Org::where('gnz_code', $member->club)->first())
+		{
+			return $this->denied();
+		}
+		// only club admins, awards officer can view ratings including medical documents
+		if(!(Gate::check('club-admin', $member_org) || 
+			Gate::check('edit-awards')))
+		{
+			return $this->denied();
+		}
+
 
 		$ratingMember = new RatingMember;
 		$ratingMember->expires = null;
