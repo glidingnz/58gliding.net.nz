@@ -150,7 +150,9 @@ class RatingMemberApiController extends ApiController
 		{
 			return $this->denied();
 		}
-		// only club admins, awards officer can view ratings including medical documents
+
+
+		// only club admins, awards officer can edit ratings including medical documents
 		if(!(Gate::check('club-admin', $member_org) || 
 			Gate::check('edit-awards')))
 		{
@@ -179,11 +181,17 @@ class RatingMemberApiController extends ApiController
 			}
 		}
 
+		// if this is a numbered rating, get the max number in the database
+		if ($rating->numbered) {
+			$number = RatingMember::where('rating_id', $rating->id)->max('number');
+			$number++;
+			$ratingMember->number=$number;
+		}
+
 		$awarded = new Carbon($request->input('awarded'));
 
 		$ratingMember->rating_id=$request->input('rating_id');
 		$ratingMember->member_id=$request->input('member_id');
-		$ratingMember->number=$request->input('number');
 		$ratingMember->awarded= $awarded->toDateString();
 		$ratingMember->notes=$request->input('notes', '');
 		$ratingMember->authorising_member_id=$request->input('authorising_member_id');

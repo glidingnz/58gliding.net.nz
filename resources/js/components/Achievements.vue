@@ -49,7 +49,7 @@
 				badges: [],
 				awardsOfficer: false,
 				editAchievements: false,
-				clubAdmin: false
+				clubAdmin: false,
 			}
 		},
 		mounted() {

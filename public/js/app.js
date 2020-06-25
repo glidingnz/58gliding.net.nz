@@ -4942,6 +4942,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -4955,6 +4956,7 @@ __webpack_require__.r(__webpack_exports__);
       showEdit: false,
       editAwards: false,
       new_awarded_date: null,
+      maxNumber: false,
       newBadge: {
         id: null,
         badge_number: null,
@@ -5004,6 +5006,18 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         // handle error
         messages.$emit('error', 'Achievement Not Deleted. Error: ' + error.response.data.error);
+      });
+    },
+    getMaxNumber: function getMaxNumber(event) {
+      var that = this;
+      window.axios.get('/api/v1/badges/' + this.newBadge.badge_id).then(function (response) {
+        var maxNumber = response.data.data.max;
+
+        if (maxNumber) {
+          that.maxNumber = maxNumber;
+        } else {
+          that.maxNumber = false;
+        }
       });
     }
   }
@@ -55385,21 +55399,28 @@ var render = function() {
                 staticClass: "form-control input-sm",
                 attrs: { name: "club" },
                 on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.$set(
-                      _vm.newBadge,
-                      "badge_id",
-                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                    )
-                  }
+                  change: [
+                    function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.newBadge,
+                        "badge_id",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    },
+                    function($event) {
+                      return _vm.getMaxNumber($event)
+                    }
+                  ]
                 }
               },
               [
@@ -55442,7 +55463,11 @@ var render = function() {
                   _vm.$set(_vm.newBadge, "badge_number", $event.target.value)
                 }
               }
-            })
+            }),
+            _vm._v(" "),
+            _vm.maxNumber
+              ? _c("span", [_vm._v("Previous: " + _vm._s(_vm.maxNumber))])
+              : _vm._e()
           ]),
           _vm._v(" "),
           _c(

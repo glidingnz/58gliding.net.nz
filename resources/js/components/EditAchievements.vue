@@ -6,13 +6,14 @@
 		<table class="table results-table table-striped">
 			<tr>
 				<td>
-					<select class="form-control input-sm" name="club" v-model="newBadge.badge_id">
+					<select class="form-control input-sm" name="club" v-model="newBadge.badge_id" @change="getMaxNumber($event)">
 						<option v-bind:value="null">Select Badge...</option>
 						<option v-for="badge in badges" v-bind:value="badge.id">{{badge.name}}</option>
 					</select>
 				</td>
 				<td>
 					<input type="text" v-model="newBadge.badge_number" class="form-control" size="5" placeholder="Badge Number (if relevant)">
+					<span v-if="maxNumber">Previous: {{maxNumber}}</span>
 				</td>
 				<td>
 					<v-date-picker v-model="new_awarded_date" :locale="{ id: 'nz', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }"></v-date-picker>
@@ -63,6 +64,7 @@
 				showEdit: false,
 				editAwards: false,
 				new_awarded_date: null,
+				maxNumber: false,
 				newBadge: {
 					id:null,
 					badge_number:null,
@@ -114,6 +116,18 @@
 				.catch(function (error) {
 					// handle error
 					messages.$emit('error', 'Achievement Not Deleted. Error: ' + error.response.data.error);
+				});
+			},
+			getMaxNumber: function(event) {
+				var that=this;
+				window.axios.get('/api/v1/badges/' + this.newBadge.badge_id).then(function (response) {
+					var maxNumber = response.data.data.max;
+					if (maxNumber) {
+						that.maxNumber = maxNumber;
+					} else {
+						that.maxNumber=false
+					}
+
 				});
 			}
 		}

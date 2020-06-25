@@ -177,6 +177,7 @@ class AchievementsApiController extends ApiController
 	{
 		if ($result = BadgeMember::find($id))
 		{
+
 			return $this->success($result);
 		}
 		return $this->error();
