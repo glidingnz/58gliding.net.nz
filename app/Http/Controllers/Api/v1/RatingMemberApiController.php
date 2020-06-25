@@ -11,6 +11,7 @@ use DateTime;
 use App\Models\Member;
 use App\Models\Rating;
 use App\Models\Upload;
+use App\Models\Org;
 use App\User;
 use App\Models\RatingMember;
 use Carbon\Carbon;
@@ -240,12 +241,31 @@ class RatingMemberApiController extends ApiController
 	/**
 	 * Remove the specified resource from storage.
 	 *
-	 * @param  int  $id
+	 * @param  int  $member_id - keep in mind this might be faked, so don't trust it
+	 * @param  int  $rating_member_id - the actual rating_member link we are deleting
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id)
+	public function destroy(Request $request, $member_id, $rating_member_id)
 	{
-		//
+		$ratingMember = RatingMember::findOrFail($rating_member_id);
+
+		// get membership details of this rating member
+		$member = Member::findOrFail($ratingMember->member_id);
+
+		// get the org
+		if (!$org = Org::where('gnz_code', '=', $member->club)->first())
+		{
+			return $this->denied();
+		}
+
+		// check we are club admin for the person's org we are editing
+		if (Gate::denies('club-admin', $org)) return $this->denied();
+
+		if ($ratingMember->delete())
+		{
+			return $this->success('Rating Deleted');
+		}
+		return $this->error(); 
 	}
 
 
@@ -256,7 +276,7 @@ class RatingMemberApiController extends ApiController
 		$upload = Upload::findOrFail($upload_id);
 		if ($upload->delete())
 		{
-			return $this->success('Deleted');
+			return $this->success('File Deleted');
 		}
 		return $this->error(); 
 	}

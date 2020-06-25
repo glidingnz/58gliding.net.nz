@@ -107,8 +107,10 @@ class MembersController extends Controller
 		$data['rating_member_id']=$rating_member_id;
 		$data['allows_edit']=false;
 
+		//echo $rating_member_id; exit();
+
 		// check this member has this rating
-		if (!$ratingMember = RatingMember::findOrFail($rating_member_id)->first())
+		if (!$ratingMember = RatingMember::findOrFail($rating_member_id))
 		{
 			abort(404);
 		}

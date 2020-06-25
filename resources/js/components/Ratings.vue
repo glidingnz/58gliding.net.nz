@@ -8,7 +8,10 @@
 	<div>
 		<div v-if="allowsEdit">
 
-			<button class="float-right btn btn-outline-dark" v-on:click="addRating = !addRating"><span class="fa fa-plus mr-2"></span>Add Rating</button>
+			<button class="float-right btn btn-outline-dark" v-on:click="addRating = !addRating">
+				<span v-show="addRating">Cancel</span>
+				<span v-show="!addRating"><span class="fa fa-plus mr-2"></span> Add Rating</span>
+			</button>
 
 			<div v-show="addRating">
 			<h2>Add Rating</h2>

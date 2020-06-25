@@ -6431,11 +6431,13 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       rating: {},
       loading: false,
       files: null,
-      uploading: false
+      uploading: false,
+      clubAdmin: false
     };
   },
   mounted: function mounted() {
     this.load();
+    this.clubAdmin = window.Laravel.clubAdmin;
   },
   methods: {
     load: function load() {
@@ -6445,13 +6447,17 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
         that.loading = false;
         that.rating = response.data.data;
         that.rating.timeToExpire = moment__WEBPACK_IMPORTED_MODULE_1___default()(that.rating.expires).fromNow();
-        console.log(that.rating);
       });
     },
     deleteFile: function deleteFile(upload) {
       var that = this;
       window.axios["delete"]('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingMemberId + '/upload/' + upload.id).then(function (response) {
         that.load();
+      });
+    },
+    deleteRating: function deleteRating() {
+      window.axios["delete"]('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingMemberId).then(function (response) {
+        console.log('deleted');
       });
     },
     uploadFiles: function uploadFiles() {
@@ -6504,6 +6510,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var v_calendar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! v-calendar */ "./node_modules/v-calendar/lib/v-calendar.umd.min.js");
 /* harmony import */ var v_calendar__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(v_calendar__WEBPACK_IMPORTED_MODULE_2__);
+//
+//
+//
 //
 //
 //
@@ -58744,16 +58753,28 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _vm.allowsEdit ? _c("div") : _vm._e(),
+    _vm.clubAdmin
+      ? _c("div", [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-outline-dark mb-2",
+              staticStyle: { float: "right" },
+              on: {
+                click: function($event) {
+                  return _vm.deleteRating()
+                }
+              }
+            },
+            [_vm._v("Delete Rating")]
+          )
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c("h2", [_vm._v(_vm._s(_vm.rating.rating.name))]),
     _vm._v(" "),
     _vm.rating.rating
       ? _c("table", { staticClass: "table" }, [
-          _c("tr", [
-            _c("td", [_vm._v("Rating")]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(_vm.rating.rating.name))])
-          ]),
-          _vm._v(" "),
           _c("tr", [
             _c("td", [_vm._v("Granted")]),
             _vm._v(" "),
@@ -58991,8 +59012,38 @@ var render = function() {
               }
             },
             [
-              _c("span", { staticClass: "fa fa-plus mr-2" }),
-              _vm._v("Add Rating")
+              _c(
+                "span",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.addRating,
+                      expression: "addRating"
+                    }
+                  ]
+                },
+                [_vm._v("Cancel")]
+              ),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: !_vm.addRating,
+                      expression: "!addRating"
+                    }
+                  ]
+                },
+                [
+                  _c("span", { staticClass: "fa fa-plus mr-2" }),
+                  _vm._v(" Add Rating")
+                ]
+              )
             ]
           ),
           _vm._v(" "),
