@@ -91,7 +91,7 @@ class MembersController extends Controller
 		}
 
 		// check if the current logged in user is an admin of the club
-		if (Gate::allows('club-admin', $members_org)) {
+		if (Gate::allows('club-admin', $members_org) || Gate::allows('edit-awards')) {
 			$data['allows_edit']=true;
 		}
 
