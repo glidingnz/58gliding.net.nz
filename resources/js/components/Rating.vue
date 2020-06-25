@@ -11,7 +11,8 @@
 			<button class="btn btn-outline-dark mb-2" style="float:right;" v-on:click="deleteRating()">Delete Rating</button>
 		</div>
 	
-		<h2>{{rating.rating.name}}</h2>
+		<h2 v-if="rating.rating">{{rating.rating.name}}</h2>
+		<h2 v-if="!rating.rating">Loading...</h2>
 
 		<table class="table" v-if="rating.rating">
 			<tr>
@@ -120,8 +121,9 @@
 				});
 			},
 			deleteRating: function() {
+				var that = this;
 				window.axios.delete('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingMemberId).then(function (response) {
-					console.log('deleted');
+					window.location.href = "/members/" + that.memberId  + "/ratings";
 				});
 			},
 			uploadFiles: function() {

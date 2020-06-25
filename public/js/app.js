@@ -6310,9 +6310,8 @@ __webpack_require__.r(__webpack_exports__);
     loadClubs: function loadClubs() {
       var that = this;
       window.axios.get('/api/v1/orgs').then(function (response) {
-        console.log(response); // success callback
+        // success callback
         //ar responseJson = response;
-
         that.orgs = response.data.data;
       });
     }
@@ -6336,6 +6335,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var v_calendar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! v-calendar */ "./node_modules/v-calendar/lib/v-calendar.umd.min.js");
 /* harmony import */ var v_calendar__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(v_calendar__WEBPACK_IMPORTED_MODULE_2__);
+//
 //
 //
 //
@@ -6456,8 +6456,9 @@ Vue.prototype.$moment = moment__WEBPACK_IMPORTED_MODULE_1___default.a;
       });
     },
     deleteRating: function deleteRating() {
+      var that = this;
       window.axios["delete"]('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingMemberId).then(function (response) {
-        console.log('deleted');
+        window.location.href = "/members/" + that.memberId + "/ratings";
       });
     },
     uploadFiles: function uploadFiles() {
@@ -58771,7 +58772,11 @@ var render = function() {
         ])
       : _vm._e(),
     _vm._v(" "),
-    _c("h2", [_vm._v(_vm._s(_vm.rating.rating.name))]),
+    _vm.rating.rating
+      ? _c("h2", [_vm._v(_vm._s(_vm.rating.rating.name))])
+      : _vm._e(),
+    _vm._v(" "),
+    !_vm.rating.rating ? _c("h2", [_vm._v("Loading...")]) : _vm._e(),
     _vm._v(" "),
     _vm.rating.rating
       ? _c("table", { staticClass: "table" }, [

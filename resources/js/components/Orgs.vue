@@ -22,7 +22,6 @@ export default {
         loadClubs: function() {
             var that = this;
             window.axios.get('/api/v1/orgs').then(function (response) {
-                console.log(response);
 
                 // success callback
                 //ar responseJson = response;
