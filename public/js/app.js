@@ -5933,6 +5933,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 var marked = __webpack_require__(/*! marked */ "./node_modules/marked/lib/marked.js");
@@ -57923,44 +57925,6 @@ var render = function() {
             {
               staticClass: "btn btn-sm mr-1",
               class: [
-                _vm.state.type == "instructors"
-                  ? "btn-secondary"
-                  : "btn-outline-dark"
-              ],
-              attrs: { type: "button" },
-              on: {
-                click: function($event) {
-                  return _vm.filterTo("instructors")
-                }
-              }
-            },
-            [_vm._v("Instructors")]
-          ),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-sm mr-1",
-              class: [
-                _vm.state.type == "tow-pilots"
-                  ? "btn-secondary"
-                  : "btn-outline-dark"
-              ],
-              attrs: { type: "button" },
-              on: {
-                click: function($event) {
-                  return _vm.filterTo("tow-pilots")
-                }
-              }
-            },
-            [_vm._v("Tow Pilots")]
-          ),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-sm mr-1",
-              class: [
                 _vm.state.type == "youth" ? "btn-secondary" : "btn-outline-dark"
               ],
               attrs: { type: "button", title: "" },
@@ -57971,45 +57935,6 @@ var render = function() {
               }
             },
             [_vm._v("Youth")]
-          ),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-sm mr-1",
-              class: [
-                _vm.state.type == "non-qgp"
-                  ? "btn-secondary"
-                  : "btn-outline-dark"
-              ],
-              attrs: {
-                type: "button",
-                title: "Non QGP who are flying members"
-              },
-              on: {
-                click: function($event) {
-                  return _vm.filterTo("non-qgp")
-                }
-              }
-            },
-            [_vm._v("Non QGP")]
-          ),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-sm mr-1",
-              class: [
-                _vm.state.type == "qgp" ? "btn-secondary" : "btn-outline-dark"
-              ],
-              attrs: { type: "button" },
-              on: {
-                click: function($event) {
-                  return _vm.filterTo("qgp")
-                }
-              }
-            },
-            [_vm._v("QGP")]
           ),
           _vm._v(" "),
           _c(

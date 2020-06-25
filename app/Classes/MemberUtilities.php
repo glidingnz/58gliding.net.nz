@@ -16,8 +16,6 @@ class MemberUtilities {
 	 */
 	public function get_filtered_members($request)
 	{
-
-
 		// first get the ids of the ratings
 		$ratings = Rating::all();
 
@@ -26,7 +24,7 @@ class MemberUtilities {
 		$query->selectRaw('gnz_member.*, 
 			r_xcp.number AS rating_xcp_number, 
 			r_qgp.number AS rating_qgp_number,
-			r_tow_pilot.number AS rating_tow_pilot
+			r_tow_pilot.id AS rating_tow_pilot_id
 			');
 
 		if ($request->input('search'))
@@ -124,14 +122,13 @@ class MemberUtilities {
 				});
 				break;
 			case 'tow-pilots':
-				$query->where(function($query) {
-					$query->where('tow_pilot','=','1');
-				});
+				$query->havingRaw('rating_tow_pilot_id IS NOT NULL');
 				break;
 			case 'qgp':
-				$query->where(function($query) {
-					$query->where('qgp_number','>','0');
-				});
+				$query->having('rating_qgp_number','>','0');
+				break;
+			case 'xcp':
+				$query->having('rating_xcp_number','>','0');
 				break;
 			case 'coaches':
 				$query->where(function($query) {
