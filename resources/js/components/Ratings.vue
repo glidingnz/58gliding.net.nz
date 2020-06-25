@@ -86,6 +86,7 @@
 			<table class="table table-striped">
 				<tr>
 					<th>Rating</th>
+					<th>#</th>
 					<th>Granted</th>
 					<th>Expires</th>
 					<th>Authorised By</th>
@@ -97,6 +98,7 @@
 					ratingExpired(result.expires) ? 'danger' : ''
 					]"> 
 					<td><a v-bind:href="'/members/' + memberId + '/ratings/' + result.id + '/'">{{result.name}}</a></td>
+					<td><span v-if="result.number">{{result.number}}</span></td>
 					<td>{{formatDate(result.awarded)}}</td>
 					<td>
 						<span v-show="result.expires!='0000-00-00' && result.expires!=null">

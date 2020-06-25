@@ -20,11 +20,24 @@ class AddXcp extends Migration
 	public function up()
 	{
 
+		// keep track if a rating is able to be added or not. QGP is now archived.
+		Schema::table('ratings', function (Blueprint $table) {
+			$table->boolean('archived')->default(false);
+			$table->boolean('numbered')->default(false);
+		});
+
+		// archive QGP
+		$qgp = Rating::where('name', '=', 'QGP')->first();
+		$qgp->archived = true;
+		$qgp->numbered = true;
+		$qgp->save();
+
 		// create the new ratings
 		if (!Rating::where('name', '=', 'XCP')->exists()) {
 			$rating = new Rating;
 			$rating->name = "XCP";
 			$rating->default_expires = null;
+			$rating->numbered = true;
 			$rating->save();
 		}
 
@@ -32,6 +45,7 @@ class AddXcp extends Migration
 			$rating = new Rating;
 			$rating->name = "Solo Pilot";
 			$rating->default_expires = null;
+			$rating->numbered = true;
 			$rating->save();
 		}
 
@@ -39,6 +53,7 @@ class AddXcp extends Migration
 			$rating = new Rating;
 			$rating->name = "Soaring Pilot";
 			$rating->default_expires = null;
+			$rating->numbered = true;
 			$rating->save();
 		}
 
@@ -46,6 +61,7 @@ class AddXcp extends Migration
 			$rating = new Rating;
 			$rating->name = "Task Pilot";
 			$rating->default_expires = null;
+			$rating->numbered = true;
 			$rating->save();
 		}
 
@@ -53,9 +69,9 @@ class AddXcp extends Migration
 			$rating = new Rating;
 			$rating->name = "Alpine Pilot";
 			$rating->default_expires = null;
+			$rating->numbered = true;
 			$rating->save();
 		}
-
 
 		// get the ratings for later
 		$xcp = Rating::where('name', "XCP")->first();
@@ -190,6 +206,11 @@ class AddXcp extends Migration
 		// remove index
 		Schema::table('rating_member', function ($table) {
 			$table->dropIndex(['member_id']);
+		});
+
+		Schema::table('ratings', function ($table) {
+			$table->dropColumn('archived');
+			$table->dropColumn('numbered');
 		});
 	}
 }

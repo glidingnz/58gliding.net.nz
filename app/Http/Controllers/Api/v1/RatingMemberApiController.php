@@ -162,6 +162,7 @@ class RatingMemberApiController extends ApiController
 		$ratingMember->expires = null;
 		$ratingMember->revoked_by = null;
 		$ratingMember->authorising_member_id = null;
+		$ratingMember->number = null;
 
 		// calculate expires date from months given if given
 		if ($request->input('expires')) {
@@ -182,6 +183,7 @@ class RatingMemberApiController extends ApiController
 
 		$ratingMember->rating_id=$request->input('rating_id');
 		$ratingMember->member_id=$request->input('member_id');
+		$ratingMember->number=$request->input('number');
 		$ratingMember->awarded= $awarded->toDateString();
 		$ratingMember->notes=$request->input('notes', '');
 		$ratingMember->authorising_member_id=$request->input('authorising_member_id');

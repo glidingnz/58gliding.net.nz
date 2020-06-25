@@ -18,7 +18,7 @@
 					<v-date-picker v-model="new_awarded_date" :locale="{ id: 'nz', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }"></v-date-picker>
 				</td>
 				<td>
-					<button v-on:click="addAchievement()" class="btn btn-primary">Add Badge</button>
+					<button v-on:click="addAchievement()" class="btn btn-primary">Add Achievement</button>
 				</td>
 				<td></td>
 			</tr>
@@ -97,13 +97,23 @@
 				var that = this;
 				this.newBadge.awarded_date = this.$moment(this.new_awarded_date).format('YYYY-MM-DD');
 				window.axios.post('/api/v1/achievements', this.newBadge).then(function (response) {
+					messages.$emit('success', 'Achievement Added');
 					that.load();
-				});
+				})
+				.catch(function (error) {
+					// handle error
+					messages.$emit('error', 'Achievement Not Added. Error: ' + error.response.data.error);
+				});;
 			},
 			deleteAchievement: function(achievement_id) {
 				var that = this;
 				window.axios.delete('/api/v1/achievements/' + achievement_id).then(function (response) {
+					messages.$emit('success', 'Achievement Deleted');
 					that.load();
+				})
+				.catch(function (error) {
+					// handle error
+					messages.$emit('error', 'Achievement Not Deleted. Error: ' + error.response.data.error);
 				});
 			}
 		}

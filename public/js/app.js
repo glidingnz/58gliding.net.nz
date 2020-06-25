@@ -4988,13 +4988,22 @@ __webpack_require__.r(__webpack_exports__);
       var that = this;
       this.newBadge.awarded_date = this.$moment(this.new_awarded_date).format('YYYY-MM-DD');
       window.axios.post('/api/v1/achievements', this.newBadge).then(function (response) {
+        messages.$emit('success', 'Achievement Added');
         that.load();
+      })["catch"](function (error) {
+        // handle error
+        messages.$emit('error', 'Achievement Not Added. Error: ' + error.response.data.error);
       });
+      ;
     },
     deleteAchievement: function deleteAchievement(achievement_id) {
       var that = this;
       window.axios["delete"]('/api/v1/achievements/' + achievement_id).then(function (response) {
+        messages.$emit('success', 'Achievement Deleted');
         that.load();
+      })["catch"](function (error) {
+        // handle error
+        messages.$emit('error', 'Achievement Not Deleted. Error: ' + error.response.data.error);
       });
     }
   }
@@ -6521,6 +6530,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var v_calendar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! v-calendar */ "./node_modules/v-calendar/lib/v-calendar.umd.min.js");
 /* harmony import */ var v_calendar__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(v_calendar__WEBPACK_IMPORTED_MODULE_2__);
+//
+//
 //
 //
 //
@@ -55468,7 +55479,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("Add Badge")]
+              [_vm._v("Add Achievement")]
             )
           ]),
           _vm._v(" "),
@@ -59500,6 +59511,12 @@ var render = function() {
                   )
                 ]),
                 _vm._v(" "),
+                _c("td", [
+                  result.number
+                    ? _c("span", [_vm._v(_vm._s(result.number))])
+                    : _vm._e()
+                ]),
+                _vm._v(" "),
                 _c("td", [_vm._v(_vm._s(_vm.formatDate(result.awarded)))]),
                 _vm._v(" "),
                 _c("td", [
@@ -59598,6 +59615,8 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("tr", [
       _c("th", [_vm._v("Rating")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("#")]),
       _vm._v(" "),
       _c("th", [_vm._v("Granted")]),
       _vm._v(" "),
