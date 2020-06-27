@@ -15,6 +15,7 @@ use App\Models\Org;
 use App\User;
 use App\Models\RatingMember;
 use Carbon\Carbon;
+use App\Classes\GNZLogger;
 
 class RatingMemberApiController extends ApiController
 {
@@ -192,6 +193,7 @@ class RatingMemberApiController extends ApiController
 
 		$ratingMember->rating_id=$request->input('rating_id');
 		$ratingMember->member_id=$request->input('member_id');
+		$ratingMember->number=$request->input('number');
 		$ratingMember->awarded= $awarded->toDateString();
 		$ratingMember->notes=$request->input('notes', '');
 		$ratingMember->authorising_member_id=$request->input('authorising_member_id');
@@ -201,6 +203,9 @@ class RatingMemberApiController extends ApiController
 		// save the item if all OK!
 		if ($ratingMember->save())
 		{
+			$gnz_logger = new GNZLogger();
+			$gnz_logger->log($member, 'Rating Created', $rating->name, '', $ratingMember->badge_number);
+
 			$this->upload_files($request, $ratingMember, $org);
 			return $this->success($ratingMember);
 		}
@@ -260,6 +265,9 @@ class RatingMemberApiController extends ApiController
 				$upload->uploadable()->associate($ratingMember);
 				$upload->save();
 
+				$gnz_logger = new GNZLogger();
+				$gnz_logger->log($member, 'Rating File Uploaded', $rating->name, '', $upload->filename);
+
 				$counter++;
 			}
 			
@@ -295,6 +303,7 @@ class RatingMemberApiController extends ApiController
 
 		// get membership details of this rating member
 		$member = Member::findOrFail($ratingMember->member_id);
+		$rating = Member::findOrFail($ratingMember->rating_id);
 
 		// get the org
 		if (!$org = Org::where('gnz_code', '=', $member->club)->first())
@@ -307,19 +316,32 @@ class RatingMemberApiController extends ApiController
 
 		if ($ratingMember->delete())
 		{
+			$gnz_logger = new GNZLogger();
+			$gnz_logger->log($member, 'Rating Deleted', $rating->name);
+
 			return $this->success('Rating Deleted');
 		}
 		return $this->error(); 
 	}
 
 
-	public function destroyFile(Request $request, $member_id, $rating_id, $upload_id)
+	public function destroyFile(Request $request, $member_id, $rating_member_id, $upload_id)
 	{
-		if (Gate::denies('club-admin')) return $this->denied();
+		$member = Member::findOrFail($member_id);
+		$ratingMember = RatingMember::findOrFail($rating_member_id);
+		$rating = Member::findOrFail($ratingMember->rating_id);
+
+		// get the org
+		if (!$org = Org::where('gnz_code', '=', $member->club)->first()) return $this->denied();
+
+		if (Gate::denies('club-admin', $org)) return $this->denied();
 
 		$upload = Upload::findOrFail($upload_id);
 		if ($upload->delete())
 		{
+			$gnz_logger = new GNZLogger();
+			$gnz_logger->log($member, 'Rating File Deleted', $rating->name, $upload->filename);
+
 			return $this->success('File Deleted');
 		}
 		return $this->error(); 

@@ -10,6 +10,7 @@ use App\Models\Member;
 use App\Models\BadgeMember;
 use App\Classes\BadgeImporter;
 use App\Models\Badge;
+use App\Classes\GNZLogger;
 
 use Gate;
 use Auth;
@@ -91,6 +92,11 @@ class AchievementsApiController extends ApiController
 			if ($request->input('badge_number')) $item->badge_number=$request->input('badge_number');
 			if ($item->save())
 			{
+
+				// log the changes
+				$gnz_logger = new GNZLogger();
+				$gnz_logger->log($member, 'Add Award', $badge->name, '', $item->badge_number);
+
 				return $this->success($item);
 			}
 		}
@@ -122,8 +128,13 @@ class AchievementsApiController extends ApiController
 		$item->member_id=$request->input('member_id');
 		$item->badge_id=$request->input('badge_id');
 		if ($request->input('awarded_date')) $item->awarded_date=$request->input('awarded_date');
+		if ($request->input('badge_number')) $item->badge_number=$request->input('badge_number');
 		if ($item->save())
 		{
+			// log the changes
+			$gnz_logger = new GNZLogger();
+			$gnz_logger->log($member, 'Update Award', $badge->name, '', $item->badge_number);
+
 			return $this->success($item);
 		}
 		return $this->error();
@@ -161,6 +172,10 @@ class AchievementsApiController extends ApiController
 
 		if ($item->delete())
 		{
+			// log the changes
+			$gnz_logger = new GNZLogger();
+			$gnz_logger->log($item->member, 'Delete Award', $badge->name, null, null);
+
 			return $this->success();
 		}
 		return $this->error();

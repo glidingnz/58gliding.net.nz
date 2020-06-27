@@ -16,7 +16,7 @@
 		&raquo; <a href="/members/{{$member_id}}">{{$member['first_name']}} {{$member['last_name']}}</a>  &raquo; Ratings
 	</h1>
 
-	@if(Gate::check('club-member') || Gate::check('edit-awards') || Gate::check('membership-view'))
+	@if(Gate::check('club-member', $members_org) || Gate::check('edit-awards') || Gate::check('membership-view'))
 		<ratings member-id="{{$member_id}}" allows-edit="{{$allows_edit}}"></ratings>
 	@else
 		<p class="error">Sorry, you must be a club member to view BFR & Medical Ratings.</p>

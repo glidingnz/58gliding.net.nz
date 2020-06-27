@@ -85,13 +85,13 @@ class MembersController extends Controller
 
 		// get the club this member is a member of
 		$data['member'] = Member::findOrFail($id);
-		if (!$members_org = Org::where('gnz_code', $data['member']->club)->first())
+		if (!$data['members_org'] = Org::where('gnz_code', $data['member']->club)->first())
 		{
 			abort(403);
 		}
 
 		// check if the current logged in user is an admin of the club
-		if (Gate::allows('club-admin', $members_org) || Gate::allows('edit-awards')) {
+		if (Gate::allows('club-admin', $data['members_org']) || Gate::allows('edit-awards')) {
 			$data['allows_edit']=true;
 		}
 
