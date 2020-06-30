@@ -46,19 +46,22 @@ class MemberUtilities {
 				case 'XCP': 
 					$query->leftJoin('rating_member AS r_xcp', function ($join) use ($rating) {
 						$join->on('gnz_member.id', '=', 'r_xcp.member_id')
-							->on('r_xcp.rating_id', '=', DB::raw($rating->id));
+							->on('r_xcp.rating_id', '=', DB::raw($rating->id))
+							->on('r_xcp.expires', '<', DB::raw("now()"));
 					});
 					break;
 				case 'QGP': 
 					$query->leftJoin('rating_member AS r_qgp', function ($join) use ($rating) {
 						$join->on('gnz_member.id', '=', 'r_qgp.member_id')
-							->on('r_qgp.rating_id', '=', DB::raw($rating->id));
+							->on('r_qgp.rating_id', '=', DB::raw($rating->id))
+							->on('r_qgp.expires', '<', DB::raw("now()"));
 					});
 					break;
 				case 'Tow Pilot': 
 					$query->leftJoin('rating_member AS r_tow_pilot', function ($join) use ($rating) {
 						$join->on('gnz_member.id', '=', 'r_tow_pilot.member_id')
-							->on('r_tow_pilot.rating_id', '=', DB::raw($rating->id));
+							->on('r_tow_pilot.rating_id', '=', DB::raw($rating->id))
+							->on('r_tow_pilot.expires', '<', DB::raw("now()"));
 					});
 					break;
 			}
