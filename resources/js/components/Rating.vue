@@ -6,14 +6,15 @@
 
 <template>
 	<div>
-		<div v-if="allowsEdit">
+
+		<div v-if="clubAdmin">
+			<button class="btn btn-outline-dark mb-2" style="float:right;" v-on:click="deleteRating()">Delete Rating</button>
 		</div>
+	
+		<h2 v-if="rating.rating">{{rating.rating.name}}</h2>
+		<h2 v-if="!rating.rating">Loading...</h2>
 
 		<table class="table" v-if="rating.rating">
-			<tr>
-				<td>Rating</td>
-				<td>{{rating.rating.name}}</td>
-			</tr>
 			<tr>
 				<td>Granted</td>
 				<td>{{formatDate(rating.awarded)}}</td>
@@ -95,11 +96,13 @@
 				rating: {},
 				loading: false,
 				files: null,
-				uploading: false
+				uploading: false,
+				clubAdmin: false,
 			}
 		},
 		mounted() {
 			this.load();
+			this.clubAdmin = window.Laravel.clubAdmin;
 		},
 		methods: {
 			load: function() {
@@ -109,14 +112,18 @@
 					that.loading = false;
 					that.rating = response.data.data;
 					that.rating.timeToExpire = moment(that.rating.expires).fromNow();
-
-					console.log(that.rating);
 				});
 			},
 			deleteFile: function(upload) {
 				var that = this;
 				window.axios.delete('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingMemberId + '/upload/' + upload.id).then(function (response) {
 					that.load();
+				});
+			},
+			deleteRating: function() {
+				var that = this;
+				window.axios.delete('/api/v1/members/' + this.memberId + '/ratings/' + this.ratingMemberId).then(function (response) {
+					window.location.href = "/members/" + that.memberId  + "/ratings";
 				});
 			},
 			uploadFiles: function() {

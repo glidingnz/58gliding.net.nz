@@ -3,6 +3,7 @@ namespace App\Classes;
 
 use App\Models\Member;
 use App\Models\Org;
+use App\Models\Rating;
 use DateTime;
 use DB;
 use Gate;
@@ -15,8 +16,16 @@ class MemberUtilities {
 	 */
 	public function get_filtered_members($request)
 	{
+		// first get the ids of the ratings
+		$ratings = Rating::all();
+
 		$query = Member::query();
 		$query->orderBy('last_name');
+		$query->selectRaw('gnz_member.*, 
+			r_xcp.number AS rating_xcp_number, 
+			r_qgp.number AS rating_qgp_number,
+			r_tow_pilot.id AS rating_tow_pilot_id
+			');
 
 		if ($request->input('search'))
 		{
@@ -28,6 +37,37 @@ class MemberUtilities {
 				$query->orWhere('club','like',$s);
 			});
 		}
+
+		// join on the common ratings we need for sorting and display
+		foreach ($ratings AS $rating)
+		{
+			switch ($rating->name)
+			{
+				case 'X-Country Pilot': 
+					$query->leftJoin('rating_member AS r_xcp', function ($join) use ($rating) {
+						$join->on('gnz_member.id', '=', 'r_xcp.member_id')
+							->on('r_xcp.rating_id', '=', DB::raw($rating->id))
+							->on('r_xcp.expires', '<', DB::raw("now()"));
+					});
+					break;
+				case 'QGP': 
+					$query->leftJoin('rating_member AS r_qgp', function ($join) use ($rating) {
+						$join->on('gnz_member.id', '=', 'r_qgp.member_id')
+							->on('r_qgp.rating_id', '=', DB::raw($rating->id))
+							->on('r_qgp.expires', '<', DB::raw("now()"));
+					});
+					break;
+				case 'Tow Pilot': 
+					$query->leftJoin('rating_member AS r_tow_pilot', function ($join) use ($rating) {
+						$join->on('gnz_member.id', '=', 'r_tow_pilot.member_id')
+							->on('r_tow_pilot.rating_id', '=', DB::raw($rating->id))
+							->on('r_tow_pilot.expires', '<', DB::raw("now()"));
+					});
+					break;
+			}
+		}
+
+
 
 		if (!$request->input('resigned'))
 		{
@@ -85,14 +125,13 @@ class MemberUtilities {
 				});
 				break;
 			case 'tow-pilots':
-				$query->where(function($query) {
-					$query->where('tow_pilot','=','1');
-				});
+				$query->havingRaw('rating_tow_pilot_id IS NOT NULL');
 				break;
 			case 'qgp':
-				$query->where(function($query) {
-					$query->where('qgp_number','>','0');
-				});
+				$query->having('rating_qgp_number','>','0');
+				break;
+			case 'xcp':
+				$query->having('rating_xcp_number','>','0');
 				break;
 			case 'coaches':
 				$query->where(function($query) {
@@ -132,6 +171,7 @@ class MemberUtilities {
 				}
 				$thirty_first_of_oct =  $theyear . '-10-31';
 				$query->whereRaw('DATE_FORMAT(FROM_DAYS(DATEDIFF("'.$thirty_first_of_oct.'", date_of_birth)),"%Y")+0 BETWEEN 1 AND 26');
+
 				$query->where('membership_type','!=','Mag Only');
 				break;
 		}

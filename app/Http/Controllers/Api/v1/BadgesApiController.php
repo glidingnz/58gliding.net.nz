@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Api\ApiController;
 use App\Models\Badge;
+use App\Models\BadgeMember;
 
 use Gate;
 use Auth;
@@ -52,6 +53,26 @@ class BadgesApiController extends ApiController
 			return $this->success($results, TRUE);
 		}
 		return $this->error();
+	}
+
+
+
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function show($id)
+	{
+		if ($badge = Badge::find($id))
+		{
+			// get the last max item 
+			$badge->max = BadgeMember::where('badge_id', $badge->id)->max('badge_number');
+
+			return $this->success($badge);
+		}
+		return $this->not_found();
 	}
 
 }

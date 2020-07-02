@@ -15,6 +15,8 @@
 <template>
 	<div>
 
+		<p v-if="allowsEdit"><a class="btn btn-outline-dark"  :href="'/members/' + memberId + '/achievements/edit'"">Edit Achievements</a></p>
+
 		<div v-if="achievements.length==0">
 			<p>No achievements yet!</p>
 		</div>
@@ -40,15 +42,21 @@
 
 	export default {
 		mixins: [common],
-		props: ['memberId'],
+		props: ['memberId', 'allowsEdit'],
 		data() {
 			return {
 				achievements: [],
 				badges: [],
-				showEdit: false
+				awardsOfficer: false,
+				editAchievements: false,
+				clubAdmin: false,
 			}
 		},
 		mounted() {
+			// get permissions we need to show things
+			if (window.Laravel.awardsOfficer) this.awardsOfficer=true;
+			if (window.Laravel.editAchievements) this.editAchievements=true;
+			if (window.Laravel.clubAdmin) this.clubAdmin=true;
 			this.load();
 		},
 		computed: {
