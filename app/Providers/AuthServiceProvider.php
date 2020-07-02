@@ -254,6 +254,7 @@ class AuthServiceProvider extends ServiceProvider
 			// if noraml admin, editing allowed
 			if (Gate::allows('admin')) return true;
 			if (Gate::allows('edit-self', $member)) return true;
+			if (Gate::allows('edit-awards', $member)) return true;
 
 			// load the club of the member we're trying to edit.
 			$org = Org::where('gnz_code', $member->club)->first();
