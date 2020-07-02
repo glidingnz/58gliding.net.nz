@@ -144,134 +144,172 @@ class AddXcp extends Migration
 					$rating->save();
 
 					// add the solo and soaring pilot ratings too if they have XCP
-					$rating = new RatingMember;
-					$rating->member_id =  $member->id;
-					$rating->rating_id =  $sop->id; // the solo pilot rating ID
-					$rating->awarded = '2020-06-15';
-					$rating->authorising_member_id = 0; // no member
-					$rating->granted_by_user_id = 0; // root
-					$rating->notes = 'Converted from QGP';
-					$rating->save();
+					if (!RatingMember::where('member_id', $member->id)->where('rating_id', $sop->id)->exists())
+					{
+						$rating = new RatingMember;
+						$rating->member_id =  $member->id;
+						$rating->rating_id =  $sop->id; // the solo pilot rating ID
+						$rating->awarded = '2020-06-15';
+						$rating->authorising_member_id = 0; // no member
+						$rating->granted_by_user_id = 0; // root
+						$rating->notes = 'Converted from QGP';
+						$rating->save();
+					}
 
 					// add the solo and soaring pilot ratings too if they have XCP
-					$rating = new RatingMember;
-					$rating->member_id =  $member->id;
-					$rating->rating_id =  $srp->id; // the solo pilot rating ID
-					$rating->awarded = '2020-06-15';
-					$rating->authorising_member_id = 0; // no member
-					$rating->granted_by_user_id = 0; // root
-					$rating->notes = 'Converted from QGP';
-					$rating->save();
+					if (!RatingMember::where('member_id', $member->id)->where('rating_id', $srp->id)->exists())
+					{
+						$rating = new RatingMember;
+						$rating->member_id =  $member->id;
+						$rating->rating_id =  $srp->id; // the solo pilot rating ID
+						$rating->awarded = '2020-06-15';
+						$rating->authorising_member_id = 0; // no member
+						$rating->granted_by_user_id = 0; // root
+						$rating->notes = 'Converted from QGP';
+						$rating->save();
+					}
 				}
 
-
+				// TODO: Check if they exist already or not
 				// insert the other ratings into the new structure
 				if ($member->instructor_trainer) {
 					$rating = Rating::where('name', "Instructor Trainer")->first();
-					$rm = new RatingMember;
-					$rm->member_id =  $member->id;
-					$rm->rating_id =  $rating->id; // the solo pilot rating ID
-					$rm->awarded = '2020-06-15';
-					$rm->authorising_member_id = 0; // no member
-					$rm->granted_by_user_id = 0; // root
-					$rm->notes = 'Imported';
-					$rm->save();
+
+					// create only if it doesn't already exist
+					if (!RatingMember::where('member_id', $member->id)->where('rating_id', $rating->id)->exists())
+					{
+						$rm = new RatingMember;
+						$rm->member_id =  $member->id;
+						$rm->rating_id =  $rating->id; // the solo pilot rating ID
+						$rm->awarded = '2020-06-15';
+						$rm->authorising_member_id = 0; // no member
+						$rm->granted_by_user_id = 0; // root
+						$rm->notes = 'Imported';
+						$rm->save();
+					}
+
+					
 				}
 
 				if ($member->tow_pilot_instructor) {
 					$rating = Rating::where('name', "Tow Pilot Instructor")->first();
-					$rm = new RatingMember;
-					$rm->member_id =  $member->id;
-					$rm->rating_id =  $rating->id; // the solo pilot rating ID
-					$rm->awarded = '2020-06-15';
-					$rm->authorising_member_id = 0; // no member
-					$rm->granted_by_user_id = 0; // root
-					$rm->notes = 'Imported';
-					$rm->save();
+					if (!RatingMember::where('member_id', $member->id)->where('rating_id', $rating->id)->exists())
+					{
+						$rm = new RatingMember;
+						$rm->member_id =  $member->id;
+						$rm->rating_id =  $rating->id; // the solo pilot rating ID
+						$rm->awarded = '2020-06-15';
+						$rm->authorising_member_id = 0; // no member
+						$rm->granted_by_user_id = 0; // root
+						$rm->notes = 'Imported';
+						$rm->save();
+					}
 				}
 				
 				if ($member->aero_instructor) {
 					$rating = Rating::where('name', "Aerobatic Instructor (Aero)")->first();
-					$rm = new RatingMember;
-					$rm->member_id =  $member->id;
-					$rm->rating_id =  $rating->id; // the solo pilot rating ID
-					$rm->awarded = '2020-06-15';
-					$rm->authorising_member_id = 0; // no member
-					$rm->granted_by_user_id = 0; // root
-					$rm->notes = 'Imported';
-					$rm->save();
+					if (!RatingMember::where('member_id', $member->id)->where('rating_id', $rating->id)->exists())
+					{
+						$rm = new RatingMember;
+						$rm->member_id =  $member->id;
+						$rm->rating_id =  $rating->id; // the solo pilot rating ID
+						$rm->awarded = '2020-06-15';
+						$rm->authorising_member_id = 0; // no member
+						$rm->granted_by_user_id = 0; // root
+						$rm->notes = 'Imported';
+						$rm->save();
+					}
 				}
 				
 				if ($member->advanced_aero_instructor) {
 					$rating = Rating::where('name', "Aerobatic Instructor (Advanced Aero)")->first();
-					$rm = new RatingMember;
-					$rm->member_id =  $member->id;
-					$rm->rating_id =  $rating->id; // the solo pilot rating ID
-					$rm->awarded = '2020-06-15';
-					$rm->authorising_member_id = 0; // no member
-					$rm->granted_by_user_id = 0; // root
-					$rm->notes = 'Imported';
-					$rm->save();
+
+					if (!RatingMember::where('member_id', $member->id)->where('rating_id', $rating->id)->exists())
+					{
+						$rm = new RatingMember;
+						$rm->member_id =  $member->id;
+						$rm->rating_id =  $rating->id; // the solo pilot rating ID
+						$rm->awarded = '2020-06-15';
+						$rm->authorising_member_id = 0; // no member
+						$rm->granted_by_user_id = 0; // root
+						$rm->notes = 'Imported';
+						$rm->save();
+					}
 				}
 				
 				if ($member->auto_tow) {
 					$rating = Rating::where('name', "Auto Launch")->first();
-					$rm = new RatingMember;
-					$rm->member_id =  $member->id;
-					$rm->rating_id =  $rating->id; // the solo pilot rating ID
-					$rm->awarded = '2020-06-15';
-					$rm->authorising_member_id = 0; // no member
-					$rm->granted_by_user_id = 0; // root
-					$rm->notes = 'Imported';
-					$rm->save();
+					if (!RatingMember::where('member_id', $member->id)->where('rating_id', $rating->id)->exists())
+					{
+						$rm = new RatingMember;
+						$rm->member_id =  $member->id;
+						$rm->rating_id =  $rating->id; // the solo pilot rating ID
+						$rm->awarded = '2020-06-15';
+						$rm->authorising_member_id = 0; // no member
+						$rm->granted_by_user_id = 0; // root
+						$rm->notes = 'Imported';
+						$rm->save();
+					}
 				}
 				
 				if ($member->tow_pilot) {
 					$rating = Rating::where('name', "Tow Pilot")->first();
-					$rm = new RatingMember;
-					$rm->member_id =  $member->id;
-					$rm->rating_id =  $rating->id; // the solo pilot rating ID
-					$rm->awarded = '2020-06-15';
-					$rm->authorising_member_id = 0; // no member
-					$rm->granted_by_user_id = 0; // root
-					$rm->notes = 'Imported';
-					$rm->save();
+					if (!RatingMember::where('member_id', $member->id)->where('rating_id', $rating->id)->exists())
+					{
+						$rm = new RatingMember;
+						$rm->member_id =  $member->id;
+						$rm->rating_id =  $rating->id; // the solo pilot rating ID
+						$rm->awarded = '2020-06-15';
+						$rm->authorising_member_id = 0; // no member
+						$rm->granted_by_user_id = 0; // root
+						$rm->notes = 'Imported';
+						$rm->save();
+					}
 				}
 				
 				if ($member->insttrain) {
 					$rating = Rating::where('name', "Instructor Trainer")->first();
-					$rm = new RatingMember;
-					$rm->member_id =  $member->id;
-					$rm->rating_id =  $rating->id; // the solo pilot rating ID
-					$rm->awarded = '2020-06-15';
-					$rm->authorising_member_id = 0; // no member
-					$rm->granted_by_user_id = 0; // root
-					$rm->notes = 'Imported';
-					$rm->save();
+					if (!RatingMember::where('member_id', $member->id)->where('rating_id', $rating->id)->exists())
+					{
+						$rm = new RatingMember;
+						$rm->member_id =  $member->id;
+						$rm->rating_id =  $rating->id; // the solo pilot rating ID
+						$rm->awarded = '2020-06-15';
+						$rm->authorising_member_id = 0; // no member
+						$rm->granted_by_user_id = 0; // root
+						$rm->notes = 'Imported';
+						$rm->save();
+					}
 				}
 				
 				if ($member->self_launch) {
 					$rating = Rating::where('name', "Powered Glider")->first();
-					$rm = new RatingMember;
-					$rm->member_id =  $member->id;
-					$rm->rating_id =  $rating->id; // the solo pilot rating ID
-					$rm->awarded = '2020-06-15';
-					$rm->authorising_member_id = 0; // no member
-					$rm->granted_by_user_id = 0; // root
-					$rm->notes = 'Imported';
-					$rm->save();
+					if (!RatingMember::where('member_id', $member->id)->where('rating_id', $rating->id)->exists())
+					{
+						$rm = new RatingMember;
+						$rm->member_id =  $member->id;
+						$rm->rating_id =  $rating->id; // the solo pilot rating ID
+						$rm->awarded = '2020-06-15';
+						$rm->authorising_member_id = 0; // no member
+						$rm->granted_by_user_id = 0; // root
+						$rm->notes = 'Imported';
+						$rm->save();
+					}
 				}
 				
 				if ($member->winch_rating) {
 					$rating = Rating::where('name', "Winch Launch")->first();
-					$rm = new RatingMember;
-					$rm->member_id =  $member->id;
-					$rm->rating_id =  $rating->id; // the solo pilot rating ID
-					$rm->awarded = '2020-06-15';
-					$rm->authorising_member_id = 0; // no member
-					$rm->granted_by_user_id = 0; // root
-					$rm->notes = 'Imported';
-					$rm->save();
+					if (!RatingMember::where('member_id', $member->id)->where('rating_id', $rating->id)->exists())
+					{
+						$rm = new RatingMember;
+						$rm->member_id =  $member->id;
+						$rm->rating_id =  $rating->id; // the solo pilot rating ID
+						$rm->awarded = '2020-06-15';
+						$rm->authorising_member_id = 0; // no member
+						$rm->granted_by_user_id = 0; // root
+						$rm->notes = 'Imported';
+						$rm->save();
+					}
 				}
 				
 				if ($member->instructor) {
@@ -282,14 +320,17 @@ class AddXcp extends Migration
 						case 'D': $rating = Rating::where('name', "Instructor D Cat")->first(); break;
 					}
 					
-					$rm = new RatingMember;
-					$rm->member_id =  $member->id;
-					$rm->rating_id =  $rating->id; // the solo pilot rating ID
-					$rm->awarded = '2020-06-15';
-					$rm->authorising_member_id = 0; // no member
-					$rm->granted_by_user_id = 0; // root
-					$rm->notes = 'Imported';
-					$rm->save();
+					if (!RatingMember::where('member_id', $member->id)->where('rating_id', $rating->id)->exists())
+					{
+						$rm = new RatingMember;
+						$rm->member_id =  $member->id;
+						$rm->rating_id =  $rating->id; // the solo pilot rating ID
+						$rm->awarded = '2020-06-15';
+						$rm->authorising_member_id = 0; // no member
+						$rm->granted_by_user_id = 0; // root
+						$rm->notes = 'Imported';
+						$rm->save();
+					}
 				}
 
 
