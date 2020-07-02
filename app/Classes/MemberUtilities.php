@@ -43,7 +43,7 @@ class MemberUtilities {
 		{
 			switch ($rating->name)
 			{
-				case 'XCP': 
+				case 'X-Country Pilot': 
 					$query->leftJoin('rating_member AS r_xcp', function ($join) use ($rating) {
 						$join->on('gnz_member.id', '=', 'r_xcp.member_id')
 							->on('r_xcp.rating_id', '=', DB::raw($rating->id))

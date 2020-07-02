@@ -41,9 +41,9 @@ class AddXcp extends Migration
 			$rating->save();
 		}
 
-		if (!Rating::where('name', '=', 'XCP')->exists()) {
+		if (!Rating::where('name', '=', 'X-Country Pilot')->exists()) {
 			$rating = new Rating;
-			$rating->name = "XCP";
+			$rating->name = "X-Country Pilot";
 			$rating->default_expires = null;
 			$rating->numbered = true;
 			$rating->save();
@@ -82,7 +82,7 @@ class AddXcp extends Migration
 		}
 
 		// get the ratings for later
-		$xcp = Rating::where('name', "XCP")->first();
+		$xcp = Rating::where('name', "X-Country Pilot")->first();
 		$sop = Rating::where('name', "Solo Pilot")->first();
 		$srp = Rating::where('name', "Soaring Pilot")->first();
 		$tp = Rating::where('name', "Task Pilot")->first();
@@ -122,6 +122,7 @@ class AddXcp extends Migration
 
 				// if the pilot has a silver distance or greater, automatically grant them a XCP
 				if ($member->silver_distance>0 || $member->gold_distance>0 || $member->diamond_distance_number>0 || $member->diamond_goal_number>0) {
+					
 					$rating = new RatingMember;
 					$rating->member_id =  $member->id;
 					$rating->rating_id =  $xcp->id; // the cross country pilot rating ID
@@ -367,7 +368,7 @@ class AddXcp extends Migration
 		});
 
 		// delete all automatically imported ratings
-		$xcp = Rating::where('name', "XCP")->first();
+		$xcp = Rating::where('name', "X-Country Pilot")->first();
 		$qgp = Rating::where('name', "QGP")->first();
 		$sop = Rating::where('name', "Solo Pilot")->first();
 		$srp = Rating::where('name', "Soaring Pilot")->first();
