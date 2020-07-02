@@ -5473,6 +5473,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -56539,7 +56545,7 @@ var render = function() {
                   })
                 : _vm._e(),
               _vm._v(" "),
-              _vm.showAdmin
+              !_vm.showAdmin
                 ? _c("span", [_vm._v(_vm._s(_vm.member.date_of_birth))])
                 : _vm._e()
             ])
@@ -56579,7 +56585,7 @@ var render = function() {
                   })
                 : _vm._e(),
               _vm._v(" "),
-              _vm.showAdmin
+              !_vm.showAdmin
                 ? _c("span", [_vm._v(_vm._s(_vm.member.observer_number))])
                 : _vm._e()
             ])
@@ -56633,7 +56639,7 @@ var render = function() {
                       }
                     }
                   }),
-                  _vm._v("Keep contact details private from other GNZ members")
+                  _vm._v(" Keep contact details private from other GNZ members")
                 ])
               ])
             ])
@@ -56687,7 +56693,7 @@ var render = function() {
                       }
                     }
                   }),
-                  _vm._v("Coach")
+                  _vm._v(" Coach")
                 ]),
                 _vm._v(" "),
                 _c("br"),
@@ -56737,9 +56743,45 @@ var render = function() {
                       }
                     }
                   }),
-                  _vm._v("Contest Pilot")
+                  _vm._v(" Contest Pilot")
                 ])
               ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label col-xs-6" }, [
+              _vm._v("Awards")
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _vm.showAdmin
+                ? _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.member.awards,
+                        expression: "member.awards"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "text" },
+                    domProps: { value: _vm.member.awards },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.member, "awards", $event.target.value)
+                      }
+                    }
+                  })
+                : _vm._e(),
+              _vm._v(" "),
+              !_vm.showAdmin
+                ? _c("span", [_vm._v(_vm._s(_vm.member.awards))])
+                : _vm._e()
             ])
           ]),
           _vm._v(" "),
@@ -56941,7 +56983,7 @@ var render = function() {
                   })
                 : _vm._e(),
               _vm._v(" "),
-              _vm.showAdmin
+              !_vm.showAdmin
                 ? _c("span", [_vm._v(_vm._s(_vm.member.nzga_number))])
                 : _vm._e()
             ])
@@ -57081,7 +57123,7 @@ var render = function() {
                   )
                 : _vm._e(),
               _vm._v(" "),
-              _vm.showAdmin
+              !_vm.showAdmin
                 ? _c("span", [_vm._v(_vm._s(_vm.member.membership_type))])
                 : _vm._e()
             ])
@@ -57142,7 +57184,7 @@ var render = function() {
                   )
                 : _vm._e(),
               _vm._v(" "),
-              _vm.showAdmin
+              !_vm.showAdmin
                 ? _c("span", [_vm._v(_vm._s(_vm.member.club))])
                 : _vm._e()
             ])

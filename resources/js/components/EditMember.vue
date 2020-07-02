@@ -53,21 +53,21 @@
 					<td class="table-label col-xs-6">Date of Birth</td>
 					<td>
 						<input v-if="showAdmin" type="text" v-model="member.date_of_birth" class="form-control">
-						<span v-if="showAdmin">{{member.date_of_birth}}</span>
+						<span v-if="!showAdmin">{{member.date_of_birth}}</span>
 					</td>
 				</tr>
 				<tr>
 					<td class="table-label col-xs-6">OO Number</td>
 					<td>
 						<input type="text" v-model="member.observer_number" class="form-control" v-if="showAdmin">
-						<span v-if="showAdmin">{{member.observer_number}}</span>
+						<span v-if="!showAdmin">{{member.observer_number}}</span>
 					</td>
 				</tr>
 				<tr>
 					<td class="table-label col-xs-6">Privacy</td>
 					<td>
 						<div class="checkbox">
-							<label><input type="checkbox" v-model="member.privacy">Keep contact details private from other GNZ members</label>
+							<label><input type="checkbox" v-model="member.privacy"> Keep contact details private from other GNZ members</label>
 						</div>
 					</td>
 				</tr>
@@ -75,10 +75,17 @@
 					<td class="table-label col-xs-6">Roles</td>
 					<td>
 						<div class="checkbox">
-							<label><input type="checkbox" v-model="member.coach">Coach</label>
+							<label><input type="checkbox" v-model="member.coach"> Coach</label>
 							<br>
-							<label><input type="checkbox" v-model="member.contest_pilot">Contest Pilot</label>
+							<label><input type="checkbox" v-model="member.contest_pilot"> Contest Pilot</label>
 						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="table-label col-xs-6">Awards</td>
+					<td>
+						<input type="text" v-model="member.awards" class="form-control" v-if="showAdmin">
+						<span v-if="!showAdmin">{{member.awards}}</span>
 					</td>
 				</tr>
 				<tr>
@@ -128,7 +135,7 @@
 					<td class="table-label col-xs-6">GNZ Number</td>
 					<td>
 						<input type="text" v-model="member.nzga_number" class="form-control" v-if="showAdmin">
-						<span v-if="showAdmin">{{member.nzga_number}}</span>
+						<span v-if="!showAdmin">{{member.nzga_number}}</span>
 					</td>
 				</tr>
 				<tr v-if="showAdmin">
@@ -171,7 +178,7 @@
 							<option value="">None</option>
 						</select>
 
-						<span v-if="showAdmin">{{member.membership_type}}</span>
+						<span v-if="!showAdmin">{{member.membership_type}}</span>
 
 					</td>
 				</tr>
@@ -183,8 +190,7 @@
 							<option v-for="org in orgs" v-bind:value="org.gnz_code">{{org.name}}</option>
 						</select>
 
-
-						<span v-if="showAdmin">{{member.club}}</span>
+						<span v-if="!showAdmin">{{member.club}}</span>
 					</td>
 				</tr>
 				<tr  v-if="showAdmin" >
