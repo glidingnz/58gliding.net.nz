@@ -5739,6 +5739,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixins_js__WEBPACK_IMPORTED_MODULE_0___default.a],
@@ -57672,6 +57678,18 @@ var render = function() {
                   )
                 }
               })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("td", { staticClass: "table-label col-xs-6" }, [
+              _vm._v("Awards")
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _vm._v(
+                "\n\t\t\t\t\t\t" + _vm._s(_vm.results.awards) + "\n\t\t\t\t\t"
+              )
             ])
           ])
         ]),

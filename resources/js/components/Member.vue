@@ -50,6 +50,12 @@
 						<span v-html="formatBoolean(results.contest_pilot)"></span>
 					</td>
 				</tr>
+				<tr>
+					<td class="table-label col-xs-6">Awards</td>
+					<td>
+						{{results.awards}}
+					</td>
+				</tr>
 			</table>
 
 
