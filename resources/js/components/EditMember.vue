@@ -262,6 +262,7 @@
 			this.loadOrgs();
 			this.loadMember();
 			if (window.Laravel.admin==true) this.showAdmin=true;
+			if (window.Laravel.editAwards==true) this.showAdmin=true;
 		},
 		methods: {
 			loadMember: function() {
