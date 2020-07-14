@@ -42,11 +42,11 @@
 			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='all' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('all')">All</button>
 			<!-- disabled buttons due to HAVING not working with pagination in earlier versions of Laravel.
 			Need to upgrade to laravel v7 to enable in the API. -->
-			<!-- <button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='instructors' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('instructors')">Instructors</button> -->
-			<!-- <button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='tow-pilots' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('tow-pilots')">Tow Pilots</button> -->
+			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='instructors' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('instructors')">Instructors</button>
+			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='tow-pilots' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('tow-pilots')">Tow Pilots</button>
 			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='youth' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('youth')" title="">Youth</button>
-			<!-- <button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='non-qgp' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('non-qgp')" title="Non QGP who are flying members">Non QGP</button> -->
-			<!-- <button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='qgp' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('qgp')">QGP</button> -->
+			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='qgp' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('qgp')">QGP</button>
+			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='xcp' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('xcp')">Cross Country Pilots</button>
 			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='oo' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('oo')">OOs</button>
 			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='coaches' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('coaches')">Coaches</button>
 			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='contest_pilots' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('contest_pilots')">Contest Pilots</button>
@@ -168,6 +168,7 @@
 				<th>Mobile</th>
 				<th>Email</th>
 				<th>OO</th>
+				<th>Inst.</th>
 				<th></th>
 			</tr>
 			<tr v-for="result in results">
@@ -180,8 +181,9 @@
 				<td>{{ result.mobile_phone }}</td>
 				<td><a v-bind:href="'mailto:' + result.email">{{ result.email }}</a></td>
 				<td>{{ result.observer_number }}</td>
+				<td><span style="text-transform: uppercase;">{{ result.rating_instructor_level }}</span></td>
 				<td>
-					<a v-bind:href="'/members/' + result.id + '/achievements/'" class="btn btn-primary btn-sm mr-1 mb-1"><i class="fa fa-trophy"></i></a>
+					<a v-bind:href="'/members/' + result.id + '/achievements/'" class="btn btn-outline-dark btn-sm mr-1 mb-1"><i class="fa fa-trophy"></i></a>
 					<a v-if="showEdit" v-bind:href="'http://members.gliding.co.nz/index.php?r=member/update&id=' + result.id" class="btn mr-1 mb-1 btn-outline-dark btn-sm">Old Edit</a>
 					<a v-if="showEdit" v-bind:href="'/members/' + result.id + '/edit'" class="btn mr-1 mb-1 btn-outline-dark btn-sm">Edit</a>
 					<a v-if="showEdit" v-bind:href="'/members/' + result.id + '/ratings'" class="btn mb-1 btn-outline-dark btn-sm">Ratings</a>

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "08c350660f6ca30df33695c7ad70afbc",
+    "content-hash": "b57cf362577df99331f132e85f62d198",
     "packages": [
         {
             "name": "bogardo/mailgun",
@@ -75,6 +75,7 @@
                 "mail",
                 "mailgun"
             ],
+            "abandoned": true,
             "time": "2019-06-04T12:20:48+00:00"
         },
         {
@@ -163,6 +164,7 @@
                 }
             ],
             "description": "Offers composite primary keys on Eloquent models",
+            "abandoned": "mopo922/laravel-treats",
             "time": "2017-10-23T09:10:24+00:00"
         },
         {
@@ -1345,6 +1347,7 @@
                     "email": "jakub.onderka@gmail.com"
                 }
             ],
+            "abandoned": "php-parallel-lint/php-console-color",
             "time": "2018-09-29T17:23:10+00:00"
         },
         {
@@ -1391,7 +1394,51 @@
                 }
             ],
             "description": "Highlight PHP code in terminal",
+            "abandoned": "php-parallel-lint/php-console-highlighter",
             "time": "2018-09-29T18:48:56+00:00"
+        },
+        {
+            "name": "justbetter/laravel-pagination-with-havings",
+            "version": "1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/justbetter/laravel-pagination-with-havings.git",
+                "reference": "845a17ca9344ca9a92f86ee90241556df1d52e87"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/justbetter/laravel-pagination-with-havings/zipball/845a17ca9344ca9a92f86ee90241556df1d52e87",
+                "reference": "845a17ca9344ca9a92f86ee90241556df1d52e87",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "~5.5.0|~5.6.0|~5.7.0|~5.8.0|^6.0|^7.0",
+                "php": ">=7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JustBetter\\PaginationWithHavings\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Roy Duineveld",
+                    "email": "royduineveld@gmail.com"
+                }
+            ],
+            "description": "Makes it possible to use pagination with havings in queries.",
+            "homepage": "https://github.com/justbetter/laravel-pagination-with-havings",
+            "keywords": [
+                "having",
+                "laravel",
+                "pagination"
+            ],
+            "time": "2020-03-12T10:49:10+00:00"
         },
         {
             "name": "kriswallsmith/buzz",
@@ -5989,6 +6036,7 @@
                 "psr",
                 "psr-7"
             ],
+            "abandoned": "laminas/laminas-diactoros",
             "time": "2019-07-10T16:13:25+00:00"
         }
     ],
@@ -7773,5 +7821,6 @@
     "platform": {
         "php": "^7.1.3"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }

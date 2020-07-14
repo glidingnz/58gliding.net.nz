@@ -283,7 +283,7 @@ class EventsAPIController extends AppBaseController
 				{
 					$url = $event->org->slug . '.' . $url;
 					
-					if ($_SERVER['HTTPS']) $url = 'https://' . $url;
+					if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) $url = 'https://' . $url;
 					else $url = 'http://' . $url;
 
 					$summary = '('.$event->org->short_name.') ' . $summary;
