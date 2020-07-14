@@ -331,10 +331,8 @@ class EventsAPIController extends AppBaseController
 			$icalObject .= "END:VCALENDAR";
 
 			// Set the headers
-			// header('Content-type: text/calendar; charset=utf-8');
-			// header('Content-Disposition: attachment; filename="cal.ics"');
-		  
-			//$icalObject = str_replace(' ', '', $icalObject);
+			header('Content-type: text/calendar; charset=utf-8');
+			header('Content-Disposition: attachment; filename="cal.ics"');
 
 			echo $icalObject;
 			exit();
