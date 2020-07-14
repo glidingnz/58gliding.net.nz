@@ -263,8 +263,6 @@ class EventsAPIController extends AppBaseController
 
 					if ($event->start_time!=null)
 					{
-						// echo substr($event->start_date, 0, 10) . ' ' ;
-						// echo $event->start_time; exit();
 						$carbon_start_date = Carbon::createFromFormat('Y-m-d g:ia', substr($event->start_date, 0, 10) . ' ' . $event->start_time, 'Pacific/Auckland');
 					}
 					else
@@ -272,6 +270,11 @@ class EventsAPIController extends AppBaseController
 						$carbon_start_date = Carbon::createFromFormat('Y-m-d g:ia', substr($event->start_date, 0, 10) . ' 12:00am', 'Pacific/Auckland');
 					}
 
+					// chcek if we have an end time. If not, make it the same as the start time as the  iCalendar format won't allow an event with a start time but not an end time.
+					if ($event->end_tim==null && $event->start_time!=null)
+					{
+						$event->end_time = $event->start_time;
+					}
 
 					if ($event->end_time!=null)
 					{
