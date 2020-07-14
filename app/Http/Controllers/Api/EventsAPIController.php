@@ -260,9 +260,30 @@ class EventsAPIController extends AppBaseController
 
 				// check if this is a single day event or not
 				if ($event->start_date==$event->end_date || $event->end_date==null) {
-					// single day event. Should get time as well
-					$start_date = 'DTSTART:' . date(ICAL_FORMAT, strtotime($event->start_date));
-					$end_date = 'DTEND:' . date(ICAL_FORMAT, strtotime($event->start_date));
+
+					if ($event->start_time!=null)
+					{
+						// echo substr($event->start_date, 0, 10) . ' ' ;
+						// echo $event->start_time; exit();
+						$carbon_start_date = Carbon::createFromFormat('Y-m-d g:ia', substr($event->start_date, 0, 10) . ' ' . $event->start_time, 'Pacific/Auckland');
+					}
+					else
+					{
+						$carbon_start_date = Carbon::createFromFormat('Y-m-d g:ia', substr($event->start_date, 0, 10) . ' 12:00am', 'Pacific/Auckland');
+					}
+
+
+					if ($event->end_time!=null)
+					{
+						$carbon_end_date = Carbon::createFromFormat('Y-m-d g:ia', substr($event->end_date, 0, 10) . ' ' . $event->end_time, 'Pacific/Auckland');
+					}
+					else
+					{
+						$carbon_end_date = Carbon::createFromFormat('Y-m-d g:ia', substr($event->end_date, 0, 10) . ' 12:00am', 'Pacific/Auckland');
+					}
+
+					$start_date = 'DTSTART:' . $carbon_start_date->format('Ymd\THis');
+					$end_date = 'DTEND:' . $carbon_end_date->format('Ymd\THis');
 				}
 				else
 				{
@@ -307,8 +328,8 @@ class EventsAPIController extends AppBaseController
 			$icalObject .= "END:VCALENDAR";
 
 			// Set the headers
-			header('Content-type: text/calendar; charset=utf-8');
-			header('Content-Disposition: attachment; filename="cal.ics"');
+			// header('Content-type: text/calendar; charset=utf-8');
+			// header('Content-Disposition: attachment; filename="cal.ics"');
 		  
 			//$icalObject = str_replace(' ', '', $icalObject);
 
