@@ -285,6 +285,9 @@ class EventsAPIController extends AppBaseController
 						$carbon_end_date = Carbon::createFromFormat('Y-m-d g:ia', substr($event->end_date, 0, 10) . ' 12:00am', 'Pacific/Auckland');
 					}
 
+					$carbon_start_date->setTimezone('UTC');
+					$carbon_end_date->setTimezone('UTC');
+
 					$start_date = 'DTSTART:' . $carbon_start_date->format('Ymd\THis').'Z';
 					$end_date = 'DTEND:' . $carbon_end_date->format('Ymd\THis').'Z';
 				}
