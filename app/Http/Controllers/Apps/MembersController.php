@@ -68,6 +68,18 @@ class MembersController extends Controller
 	}
 
 
+	public function edit_achievements($id)
+	{
+		$data['member'] = Member::findOrFail($id);
+		$data['allows_edit']=false;
+
+		if (Gate::denies('edit-achievements', $data['member'])) {
+			abort(403);
+		}
+
+		return view('members/achievements-edit', $data);
+	}
+
 	/**
 	 * View the users ratings
 	 */
@@ -78,13 +90,13 @@ class MembersController extends Controller
 
 		// get the club this member is a member of
 		$data['member'] = Member::findOrFail($id);
-		if (!$members_org = Org::where('gnz_code', $data['member']->club)->first())
+		if (!$data['members_org'] = Org::where('gnz_code', $data['member']->club)->first())
 		{
 			abort(403);
 		}
 
 		// check if the current logged in user is an admin of the club
-		if (Gate::allows('club-admin', $members_org)) {
+		if (Gate::allows('club-admin', $data['members_org']) || Gate::allows('edit-awards')) {
 			$data['allows_edit']=true;
 		}
 
@@ -100,8 +112,10 @@ class MembersController extends Controller
 		$data['rating_member_id']=$rating_member_id;
 		$data['allows_edit']=false;
 
+		//echo $rating_member_id; exit();
+
 		// check this member has this rating
-		if (!$ratingMember = RatingMember::findOrFail($rating_member_id)->first())
+		if (!$ratingMember = RatingMember::findOrFail($rating_member_id))
 		{
 			abort(404);
 		}
@@ -139,17 +153,6 @@ class MembersController extends Controller
 	}
 
 
-
-	public function edit_achievements($id)
-	{
-		$member = Member::findOrFail($id);
-
-		if (Gate::denies('edit-achievements', $member)) { // and awards? TBC
-			abort(403);
-		}
-
-		return view('members/achievements-edit', Array('member_id'=>$id, 'member'=>$member));
-	}
 
 
 	// Download, then delete the temporary exported file

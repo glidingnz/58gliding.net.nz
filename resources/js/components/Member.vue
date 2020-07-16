@@ -1,8 +1,7 @@
 <template>
 <div>
-	<a class="btn btn-primary" v-if="showEdit" style="float:right; margin-left: 10px;" v-bind:href="'/members/' + results.id + '/edit'">Edit {{results.first_name}}</a>
-	<a class="btn btn-outline-dark" v-if="showEdit" style="float:right; margin-left: 10px;" v-bind:href="'http://members.gliding.co.nz/index.php?r=member/update&id=' + results.id">Old Edit</a>
-	<a class="btn btn-outline-dark float-right ml-2" v-bind:href="'/members/' + results.id + '/ratings'"><span class="fa fa-clipboard-check"></span> BFR, Medicals & Ratings</a>
+	<a class="btn btn-primary" v-if="showEdit" style="float:right; margin-left: 10px;" v-bind:href="'/members/' + results.id + '/edit'"><span class="fa fa-edit"></span> Edit Member</a>
+	<a class="btn btn-outline-dark float-right ml-2" v-bind:href="'/members/' + results.id + '/ratings'"><span class="fa fa-clipboard-check"></span> Ratings</a>
 	<a class="btn btn-outline-dark float-right" v-bind:href="'/members/' + results.id + '/achievements'"><span class="fa fa-trophy"></span> Achievements</a>
 
 	<h1 class="results-title"><a href="/members">Members</a> &raquo; {{results.first_name}} {{results.last_name}}</h1>
@@ -49,6 +48,12 @@
 					<td class="table-label">Contest Pilot</td>
 					<td>
 						<span v-html="formatBoolean(results.contest_pilot)"></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="table-label col-xs-6">Awards</td>
+					<td>
+						{{results.awards}}
 					</td>
 				</tr>
 			</table>
@@ -101,63 +106,6 @@
 				</tr>
 			</table>
 
-			<table class="table table-striped">
-				<tr>
-					<th colspan="2">Ratings</th>
-				</tr>
-				<tr>
-					<td class="table-label">Instructor</td>
-					<td><span v-html="formatBoolean(results.instructor)"></span></td>
-				</tr>
-				<tr>
-					<td class="table-label">Instructor Rating</td>
-					<td><span v-html="formatBoolean(results.instructor_rating)"></span></td>
-				</tr>
-				<tr>
-					<td class="table-label">Aerotow</td>
-					<td><span v-html="formatBoolean(results.aero_tow)"></span></td>
-				</tr>
-				<tr>
-					<td class="table-label">Winch Rating</td>
-					<td><span v-html="formatBoolean(results.winch_rating)"></span></td>
-				</tr>
-				<tr>
-					<td class="table-label">Self Launch</td>
-					<td><span v-html="formatBoolean(results.self_launch)"></span></td>
-				</tr>
-				<tr>
-					<td class="table-label">Auto Tow Instructor</td>
-					<td><span v-html="formatBoolean(results.auto_tow)"></span></td>
-				</tr>
-				<tr>
-					<td class="table-label">Auto Tow Instructor</td>
-					<td><span v-html="formatBoolean(results.auto_tow)"></span></td>
-				</tr>
-				<tr>
-					<td class="table-label">Aero Instructor</td>
-					<td><span v-html="formatBoolean(results.aero_instructor)"></span></td>
-				</tr>
-				<tr>
-					<td class="table-label">Advanced Aero Instructor</td>
-					<td><span v-html="formatBoolean(results.advanced_aero_instructor)"></span></td>
-				</tr>
-				<tr>
-					<td class="table-label">Instructor Trainer</td>
-					<td><span v-html="formatBoolean(results.instructor_trainer)"></span></td>
-				</tr>
-				<tr>
-					<td class="table-label">Tow Pilot</td>
-					<td><span v-html="formatBoolean(results.tow_pilot)"></span></td>
-				</tr>
-				<tr>
-					<td class="table-label">Tow Pilot Instructor</td>
-					<td><span v-html="formatBoolean(results.tow_pilot_instructor)"></span></td>
-				</tr>
-				<tr>
-					<td class="table-label">Insttrain (OLD: for info only)</td>
-					<td>{{results.insttrain}}</td>
-				</tr>
-			</table>
 
 		</div>
 		<div class="col-sm-6 col-xs-12">
@@ -220,82 +168,6 @@
 				</tr>
 			</table>
 
-
-
-			<table class="table table-striped">
-				<tr>
-					<th colspan="2">Awards</th>
-				</tr>
-				<tr>
-					<td class="table-label">QGP Number</td>
-					<td>{{results.qgp_number}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">QGP Date</td>
-					<td>{{results.qgp_date}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">Silver Cert #</td>
-					<td>{{results.silver_certificate_number}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">Silver Duration</td>
-					<td>{{results.silver_duration}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">Silver Distance</td>
-					<td>{{results.silver_distance}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">Silver Height</td>
-					<td>{{results.silver_height}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">Gold Badge #</td>
-					<td>{{results.gold_certificate_number}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">Gold Distance</td>
-					<td>{{results.gold_distance}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">Gold Height</td>
-					<td>{{results.gold_height}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">Diamond Distance #</td>
-					<td>{{results.diamond_distance_number}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">Diamond Height #</td>
-					<td>{{results.diamond_height_number}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">Diamond Height #</td>
-					<td>{{results.diamond_height_number}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">Diamond Goal #</td>
-					<td>{{results.diamond_goal_number}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">1000km Flight #</td>
-					<td>{{results.flight_1000km_number}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">1250km Flight #</td>
-					<td>{{results.flight_1250km_number}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">1500km Flight #</td>
-					<td>{{results.flight_1500km_number}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">Other FAI Awards or Diplomas</td>
-					<td>{{results.awards}}</td>
-				</tr>
-			</table>
-
 		</div>
 	</div>
 	</div>
@@ -311,16 +183,14 @@
 
 	export default {
 		mixins: [common],
-		props: ['memberId'],
+		props: ['memberId', 'showEdit'],
 		data() {
 			return {
-				results: [],
-				showEdit: false
+				results: []
 			}
 		},
 		mounted() {
 			this.loadMember();
-			if (window.Laravel.allowsEdit==true) this.showEdit=true;
 		},
 		methods: {
 			loadMember: function() {

@@ -4,6 +4,7 @@ namespace App\Classes;
 use App\Models\Member;
 use App\Models\Org;
 use App\Models\Affiliate;
+use App\Models\Rating;
 use DateTime;
 use DB;
 use Gate;
@@ -16,24 +17,38 @@ class MemberUtilities {
 	 */
 	public function get_filtered_members($request)
 	{
-
 		// Create the query. We use the affilliates table as the base for the query, so we can filter to specific organisations.
 		// 
-		$query = Affiliate::query();
-		$query->selectRaw("gnz_member.*, GROUP_CONCAT(DISTINCT org_id SEPARATOR ',') AS org_ids,  GROUP_CONCAT(DISTINCT orgs.name SEPARATOR ', ') AS org_names");
-		$query->leftJoin('gnz_member', 'gnz_member.id', '=', 'affiliates.member_id');
-		$query->leftJoin('orgs', 'orgs.id', '=', 'affiliates.org_id');
-		$query->groupBy('member_id');
+		// $query = Affiliate::query();
+		// $query->selectRaw("gnz_member.*, GROUP_CONCAT(DISTINCT org_id SEPARATOR ',') AS org_ids,  GROUP_CONCAT(DISTINCT orgs.name SEPARATOR ', ') AS org_names");
+		// $query->leftJoin('gnz_member', 'gnz_member.id', '=', 'affiliates.member_id');
+		// $query->leftJoin('orgs', 'orgs.id', '=', 'affiliates.org_id');
+		// $query->groupBy('member_id');
 
 
-		if (!$request->input('resigned'))
-		{
-			$query->where('affiliates.resigned','==',0);
-		}
+		// if (!$request->input('resigned'))
+		// {
+		// 	$query->where('affiliates.resigned','==',0);
+		// }
 
 
+
+		// first get the ids of the ratings
+		$ratings = Rating::all();
+
+		$query = Member::query();
 
 		$query->orderBy('last_name');
+		$query->selectRaw("gnz_member.*, 
+			max(r_xcp.number) AS rating_xcp_number, 
+			max(r_qgp.number) AS rating_qgp_number,
+			max(IF(r_tow_pilot.id>0, true, false)) AS rating_tow_pilot,
+			max(IF(r_instructor_a.id>0 OR r_instructor_b.id>0 OR r_instructor_c.id>0 OR r_instructor_d.id>0, true, false)) AS rating_instructor,
+			max(IF(
+				LEAST(IF(r_instructor_a.id>0, 'a', 'z'), IF(r_instructor_b.id>0, 'b', 'z'), IF(r_instructor_c.id>0, 'c', 'z'), IF(r_instructor_d.id>0, 'd', 'z'))<>'z'
+				, LEAST(IF(r_instructor_a.id>0, 'a', 'z'), IF(r_instructor_b.id>0, 'b', 'z'), IF(r_instructor_c.id>0, 'c', 'z'), IF(r_instructor_d.id>0, 'd', 'z'))
+				,null)) AS rating_instructor_level
+			");
 
 		if ($request->input('search'))
 		{
@@ -47,19 +62,80 @@ class MemberUtilities {
 
 		// see if we have an ORG code e.g. "PKO", get the ID for it
 		if ($request->input('org') && $request->input('org')!='null')
+
+		// join on the common ratings we need for sorting and display
+		foreach ($ratings AS $rating)
 		{
-			if ($org = Org::where('gnz_code', $request->input('org'))->first())
+			switch ($rating->name)
 			{
-				$org_id = $org->id;
+				case 'X-Country Pilot': 
+					$query->leftJoin('rating_member AS r_xcp', function ($join) use ($rating) {
+						$join->on('gnz_member.id', '=', 'r_xcp.member_id')
+							->on('r_xcp.rating_id', '=', DB::raw($rating->id))
+							->on(DB::raw("(r_xcp.expires>now() OR r_xcp.expires IS NULL) "), DB::raw('<>'), DB::raw('0'));
+					});
+					break;
+				case 'QGP': 
+					$query->leftJoin('rating_member AS r_qgp', function ($join) use ($rating) {
+						$join->on('gnz_member.id', '=', 'r_qgp.member_id')
+							->on('r_qgp.rating_id', '=', DB::raw($rating->id))
+							->on(DB::raw("(r_qgp.expires>now() OR r_qgp.expires IS NULL)"), DB::raw('<>'), DB::raw('0'));
+					});
+					break;
+				case 'Tow Pilot': 
+					$query->leftJoin('rating_member AS r_tow_pilot', function ($join) use ($rating) {
+						$join->on('gnz_member.id', '=', 'r_tow_pilot.member_id')
+							->on('r_tow_pilot.rating_id', '=', DB::raw($rating->id))
+							->on(DB::raw("(r_tow_pilot.expires>now() OR r_tow_pilot.expires IS NULL) "), DB::raw('<>'), DB::raw('0'));
+					});
+					break;
+				case 'Instructor A Cat': 
+					$query->leftJoin('rating_member AS r_instructor_a', function ($join) use ($rating) {
+						$join->on('gnz_member.id', '=', 'r_instructor_a.member_id')
+							->on('r_instructor_a.rating_id', '=', DB::raw($rating->id))
+							->on(DB::raw("(r_instructor_a.expires>now() OR r_instructor_a.expires IS NULL) "), DB::raw('<>'), DB::raw('0'));
+					});
+					break;
+				case 'Instructor B Cat': 
+					$query->leftJoin('rating_member AS r_instructor_b', function ($join) use ($rating) {
+						$join->on('gnz_member.id', '=', 'r_instructor_b.member_id')
+							->on('r_instructor_b.rating_id', '=', DB::raw($rating->id))
+							->on(DB::raw("(r_instructor_b.expires>now() OR r_instructor_b.expires IS NULL) "), DB::raw('<>'), DB::raw('0'));
+					});
+					break;
+				case 'Instructor C Cat': 
+					$query->leftJoin('rating_member AS r_instructor_c', function ($join) use ($rating) {
+						$join->on('gnz_member.id', '=', 'r_instructor_c.member_id')
+							->on('r_instructor_c.rating_id', '=', DB::raw($rating->id))
+							->on(DB::raw("(r_instructor_c.expires>now() OR r_instructor_c.expires IS NULL) "), DB::raw('<>'), DB::raw('0'));
+					});
+					break;
+				case 'Instructor D Cat': 
+					$query->leftJoin('rating_member AS r_instructor_d', function ($join) use ($rating) {
+						$join->on('gnz_member.id', '=', 'r_instructor_d.member_id')
+							->on('r_instructor_d.rating_id', '=', DB::raw($rating->id))
+							->on(DB::raw("(r_instructor_d.expires>now() OR r_instructor_d.expires IS NULL) "), DB::raw('<>'), DB::raw('0'));
+					});
+					break;
 			}
-			
 		}
 
+
+
+		// if (!$request->input('resigned'))
+		// {
+		// 	if ($org = Org::where('gnz_code', $request->input('org'))->first())
+		// 	{
+		// 		$org_id = $org->id;
+		// 	}
+			
+		// }
+
 		// see if we are given an ORG ID e.g. 14
-		if ($request->has('org_id'))
-		{
-			$org_id = $request->input('org_id');
-		}
+		// if ($request->has('org_id'))
+		// {
+		// 	$org_id = $request->input('org_id');
+		// }
 
 
 		if (isset($org_id))
@@ -112,19 +188,16 @@ class MemberUtilities {
 				});
 				break;
 			case 'instructors':
-				$query->where(function($query) {
-					$query->where('instructor','=','1');
-				});
+				$query->havingRaw('rating_instructor=true');
 				break;
 			case 'tow-pilots':
-				$query->where(function($query) {
-					$query->where('tow_pilot','=','1');
-				});
+				$query->havingRaw('rating_tow_pilot=true');
 				break;
 			case 'qgp':
-				$query->where(function($query) {
-					$query->where('qgp_number','>','0');
-				});
+				$query->having('rating_qgp_number','>','0');
+				break;
+			case 'xcp':
+				$query->having('rating_xcp_number','>','0');
 				break;
 			case 'coaches':
 				$query->where(function($query) {
@@ -136,15 +209,15 @@ class MemberUtilities {
 					$query->where('contest_pilot','=','1');
 				});
 				break;
-			case 'students':
-			case 'non-qgp':
-				$query->where(function($query) {
-					$query->where('qgp_number','=','NULL');
-					$query->orWhere('qgp_number','=','0');
-				});
-				$query->where('tow_pilot','!=','1');
-				$query->where('membership_type','!=','Mag Only');
-				break;
+			// case 'students':
+			// // case 'non-qgp':
+			// 	$query->where(function($query) {
+			// 		$query->where('qgp_number','=','NULL');
+			// 		$query->orWhere('qgp_number','=','0');
+			// 	});
+			// 	$query->where('tow_pilot','!=','1');
+			// 	$query->where('membership_type','!=','Mag Only');
+			// 	break;
 			case 'oo':
 				$query->where('observer_number','!=','NULL');
 				$query->where('observer_number','!=','');
@@ -164,9 +237,13 @@ class MemberUtilities {
 				}
 				$thirty_first_of_oct =  $theyear . '-10-31';
 				$query->whereRaw('DATE_FORMAT(FROM_DAYS(DATEDIFF("'.$thirty_first_of_oct.'", date_of_birth)),"%Y")+0 BETWEEN 1 AND 26');
+
 				$query->where('membership_type','!=','Mag Only');
 				break;
 		}
+
+		// group by member
+		$query->groupBy('gnz_member.id');
 
 		return $query;
 	}

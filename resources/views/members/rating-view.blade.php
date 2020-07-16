@@ -19,11 +19,11 @@
 	</h1>
 
 
-	@can('club-member')
+	@if(Gate::check('club-member') || Gate::check('edit-awards'))
 		<rating member-id="{{$member_id}}" rating-member-id="{{$rating_member_id}}" allows-edit="{{$allows_edit}}"></rating>
 	@else
 		<p class="error">Sorry, you must be a club member to view BFR & Medical Ratings.</p>
-	@endcan
+	@endif
 	
 
 </div>

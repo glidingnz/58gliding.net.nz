@@ -128,7 +128,9 @@ class EventsAPIController extends AppBaseController
 		$event->slug = $slug;
 
 		// default the end date to the start date unless given otherwise
-		$event->end_date = $request->input('end_date', $request->input('start_date', null));
+		$event->end_date = $request->input('end_date', null); // default to null if none
+		if ($event->end_date==null || $event->end_date=='null') $event->end_date = $request->input('start_date', null); // if null, make start date
+
 		$event->type = $request->input('type', $request->input('type', 'other'));
 		if ($request->input('org_id')==null) {
 			$event->org_id = $slug;
@@ -258,9 +260,36 @@ class EventsAPIController extends AppBaseController
 
 				// check if this is a single day event or not
 				if ($event->start_date==$event->end_date || $event->end_date==null) {
-					// single day event. Should get time as well
-					$start_date = 'DTSTART:' . date(ICAL_FORMAT, strtotime($event->start_date));
-					$end_date = 'DTEND:' . date(ICAL_FORMAT, strtotime($event->start_date));
+
+					if ($event->start_time!=null)
+					{
+						$carbon_start_date = Carbon::createFromFormat('Y-m-d g:ia', substr($event->start_date, 0, 10) . ' ' . $event->start_time, 'Pacific/Auckland');
+					}
+					else
+					{
+						$carbon_start_date = Carbon::createFromFormat('Y-m-d g:ia', substr($event->start_date, 0, 10) . ' 12:00am', 'Pacific/Auckland');
+					}
+
+					// chcek if we have an end time. If not, make it the same as the start time as the  iCalendar format won't allow an event with a start time but not an end time.
+					if ($event->end_tim==null && $event->start_time!=null)
+					{
+						$event->end_time = $event->start_time;
+					}
+
+					if ($event->end_time!=null)
+					{
+						$carbon_end_date = Carbon::createFromFormat('Y-m-d g:ia', substr($event->end_date, 0, 10) . ' ' . $event->end_time, 'Pacific/Auckland');
+					}
+					else
+					{
+						$carbon_end_date = Carbon::createFromFormat('Y-m-d g:ia', substr($event->end_date, 0, 10) . ' 12:00am', 'Pacific/Auckland');
+					}
+
+					$carbon_start_date->setTimezone('UTC');
+					$carbon_end_date->setTimezone('UTC');
+
+					$start_date = 'DTSTART:' . $carbon_start_date->format('Ymd\THis').'Z';
+					$end_date = 'DTEND:' . $carbon_end_date->format('Ymd\THis').'Z';
 				}
 				else
 				{
@@ -281,7 +310,7 @@ class EventsAPIController extends AppBaseController
 				{
 					$url = $event->org->slug . '.' . $url;
 					
-					if ($_SERVER['HTTPS']) $url = 'https://' . $url;
+					if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) $url = 'https://' . $url;
 					else $url = 'http://' . $url;
 
 					$summary = '('.$event->org->short_name.') ' . $summary;
@@ -307,8 +336,6 @@ class EventsAPIController extends AppBaseController
 			// Set the headers
 			header('Content-type: text/calendar; charset=utf-8');
 			header('Content-Disposition: attachment; filename="cal.ics"');
-		  
-			//$icalObject = str_replace(' ', '', $icalObject);
 
 			echo $icalObject;
 			exit();

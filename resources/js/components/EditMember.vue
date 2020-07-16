@@ -1,6 +1,6 @@
 <template>
 <div>
-	<h1 class="results-title"><a href="/members">Members</a> &raquo; {{member.first_name}} {{member.last_name}}</h1>
+	<h1 class="results-title"><a href="/members">Members</a> &raquo; <a :href="'/members/' + member.id">{{member.first_name}} {{member.last_name}}</a> &raquo; Edit</h1>
 
 	<div class="row">
 		<div class="col-sm-6 col-xs-12">
@@ -67,7 +67,7 @@
 					<td class="table-label col-xs-6">Privacy</td>
 					<td>
 						<div class="checkbox">
-							<label><input type="checkbox" v-model="member.privacy">Keep contact details private from other GNZ members</label>
+							<label><input type="checkbox" v-model="member.privacy"> Keep contact details private from other GNZ members</label>
 						</div>
 					</td>
 				</tr>
@@ -75,10 +75,17 @@
 					<td class="table-label col-xs-6">Roles</td>
 					<td>
 						<div class="checkbox">
-							<label><input type="checkbox" v-model="member.coach">Coach</label>
+							<label><input type="checkbox" v-model="member.coach"> Coach</label>
 							<br>
-							<label><input type="checkbox" v-model="member.contest_pilot">Contest Pilot</label>
+							<label><input type="checkbox" v-model="member.contest_pilot"> Contest Pilot</label>
 						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="table-label col-xs-6">Awards</td>
+					<td>
+						<input type="text" v-model="member.awards" class="form-control" v-if="showAdmin">
+						<span v-if="!showAdmin">{{member.awards}}</span>
 					</td>
 				</tr>
 				<tr>
@@ -201,6 +208,9 @@
 						</td>
 					</tr>
 				</template>
+				
+				
+				<span v-if="!showAdmin">{{member.membership_type}}</span>
 
 				<tr>
 					<td></td>
@@ -216,8 +226,7 @@
 							<option v-for="org in orgs" v-bind:value="org.gnz_code">{{org.name}}</option>
 						</select>
 
-
-						<span v-if="showAdmin">{{member.club}}</span>
+						<span v-if="!showAdmin">{{member.club}}</span>
 					</td>
 				</tr>
 				<tr  v-if="showAdmin" >
@@ -272,6 +281,7 @@
 			this.loadOrgs();
 			this.loadMember();
 			if (window.Laravel.admin==true) this.showAdmin=true;
+			if (window.Laravel.editAwards==true) this.showAdmin=true;
 		},
 		methods: {
 			loadMember: function() {

@@ -8,7 +8,10 @@
 	<div>
 		<div v-if="allowsEdit">
 
-			<button class="float-right btn btn-outline-dark" v-on:click="addRating = !addRating"><span class="fa fa-plus mr-2"></span>Add Rating</button>
+			<button class="float-right btn btn-outline-dark" v-on:click="addRating = !addRating">
+				<span v-show="addRating">Cancel</span>
+				<span v-show="!addRating"><span class="fa fa-plus mr-2"></span> Add Rating</span>
+			</button>
 
 			<div v-show="addRating">
 			<h2>Add Rating</h2>
@@ -83,6 +86,7 @@
 			<table class="table table-striped">
 				<tr>
 					<th>Rating</th>
+					<th>#</th>
 					<th>Granted</th>
 					<th>Expires</th>
 					<th>Authorised By</th>
@@ -94,6 +98,7 @@
 					ratingExpired(result.expires) ? 'danger' : ''
 					]"> 
 					<td><a v-bind:href="'/members/' + memberId + '/ratings/' + result.id + '/'">{{result.name}}</a></td>
+					<td><span v-if="result.number">{{result.number}}</span></td>
 					<td>{{formatDate(result.awarded)}}</td>
 					<td>
 						<span v-show="result.expires!='0000-00-00' && result.expires!=null">
