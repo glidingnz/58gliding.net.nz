@@ -32,14 +32,22 @@ class MemberUtilities {
 		// }
 
 
-
 		// first get the ids of the ratings
 		$ratings = Rating::all();
 
 		$query = Member::query();
+		
+		// load the org if we are filtering to one
+		$org=null;
+		if ($request->has('org_id'))
+		{
+			$org = Org::where('id', $request->input('org_id'))->first();
+		}
+
 
 		$query->orderBy('last_name');
-		$query->selectRaw("gnz_member.*, 
+		$select_string = "
+			gnz_member.*, 
 			max(r_xcp.number) AS rating_xcp_number, 
 			max(r_qgp.number) AS rating_qgp_number,
 			max(IF(r_tow_pilot.id>0, true, false)) AS rating_tow_pilot,
@@ -47,8 +55,12 @@ class MemberUtilities {
 			max(IF(
 				LEAST(IF(r_instructor_a.id>0, 'a', 'z'), IF(r_instructor_b.id>0, 'b', 'z'), IF(r_instructor_c.id>0, 'c', 'z'), IF(r_instructor_d.id>0, 'd', 'z'))<>'z'
 				, LEAST(IF(r_instructor_a.id>0, 'a', 'z'), IF(r_instructor_b.id>0, 'b', 'z'), IF(r_instructor_c.id>0, 'c', 'z'), IF(r_instructor_d.id>0, 'd', 'z'))
-				,null)) AS rating_instructor_level
-			");
+				,null)) AS rating_instructor_level, 
+			GROUP_CONCAT(organisations.org_id) AS orgs
+			";
+		if (isset($org)) $select_string .= '';
+
+		$query->selectRaw($select_string);
 
 		if ($request->input('search'))
 		{
@@ -59,9 +71,24 @@ class MemberUtilities {
 				$query->orWhere('nzga_number','like',$s);
 			});
 		}
+		
+		$resigned = false;
+		if (!$request->input('resigned'))
+		{
+			$resigned = true;
+			//$query->where('membership_type', '<>', 'Resigned');
+		}
 
-		// see if we have an ORG code e.g. "PKO", get the ID for it
-		if ($request->input('org') && $request->input('org')!='null')
+		$query->leftJoin('affiliates AS organisations', function ($join) use ($resigned) {
+			$join->on('gnz_member.id', '=', 'organisations.member_id')
+			     ->on('organisations.resigned', '=', DB::raw('0'));
+		});
+
+		if (isset($org)) {
+			$query->join('affiliates', 'affiliates.member_id', '=', 'gnz_member.id');
+			$query->where('affiliates.org_id', '=', DB::raw($org->id));
+		}
+
 
 		// join on the common ratings we need for sorting and display
 		foreach ($ratings AS $rating)
@@ -122,41 +149,37 @@ class MemberUtilities {
 
 
 
-		// if (!$request->input('resigned'))
+
+		// see if we are given an ORG ID e.g. 14
+		// if ($request->has('org_id'))
 		// {
 		// 	if ($org = Org::where('gnz_code', $request->input('org'))->first())
 		// 	{
 		// 		$org_id = $org->id;
 		// 	}
-			
+		// $org_id = $request->input('org_id');
 		// }
 
-		// see if we are given an ORG ID e.g. 14
-		// if ($request->has('org_id'))
+
+		// if (isset($org_id))
 		// {
-		// 	$org_id = $request->input('org_id');
+		// 	switch ($org_id)
+		// 	{
+		// 		case 26: // MSC Matamata Soaring Centre
+		// 			$query->whereIn('affiliates.org_id',[3,2,14,18,19,17]);
+		// 			break;
+		// 		case 28: // Greytown Soaring Centre
+		// 			$query->whereIn('affiliates.org_id',[22, 20]);
+		// 			break;
+		// 		case 27: // 'OSC' Omarama Soaring Centre
+		// 			$query->whereIn('affiliates.org_id',[10,20, 11, 4, 5, 16, 13, 23]);
+		// 			break;
+		// 		default:
+		// 			// for most normal clubs
+		// 			$query->where('affiliates.org_id','=',$org_id);
+		// 			break;
+		// 	}
 		// }
-
-
-		if (isset($org_id))
-		{
-			switch ($org_id)
-			{
-				case 26: // MSC Matamata Soaring Centre
-					$query->whereIn('affiliates.org_id',[3,2,14,18,19,17]);
-					break;
-				case 28: // Greytown Soaring Centre
-					$query->whereIn('affiliates.org_id',[22, 20]);
-					break;
-				case 27: // 'OSC' Omarama Soaring Centre
-					$query->whereIn('affiliates.org_id',[10,20, 11, 4, 5, 16, 13, 23]);
-					break;
-				default:
-					// for most normal clubs
-					$query->where('affiliates.org_id','=',$org_id);
-					break;
-			}
-		}
 
 
 		// process either of the two above

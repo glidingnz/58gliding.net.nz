@@ -139,6 +139,17 @@
 					</td>
 				</tr>
 				<tr>
+					<td class="table-label col-xs-6">Primary Club</td>
+					<td>
+						<select  v-if="showAdmin" class="form-control input-sm" name="club" v-model="member.club">
+							<option v-bind:value="null">None</option>
+							<option v-for="org in orgs" v-bind:value="org.gnz_code">{{org.name}}</option>
+						</select>
+
+						<span v-if="!showAdmin">{{member.club}}</span>
+					</td>
+				</tr>
+				<tr>
 					<td class="table-label col-xs-6">GNZ Membership Type</td>
 					<td>
 
@@ -177,12 +188,10 @@
 				</tr>
 			</table>
 
-
 			<table class="table table-striped table-sm">
 				<tr>
 					<th colspan="3">Affiliations</th>
 				</tr>
-
 
 				<template v-for="affiliate in member.affiliates">
 					
@@ -218,17 +227,6 @@
 					<td><button class="btn btn-primary btn-sm" v-on:click="saveMember()">Save Changes</button></td>
 				</tr>
 				<!-- 
-				<tr>
-					<td class="table-label col-xs-6">Club</td>
-					<td>
-						<select  v-if="showAdmin" class="form-control input-sm" name="club" v-model="member.club">
-							<option v-bind:value="null">None</option>
-							<option v-for="org in orgs" v-bind:value="org.gnz_code">{{org.name}}</option>
-						</select>
-
-						<span v-if="!showAdmin">{{member.club}}</span>
-					</td>
-				</tr>
 				<tr  v-if="showAdmin" >
 					<td class="table-label col-xs-6">Date Joined / Rejoined Club</td>
 					<td><input type="text" v-model="member.date_joined" class="form-control"></td>
