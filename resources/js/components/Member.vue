@@ -81,22 +81,6 @@
 				</tr>
 			</table>
 
-
-
-			<table class="table table-striped">
-				<tr>
-					<th colspan="2">QGP</th>
-				</tr>
-				<tr>
-					<td class="table-label">QGP Number</td>
-					<td>{{results.qgp_number}}</td>
-				</tr>
-				<tr>
-					<td class="table-label">Date of QGP</td>
-					<td>{{results.date_of_qgp}}</td>
-				</tr>
-			</table>
-
 			<table class="table table-striped">
 				<tr>
 					<th colspan="2">Comments</th>
