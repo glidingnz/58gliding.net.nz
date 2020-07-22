@@ -56,6 +56,8 @@ Route::get('/tracking-old', 'Apps\TrackingController@index');
 Route::get('/tracking-old/{year}-{month}-{day}', 'Apps\TrackingController@day');
 Route::get('/tracking-old/{year}-{month}-{day}/{rego}', 'Apps\TrackingController@track');
 
+Route::get('/embed-cal', 'Apps\CalendarController@embedCal');
+
 Route::get('/ratings-report', 'Apps\MembersController@ratingsReport');
 
 Route::POST('/overland', 'Api\v1\TrackingApiController@overland'); // special route for overland cell phone tracking app. Easier to type than API URL.
