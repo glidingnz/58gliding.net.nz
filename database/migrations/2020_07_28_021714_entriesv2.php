@@ -14,6 +14,19 @@ class Entriesv2 extends Migration
 	public function up()
 	{
 
+		// add event entry agreemenet field
+		if (Schema::hasTable('events')) {
+			Schema::table('events', function (Blueprint $table) {
+				$table->text('entry_conditions')->nullable();
+
+				// what kind of catering does the event have?
+				$table->boolean('catering_lunches')->default(false);
+				$table->boolean('catering_dinners')->default(false);
+				$table->boolean('catering_breakfasts')->default(false);
+				$table->boolean('catering_final_dinner')->default(false);
+			});
+		}
+
 		Schema::create('entries2', function (Blueprint $table) {
 			$table->increments('id');
 			$table->integer('event_id')->unsigned()->nullable();
@@ -71,5 +84,15 @@ class Entriesv2 extends Migration
 	public function down()
 	{
 		Schema::dropIfExists('entries2');
+
+		if (Schema::hasTable('events')) {
+			Schema::table('events', function (Blueprint $table) {
+				$table->dropColumn('entry_conditions');
+				$table->dropColumn('catering_lunches');
+				$table->dropColumn('catering_dinners');
+				$table->dropColumn('catering_breakfasts');
+				$table->dropColumn('catering_final_dinner');
+			});
+		}
 	}
 }
