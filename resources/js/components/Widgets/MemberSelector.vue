@@ -1,14 +1,17 @@
 <template>
 	<div class="selectMember">
 
-			<input v-if="selectedMember && !edit" class="form-control" placeholder="" :value="selectedMember.first_name + ' ' + selectedMember.last_name" v-on:click="edit=true" v-bind:class="{'is-valid': selectedMember, 'is-invalid': noResults}">
-			<input v-model="memberSearch" v-if="!selectedMember || edit" @keydown="memberSearchType" class="form-control" placeholder="Member Search..." v-bind:class="{'is-valid': selectedMember, 'is-invalid': noResults}">
+<!-- 			<input v-if="selectedMember && !edit" class="form-control" placeholder="" :value="selectedMember.first_name + ' ' + selectedMember.last_name" v-on:click="edit=true" v-bind:class="{'is-valid': selectedMember, 'is-invalid': noResults}">
+ -->			<input v-model="memberSearch" v-if="!selectedMember || edit" @keydown="memberSearchType" class="form-control" placeholder="Member Search..." v-bind:class="{'is-valid': selectedMember, 'is-invalid': noResults}">
 
+			<button class="btn btn-primary" v-if="selectedMember && !edit" v-on:click="edit=true">
+				{{selectedMember.first_name}} {{selectedMember.last_name}}  &nbsp; {{selectedMember.nzga_number}} <div class="badge badge-light badge-pill ml-2">Search Again</div>
+			</button>
 
 			<span class="error" v-show="noResults">Member not found</span>
 			<select v-if="!selectedMember || edit" v-model="selectedMember" v-show="searchResults.length>0"  class="form-control" @change="selectMember()">
 				<option :value="null">{{searchResults.length}} result{{searchResults.length==1?'':'s'}}</option>
-				<option :value="member" v-for="member in searchResults">{{member.first_name}} {{member.last_name}} {{member.city}}</option>
+				<option :value="member" v-for="member in searchResults">{{member.first_name}} {{member.last_name}} {{member.city}} {{member.nzga_number}}</option>
 			</select>
 	</div>
 </template>
