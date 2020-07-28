@@ -73,10 +73,10 @@ Route::get('/flying-days', 'Apps\CalendarController@index');
 Route::get('/events/', 'Apps\EventsController@index');
 Route::get('/events/{slug}', 'Apps\EventsController@viewEvent');
 
+Route::get('/events/{slug}/enter', 'Apps\EventsController@enterEvent');
 Route::get('/members', 'Apps\MembersController@index');
 Route::group(['middleware' => ['auth']], function () {
 
-	Route::get('/events/{slug}/enter', 'Apps\EventsController@enterEvent');
 	Route::resource('/contestentries', 'Apps\ContestEntriesController');
 	Route::get('/user/account', 'UserController@view_account');
 	Route::post('/update-account', 'UserController@update_account');

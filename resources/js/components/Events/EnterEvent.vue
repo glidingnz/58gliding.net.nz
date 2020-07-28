@@ -7,14 +7,59 @@
 <template>
 <div>
 	
-	<div class="float-right">
-		<a class="btn btn-outline-dark mr-2" :href="'/events/' + event.slug + '/edit'" v-if="event.can_edit">Edit</a>
-		<!-- <a class="btn btn-outline-dark" :href="'/events/' + event.slug + '/delete'" v-if="event.can_edit">Delete</a> -->
-	</div>
-
 	<h1><a href="/events">Events</a> &raquo; <a :href="'/events/' + event.slug">{{event.name}}</a> &raquo; Entry Form</h1>
 
-	Hi!
+	<div class="alert alert-info" role="alert" v-if="!viewGNZMembers">
+		Tip: Register an account and/or login to speed up entry of this form! And let you manage your entries later.
+	</div>
+
+
+	<form >
+	<ol>
+		<li>
+			<h2>Are you a GNZ member?</h2>
+				<label for="member_yes"><input type="radio" v-model="gnzMember" :value="true" id="member_yes" checked> Yes</label>
+				<label for="member_no"><input type="radio" v-model="gnzMember" :value="false" id="member_no"> No</label>
+		</li>
+		<li v-if="gnzMember">
+			<div v-if="viewGNZMembers">
+				Find Member:<br>
+				<member-selector></member-selector>
+			</div>
+			<div v-if="!viewGNZMembers">
+				GNZ Number<br>
+				<input type="text" v-model="gnzNumber" class="form-control" id="gnz_number" name="gnz_number">
+			</div>
+			
+		</li>
+		<li v-if="!gnzMember">
+			<div class="form-group">
+				<label for="first_name">First Name</label>
+				<input type="text"  class="form-control" id="first_name" name="first_name">
+			</div>
+
+			<div class="form-group">
+				<label for="last_name">Last Name</label> 
+				<input type="text"  class="form-control" id="last_name" name="last_name">
+			</div>
+
+			<div class="form-group">
+				<label for="mobile">Mobile</label> 
+				<input type="text"  class="form-control" id="mobile" name="mobile">
+			</div>
+
+			<div class="form-group">
+				<label for="email">Email</label> 
+				<input type="text"  class="form-control" id="email" name="email">
+			</div>
+
+		</li>
+		<li>
+			Aircraft
+			<aircraft-selector></aircraft-selector>
+		</li>
+	</ol>
+	</form>
 
 </div>
 </template>
@@ -28,7 +73,11 @@ export default {
 		return {
 			event: [],
 			attributes: [],
-			calendar: null
+			calendar: null,
+			viewGNZMembers: false,
+			gnzMember: true,
+			memberId: null,
+			gnzNumber: null
 		}
 	},
 	props: ['orgId', 'eventId'],
@@ -36,25 +85,7 @@ export default {
 		this.load();
 	},
 	mounted: function() {
-		this.calendar = this.$refs.calendar;
-	},
-	computed: {
-		compiledMarkdown: function () {
-			return marked(this.event.details, { sanitize: true })
-		},
-		compiledTermsMarkdown: function () {
-			return marked(this.event.terms, { sanitize: true })
-		},
-		flyingEvent: function() {
-			switch (this.event.type)
-			{
-				case 'competition':
-				case 'xcountry': 
-					return true;
-					break;
-			}
-			return false;
-		}
+		this.viewGNZMembers = window.Laravel.gnzMember;
 	},
 	methods: {
 		load: function() {
