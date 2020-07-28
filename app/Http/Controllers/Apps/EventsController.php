@@ -34,4 +34,14 @@ class EventsController extends Controller
 		abort(404);
 	}
 
+	public function enterEvent($slug)
+	{
+		// load the event from the slug
+		if ($event = Event::where('slug', $slug)->first())
+		{
+			return view('events/event-enter', $event);
+		}
+		abort(404);
+	}
+
 }
