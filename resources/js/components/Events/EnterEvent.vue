@@ -12,8 +12,9 @@
 		<!-- <a class="btn btn-outline-dark" :href="'/events/' + event.slug + '/delete'" v-if="event.can_edit">Delete</a> -->
 	</div>
 
-	<h1><a href="/events">Events</a> &raquo; <a :href="'/events/' + event.slug">{{event.name}}</a> &raquo; Enter</h1>
+	<h1><a href="/events">Events</a> &raquo; <a :href="'/events/' + event.slug">{{event.name}}</a> &raquo; Entry Form</h1>
 
+	Hi!
 
 </div>
 </template>

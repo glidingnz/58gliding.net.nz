@@ -9,6 +9,7 @@
 	
 	<div class="float-right">
 		<a class="btn btn-outline-dark mr-2" :href="'/events/' + event.slug + '/edit'" v-if="event.can_edit">Edit</a>
+		<a class="btn btn-outline-dark mr-2" :href="'/events/' + event.slug + '/enter'" >Entry Form</a>
 		<!-- <a class="btn btn-outline-dark" :href="'/events/' + event.slug + '/delete'" v-if="event.can_edit">Delete</a> -->
 	</div>
 

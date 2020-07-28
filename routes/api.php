@@ -107,6 +107,9 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 	Route::post('/fleets/{fleet_id}/remove',  'FleetsApiController@remove');
 
 
+	Route::resource('/entries', 'EntriesApiController', ['only' => [
+		'index', 'create', 'store'
+	]]);
 
 	Route::group(['middleware' => ['auth:api']], function () {
 
