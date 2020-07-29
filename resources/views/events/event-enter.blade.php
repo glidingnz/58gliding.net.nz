@@ -5,7 +5,7 @@
 
 <div class="container-fluid">
 
-	<enter-event org-id="{{$org['id']}}" event-id="{{$id}}"></enter-event>
+	<enter-event current-member-id="{{$member_id}}" event-id="{{$event_id}}"></enter-event>
 
 </div>
 

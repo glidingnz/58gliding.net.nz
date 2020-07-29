@@ -29,6 +29,7 @@ class Entriesv2 extends Migration
 
 		Schema::create('entries2', function (Blueprint $table) {
 			$table->increments('id');
+			$table->string('editcode')->nullable();
 			$table->integer('event_id')->unsigned()->nullable();
 			$table->integer('classes_id')->unsigned()->nullable();
 			$table->integer('member_id')->unsigned()->nullable();

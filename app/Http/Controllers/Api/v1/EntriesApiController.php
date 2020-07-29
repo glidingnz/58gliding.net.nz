@@ -32,9 +32,16 @@ class EntriesApiController extends ApiController
 		$input = $request->all();
 
 
+		$entry = new Entry2;
+		$entry->editcode = randomkeys(8);
+		$entry->save();
+
+		// create a new random code for it
+		// 
+
 		if (1)
 		{
-			return $this->success();
+			return $this->success($entry);
 		}
 		return $this->error();
 	}

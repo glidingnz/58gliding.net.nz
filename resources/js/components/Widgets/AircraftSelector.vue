@@ -3,15 +3,16 @@
 
 			<input v-model="aircraftSearch" v-if="!selectedAircraft || edit" @keydown="aircraftSearchType" class="form-control" placeholder="Aircraft Search Rego or Type e.g. GOP..." v-bind:class="{'is-valid': selectedAircraft, 'is-invalid': noResults}">
 
- 			<button class="btn btn-primary" v-if="selectedAircraft && !edit" v-on:click="edit=true">
- 				{{selectedAircraft.rego}} &nbsp; {{selectedAircraft.model}} <div class="badge badge-light badge-pill ml-2">Search Again</div>
- 			</button>
+			<button class="btn btn-primary" v-if="selectedAircraft && !edit" v-on:click="edit=true">
+				{{selectedAircraft.rego}} &nbsp; {{selectedAircraft.model}} <div class="badge badge-light badge-pill ml-2">Search Again</div>
+			</button>
 
 			<span class="error" v-show="noResults">Aircraft not found</span>
 			<select v-if="!selectedAircraft || edit" v-model="selectedAircraft" v-show="searchResults.length>0"  class="form-control" @change="selectAircraft()">
 				<option :value="null">{{searchResults.length}} result{{searchResults.length==1?'':'s'}}...</option>
 				<option :value="aircraft" v-for="aircraft in searchResults">{{aircraft.rego}} {{aircraft.model}} {{aircraft.manufacturer}}</option>
 			</select>
+
 	</div>
 </template>
 
@@ -21,7 +22,7 @@
 
 	export default {
 		mixins: [common],
-		props: ['orgId', 'aircraftId', 'searchAll'],
+		props: ['value'],
 		data() {
 			return {
 				selectedAircraft: null,
@@ -32,10 +33,17 @@
 			}
 		},
 		created: function () {
-			if (this.aircraftId) {
-				this.loadAircraft(this.aircraftId);
+			if (this.input) {
+				this.loadAircraft(this.input);
 			}
 			this.debouncedSave = _.debounce(this.searchAircrafts, 500);
+		},
+		watch: {
+			value: function(newVal) {
+				if (newVal!='' && newVal!=null) {
+					this.loadAircraft(newVal);
+				}
+			}
 		},
 		methods: {
 			aircraftSearchType: function(a, b) { 
@@ -44,14 +52,15 @@
 			},
 			selectAircraft: function() {
 				this.$emit('selected', this.selectedAircraft);
+				if (this.selectedAircraft) this.$emit('input', this.selectedAircraft.id);
 				this.edit = false;
-				//this.aircraftSearch = this.selectedAircraft.first_name + ' ' + this.selectedAircraft.last_name;
 			},
 			searchAircrafts: function() {
 				var that = this;
 				this.selectedAircraft = null;
 				if (this.aircraftSearch=='') {
 					that.searchResults = [];
+					this.$emit('input', null);
 					return;
 				}
 
@@ -74,9 +83,12 @@
 			loadAircraft: function(id) {
 				var that = this;
 				// if we're given an ID, try and load it
-				window.axios.get('/api/v1/aircraft/' + id).then(function (response) {
-					that.selectedAircraft = response.data.data;
-				});
+				if (id) {
+					window.axios.get('/api/v1/aircraft/' + id).then(function (response) {
+						that.selectedAircraft = response.data.data;
+					});
+				}
+				
 			}
 		}
 

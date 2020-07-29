@@ -21,21 +21,29 @@
 
 	export default {
 		mixins: [common],
-		props: ['orgId', 'memberId', 'searchAll'],
+		props: ['value', 'searchAll'],
 		data() {
 			return {
 				selectedMember: null,
 				memberSearch: '',
 				searchResults: [],
 				edit: false,
-				noResults: false
+				noResults: false,
+				memberId: null
 			}
 		},
 		created: function () {
-			if (this.memberId) {
-				this.loadMember(this.memberId);
+			if (this.value) {
+				this.loadMember(this.value);
 			}
 			this.debouncedSave = _.debounce(this.searchMembers, 500);
+		},
+		watch: {
+			value: function(newVal) {
+				if (newVal!='' && newVal!=null) {
+					this.loadMember(newVal);
+				}
+			}
 		},
 		methods: {
 			memberSearchType: function(a, b) { 
@@ -44,13 +52,14 @@
 			},
 			selectMember: function() {
 				this.$emit('selected', this.selectedMember);
+				if (this.selectedMember) this.$emit('input', this.selectedMember.id);
 				this.edit = false;
-				//this.memberSearch = this.selectedMember.first_name + ' ' + this.selectedMember.last_name;
 			},
 			searchMembers: function() {
 				var that = this;
 				if (this.memberSearch=='') {
 					that.searchResults = [];
+					this.$emit('input', null);
 					return;
 				}
 
