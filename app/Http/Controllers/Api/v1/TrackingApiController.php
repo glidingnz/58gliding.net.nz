@@ -141,6 +141,11 @@ Example string:
     [7] => 153.28						Course Over Ground degrees
     [8] => 69.8							Altitude meters
     [9] => 311219						Date DDMMYY
+
+	If nothing comes through we get:
+	(
+	  'data' => false,
+	)
  */
 	public function mt600(Request $request)
 	{
@@ -149,6 +154,7 @@ Example string:
 
 		$data = explode(',', $request_data['data']);
 		if (!isset($data[0])) return false;
+		if (!isset($data[6])) return false; // ensure enough data came through. Checks for 'data false' state.
 
 		// get the timestamp
 		$first_chunk = explode('$', $data[0]);
@@ -731,10 +737,19 @@ Example string:
 				if ($json = file_get_contents($aircraft_url))
 				{
 					$obj = json_decode($json);
+					Log::info('SPOT JSON:');
+					Log::info($json);
 
 					// check if we have messages for this ID
 					if (isset($obj->response->feedMessageResponse))
 					{
+
+						// Check if we only have one item. If so, it's an object, not an array.
+						if (!is_array($obj->response->feedMessageResponse->messages->message)) {
+							// Make it an array so it matches multiple items
+							$obj->response->feedMessageResponse->messages->message = Array($obj->response->feedMessageResponse->messages->message);
+						}
+
 						// loop through them all
 						foreach ($obj->response->feedMessageResponse->messages->message AS $point)
 						{
@@ -758,7 +773,6 @@ Example string:
 							if ($hex==null) $hex=substr($aircraft['rego'], 3,3);
 
 							$ping = DB::connection('ogn')->table($table_name)->where('thetime', $thetimestamp)->where('type', 2)->first();
-
 							if (!$ping) {
 								DB::connection('ogn')->insert('insert into '. $table_name .' (thetime, alt, loc, hex, speed, course, type, rego) values (?, ?, POINT(?,?), ?, ?, ?, ?, ?)', [$thetimestamp, $alt, $point->latitude, $point->longitude, $hex, NULL, NULL, 2, substr($aircraft['rego'], 3,3)]);
 							} 
