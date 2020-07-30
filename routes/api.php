@@ -108,7 +108,7 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 
 
 	Route::resource('/entries', 'EntriesApiController', ['only' => [
-		'index', 'create', 'store'
+		'index', 'create', 'store', 'show'
 	]]);
 
 	Route::group(['middleware' => ['auth:api']], function () {

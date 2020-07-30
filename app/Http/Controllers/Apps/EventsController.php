@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Models\Event;
+use App\Models\Entry;
 use App\Models\Member;
 use Auth;
 
@@ -57,12 +58,12 @@ class EventsController extends Controller
 	}
 
 
-	public function editEntry($slug, $editcode)
+	public function editEntry($editcode)
 	{
 		// load the event from the slug
-		if ($event = Event::where('slug', $slug)->first())
+		if ($entry = Entry::where('editcode', $editcode)->with('event')->first())
 		{
-			return view('events/entry-edit', array('event_id'=>$event->id, 'editcode'=>$editcode));
+			return view('events/entry-edit', array('entry'=>$entry));
 		}
 		abort(404);
 	}

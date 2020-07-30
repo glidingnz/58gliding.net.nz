@@ -74,7 +74,7 @@ Route::get('/events/', 'Apps\EventsController@index');
 Route::get('/events/{slug}', 'Apps\EventsController@viewEvent');
 
 Route::get('/events/{slug}/enter', 'Apps\EventsController@enterEvent');
-Route::get('/events/{slug}/entries/{editcode}', 'Apps\EventsController@editEntry');
+Route::get('/entries/{editcode}', 'Apps\EventsController@editEntry');
 
 
 

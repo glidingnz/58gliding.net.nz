@@ -37,7 +37,7 @@ class Entriesv2 extends Migration
 			$table->integer('aircraft_id')->unsigned()->nullable();
 
 			// type of entry e.g. pilot, tow pilot, helper
-			$table->string('type')->nullable();
+			$table->string('entry_type')->nullable();
 
 			// status of entry e.g. tenative, confirmed, cancelled
 			$table->string('status')->nullable();
