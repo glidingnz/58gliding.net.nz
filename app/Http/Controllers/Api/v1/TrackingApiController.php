@@ -773,8 +773,6 @@ Example string:
 							if ($hex==null) $hex=substr($aircraft['rego'], 3,3);
 
 							$ping = DB::connection('ogn')->table($table_name)->where('thetime', $thetimestamp)->where('type', 2)->first();
-
-							Log::info('Inserting ' . $hex);
 							if (!$ping) {
 								DB::connection('ogn')->insert('insert into '. $table_name .' (thetime, alt, loc, hex, speed, course, type, rego) values (?, ?, POINT(?,?), ?, ?, ?, ?, ?)', [$thetimestamp, $alt, $point->latitude, $point->longitude, $hex, NULL, NULL, 2, substr($aircraft['rego'], 3,3)]);
 							} 
