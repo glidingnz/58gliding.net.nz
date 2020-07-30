@@ -21,19 +21,21 @@ class EntriesApiController extends ApiController
 		return $this->error();
 	}
 
+	
+
 	/**
 	* Create the specified resource.
 	*
 	* @param  int  $id
 	* @return \Illuminate\Http\Response
 	*/
-	public function create()
+	public function store(request $request)
 	{
 		$input = $request->all();
 
 
 		$entry = new Entry2;
-		$entry->editcode = randomkeys(8);
+		$entry->editcode = randomkeys(12);
 		$entry->save();
 
 		// create a new random code for it

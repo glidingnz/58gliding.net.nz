@@ -48,7 +48,6 @@ class EventsController extends Controller
 			$member_id = $member->id;
 		}
 
-
 		// load the event from the slug
 		if ($event = Event::where('slug', $slug)->first())
 		{
@@ -56,6 +55,7 @@ class EventsController extends Controller
 		}
 		abort(404);
 	}
+
 
 	public function editEntry($slug, $editcode)
 	{

@@ -19,7 +19,6 @@
 			Tip: <a href="/login">Login</a> or <a href="/register">register an account</a> to speed up entry of this form! And manage your entries later.
 		</div>
 
-		<form >
 		<ol>
 			<li>
 				Are you a GNZ member?
@@ -76,7 +75,7 @@
 				</div>
 			</li>
 			<li>
-				<button type="submit" class="btn btn-primary" v-on:click="createEntry()">Next...</button>
+				<button class="btn btn-primary" v-on:click="createEntry()">Next...</button>
 			</li>
 
 
@@ -155,7 +154,6 @@
 
 
 		</ol>
-		</form>
 	</div>
 
 </div>
@@ -205,7 +203,7 @@ export default {
 			});
 		},
 		createEntry: function() {
-			window.axios.post('/api/events/' + this.eventId + '/entries', this.data).then(function (response) {
+			window.axios.post('/api/v1/entries', this.data).then(function (response) {
 				that.event = response.data.data;
 			});
 		}
