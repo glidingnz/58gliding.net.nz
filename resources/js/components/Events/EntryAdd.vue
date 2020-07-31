@@ -31,13 +31,13 @@
 				<div v-if="viewGNZMembers">
 					GNZ Member:<br>
 					<div class="form-group col-md-6">
-						<member-selector v-model="data.memberId"></member-selector>
+						<member-selector v-model="data.member_id"></member-selector>
 					</div>
 				</div>
 				<div v-if="!viewGNZMembers">
 					GNZ Number<br>
 					<div class="form-group col-md-6">
-						<input type="text" v-model="data.gnzNumber" class="form-control" id="gnz_number" name="gnz_number">
+						<input type="text" v-model="data.gnz_number" class="form-control" id="gnz_number" name="gnz_number">
 					</div>
 				</div>
 				
@@ -78,81 +78,6 @@
 				<button class="btn btn-primary" v-on:click="createEntry()">Next...</button>
 			</li>
 
-
-			<!-- <li v-if="!viewGNZMembers && (data.entry_type=='pilot' || data.entry_type=='2nd_pilot')">
-				<div class="form-group col-md-6">
-					<label for="aircraft">Aircraft</label>
-					<aircraft-selector v-model="data.aircraftId"></aircraft-selector>
-				</div>
-
-			</li>
-			<li v-if="!viewGNZMembers && data.entry_type=='pilot'">
-				<div class="form-group col-md-6">
-					<label for="aircraft">Wingspan</label>
-					<select name="wingspan" id="wingspan" class="form-control" v-model="data.wingspan">
-						<option value="15">15m</option>
-						<option value="18">18m</option>
-						<option disabled>-------------</option>
-						<option value="13.4">13.4m e.g. PW5</option>
-						<option value="16">16m</option>
-						<option value="16.6">16.6m e.g. ASW20BL/CL</option>
-						<option value="17.5">17.5m</option>
-						<option value="17.6">17.6m e.g. Ventus</option>
-						<option value="20">20m</option>
-						<option value="21">21m</option>
-						<option value="22">22m</option>
-						<option value="24">24m</option>
-						<option value="25.6">25.6m e.g. ASH25</option>
-						<option value="26">26m</option>
-						<option value="26">26.5m e.g. Nimbus</option>
-					</select>
-				</div>
-				<div class="form-group col-md-6">
-					<label for="winglets"><input class="" type="checkbox" id="winglets" v-model="data.winglets" :value="true"> Winglets</label>
-				</div>
-			</li>
-			<li>
-				
-				<div class="form-group col-md-6">
-					<label for="emergency_contact">Emergency Contact Name</label>
-					<input type="text" v-model="data.emergency_contact" class="form-control" id="emergency_contact" name="emergency_contact">
-				</div>
-
-				<div class="form-group col-md-6">
-					<label for="emergency_mobile">Emergency Contact Mobile</label> 
-					<input type="text" v-model="data.emergency_mobile" class="form-control" id="emergency_mobile" name="emergency_mobile">
-				</div>
-
-				<div class="form-group col-md-6">
-					<label for="emergency_relationship">Emergency Contact Relationship to You</label> 
-					<input type="text" v-model="data.emergency_relationship" class="form-control" id="emergency_relationship" name="emergency_relationship">
-				</div>
-
-			</li>
-			<li v-if="data.entry_type=='pilot' || data.entry_type=='2nd_pilot'">
-				
-				<div class="form-group col-md-6">
-					<label for="crew_name">Crew Name</label>
-					<input type="text" v-model="data.crew_name" class="form-control" id="crew_name" name="crew_name">
-				</div>
-
-				<div class="form-group col-md-6">
-					<label for="crew_mobile">Crew Mobile</label> 
-					<input type="text" v-model="data.crew_mobile" class="form-control" id="crew_mobile" name="crew_mobile">
-				</div>
-
-				<div class="form-group col-md-6">
-					<label for="car_plate">Retrieve Vehicle Plate Number</label> 
-					<input type="text" v-model="data.car_plate" class="form-control" id="car_plate" name="car_plate">
-				</div>
-				<div class="form-group col-md-6">
-					<label for="car_details">Retrieve Vehicle/Trailer Details</label> 
-					<input type="text" v-model="data.car_details" class="form-control" id="car_details" name="car_details">
-				</div>
-
-			</li> -->
-
-
 		</ol>
 	</div>
 
@@ -172,8 +97,8 @@ export default {
 			data: {
 				eventId: null,
 				gnzMember: true,
-				memberId: null,
-				gnzNumber: null,
+				member_id: null,
+				gnz_number: null,
 				first_name: '',
 				last_name: '',
 				mobile: '',
@@ -181,7 +106,7 @@ export default {
 				aircraftId: null,
 				wingspan: '15m',
 				winglets: false,
-				entry_type: 'pilot'
+				entry_type: 'pilot',
 			}
 			
 		}
@@ -190,7 +115,7 @@ export default {
 		this.load();
 		console.log(this.currentMemberId);
 		if (typeof this.currentMemberId!='undefined') {
-			this.data.memberId = this.currentMemberId;
+			this.data.member_id = this.currentMemberId;
 		}
 	},
 	mounted: function() {

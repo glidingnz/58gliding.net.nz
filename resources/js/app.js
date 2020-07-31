@@ -68,6 +68,7 @@ Vue.component('roster-edit-item', require('./components/calendar/RosterEditItem.
 Vue.component('roster-add-item', require('./components/calendar/RosterAddItem.vue').default);
 Vue.component('calendar-nav', require('./components/calendar/CalendarNav.vue').default);
 Vue.component('entry-add', require('./components/events/EntryAdd.vue').default);
+Vue.component('entry-edit', require('./components/events/EntryEdit.vue').default);
 Vue.component('edit-event', require('./components/events/EventEdit.vue').default);
 Vue.component('view-event', require('./components/events/EventView.vue').default);
 Vue.component('events', require('./components/events/Events.vue').default);

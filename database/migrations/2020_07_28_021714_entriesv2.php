@@ -40,10 +40,11 @@ class Entriesv2 extends Migration
 			$table->string('entry_type')->nullable();
 
 			// status of entry e.g. tenative, confirmed, cancelled
-			$table->string('status')->nullable();
+			$table->string('entry_status')->nullable();
 
 			// only used for visiting pilots/helpers who aren't in the GNZ database yet. Otherwise member ID is all they need.
 			$table->boolean('gnz_member')->default(true); // if they are or are not a GNZ member
+			$table->integer('gnz_number')->nullable();
 			$table->string('first_name')->nullable();
 			$table->string('last_name')->nullable();
 			$table->string('mobile')->nullable();

@@ -60,7 +60,7 @@ class EventsController extends Controller
 
 	public function editEntry($editcode)
 	{
-		// load the event from the slug
+		// load the event from the editcode
 		if ($entry = Entry::where('editcode', $editcode)->with('event')->first())
 		{
 			return view('events/entry-edit', array('entry'=>$entry));
