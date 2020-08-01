@@ -20,23 +20,54 @@ class EntriesApiController extends ApiController
 			$query->where('event_id', $request->input('event_id'));
 		}
 
+
 		if ($entries = $query->paginate($request->input('per-page', 50)))
 		{
+			foreach ($entries AS $entry) {
+				if ($entry->canEdit()) {
+					$entry->showDetails();
+				}
+			}
 			return $this->success($entries, TRUE);
 		}
 		return $this->error();
 	}
 
 	/**
-	 * Display the specified resource.
+	 * Fetch the specified resource.
+	 * If given an edit code
 	 *
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($editcode)
+	public function showCode($editcode)
 	{
 		if ($entry = Entry::where('editcode', $editcode)->with('event')->with('aircraft')->first())
 		{
+			// assume anyone with the edit code has permissions to see everything
+			$entry->showDetails();
+
+			return $this->success($entry);
+		}
+		return $this->error();
+	}
+
+	/**
+	 * Fetch the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function show($id)
+	{
+		if ($entry = Entry::where('id', $id)->with('event')->with('aircraft')->first())
+		{
+			// check this user can show the details
+			if ($entry->canEdit())
+			{
+				$entry->showDetails();
+			}
+
 			return $this->success($entry);
 		}
 		return $this->error();
@@ -116,7 +147,7 @@ class EntriesApiController extends ApiController
 	* Create the specified resource.
 	*
 	* @param  int  $id
-	* @return \Illuminate\Http\Response
+	* @return \Illuminate\ Http\Response
 	*/
 	public function store(request $request)
 	{
@@ -165,6 +196,7 @@ class EntriesApiController extends ApiController
 
 		if ($entry->save())
 		{
+			$entry->showDetails(); // ensure we share all the details as this user just created it
 			return $this->success($entry);
 		}
 		return $this->error();

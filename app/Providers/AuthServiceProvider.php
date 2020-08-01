@@ -304,7 +304,7 @@ class AuthServiceProvider extends ServiceProvider
 			// check if we've already approved this
 			if (isset($user->is_waypoint_admin)) return $user->is_waypoint_admin;
 
-			if (Gate::allows('root')) return true; // check above first!
+			if (Gate::allows('admin')) return true; // check above first!
 
 			if ($role = Role::where('slug','waypoint-admin')->first())
 			{
@@ -325,7 +325,7 @@ class AuthServiceProvider extends ServiceProvider
 			// check if we've already approved this
 			if (isset($user->is_contest_admin)) return $user->is_contest_admin;
 
-			if (Gate::allows('root')) return true; // check above first!
+			if (Gate::allows('admin')) return true; // check above first!
 
 			if ($role = Role::where('slug','contest-admin')->first())
 			{

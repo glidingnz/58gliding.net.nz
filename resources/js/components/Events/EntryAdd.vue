@@ -17,54 +17,10 @@
 
 		<div class="alert alert-info" role="alert" v-if="!viewGNZMembers">
 			Tip: <a href="/login">Login</a> or <a href="/register">register an account</a> to speed up entry of this form! And manage your entries later.
+			Or clone a previous entry to save time.
 		</div>
 
 		<ol>
-			<li>
-				Are you a GNZ member?
-				<div class="form-group col-md-6">
-					<label for="member_yes"><input type="radio" v-model="data.gnzMember" :value="true" id="member_yes" checked> Yes</label>
-					<label for="member_no"><input type="radio" v-model="data.gnzMember" :value="false" id="member_no"> No</label>
-				</div>
-			</li>
-			<li v-if="data.gnzMember">
-				<div v-if="viewGNZMembers">
-					GNZ Member:<br>
-					<div class="form-group col-md-6">
-						<member-selector v-model="data.member_id"></member-selector>
-					</div>
-				</div>
-				<div v-if="!viewGNZMembers">
-					GNZ Number<br>
-					<div class="form-group col-md-6">
-						<input type="text" v-model="data.gnz_number" class="form-control" id="gnz_number" name="gnz_number">
-					</div>
-				</div>
-				
-			</li>
-			<li v-if="!data.gnzMember">
-				<div class="form-group col-md-6">
-					<label for="first_name">First Name</label>
-					<input type="text" v-model="data.first_name" class="form-control" id="first_name" name="first_name">
-				</div>
-
-				<div class="form-group col-md-6">
-					<label for="last_name">Last Name</label> 
-					<input type="text" v-model="data.last_name" class="form-control" id="last_name" name="last_name">
-				</div>
-
-				<div class="form-group col-md-6">
-					<label for="email">Email</label> 
-					<input type="text" v-model="data.email" class="form-control" id="email" name="email">
-				</div>
-
-			</li>
-			<li>
-				<div class="form-group col-md-6">
-					<label for="mobile">Mobile</label> 
-					<input type="text" v-model="data.mobile" class="form-control" id="mobile" name="mobile">
-				</div>
-			</li>
 			<li>
 				Entry Type
 				<div class="form-group col-md-6">
@@ -93,19 +49,8 @@ export default {
 	data: function() {
 		return {
 			event: null,
-			viewGNZMembers: false,
 			data: {
 				eventId: null,
-				gnzMember: true,
-				member_id: null,
-				gnz_number: null,
-				first_name: '',
-				last_name: '',
-				mobile: '',
-				email: '',
-				aircraftId: null,
-				wingspan: '15m',
-				winglets: false,
 				entry_type: 'pilot',
 			}
 			
@@ -132,7 +77,6 @@ export default {
 		createEntry: function() {
 			window.axios.post('/api/v1/entries', this.data).then(function (response) {
 				var entry = response.data.data;
-
 			}).catch(function (error) {
 				messages.$emit('error', error.response.data.error);
 			});

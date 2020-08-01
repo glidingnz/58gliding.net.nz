@@ -234,7 +234,7 @@ export default {
 	methods: {
 		load: function() {
 			var that = this;
-			window.axios.get('/api/v1/entries/' + this.editcode).then(function (response) {
+			window.axios.get('/api/v1/entries/code/' + this.editcode).then(function (response) {
 				that.entry = response.data.data;
 				that.loaded=true;
 				console.log(that.entry);
@@ -243,6 +243,7 @@ export default {
 		updateEntry: function() {
 			window.axios.post('/api/v1/entries/' + this.entry.editcode, this.entry).then(function (response) {
 				var entry = response.data.data;
+				messages.$emit('success', 'Entry Updated');
 			}).catch(function (error) {
 				messages.$emit('error', error.response.data.error);
 			});

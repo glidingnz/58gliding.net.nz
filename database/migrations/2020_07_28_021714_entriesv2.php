@@ -32,8 +32,8 @@ class Entriesv2 extends Migration
 			$table->string('editcode')->nullable();
 			$table->integer('event_id')->unsigned()->nullable();
 			$table->integer('classes_id')->unsigned()->nullable();
-			$table->integer('member_id')->unsigned()->nullable();
-			$table->integer('user_id')->unsigned()->nullable();
+			$table->integer('member_id')->unsigned()->nullable(); // the GNZ member number for this entry
+			$table->integer('user_id')->unsigned()->nullable(); // the user that created the entry
 			$table->integer('aircraft_id')->unsigned()->nullable();
 
 			// type of entry e.g. pilot, tow pilot, helper
@@ -44,7 +44,6 @@ class Entriesv2 extends Migration
 
 			// only used for visiting pilots/helpers who aren't in the GNZ database yet. Otherwise member ID is all they need.
 			$table->boolean('gnz_member')->default(true); // if they are or are not a GNZ member
-			$table->integer('gnz_number')->nullable();
 			$table->string('first_name')->nullable();
 			$table->string('last_name')->nullable();
 			$table->string('mobile')->nullable();

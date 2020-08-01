@@ -108,6 +108,7 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 
 
 	Route::post('/entries/{editcode}',  'EntriesApiController@update');
+	Route::get('/entries/code/{editcode}',  'EntriesApiController@showCode');
 	Route::resource('/entries', 'EntriesApiController', ['only' => [
 		'index', 'create', 'store', 'show'
 	]]);
