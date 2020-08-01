@@ -236,6 +236,7 @@ export default {
 			var that = this;
 			window.axios.get('/api/v1/entries/code/' + this.editcode).then(function (response) {
 				that.entry = response.data.data;
+
 				that.loaded=true;
 				console.log(that.entry);
 			});

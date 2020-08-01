@@ -45,7 +45,7 @@ import common from '../../mixins.js';
 var marked = require('marked');
 export default {
 	mixins: [common],
-	props: ['currentMemberId', 'eventId'],
+	props: ['eventId'],
 	data: function() {
 		return {
 			event: null,
@@ -58,10 +58,6 @@ export default {
 	},
 	created: function() {
 		this.load();
-		console.log(this.currentMemberId);
-		if (typeof this.currentMemberId!='undefined') {
-			this.data.member_id = this.currentMemberId;
-		}
 	},
 	mounted: function() {
 		this.viewGNZMembers = window.Laravel.gnzMember;

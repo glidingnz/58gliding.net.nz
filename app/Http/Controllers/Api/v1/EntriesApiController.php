@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Api\ApiController;
 use App\Models\Entry;
 use App\Models\Member;
+use Auth;
 
 class EntriesApiController extends ApiController
 {
@@ -153,46 +154,25 @@ class EntriesApiController extends ApiController
 	{
 		$input = $request->all();
 
-
 		$entry = new Entry;
 		$entry->editcode = randomkeys(12);
 
-		if ($request->exists('member_id')) $entry->member_id = $input['member_id'];
-
-		if (!($request->exists('member_id') || $request->exists('first_name') || $request->exists('gnz_number')))
-		{
-			return $this->error('A GNZ number, name or selected member is required');
-		}
-		if (!$request->exists('mobile')) {
-			return $this->error('A mobile number is required');
-		}
-		if (!$request->exists('eventId')) {
-			return $this->error('An eventId is required');
-		}
-
-		// if given a GNZ number, get the member ID from it
-		if ($input['gnz_number']) {
-			if ($member = Member::where('nzga_number', $input['gnz_number'])->first())
-			{
-				// use that ID instead of whatever was provided, as we shouldn't have got one from someone not logged in
-				$entry->member_id = $member->id;
-			}
-			else
-			{
-				return $this->error('Member #' . $input['gnz_number'] . ' Not Found');
-			}
-		}
-
-		if ($request->has('mobile')) $entry->mobile = $input['mobile'];
 		if ($request->has('entry_type')) $entry->entry_type = $input['entry_type'];
-		if ($request->has('first_name')) $entry->first_name = $input['first_name'];
-		if ($request->has('last_name')) $entry->last_name = $input['last_name'];
-		if ($request->has('email')) $entry->email = $input['email'];
 		if ($request->has('eventId')) $entry->event_id = $input['eventId'];
-		$entry->entry_status='definite';
-		$entry->catering_breakfasts='none';
-		$entry->catering_lunches='none';
-		$entry->catering_dinners='none';
+
+		// set the member ID to be the currently logged in member if we are logged in
+		if ($user = Auth::user())
+		{
+			if ($user->gnz_id!=null)
+			{
+				// get the members mobile phoner
+				if ($member = Member::where('nzga_number', $user->gnz_id)->first())
+				{
+					$entry->member_id = $member->id;
+					$entry->mobile = $member->mobile_phone;
+				}
+			}
+		}
 
 		if ($entry->save())
 		{
