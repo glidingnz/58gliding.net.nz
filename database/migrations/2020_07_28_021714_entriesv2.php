@@ -27,11 +27,20 @@ class Entriesv2 extends Migration
 			});
 		}
 
+		Schema::create('class_event', function (Blueprint $table) {
+			$table->increments('id');
+			$table->integer('class_id')->unsigned()->nullable();
+			$table->integer('event_id')->unsigned()->nullable();
+			$table->timestamps();
+		});
+
+
+
 		Schema::create('entries2', function (Blueprint $table) {
 			$table->increments('id');
 			$table->string('editcode')->nullable();
 			$table->integer('event_id')->unsigned()->nullable();
-			$table->integer('classes_id')->unsigned()->nullable();
+			$table->integer('class_id')->unsigned()->nullable();
 			$table->integer('member_id')->unsigned()->nullable(); // the GNZ member number for this entry
 			$table->integer('user_id')->unsigned()->nullable(); // the user that created the entry
 			$table->integer('aircraft_id')->unsigned()->nullable();
@@ -85,6 +94,7 @@ class Entriesv2 extends Migration
 	public function down()
 	{
 		Schema::dropIfExists('entries2');
+		Schema::dropIfExists('class_event');
 
 		if (Schema::hasTable('events')) {
 			Schema::table('events', function (Blueprint $table) {

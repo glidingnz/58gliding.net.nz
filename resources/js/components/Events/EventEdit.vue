@@ -270,6 +270,21 @@
 		</div>
 
 
+		<div class="row" v-if="flyingEvent">
+
+			<div class="form-group col-md-6">
+				<label class="col-xs-6 col-form-label">Classes for this Event</label><br>
+
+				<span v-for="availableClass in availableClasses" class="mr-4">
+					<label :for="'available_class'+availableClass.id">
+						<input type="checkbox" :id="'available_class'+availableClass.id" @change="toggleClass(availableClass.id)" :value="true" :checked="selectedClass(availableClass.id)">&nbsp;{{availableClass.name}}
+					</label>
+				</span>
+			</div>
+
+		</div>
+
+
 	</form>
 
 
@@ -286,12 +301,16 @@ export default {
 			event: [],
 			newDutyName: '',
 			hasEndDate: false,
-			returnOnSave: false
+			returnOnSave: false,
+			selectedClasses: [],
+			availableClasses: [],
 		}
 	},
 	props: ['orgId', 'eventId'],
 	created: function() {
-		this.load();
+		this.loadEvent();
+		this.loadAvailableClasses();
+		this.loadSelectedClasses();
 	},
 	computed: {
 		compiledMarkdown: function () {
@@ -304,7 +323,9 @@ export default {
 			switch (this.event.type)
 			{
 				case 'competition':
-				case 'xcountry': 
+				case 'camp': 
+				case 'training': 
+				case 'course': 
 					return true;
 					break;
 			}
@@ -312,7 +333,7 @@ export default {
 		}
 	},
 	methods: {
-		load: function() {
+		loadEvent: function() {
 			var that = this;
 			window.axios.get('/api/events/' + this.eventId).then(function (response) {
 				that.event = response.data.data;
@@ -359,6 +380,57 @@ export default {
 		{
 			Vue.set(this.event, 'organiser_member_id', member.id);
 			//this.event.organiser_member_id = member.id;
+		},
+		addClass: function() {
+			console.log('adding class');
+		},
+		loadSelectedClasses: function() {
+			var that = this;
+			that.selectedClasses = [];
+			window.axios.get('/api/v1/events/' + this.eventId + '/classes').then(function (response) {
+				var selectedClasses = response.data.data;
+				for (var i=0; i<selectedClasses.length; i++) {
+					that.selectedClasses.push(selectedClasses[i].class_id);
+					console.log(selectedClasses[i]);
+				}
+			});
+		},
+		loadAvailableClasses: function() {
+			var that = this;
+			window.axios.get('/api/v1/classes').then(function (response) {
+				that.availableClasses = response.data.data;
+			});
+		},
+		selectedClass: function(class_id)
+		{
+			return this.selectedClasses.includes(class_id);
+		},
+		toggleClass: function(class_id)
+		{
+			if (this.selectedClass(class_id)) {
+				// remove it
+				this.unlinkClass(class_id);
+				const index = this.selectedClasses.indexOf(class_id);
+				if (index > -1) {
+					this.selectedClasses.splice(index, 1);
+				}
+			} else {
+				// add it
+				this.linkClass(class_id);
+				this.selectedClasses.push(class_id);
+			}
+		},
+		linkClass: function(class_id)
+		{
+			window.axios.post('/api/v1/classes/' + class_id + '/link', this.event).then(function (response) {
+				
+			});
+		},
+		unlinkClass: function(class_id)
+		{
+			window.axios.post('/api/v1/classes/' + class_id + '/unlink', this.event).then(function (response) {
+				
+			});
 		}
 	}
 }

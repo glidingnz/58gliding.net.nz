@@ -21,6 +21,15 @@
 
 		<ol>
 			<li>
+				Entry Type
+				<div class="form-group col-md-6">
+					<label for="entry_type_pilot" class="mr-4"><input id="entry_type_pilot" type="radio" v-model="entry.entry_type" value="pilot"> Pilot</label>
+					<label for="entry_type_2nd_pilot" class="mr-4"><input id="entry_type_2nd_pilot" type="radio" v-model="entry.entry_type" value="2nd_pilot"> Second Pilot</label>
+					<label for="entry_type_towpilot" class="mr-4"><input id="entry_type_towpilot" type="radio" v-model="entry.entry_type" value="towpilot"> Tow Pilot</label>
+					<label for="entry_type_helper" class="mr-4"><input id="entry_type_helper" type="radio" v-model="entry.entry_type" value="helper"> Helper</label>
+				</div>
+			</li>
+			<li>
 				Are you a GNZ member?
 				<div class="form-group col-md-6">
 					<label for="member_yes"><input type="radio" v-model="entry.gnz_member" :value="true" id="member_yes" checked> Yes</label>
@@ -63,15 +72,6 @@
 				<div class="form-group col-md-6">
 					<label for="mobile">Mobile</label> 
 					<input type="text" v-model="entry.mobile" class="form-control" id="mobile" name="mobile">
-				</div>
-			</li>
-			<li>
-				Entry Type
-				<div class="form-group col-md-6">
-					<label for="entry_type_pilot" class="mr-4"><input id="entry_type_pilot" type="radio" v-model="entry.entry_type" value="pilot"> Pilot</label>
-					<label for="entry_type_2nd_pilot" class="mr-4"><input id="entry_type_2nd_pilot" type="radio" v-model="entry.entry_type" value="2nd_pilot"> Second Pilot</label>
-					<label for="entry_type_towpilot" class="mr-4"><input id="entry_type_towpilot" type="radio" v-model="entry.entry_type" value="towpilot"> Tow Pilot</label>
-					<label for="entry_type_helper" class="mr-4"><input id="entry_type_helper" type="radio" v-model="entry.entry_type" value="helper"> Helper</label>
 				</div>
 			</li>
 			<li>

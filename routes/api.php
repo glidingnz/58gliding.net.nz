@@ -112,6 +112,12 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 	Route::resource('/entries', 'EntriesApiController', ['only' => [
 		'index', 'create', 'store', 'show'
 	]]);
+	Route::get('/classes',  'ClassesApiController@index');
+
+	// link and unlink a class to an event
+	Route::get('/events/{id}/classes',  'ClassesApiController@event');
+	Route::post('/classes/{id}/link',  'ClassesApiController@link');
+	Route::post('/classes/{id}/unlink',  'ClassesApiController@unlink');
 
 	Route::group(['middleware' => ['auth:api']], function () {
 
