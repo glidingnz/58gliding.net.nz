@@ -24,10 +24,16 @@
 			<li>
 				Entry Type
 				<div class="form-group col-md-6">
-					<label for="entry_type_pilot" class="mr-4"><input id="entry_type_pilot" type="radio" v-model="data.entry_type" value="pilot"> Pilot</label>
-					<label for="entry_type_2nd_pilot" class="mr-4"><input id="entry_type_2nd_pilot" type="radio" v-model="data.entry_type" value="2nd_pilot"> Second Pilot</label>
-					<label for="entry_type_towpilot" class="mr-4"><input id="entry_type_towpilot" type="radio" v-model="data.entry_type" value="towpilot"> Tow Pilot</label>
-					<label for="entry_type_helper" class="mr-4"><input id="entry_type_helper" type="radio" v-model="data.entry_type" value="helper"> Helper</label>
+					<label for="entry_type_pilot" class="mr-4"><input id="entry_type_pilot" type="radio" v-model="entry.entry_type" value="pilot"> Pilot</label>
+					<label for="entry_type_2nd_pilot" class="mr-4"><input id="entry_type_2nd_pilot" type="radio" v-model="entry.entry_type" value="2nd_pilot"> Second Pilot</label>
+					<label for="entry_type_towpilot" class="mr-4"><input id="entry_type_towpilot" type="radio" v-model="entry.entry_type" value="towpilot"> Tow Pilot</label>
+					<label for="entry_type_helper" class="mr-4"><input id="entry_type_helper" type="radio" v-model="entry.entry_type" value="helper"> Helper</label>
+				</div>
+			</li>
+			<li>
+				<div class="form-group col-md-6">
+					<label for="email">Email</label> 
+					<input type="text" v-model="entry.email" class="form-control" id="email" name="email">
 				</div>
 			</li>
 			<li>
@@ -49,9 +55,10 @@ export default {
 	data: function() {
 		return {
 			event: null,
-			data: {
+			entry: {
 				eventId: null,
 				entry_type: 'pilot',
+				email: '',
 			}
 			
 		}
@@ -67,12 +74,15 @@ export default {
 			var that = this;
 			window.axios.get('/api/events/' + this.eventId).then(function (response) {
 				that.event = response.data.data;
-				that.data.eventId = that.event.id;
+				that.entry.eventId = that.event.id;
 			});
 		},
 		createEntry: function() {
-			window.axios.post('/api/v1/entries', this.data).then(function (response) {
+			window.axios.post('/api/v1/entries', this.entry).then(function (response) {
 				var entry = response.data.data;
+				if (entry.editcode) {
+					window.location.href = "/entries/" + entry.editcode;
+				}
 			}).catch(function (error) {
 				messages.$emit('error', error.response.data.error);
 			});

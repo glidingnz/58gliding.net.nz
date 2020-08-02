@@ -37,7 +37,7 @@
 
 			<div class="card event-details  mb-4">
 				<div class="card-header">
-					Details
+					<h3>Details</h3>
 				</div>
 				<div class="card-body">
 
@@ -137,30 +137,118 @@
 	</div>
 
 
-	<div class="row">
-		<div class="col-md-6">
-
+	<div class="row" v-if="entries.length>0">
+		<div class="col-md-12">
 
 			<div class="card event-details">
 				<div class="card-header">
-					Entries So Far!
+					<div class="float-right">
+						<span class="ml-2">{{entriesCount}} glider entries</span>
+						<span class="ml-2">({{tentativeEntriesCount}} tentative</span>
+						<span class="ml-2">{{confirmedEntriesCount}} entered)</span>
+						<span class="ml-2">{{secondPilotEntries.length}} second pilot<span v-show="secondPilotEntries.length!=1">s</span></span>
+						<span class="ml-2">{{helperEntries.length}} helper<span v-show="helperEntries.length!=1">s</span></span>
+					</div>
+					<h3>Entries</h3>
 				</div>
 				<div class="card-body">
 					
-					<table>
+					<table class="table">
 						<tr>
 							<th>Name</th>
 							<th>Class</th>
 							<th>Glider</th>
+							<th>Model</th>
 							<th>Wingspan</th>
 							<th>Handicap</th>
+							<th>Status</th>
+							<th></th>
 						</tr>
-						<tr v-for="entry in entries">
-							<td>{{entry.name}}</td>
-							<td>{{entry.class.name}}</td>
-							<td>{{entry.glider.type}}</td>
+						<tr v-for="entry in pilotEntries">
+							<td>
+								{{entry.first_name}} {{entry.last_name}}
+							</td>
+							<td>
+								<span v-if="entry.contest_class">{{entry.contest_class.name}}</span>
+								<span v-if="!entry.contest_class">Unkonwn</span>
+							</td>
+							<td>
+								<span v-if="entry.aircraft">{{entry.aircraft.rego}}</span>
+								<span v-if="!entry.aircraft">Unkonwn</span>
+							</td> 
+							<td>
+								<span v-if="entry.aircraft">{{entry.aircraft.model}}</span>
+							</td> 
 							<td>{{entry.wingspan}}</td>
 							<td>{{entry.handicap}}</td>
+							<td>
+								{{entry.entry_status}}
+							</td>
+							<td>
+								<a v-if="entry.editcode" class="fa fa-edit" :href="'/entries/' + entry.editcode"></a>
+							</td>
+						</tr>
+					</table>
+
+					<h3>Second Pilots</h3>
+
+					
+					<table class="table">
+						<tr>
+							<th>Name</th>
+							<th>Class</th>
+							<th>Glider</th>
+							<th>Model</th>
+							<th>Status</th>
+							<th></th>
+						</tr>
+						<tr v-for="entry in secondPilotEntries">
+							<td>
+								{{entry.first_name}} {{entry.last_name}}
+							</td>
+							<td>
+								<span v-if="entry.contest_class">{{entry.contest_class.name}}</span>
+								<span v-if="!entry.contest_class">Unkonwn</span>
+							</td>
+							<td>
+								<span v-if="entry.aircraft">{{entry.aircraft.rego}}</span>
+								<span v-if="!entry.aircraft">Unkonwn</span>
+							</td> 
+							<td>
+								<span v-if="entry.aircraft">{{entry.aircraft.model}}</span>
+							</td> 
+							<td>
+								{{entry.entry_status}}
+							</td>
+							<td>
+								<a v-if="entry.editcode" class="fa fa-edit" :href="'/entries/' + entry.editcode"></a>
+							</td>
+						</tr>
+					</table>
+
+					<h3>Helpers</h3>
+
+					
+					<table class="table">
+						<tr>
+							<th>Name</th>
+							<th>Type</th>
+							<th>Status</th>
+							<th></th>
+						</tr>
+						<tr v-for="entry in helperEntries">
+							<td>
+								{{entry.first_name}} {{entry.last_name}}
+							</td>
+							<td>
+								{{entry.entry_type}}
+							</td>
+							<td>
+								{{entry.entry_status}}
+							</td>
+							<td>
+								<a v-if="entry.editcode" class="fa fa-edit" :href="'/entries/' + entry.editcode"></a>
+							</td>
 						</tr>
 					</table>
 
@@ -216,12 +304,30 @@ export default {
 					break;
 			}
 			return false;
+		},
+		tentativeEntriesCount: function() {
+			return this.pilotEntries.filter((obj) => obj.entry_status=='tentative').length;
+		},
+		confirmedEntriesCount: function() {
+			return this.pilotEntries.filter((obj) => obj.entry_status=='entered').length;
+		},
+		entriesCount: function() {
+			return this.pilotEntries.length;
+		},
+		pilotEntries: function() {
+			return this.entries.filter((obj) => obj.entry_type=='pilot');
+		},
+		secondPilotEntries: function() {
+			return this.entries.filter((obj) => obj.entry_type=='2nd_pilot');
+		},
+		helperEntries: function() {
+			return this.entries.filter((obj) => obj.entry_type=='helper' ||obj.entry_type=='towpilot');
 		}
 	},
 	methods: {
 		loadEntries: function() {
 			var that = this;
-			window.axios.get('/api/v1/entries?event_id=' + this.event.id).then(function (response) {
+			window.axios.get('/api/v1/entries?cancelled=false&event_id=' + this.event.id).then(function (response) {
 				that.entries = response.data.data;
 			});
 		},

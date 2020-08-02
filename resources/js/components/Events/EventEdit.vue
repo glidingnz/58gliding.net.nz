@@ -392,7 +392,6 @@ export default {
 				// just get the IDs into the array
 				for (var i=0; i<selectedClasses.length; i++) {
 					that.selectedClasses.push(selectedClasses[i].class_id);
-					console.log(selectedClasses[i]);
 				}
 			});
 		},

@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Api\V1;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 use App\Http\Requests;
 use App\Http\Controllers\Api\ApiController;
 use App\Models\Entry;
 use App\Models\Member;
+use App\Models\Event;
+use App\Mail\EnterEvent;
 use Auth;
 
 class EntriesApiController extends ApiController
@@ -21,7 +24,14 @@ class EntriesApiController extends ApiController
 			$query->where('event_id', $request->input('event_id'));
 		}
 
-		$query->with('aircraft')->with('contestClass')->with('member');
+		if ($request->exists('cancelled') && $request->input('cancelled')=='false')
+		{
+			$query->where('entry_status', '<>', 'cancelled');
+			$query->where('entry_status', '<>', 'started');
+		}
+
+
+		$query->with('aircraft')->with('contestClass');
 
 		if ($entries = $query->paginate($request->input('per-page', 50)))
 		{
@@ -102,6 +112,11 @@ class EntriesApiController extends ApiController
 			return $this->error('A mobile number is required');
 		}
 
+		if ($request->has('first_name')) $entry->first_name = $input['first_name'];
+		if ($request->has('last_name')) $entry->last_name = $input['last_name'];
+		if ($request->has('email')) $entry->email = $input['email'];
+		if ($request->has('mobile')) $entry->mobile = $input['mobile'];
+
 		// if given a GNZ number, get the member ID from it
 		if ($request->exists('gnz_number')) {
 			if ($member = Member::where('nzga_number', $input['gnz_number'])->first())
@@ -115,15 +130,28 @@ class EntriesApiController extends ApiController
 			}
 		}
 
+
+		// get member details
+		if ($request->has('member_id') && $request->input('gnz_member', false))
+		{
+			if ($member = Member::where('id', $request->input('member_id'))->first())
+			{
+				// copy basic details over so we don't have to get the member details that has permission issues.
+				$entry->first_name = $member->first_name;
+				$entry->last_name = $member->last_name;
+				// $entry->mobile = $member->mobile; // can't get these for privacy reasons!
+				// $entry->email = $member->email; // should be correct anyway...
+			}
+		}
+
+
+
+		if ($request->has('gnz_member')) $entry->gnz_member = $input['gnz_member'];
 		if ($request->has('aircraft_id')) $entry->aircraft_id = $input['aircraft_id'];
 		if ($request->has('wingspan')) $entry->wingspan = $input['wingspan'];
 		if ($request->has('winglets')) $entry->winglets = $input['winglets'];
 		if ($request->has('class_id')) $entry->class_id = $input['class_id'];
-		if ($request->has('mobile')) $entry->mobile = $input['mobile'];
 		if ($request->has('entry_type')) $entry->entry_type = $input['entry_type'];
-		if ($request->has('first_name')) $entry->first_name = $input['first_name'];
-		if ($request->has('last_name')) $entry->last_name = $input['last_name'];
-		if ($request->has('email')) $entry->email = $input['email'];
 		if ($request->has('catering_breakfasts')) $entry->catering_breakfasts = $input['catering_breakfasts'];
 		if ($request->has('catering_lunches')) $entry->catering_lunches = $input['catering_lunches'];
 		if ($request->has('catering_dinners')) $entry->catering_dinners = $input['catering_dinners'];
@@ -160,15 +188,21 @@ class EntriesApiController extends ApiController
 	{
 		$input = $request->all();
 
+		if (!($request->has('email') && $request->input('email')!=null)) return $this->error('Your email address is required so we can email you a link to edit your entry');
+
 		$entry = new Entry;
 		$entry->editcode = randomkeys(12);
 
 		if ($request->has('entry_type')) $entry->entry_type = $input['entry_type'];
 		if ($request->has('eventId')) $entry->event_id = $input['eventId'];
+		if ($request->has('email')) $entry->email = $input['email'];
+		$entry->entry_status = 'started';
 
 		// set the member ID to be the currently logged in member if we are logged in
 		if ($user = Auth::user())
 		{
+			$entry->user_id = $user->id;
+
 			if ($user->gnz_id!=null)
 			{
 				// get the members mobile phoner
@@ -183,6 +217,13 @@ class EntriesApiController extends ApiController
 		if ($entry->save())
 		{
 			$entry->showDetails(); // ensure we share all the details as this user just created it
+
+			// send the email
+			if ($event = Event::find($entry->event_id))
+			{
+				Mail::to($entry->email)->send(new EnterEvent($event, $entry));
+			}
+
 			return $this->success($entry);
 		}
 		return $this->error();
