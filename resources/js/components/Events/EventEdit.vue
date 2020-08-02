@@ -389,6 +389,7 @@ export default {
 			that.selectedClasses = [];
 			window.axios.get('/api/v1/events/' + this.eventId + '/classes').then(function (response) {
 				var selectedClasses = response.data.data;
+				// just get the IDs into the array
 				for (var i=0; i<selectedClasses.length; i++) {
 					that.selectedClasses.push(selectedClasses[i].class_id);
 					console.log(selectedClasses[i]);

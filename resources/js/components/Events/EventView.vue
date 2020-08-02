@@ -34,7 +34,8 @@
 		</div>
 
 		<div class="col-md-6">
-			<div class="card event-details">
+
+			<div class="card event-details  mb-4">
 				<div class="card-header">
 					Details
 				</div>
@@ -121,11 +122,55 @@
 						<div class="col-8"><a :href="'mailto:' + event.email">{{event.email}}</a></div>
 					</div>
 
+					<div class="row mb-2" v-if="selectedClasses.length>0">
+						<div class="col-4 label">Classes</div>
+						<div class="col-8">
+							<span v-for="selectedClass in selectedClasses" class="mr-4">
+								{{selectedClass.contest_class.name}}
+							</span>
+						</div>
+					</div>
+
 				</div>
 			</div>
 		</div>
-
 	</div>
+
+
+	<div class="row">
+		<div class="col-md-6">
+
+
+			<div class="card event-details">
+				<div class="card-header">
+					Entries So Far!
+				</div>
+				<div class="card-body">
+					
+					<table>
+						<tr>
+							<th>Name</th>
+							<th>Class</th>
+							<th>Glider</th>
+							<th>Wingspan</th>
+							<th>Handicap</th>
+						</tr>
+						<tr v-for="entry in entries">
+							<td>{{entry.name}}</td>
+							<td>{{entry.class.name}}</td>
+							<td>{{entry.glider.type}}</td>
+							<td>{{entry.wingspan}}</td>
+							<td>{{entry.handicap}}</td>
+						</tr>
+					</table>
+
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+
 
 
 
@@ -143,7 +188,9 @@ export default {
 			newDutyName: '',
 			hasEndDate: false,
 			attributes: [],
-			calendar: null
+			calendar: null,
+			selectedClasses: [],
+			entries: [],
 		}
 	},
 	props: ['orgId', 'eventId'],
@@ -172,6 +219,18 @@ export default {
 		}
 	},
 	methods: {
+		loadEntries: function() {
+			var that = this;
+			window.axios.get('/api/v1/entries?event_id=' + this.event.id).then(function (response) {
+				that.entries = response.data.data;
+			});
+		},
+		loadSelectedClasses: function() {
+			var that = this;
+			window.axios.get('/api/v1/events/' + this.event.id + '/classes').then(function (response) {
+				that.selectedClasses = response.data.data;
+			});
+		},
 		load: function() {
 			var that = this;
 			window.axios.get('/api/events/' + this.eventId).then(function (response) {
@@ -253,6 +312,10 @@ export default {
 				// move calendar to the date range
 				that.calendar.showPageRange({ from: that.event.start_date });
 				
+
+				// once we have the event details, load the extra stuff
+				that.loadSelectedClasses();
+				that.loadEntries();
 			});
 		}
 	}

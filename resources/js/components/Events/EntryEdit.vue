@@ -83,6 +83,14 @@
 				</div>
 			</li>
 
+			<li v-if="selectedClasses.length>0 && entry.entry_type=='pilot'">
+				Class
+				<div class="form-group col-md-6">
+					<span v-for="selectedClass in selectedClasses">
+					<label :for="'entry_status_tentative_' + selectedClass.id" class="mr-4"><input :id="'entry_status_tentative_' + selectedClass.id" type="radio" v-model="entry.class_id" :value="selectedClass.id"> {{selectedClass.contest_class.name}}</label>
+					</span>
+				</div>
+			</li>
 
 			<li v-if="entry.entry_type=='pilot' || entry.entry_type=='2nd_pilot'">
 				<div class="form-group col-md-6">
@@ -203,6 +211,7 @@ export default {
 		return {
 			viewGNZMembers: false,
 			loaded: false,
+			selectedClasses: [],
 			entry: {
 				id: null,
 				editcode: null,
@@ -225,20 +234,26 @@ export default {
 		}
 	},
 	created: function() {
-		this.load();
+		this.loadEntry();
 	},
 	mounted: function() {
 		// figure out if we have permissions to view GNZ members
 		this.viewGNZMembers = window.Laravel.gnzMember;
 	},
 	methods: {
-		load: function() {
+		loadEntry: function() {
 			var that = this;
 			window.axios.get('/api/v1/entries/code/' + this.editcode).then(function (response) {
 				that.entry = response.data.data;
-
+				// once we have loaded the entry details, load the classes for it
+				that.loadSelectedClasses();
 				that.loaded=true;
-				console.log(that.entry);
+			});
+		},
+		loadSelectedClasses: function() {
+			var that = this;
+			window.axios.get('/api/v1/events/' + this.entry.event.id + '/classes').then(function (response) {
+				that.selectedClasses = response.data.data;
 			});
 		},
 		updateEntry: function() {

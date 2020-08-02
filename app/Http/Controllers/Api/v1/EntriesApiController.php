@@ -21,6 +21,7 @@ class EntriesApiController extends ApiController
 			$query->where('event_id', $request->input('event_id'));
 		}
 
+		$query->with('aircraft')->with('contestClass');
 
 		if ($entries = $query->paginate($request->input('per-page', 50)))
 		{
@@ -100,7 +101,7 @@ class EntriesApiController extends ApiController
 		}
 
 		// if given a GNZ number, get the member ID from it
-		if ($input['gnz_number']) {
+		if ($request->exists('gnz_number')) {
 			if ($member = Member::where('nzga_number', $input['gnz_number'])->first())
 			{
 				// use that ID instead of whatever was provided, as we shouldn't have got one from someone not logged in
@@ -113,6 +114,7 @@ class EntriesApiController extends ApiController
 		}
 
 		if ($request->has('aircraft_id')) $entry->aircraft_id = $input['aircraft_id'];
+		if ($request->has('class_id')) $entry->class_id = $input['class_id'];
 		if ($request->has('mobile')) $entry->mobile = $input['mobile'];
 		if ($request->has('entry_type')) $entry->entry_type = $input['entry_type'];
 		if ($request->has('first_name')) $entry->first_name = $input['first_name'];

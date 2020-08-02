@@ -100,6 +100,10 @@ class Entry extends Model
 		return $this->hasOne('App\Models\Aircraft', 'id', 'aircraft_id');
 	}
 
+	public function contestClass() {
+		return $this->hasOne('App\Models\ContestClass', 'id', 'class_id');
+	}
+
 	public function user() {
 		return $this->hasOne('App\Models\User', 'id', 'user_id');
 	}
