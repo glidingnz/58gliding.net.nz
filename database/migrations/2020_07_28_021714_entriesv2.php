@@ -78,7 +78,7 @@ class Entriesv2 extends Migration
 			$table->string('catering_dinners')->nullable();
 			$table->string('catering_breakfasts')->nullable();
 
-			$table->integer('catering_final_dinner')->nullable()->default(false);
+			$table->integer('catering_final_dinner')->nullable();
 			$table->string('catering_notes')->nullable();
 
 			$table->boolean('signed')->default(false);

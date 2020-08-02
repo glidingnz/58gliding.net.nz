@@ -123,6 +123,10 @@
 				<div class="form-group col-md-6">
 					<label for="winglets"><input class="" type="checkbox" id="winglets" v-model="entry.winglets" :value="true"> Winglets</label>
 				</div>
+				<div class="form-group col-md-6 form-inline">
+					<label for="handicap">Hanidcap Claimed</label>
+					<input type="text" id="handicap" v-model="entry.handicap" size="5" class="form-control ml-4 mr-4" > e.g. 98.5 or 111
+				</div>
 			</li>
 			<li>
 				

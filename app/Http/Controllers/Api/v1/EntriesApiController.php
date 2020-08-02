@@ -150,6 +150,7 @@ class EntriesApiController extends ApiController
 		if ($request->has('aircraft_id')) $entry->aircraft_id = $input['aircraft_id'];
 		if ($request->has('wingspan')) $entry->wingspan = $input['wingspan'];
 		if ($request->has('winglets')) $entry->winglets = $input['winglets'];
+		if ($request->has('handicap')) $entry->handicap = $input['handicap'];
 		if ($request->has('class_id')) $entry->class_id = $input['class_id'];
 		if ($request->has('entry_type')) $entry->entry_type = $input['entry_type'];
 		if ($request->has('catering_breakfasts')) $entry->catering_breakfasts = $input['catering_breakfasts'];

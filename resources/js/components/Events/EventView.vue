@@ -153,7 +153,7 @@
 				</div>
 				<div class="card-body">
 					
-					<table class="table">
+					<table class="table collapsable">
 						<tr>
 							<th>Name</th>
 							<th>Class</th>
@@ -166,7 +166,8 @@
 						</tr>
 						<tr v-for="entry in pilotEntries">
 							<td>
-								{{entry.first_name}} {{entry.last_name}}
+								<h3 class="d-md-none mt-4">{{entry.first_name}} {{entry.last_name}}</h3>
+								<span class="d-none d-md-block">{{entry.first_name}} {{entry.last_name}}</span>
 							</td>
 							<td>
 								<span v-if="entry.contest_class">{{entry.contest_class.name}}</span>
@@ -179,10 +180,10 @@
 							<td>
 								<span v-if="entry.aircraft">{{entry.aircraft.model}}</span>
 							</td> 
-							<td>{{entry.wingspan}}</td>
-							<td>{{entry.handicap}}</td>
+							<td><span class="d-md-none text-muted">Wingspan: </span>{{entry.wingspan}}</td>
+							<td><span class="d-md-none text-muted">Handicap: </span>{{entry.handicap}}</td>
 							<td>
-								{{entry.entry_status}}
+								<span class="d-md-none text-muted">Entry Status: </span>{{entry.entry_status}}
 							</td>
 							<td>
 								<a v-if="entry.editcode" class="fa fa-edit" :href="'/entries/' + entry.editcode"></a>
@@ -193,7 +194,7 @@
 					<h3>Second Pilots</h3>
 
 					
-					<table class="table">
+					<table class="table collapsable">
 						<tr>
 							<th>Name</th>
 							<th>Class</th>
@@ -204,7 +205,8 @@
 						</tr>
 						<tr v-for="entry in secondPilotEntries">
 							<td>
-								{{entry.first_name}} {{entry.last_name}}
+								<h3 class="d-md-none mt-4">{{entry.first_name}} {{entry.last_name}}</h3>
+								<span class="d-none d-md-block">{{entry.first_name}} {{entry.last_name}}</span>
 							</td>
 							<td>
 								<span v-if="entry.contest_class">{{entry.contest_class.name}}</span>
@@ -229,7 +231,7 @@
 					<h3>Helpers</h3>
 
 					
-					<table class="table">
+					<table class="table collapsable">
 						<tr>
 							<th>Name</th>
 							<th>Type</th>
@@ -238,7 +240,8 @@
 						</tr>
 						<tr v-for="entry in helperEntries">
 							<td>
-								{{entry.first_name}} {{entry.last_name}}
+								<h3 class="d-md-none mt-4">{{entry.first_name}} {{entry.last_name}}</h3>
+								<span class="d-none d-md-block">{{entry.first_name}} {{entry.last_name}}</span>
 							</td>
 							<td>
 								{{entry.entry_type}}
@@ -252,8 +255,54 @@
 						</tr>
 					</table>
 
+					
+
 				</div>
 			</div>
+
+
+			<div class="card event-details mt-4">
+				<div class="card-header">
+					<div class="float-right">
+						<span class="ml-2"><span class="text-muted">Breakfasts all: </span>{{breakfastsAllCount}} <span class="text-muted">some:</span> {{breakfastsSomeCount}}</span>
+						<span class="ml-2"><span class="text-muted">Lunches all: </span>{{lunchesAllCount}} <span class="text-muted">some:</span> {{lunchesSomeCount}}</span>
+						<span class="ml-2"><span class="text-muted">Dinners all: </span>{{dinnersAllCount}} <span class="text-muted">some:</span> {{dinnersSomeCount}}</span>
+						<span class="ml-2"><span class="text-muted">Final Dinner: </span>{{finalDinnerCount}}</span>
+					</div>
+					<h3>Catering</h3>
+				</div>
+				<div class="card-body">
+					
+					<table class="table collapsable">
+						<tr>
+							<th>Name</th>
+							<th>Brkfsts</th>
+							<th>Lunches</th>
+							<th>Dinners</th>
+							<th>Final Dinner</th>
+						</tr>
+						<tr v-for="entry in entries">
+							<td>
+								<h3 class="d-md-none mt-4">{{entry.first_name}} {{entry.last_name}}</h3>
+								<span class="d-none d-md-block">{{entry.first_name}} {{entry.last_name}}</span>
+							</td>
+							<td>
+								<span class="d-md-none text-muted">Breakfasts: </span><span class="fa" :class="showMeal(entry.catering_breakfasts)"></span>
+							</td>
+							<td>
+								<span class="d-md-none text-muted">Lunches: </span><span class="fa" :class="showMeal(entry.catering_lunches)"></span>
+							</td>
+							<td>
+								<span class="d-md-none text-muted">Dinners: </span><span class="fa" :class="showMeal(entry.catering_dinners)"></span>
+							</td>
+							<td>
+								<span class="d-md-none text-muted">Final Dinner: </span>{{entry.catering_final_dinner}}
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+
 
 
 		</div>
@@ -322,9 +371,42 @@ export default {
 		},
 		helperEntries: function() {
 			return this.entries.filter((obj) => obj.entry_type=='helper' ||obj.entry_type=='towpilot');
+		},
+		breakfastsAllCount: function() {
+			return this.entries.filter((obj) => obj.catering_breakfasts=='all').length;
+		},
+		breakfastsSomeCount: function() {
+			return this.entries.filter((obj) => obj.catering_breakfasts=='some').length;
+		},
+		lunchesAllCount: function() {
+			return this.entries.filter((obj) => obj.catering_lunches=='all').length;
+		},
+		lunchesSomeCount: function() {
+			return this.entries.filter((obj) => obj.catering_lunches=='some').length;
+		},
+		dinnersAllCount: function() {
+			return this.entries.filter((obj) => obj.catering_dinners=='all').length;
+		},
+		dinnersSomeCount: function() {
+			return this.entries.filter((obj) => obj.catering_dinners=='some').length;
+		},
+		finalDinnerCount: function() {
+			var counter=0;
+			this.entries.forEach(function(item, index) {
+				counter = counter + item.catering_final_dinner;
+			});
+			return counter;
 		}
+
 	},
 	methods: {
+		showMeal: function(item) {
+			switch(item) {
+				case 'none': return 'fa-times'; break;
+				case 'some': return 'fa-check'; break;
+				case 'all': return 'fa-check-double'; break;
+			}
+		},
 		loadEntries: function() {
 			var that = this;
 			window.axios.get('/api/v1/entries?cancelled=false&event_id=' + this.event.id).then(function (response) {

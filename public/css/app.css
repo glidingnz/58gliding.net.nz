@@ -13574,3 +13574,20 @@ th.center {
   overflow: scroll;
 }
 
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+  /* Force table to not be like tables anymore */
+
+  table.collapsable,
+  .collapsable thead,
+  .collapsable tbody,
+  .collapsable th,
+  .collapsable td,
+  .collapsable tr {
+    display: block;
+  }
+
+  table.collapsable th {
+    display: none !important;
+  }
+}
+
