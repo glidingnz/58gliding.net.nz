@@ -77,8 +77,8 @@
 			<li>
 				Entry Status
 				<div class="form-group col-md-6">
+					<label for="entry_status_entered" class="mr-4"><input id="entry_status_entered" type="radio" v-model="entry.entry_status" value="entered"> Entered</label>
 					<label for="entry_status_tentative" class="mr-4"><input id="entry_status_tentative" type="radio" v-model="entry.entry_status" value="tentative"> Tentative</label>
-					<label for="entry_status_definite" class="mr-4"><input id="entry_status_definite" type="radio" v-model="entry.entry_status" value="definite"> Definite</label>
 					<label for="entry_status_cancelled" class="mr-4"><input id="entry_status_cancelled" type="radio" v-model="entry.entry_status" value="cancelled"> Cancelled</label>
 				</div>
 			</li>
@@ -101,7 +101,7 @@
 			</li>
 			<li v-if="entry.entry_type=='pilot'">
 				<div class="form-group col-md-6">
-					<label for="aircraft">Wingspan</label>
+					<label for="wingspan">Wingspan</label>
 					<select name="wingspan" id="wingspan" class="form-control" v-model="entry.wingspan">
 						<option value="15">15m</option>
 						<option value="18">18m</option>
@@ -191,6 +191,17 @@
 				</div>
 			</li>
 
+			<li v-if="entry.event.terms">
+				<div class="card">
+					<div class="card-body">
+						<div v-html="entryMarkdown"></div>
+					</div>
+				</div>
+				
+				<label for="signed" class="mr-4"><input id="signed" type="checkbox" v-model="entry.signed" :value="true"> I agree to these terms and conditions</label>
+
+			</li>
+
 			<li>
 				<button class="btn btn-primary" v-on:click="updateEntry()">Save Changes</button>
 			</li>
@@ -223,7 +234,7 @@ export default {
 				mobile: '',
 				email: '',
 				aircraft_id: null,
-				wingspan: '15m',
+				wingspan: '15',
 				winglets: false,
 				entry_type: 'pilot',
 				catering_breakfasts: 'none',
@@ -239,6 +250,11 @@ export default {
 	mounted: function() {
 		// figure out if we have permissions to view GNZ members
 		this.viewGNZMembers = window.Laravel.gnzMember;
+	},
+	computed: {
+		entryMarkdown: function () {
+			return marked(this.entry.event.terms, { sanitize: true })
+		},
 	},
 	methods: {
 		loadEntry: function() {

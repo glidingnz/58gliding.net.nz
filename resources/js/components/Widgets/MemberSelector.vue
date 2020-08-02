@@ -1,8 +1,8 @@
 <template>
 	<div class="selectMember">
-		<input v-model="memberSearch" v-if="!selectedMember || edit" @keydown="memberSearchType" class="form-control" placeholder="Member Search..." v-bind:class="{'is-valid': selectedMember, 'is-invalid': noResults}">
+		<input v-model="memberSearch" v-if="!selectedMember || edit" @keydown="memberSearchType" class="form-control" placeholder="Member Search..." >
 
-		<button class="btn btn-primary" v-if="selectedMember && !edit" v-on:click="edit=true">
+		<button class="btn btn-success" v-if="selectedMember && !edit" v-on:click="edit=true">
 			{{selectedMember.first_name}} {{selectedMember.last_name}}  &nbsp; {{selectedMember.nzga_number}} <div class="badge badge-light badge-pill ml-2">Change</div>
 		</button>
 

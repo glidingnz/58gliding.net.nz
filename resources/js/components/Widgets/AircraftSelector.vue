@@ -1,10 +1,10 @@
 <template>
 	<div class="selectAircraft">
 
-			<input v-model="aircraftSearch" v-if="!selectedAircraft || edit" @keydown="aircraftSearchType" class="form-control" placeholder="Aircraft Search Rego or Type e.g. GOP..." v-bind:class="{'is-valid': selectedAircraft, 'is-invalid': noResults}">
+			<input v-model="aircraftSearch" v-if="!selectedAircraft || edit" @keydown="aircraftSearchType" class="form-control" placeholder="Aircraft Search Rego or Type e.g. GOP...">
 
-			<button class="btn btn-primary" v-if="selectedAircraft && !edit" v-on:click="edit=true">
-				{{selectedAircraft.rego}} &nbsp; {{selectedAircraft.model}} <div class="badge badge-light badge-pill ml-2">Search Again</div>
+			<button class="btn btn-success" v-if="selectedAircraft && !edit" v-on:click="edit=true">
+				{{selectedAircraft.rego}} &nbsp; {{selectedAircraft.model}} <div class="badge badge-light badge-pill ml-2">Change</div>
 			</button>
 
 			<span class="error" v-show="noResults">Aircraft not found</span>
@@ -33,13 +33,14 @@
 			}
 		},
 		created: function () {
-			if (this.input) {
-				this.loadAircraft(this.input);
+			if (this.value) {
+				this.loadAircraft(this.value);
 			}
 			this.debouncedSave = _.debounce(this.searchAircrafts, 500);
 		},
 		watch: {
 			value: function(newVal) {
+				console.log('new val: ' + newVal);
 				if (newVal!='' && newVal!=null) {
 					this.loadAircraft(newVal);
 				}

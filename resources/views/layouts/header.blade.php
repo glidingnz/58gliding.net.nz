@@ -120,7 +120,7 @@
 
 			@yield('content')
 
-			<div class="footer">
+			<div class="footer pb-4">
 				<hr class="ml-4 mr-4 mt-4">
 
 				&copy; <?php echo date('Y'); ?>  <a href="http://gliding.co.nz/">Gliding New Zealand</a>
