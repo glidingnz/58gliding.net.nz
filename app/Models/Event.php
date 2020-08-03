@@ -95,6 +95,10 @@ class Event extends Model
 		'featured',
 		'soaringspot_api_secret',
 		'soaringspot_api_client_id',
+		'catering_lunches',
+		'catering_dinners',
+		'catering_breakfasts',
+		'catering_final_dinner',
 	];
 
 	/**
@@ -131,6 +135,10 @@ class Event extends Model
 		'soaringspot_api_client_id'=>'string',
 		'organiser_name'=>'string',
 		'organiser_phone'=>'string',
+		'catering_lunches'=>'boolean',
+		'catering_dinners'=>'boolean',
+		'catering_breakfasts'=>'boolean',
+		'catering_final_dinner'=>'boolean'
 	];
 
 	/**

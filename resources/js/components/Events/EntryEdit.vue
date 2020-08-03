@@ -170,42 +170,50 @@
 			</li> 
 
 			<li>
-				Breakfasts?
+				<div v-show="entry.event.catering_breakfasts">
+					Breakfasts?
 
-				<div class="form-group col-md-6">
-					<label for="catering_breakfasts_none" class="mr-4"><input id="catering_breakfasts_none" type="radio" v-model="entry.catering_breakfasts" value="none"> None</label>
-					<label for="catering_breakfasts_some" class="mr-4"><input id="catering_breakfasts_some" type="radio" v-model="entry.catering_breakfasts" value="some"> Some</label>
-					<label for="catering_breakfasts_all" class="mr-4"><input id="catering_breakfasts_all" type="radio" v-model="entry.catering_breakfasts" value="all"> All</label>
+					<div class="form-group col-md-6">
+						<label for="catering_breakfasts_none" class="mr-4"><input id="catering_breakfasts_none" type="radio" v-model="entry.catering_breakfasts" value="none"> None</label>
+						<label for="catering_breakfasts_some" class="mr-4"><input id="catering_breakfasts_some" type="radio" v-model="entry.catering_breakfasts" value="some"> Some</label>
+						<label for="catering_breakfasts_all" class="mr-4"><input id="catering_breakfasts_all" type="radio" v-model="entry.catering_breakfasts" value="all"> All</label>
+					</div>
 				</div>
 
-				Lunches?
+				<div v-show="entry.event.catering_lunches">
+					Lunches?
 
-				<div class="form-group col-md-6">
-					<label for="catering_lunches_none" class="mr-4"><input id="catering_lunches_none" type="radio" v-model="entry.catering_lunches" value="none"> None</label>
-					<label for="catering_lunches_some" class="mr-4"><input id="catering_lunches_some" type="radio" v-model="entry.catering_lunches" value="some"> Some</label>
-					<label for="catering_lunches_all" class="mr-4"><input id="catering_lunches_all" type="radio" v-model="entry.catering_lunches" value="all"> All</label>
+					<div class="form-group col-md-6">
+						<label for="catering_lunches_none" class="mr-4"><input id="catering_lunches_none" type="radio" v-model="entry.catering_lunches" value="none"> None</label>
+						<label for="catering_lunches_some" class="mr-4"><input id="catering_lunches_some" type="radio" v-model="entry.catering_lunches" value="some"> Some</label>
+						<label for="catering_lunches_all" class="mr-4"><input id="catering_lunches_all" type="radio" v-model="entry.catering_lunches" value="all"> All</label>
+					</div>
 				</div>
 
-				Dinners?
+				<div v-show="entry.event.catering_dinners">
+					Dinners?
 
-				<div class="form-group col-md-6">
-					<label for="catering_dinners_none" class="mr-4"><input id="catering_dinners_none" type="radio" v-model="entry.catering_dinners" value="none"> None</label>
-					<label for="catering_dinners_some" class="mr-4"><input id="catering_dinners_some" type="radio" v-model="entry.catering_dinners" value="some"> Some</label>
-					<label for="catering_dinners_all" class="mr-4"><input id="catering_dinners_all" type="radio" v-model="entry.catering_dinners" value="all"> All</label>
+					<div class="form-group col-md-6">
+						<label for="catering_dinners_none" class="mr-4"><input id="catering_dinners_none" type="radio" v-model="entry.catering_dinners" value="none"> None</label>
+						<label for="catering_dinners_some" class="mr-4"><input id="catering_dinners_some" type="radio" v-model="entry.catering_dinners" value="some"> Some</label>
+						<label for="catering_dinners_all" class="mr-4"><input id="catering_dinners_all" type="radio" v-model="entry.catering_dinners" value="all"> All</label>
+					</div>
 				</div>
 
-				Final Dinner?
+				<div v-show="entry.event.catering_final_dinner">
+					Final Dinner?
 
-				<div class="form-group col-md-6">
-					<select name="catering_final_dinner" id="catering_final_dinner" v-model="entry.catering_final_dinner">
-						<option :value="null">TBC</option>
-						<option :value="0">Not Coming</option>
-						<option :value="1">1 person</option>
-						<option :value="2">2 people</option>
-						<option :value="3">3 people</option>
-						<option :value="4">4 people</option>
-						<option :value="5">5 people</option>
-					</select>
+					<div class="form-group col-md-6">
+						<select name="catering_final_dinner" id="catering_final_dinner" v-model="entry.catering_final_dinner">
+							<option :value="null">TBC</option>
+							<option :value="0">Not Coming</option>
+							<option :value="1">1 person</option>
+							<option :value="2">2 people</option>
+							<option :value="3">3 people</option>
+							<option :value="4">4 people</option>
+							<option :value="5">5 people</option>
+						</select>
+					</div>
 				</div>
 			</li>
 

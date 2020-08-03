@@ -228,7 +228,7 @@
 		<div class="row" v-if="flyingEvent">
 
 			<div class="form-group col-md-6">
-				<label for="terms" class="col-xs-6 col-form-label">Terms &amp; Conditions (Markdown available)</label>
+				<label for="terms" class="col-xs-6 col-form-label">Terms &amp; Conditions for Entry Form (Markdown available)</label>
 				<div class="col-xs-6">
 					<autosize-textarea>
 						<textarea type="text" class="form-control" id="terms" v-model="event.terms" rows="3"></textarea>
@@ -270,9 +270,20 @@
 		</div>
 
 
-		<div class="row" v-if="flyingEvent">
+		<div class="row">
 
 			<div class="form-group col-md-6">
+				<label class="col-xs-6 col-form-label">Catering Available</label><br>
+				
+				<label for="breakfasts" class="mr-2"><input type="checkbox" id="breakfasts" :value="true" v-model="event.catering_breakfasts"> Breakfasts</label>
+				<label for="lunches" class="mr-2"><input type="checkbox" id="lunches" :value="true" v-model="event.catering_lunches"> Lunches</label>
+				<label for="dinners" class="mr-2"><input type="checkbox" id="dinners" :value="true" v-model="event.catering_dinners"> Dinners</label>
+				<label for="final_dinner" class="mr-2"><input type="checkbox" id="final_dinner" :value="true" v-model="event.catering_final_dinner"> Final Dinner</label>
+
+			</div>
+
+
+			<div class="form-group col-md-6" v-if="flyingEvent">
 				<label class="col-xs-6 col-form-label">Classes for this Event</label><br>
 
 				<span v-for="availableClass in availableClasses" class="mr-4">
@@ -281,6 +292,7 @@
 					</label>
 				</span>
 			</div>
+
 
 		</div>
 

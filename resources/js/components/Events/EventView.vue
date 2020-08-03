@@ -142,14 +142,15 @@
 
 			<div class="card event-details">
 				<div class="card-header">
-					<div class="float-right">
-						<span class="ml-2">{{entriesCount}} glider entries</span>
-						<span class="ml-2">({{tentativeEntriesCount}} tentative</span>
-						<span class="ml-2">{{confirmedEntriesCount}} entered)</span>
-						<span class="ml-2">{{secondPilotEntries.length}} second pilot<span v-show="secondPilotEntries.length!=1">s</span></span>
-						<span class="ml-2">{{helperEntries.length}} helper<span v-show="helperEntries.length!=1">s</span></span>
-					</div>
-					<h3>Entries</h3>
+					<h4 class="float-right">
+						<span class="ml-2"><span class="text-muted">Entries: </span>{{entriesCount}}  </span>
+
+						<span  class="ml-2" v-for="selectedClass in selectedClasses">
+							<span class="text-muted">{{selectedClass.contest_class.name}}</span> {{classPilotCount(selectedClass.class_id)}}
+						</span>
+
+					</h4>
+					<h4>Entries</h4>
 				</div>
 				<div class="card-body">
 					
@@ -269,7 +270,7 @@
 						<span class="ml-2"><span class="text-muted">Dinners all: </span>{{dinnersAllCount}} <span class="text-muted">some:</span> {{dinnersSomeCount}}</span>
 						<span class="ml-2"><span class="text-muted">Final Dinner: </span>{{finalDinnerCount}}</span>
 					</div>
-					<h3>Catering</h3>
+					<h4>Catering</h4>
 				</div>
 				<div class="card-body">
 					
@@ -287,13 +288,13 @@
 								<span class="d-none d-md-block">{{entry.first_name}} {{entry.last_name}}</span>
 							</td>
 							<td>
-								<span class="d-md-none text-muted">Breakfasts: </span><span class="fa" :class="showMeal(entry.catering_breakfasts)"></span>
+								<span class="d-md-none text-muted">Breakfasts: </span><span class="fa" :class="showMeal(entry.catering_breakfasts)"></span> {{entry.catering_breakfasts}}
 							</td>
 							<td>
-								<span class="d-md-none text-muted">Lunches: </span><span class="fa" :class="showMeal(entry.catering_lunches)"></span>
+								<span class="d-md-none text-muted">Lunches: </span><span class="fa" :class="showMeal(entry.catering_lunches)"></span> {{entry.catering_lunches}}
 							</td>
 							<td>
-								<span class="d-md-none text-muted">Dinners: </span><span class="fa" :class="showMeal(entry.catering_dinners)"></span>
+								<span class="d-md-none text-muted">Dinners: </span><span class="fa" :class="showMeal(entry.catering_dinners)"></span> {{entry.catering_dinners}}
 							</td>
 							<td>
 								<span class="d-md-none text-muted">Final Dinner: </span>{{entry.catering_final_dinner}}
@@ -354,12 +355,6 @@ export default {
 			}
 			return false;
 		},
-		tentativeEntriesCount: function() {
-			return this.pilotEntries.filter((obj) => obj.entry_status=='tentative').length;
-		},
-		confirmedEntriesCount: function() {
-			return this.pilotEntries.filter((obj) => obj.entry_status=='entered').length;
-		},
 		entriesCount: function() {
 			return this.pilotEntries.length;
 		},
@@ -400,6 +395,10 @@ export default {
 
 	},
 	methods: {
+		classPilotCount: function(class_id) {
+			console.log(class_id);
+			return this.pilotEntries.filter((obj) => obj.class_id==class_id).length;
+		},
 		showMeal: function(item) {
 			switch(item) {
 				case 'none': return 'fa-times'; break;
