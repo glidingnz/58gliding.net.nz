@@ -19,6 +19,26 @@ class EntriesApiController extends ApiController
 	{
 		$query = Entry::query();
 
+		// if given the 'mine' paramteter, load all recent entries belonging to me, or assigned to my membership ID
+		if ($request->exists('mine'))
+		{
+			// get the current user
+			if ($user = Auth::user())
+			{
+				$query->where(function($query) use ($user) {
+					$query->where('user_id',$user->id); // entries created by me OR
+					$query->orWhere('member_id',$user->gnz_id); // created by someone else for me
+				});
+				$query->orderBy('created_at', 'DESC');
+			}
+		}
+
+		if ($request->exists('limit'))
+		{
+			$query->limit($request->input('limit', 100));
+		}
+
+
 		if ($request->exists('event_id'))
 		{
 			$query->where('event_id', $request->input('event_id'));
@@ -31,21 +51,22 @@ class EntriesApiController extends ApiController
 		}
 
 
-		$query->with('aircraft')->with('contestClass');
+		$query->with('aircraft')->with('contestClass')->with('event');
 
-		if ($entries = $query->paginate($request->input('per-page', 50)))
+		if ($entries = $query->get())
 		{
-			
+
 			foreach ($entries AS $entry) {
 				if ($entry->canEdit()) {
 					$entry->editDetails();
+					$entry->showDetails();
 				}
 				if ($entry->canView()) {
 					$entry->showDetails();
 				}
 			}
 
-			return $this->success($entries, TRUE);
+			return $this->success($entries);
 		}
 		return $this->error();
 	}
@@ -191,10 +212,25 @@ class EntriesApiController extends ApiController
 	public function store(request $request)
 	{
 		$input = $request->all();
+		$user = Auth::user();
 
 		if (!($request->has('email') && $request->input('email')!=null)) return $this->error('Your email address is required so we can email you a link to edit your entry');
 
-		$entry = new Entry;
+		// if given a previous entry, load it up!
+		if ($request->has('previousId')) $previousId = $input['previousId'];
+		if ($previousId!=null) {
+			$previous_entry = Entry::find($previousId);
+		}
+
+		// either clone or create a new entry if we can edit the previous one only
+		if (isset($previous_entry) && $previous_entry->canEdit()) {
+			$entry = $previous_entry->replicate();
+			$entry->signed = false; //unsign the conditions
+		} else {
+			// otherwise create a new entry
+			$entry = new Entry;
+		}
+
 		$entry->editcode = randomkeys(12);
 
 		if ($request->has('entry_type')) $entry->entry_type = $input['entry_type'];
@@ -202,8 +238,9 @@ class EntriesApiController extends ApiController
 		if ($request->has('email')) $entry->email = $input['email'];
 		$entry->entry_status = 'started';
 
+
 		// set the member ID to be the currently logged in member if we are logged in
-		if ($user = Auth::user())
+		if ($user)
 		{
 			$entry->user_id = $user->id;
 
@@ -221,6 +258,7 @@ class EntriesApiController extends ApiController
 		if ($entry->save())
 		{
 			$entry->showDetails(); // ensure we share all the details as this user just created it
+			$entry->editDetails();
 
 			// send the email
 			if ($event = Event::find($entry->event_id))

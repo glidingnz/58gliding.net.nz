@@ -16,8 +16,8 @@
 		<h1><a href="/events">Events</a> &raquo; <a :href="'/events/' + event.slug">{{event.name}}</a> &raquo; Entry Form</h1>
 
 		<div class="alert alert-info" role="alert" v-if="!viewGNZMembers">
-			Tip: <a href="/login">Login</a> or <a href="/register">register an account</a> to speed up entry of this form! And manage your entries later.
-			Or clone a previous entry to save time.
+			<span class="fa fa-info-circle"></span> Tip: <a href="/login">Login</a> or <a href="/register">register an account</a> to speed up entry of this form! And manage your entries later.
+			Or copy a previous entry to save time.
 		</div>
 
 		<ol>
@@ -33,7 +33,29 @@
 			<li>
 				<div class="form-group col-md-6">
 					<label for="email">Email</label> 
-					<input type="text" v-model="entry.email" class="form-control" id="email" name="email">
+					<input type="text" v-model="entry.email" class="form-control" id="email" name="email" v-bind:class="{ 'is-invalid': emailInvalid, 'is-valid': !emailInvalid }" v-on:input="checkEmail()">
+					<span>We will email you instructions so you can view/edit your entry later</span>
+				</div>
+			</li>
+			<li v-if="showPrevious">
+				<div class="form-group col-md-6">
+					<label for="email">Copy details from a previous entry?</label> 
+					<ul>
+						<li>
+							<label for="previous_null">
+								<input type="radio" name="previousId" v-model="entry.previousId" :value="null" id="previous_null">
+								New Entry
+							</label>
+						</li>
+						<li v-for="previousEntry in previousEntries">
+							<label :for="'previous_'+previousEntry.id">
+								<input type="radio" name="previousId" v-model="entry.previousId" :value="previousEntry.id" :id="'previous_'+previousEntry.id">
+								<span v-if="previousEntry.aircraft">{{previousEntry.aircraft.rego}}, {{previousEntry.aircraft.model}}, </span>
+								<span v-if="!previousEntry.aircraft">{{previousEntry.previousEntry_type}}, </span>
+								{{formatDateMonth(previousEntry.event.start_date)}}, {{previousEntry.event.name}}
+							</label>
+						</li>
+					</ul>
 				</div>
 			</li>
 			<li>
@@ -53,12 +75,16 @@ import common from '../../mixins.js';
 var marked = require('marked');
 export default {
 	mixins: [common],
-	props: ['eventId'],
+	props: ['eventId', 'email'],
 	data: function() {
 		return {
 			submitting: false,
 			event: null,
+			previousEntries: [],
+			showPrevious: false,
+			emailInvalid: true,
 			entry: {
+				previousId: null,
 				eventId: null,
 				entry_type: 'pilot',
 				email: '',
@@ -68,9 +94,12 @@ export default {
 	},
 	created: function() {
 		this.load();
+		if (this.email) this.entry.email = this.email;
+		this.getPreviousEntries();
 	},
 	mounted: function() {
 		this.viewGNZMembers = window.Laravel.gnzMember;
+		if (window.Laravel.loggedIn) this.showPrevious = true;
 	},
 	methods: {
 		load: function() {
@@ -80,9 +109,24 @@ export default {
 				that.entry.eventId = that.event.id;
 			});
 		},
+		getPreviousEntries: function() {
+			var that = this;
+			window.axios.get('/api/v1/entries/?mine=true&limit=10').then(function (response) {
+				that.previousEntries = response.data.data;
+			});
+		},
+		checkEmail: function() {
+			this.emailInvalid = !this.validateEmail(this.entry.email);
+		},
 		createEntry: function() {
 			this.submitting = true;
 			var that = this;
+
+			if (!this.validateEmail(this.entry.email)) {
+				messages.$emit('error', 'A valid email address is required');
+				that.submitting = false;
+				return;
+			}
 
 			window.axios.post('/api/v1/entries', this.entry).then(function (response) {
 				var entry = response.data.data;
@@ -91,12 +135,9 @@ export default {
 					window.location.href = "/entries/" + entry.editcode;
 				}
 			})
-			.then(response => { 
-				console.log(response)
-			})
 			.catch(function (error) {
 				that.submitting = false;
-				messages.$emit('error', error.response.data.error);
+				if (error.response.data.error) messages.$emit('error', error.response.data.error);
 			});
 		}
 	}

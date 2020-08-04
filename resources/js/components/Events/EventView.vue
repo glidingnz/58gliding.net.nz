@@ -1,9 +1,3 @@
-<style>
-	.event-details .card-body {
-		font-size: 120%;
-	}
-</style>
-
 <template>
 <div>
 	
@@ -26,16 +20,14 @@
 
 			<div v-if="event.details" v-html="compiledMarkdown"></div>
 
-
 			<div class="mt-2 mb-4">
 					<v-calendar :columns="$screens({ default: 1, lg: 2 })" :attributes='attributes' :first-day-of-week="2" :from-date="event.start_date" ref="calendar" />
-					
 			</div>
 		</div>
 
 		<div class="col-md-6">
 
-			<div class="card event-details  mb-4">
+			<div class="card mb-4">
 				<div class="card-header">
 					<h3>Details</h3>
 				</div>
@@ -141,6 +133,14 @@
 						</div>
 					</div>
 
+					<div class="row mb-2" v-if="contestAdmin">
+						<div class="col-4 label">All Emails</div>
+						<input type="text" class="col-8 form-control" name="allEmails" :value="allEmails">
+					</div>
+					<div class="row mb-2" v-if="contestAdmin">
+						<div class="col-4 label">All Mobiles</div>
+						<input type="text" class="col-8 form-control" name="allMobiles" :value="allMobiles">
+					</div>
 				</div>
 			</div>
 		</div>
@@ -150,7 +150,7 @@
 	<div class="row" v-if="entries.length>0">
 		<div class="col-md-12">
 
-			<div class="card event-details">
+			<div class="card ">
 				<div class="card-header">
 					<h4 class="float-right">
 						<span class="ml-2"><span class="text-muted">Entries: </span>{{entriesCount}}  </span>
@@ -197,6 +197,7 @@
 							<td><span class="d-md-none text-muted">Handicap: </span>{{entry.handicap}}</td>
 							<td>
 								<span class="d-md-none text-muted">Entry Status: </span>{{entry.entry_status}}
+								<span class="badge badge-danger" v-if="!entry.signed">Not Signed</span>
 							</td>
 							<td>
 								<a v-if="entry.editcode" class="fa fa-edit" :href="'/entries/' + entry.editcode"></a>
@@ -238,8 +239,8 @@
 									<span v-if="entry.aircraft">{{entry.aircraft.model}}</span>
 								</td> 
 								<td>
-									{{entry.entry_status}}
-									<span v-if="!signed"></span>
+									<span class="d-md-none text-muted">Entry Status: </span>{{entry.entry_status}}
+									<span class="badge badge-danger" v-if="!entry.signed">Not Signed</span>
 								</td>
 								<td>
 									<a v-if="entry.editcode" class="fa fa-edit" :href="'/entries/' + entry.editcode"></a>
@@ -269,6 +270,7 @@
 								</td>
 								<td>
 									{{entry.entry_status}}
+									<span class="badge badge-danger" v-if="!entry.signed">Not Signed</span>
 								</td>
 								<td>
 									<a v-if="entry.editcode" class="fa fa-edit" :href="'/entries/' + entry.editcode"></a>
@@ -282,7 +284,7 @@
 			</div>
 
 
-			<div class="card event-details mt-4" v-if="catering">
+			<div class="card mt-4" v-if="catering">
 				<div class="card-header">
 					<div class="float-right">
 						<span class="ml-2" v-if="event.catering_breakfasts"><span class="text-muted">Breakfasts all: </span>{{breakfastsAllCount}} <span class="text-muted">some:</span> {{breakfastsSomeCount}}</span>
@@ -323,9 +325,6 @@
 					</table>
 				</div>
 			</div>
-
-
-
 		</div>
 	</div>
 
@@ -349,6 +348,7 @@ export default {
 			calendar: null,
 			selectedClasses: [],
 			entries: [],
+			contestAdmin: false,
 		}
 	},
 	props: ['orgId', 'eventId'],
@@ -357,8 +357,23 @@ export default {
 	},
 	mounted: function() {
 		this.calendar = this.$refs.calendar;
+		if (window.Laravel.contestAdmin) this.contestAdmin = true;
 	},
 	computed: {
+		allEmails: function() {
+			var emails = [];
+			this.entries.forEach(function(entry) {
+				if (entry.email) emails.push(entry.email);
+			});
+			return emails.join(', ');
+		},
+		allMobiles: function() {
+			var mobiles = [];
+			this.entries.forEach(function(entry) {
+				if (entry.mobile) mobiles.push(entry.mobile);
+			});
+			return mobiles.join(', ');
+		},
 		catering: function() {
 			return this.event.catering_breakfasts || this.event.catering_lunches || this.event.catering_dinners || this.event.catering_final_dinner;
 		},

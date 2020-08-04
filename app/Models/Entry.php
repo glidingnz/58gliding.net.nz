@@ -66,7 +66,7 @@ class Entry extends Model
 		return false;
 	}
 
-	// only GNZ members can view details
+	// only GNZ members can view contact details
 	public function canView()
 	{
 		if (Gate::allows('gnz-member')) return true;

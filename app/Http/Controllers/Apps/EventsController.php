@@ -43,16 +43,18 @@ class EventsController extends Controller
 
 		// load the member ID so we can automatically select the current GNZ member if available
 		$member_id = null;
+		$email='';
 		if ($user && $member = Member::where('nzga_number', $user->gnz_id)->first())
 		{
 			//echo $member->id; exit();
 			$member_id = $member->id;
+			$email = $member->email;
 		}
 
 		// load the event from the slug
 		if ($event = Event::where('slug', $slug)->first())
 		{
-			return view('events/event-enter', array('event_id'=>$event->id, 'member_id'=>$member_id));
+			return view('events/event-enter', array('event_id'=>$event->id, 'member_id'=>$member_id, 'email'=>$email));
 		}
 		abort(404);
 	}

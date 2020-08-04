@@ -299,9 +299,9 @@ export default {
 			});
 		},
 		updateEntry: function() {
-			window.axios.post('/api/v1/entries/' + this.entry.editcode, this.entry).then(function (response) {
+			window.axios.post('/api/v1/entries/' + this.editcode, this.entry).then(function (response) {
 				var entry = response.data.data;
-				messages.$emit('success', 'Entry Updated');
+				messages.$emit('success', 'Entry Saved. Thanks for entering, see you there!');
 			}).catch(function (error) {
 				messages.$emit('error', error.response.data.error);
 			});
