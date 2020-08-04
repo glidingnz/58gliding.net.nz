@@ -58,6 +58,7 @@ class Entriesv2 extends Migration
 			$table->string('last_name')->nullable();
 			$table->string('mobile')->nullable();
 			$table->string('email')->nullable();
+			$table->string('role')->nullable();
 
 			$table->string('emergency_contact')->nullable();
 			$table->string('emergency_mobile')->nullable();

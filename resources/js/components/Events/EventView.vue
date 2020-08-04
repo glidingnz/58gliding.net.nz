@@ -256,6 +256,7 @@
 						<table class="table collapsable">
 							<tr>
 								<th>Name</th>
+								<th>Role</th>
 								<th>Type</th>
 								<th>Status</th>
 								<th></th>
@@ -264,6 +265,9 @@
 								<td>
 									<h3 class="d-md-none mt-4">{{entry.first_name}} {{entry.last_name}}</h3>
 									<span class="d-none d-md-block">{{entry.first_name}} {{entry.last_name}}</span>
+								</td>
+								<td>
+									{{entry.role}}
 								</td>
 								<td>
 									{{entry.entry_type}}
@@ -303,6 +307,8 @@
 							<th v-if="event.catering_lunches">Lunches</th>
 							<th v-if="event.catering_dinners">Dinners</th>
 							<th v-if="event.catering_final_dinner">Final Dinner</th>
+							<th>Notes</th>
+
 						</tr>
 						<tr v-for="entry in entries">
 							<td>
@@ -320,6 +326,9 @@
 							</td>
 							<td v-if="event.catering_final_dinner">
 								<span class="d-md-none text-muted">Final Dinner: </span>{{entry.catering_final_dinner}}
+							</td>
+							<td>
+								{{entry.catering_notes}}
 							</td>
 						</tr>
 					</table>

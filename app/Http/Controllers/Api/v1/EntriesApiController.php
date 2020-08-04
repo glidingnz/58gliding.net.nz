@@ -127,7 +127,17 @@ class EntriesApiController extends ApiController
 			return $this->not_found();
 		}
 
-		if ($request->exists('member_id')) $entry->member_id = $input['member_id'];
+		// check if we are given a member ID, if so then get the GNZ number from that.
+		if ($request->filled('member_id')) {
+			echo 'has member_id ';
+			$entry->member_id = $input['member_id'];
+			if ($member = Member::where('id', $input['member_id'])->first())
+			{
+				// use that ID instead of whatever was provided, as we shouldn't have got one from someone not logged in
+				$entry->gnz_number = $member->nzga_number;
+			}
+		}
+
 		if (!($request->exists('member_id') || $request->exists('first_name') || $request->exists('gnz_number')))
 		{
 			return $this->error('A GNZ number, name or selected member is required');
@@ -142,7 +152,10 @@ class EntriesApiController extends ApiController
 		if ($request->has('mobile')) $entry->mobile = $input['mobile'];
 
 		// if given a GNZ number, get the member ID from it
-		if ($request->exists('gnz_number')) {
+		if ($request->filled('gnz_number')) {
+			echo 'has gnz numnber';
+
+			$entry->gnz_number =$input['gnz_number'];
 			if ($member = Member::where('nzga_number', $input['gnz_number'])->first())
 			{
 				// use that ID instead of whatever was provided, as we shouldn't have got one from someone not logged in
@@ -172,7 +185,6 @@ class EntriesApiController extends ApiController
 
 		if ($request->has('gnz_member')) $entry->gnz_member = $input['gnz_member'];
 		if ($request->has('aircraft_id')) $entry->aircraft_id = $input['aircraft_id'];
-		if ($request->has('gnz_number')) $entry->gnz_number = $input['gnz_number'];
 		if ($request->has('wingspan')) $entry->wingspan = $input['wingspan'];
 		if ($request->has('winglets')) $entry->winglets = $input['winglets'];
 		if ($request->has('handicap')) $entry->handicap = $input['handicap'];
@@ -195,6 +207,7 @@ class EntriesApiController extends ApiController
 		if ($request->has('emergency_phone')) $entry->emergency_phone = $input['emergency_phone'];
 		if ($request->has('emergency_email')) $entry->emergency_email = $input['emergency_email'];
 		if ($request->has('emergency_relationship')) $entry->emergency_relationship = $input['emergency_relationship'];
+		if ($request->has('role')) $entry->role = $input['role'];
 
 		if ($entry->save())
 		{

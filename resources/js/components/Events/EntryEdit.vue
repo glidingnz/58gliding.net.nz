@@ -63,14 +63,14 @@
 				</div>
 
 				<div class="form-group col-md-6">
-					<label for="email">Email</label> 
+					<label for="email">Email (K	ept private)</label> 
 					<input type="text" v-model="entry.email" class="form-control" id="email" name="email">
 				</div>
 
 			</li>
 			<li>
 				<div class="form-group col-md-6">
-					<label for="mobile">Mobile</label> 
+					<label for="mobile">Mobile (Shown on event page)</label> 
 					<input type="text" v-model="entry.mobile" class="form-control" id="mobile" name="mobile">
 				</div>
 			</li>
@@ -80,6 +80,13 @@
 					<label for="entry_status_entered" class="mr-4"><input id="entry_status_entered" type="radio" v-model="entry.entry_status" value="entered"> Entered</label>
 					<label for="entry_status_tentative" class="mr-4"><input id="entry_status_tentative" type="radio" v-model="entry.entry_status" value="tentative"> Tentative</label>
 					<label for="entry_status_cancelled" class="mr-4"><input id="entry_status_cancelled" type="radio" v-model="entry.entry_status" value="cancelled"> Cancelled</label>
+				</div>
+			</li>
+
+			<li v-if="entry.entry_type=='helper'">
+				<div class="form-group col-md-6">
+					<label for="role">Event Role</label> 
+					<input type="text" v-model="entry.role" class="form-control" id="role" name="role">
 				</div>
 			</li>
 
@@ -215,6 +222,13 @@
 						</select>
 					</div>
 				</div>
+
+				<li>
+					<div class="form-group col-md-6">
+						<label for="catering_notes">Any notes for the chef? e.g. Vegeterian, Keto or Don't like brussell sprouts</label> 
+						<input type="text" v-model="entry.catering_notes" class="form-control" id="catering_notes" name="catering_notes">
+					</div>
+				</li>
 			</li>
 
 			<li v-if="entry.event.terms">

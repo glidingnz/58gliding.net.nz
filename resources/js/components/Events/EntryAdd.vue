@@ -37,7 +37,7 @@
 					<span>We will email you instructions so you can view/edit your entry later</span>
 				</div>
 			</li>
-			<li v-if="showPrevious">
+			<li v-if="showPrevious && previousEntries.length>0">
 				<div class="form-group col-md-6">
 					<label for="email">Copy details from a previous entry?</label> 
 					<ul>
@@ -51,7 +51,7 @@
 							<label :for="'previous_'+previousEntry.id">
 								<input type="radio" name="previousId" v-model="entry.previousId" :value="previousEntry.id" :id="'previous_'+previousEntry.id">
 								<span v-if="previousEntry.aircraft">{{previousEntry.aircraft.rego}}, {{previousEntry.aircraft.model}}, </span>
-								<span v-if="!previousEntry.aircraft">{{previousEntry.previousEntry_type}}, </span>
+								<span v-if="!previousEntry.aircraft">{{previousEntry.entry_type}}, </span>
 								{{formatDateMonth(previousEntry.event.start_date)}}, {{previousEntry.event.name}}
 							</label>
 						</li>
@@ -96,6 +96,7 @@ export default {
 		this.load();
 		if (this.email) this.entry.email = this.email;
 		this.getPreviousEntries();
+		this.checkEmail();
 	},
 	mounted: function() {
 		this.viewGNZMembers = window.Laravel.gnzMember;
