@@ -52,6 +52,9 @@ class Event extends Model
 		// if no org, it must be a GNZ event, so check for GNZ admin
 		if (Gate::allows('admin')) return true;
 
+		// all contest admins can edit all events
+		if (Gate::allows('contest-admin')) return true;
+
 		// club members can add/edit events
 		if ($this->org!=null) {
 			if (Gate::allows('club-member', $this->org)) {

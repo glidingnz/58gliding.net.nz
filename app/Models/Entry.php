@@ -10,7 +10,7 @@ use Auth;
 class Entry extends Model
 {
 	
-	public $table = "Entries2";
+	public $table = "entries2";
 
 	protected $casts = [
 		'gnz_member' => 'boolean',
