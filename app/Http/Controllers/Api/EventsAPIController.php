@@ -18,6 +18,7 @@ use Carbon\Carbon;
 
 class EventsAPIController extends AppBaseController
 {
+
 	/**
 	 * Display a listing of the events.
 	 * GET|HEAD /events
@@ -225,6 +226,10 @@ class EventsAPIController extends AppBaseController
 	{
 		/** @var events $events */
 		$event = Event::find($id);
+
+		if (!$event->canEdit) {
+			//return $this->denied();
+		}
 
 		if (!$event) {
 			return $this->sendError('Event not found');

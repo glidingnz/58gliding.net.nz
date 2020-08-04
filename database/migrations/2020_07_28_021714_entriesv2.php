@@ -44,6 +44,7 @@ class Entriesv2 extends Migration
 			$table->integer('member_id')->unsigned()->nullable(); // the GNZ member number for this entry
 			$table->integer('user_id')->unsigned()->nullable(); // the user that created the entry
 			$table->integer('aircraft_id')->unsigned()->nullable();
+			$table->integer('gnz_number')->unsigned()->nullable(); // only stored for non members to specify the GNZ member the entry is for.
 
 			// type of entry e.g. pilot, tow pilot, helper
 			$table->string('entry_type')->nullable();

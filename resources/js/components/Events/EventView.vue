@@ -2,9 +2,9 @@
 <div>
 	
 	<div class="float-right">
-		<a class="btn btn-outline-dark mr-2" :href="'/events/' + event.slug + '/edit'" v-if="event.can_edit">Edit</a>
+		<a class="btn btn-outline-dark mr-2" :href="'/events/' + event.slug + '/edit'" v-if="event.can_edit">Edit Event</a>
 		<a class="btn btn-outline-dark mr-2" :href="'/events/' + event.slug + '/enter'" >Entry Form</a>
-		<!-- <a class="btn btn-outline-dark" :href="'/events/' + event.slug + '/delete'" v-if="event.can_edit">Delete</a> -->
+		<a class="btn btn-outline-danger" href="#" v-on:click="deleteEvent()" v-if="event.can_edit">Delete Event</a>
 	</div>
 
 	<h1><a href="/events">Events</a> » {{event.name}}</h1>
@@ -434,7 +434,6 @@ export default {
 	},
 	methods: {
 		classPilotCount: function(class_id) {
-			console.log(class_id);
 			return this.pilotEntries.filter((obj) => obj.class_id==class_id).length;
 		},
 		showMeal: function(item) {
@@ -454,6 +453,11 @@ export default {
 			var that = this;
 			window.axios.get('/api/v1/events/' + this.event.id + '/classes').then(function (response) {
 				that.selectedClasses = response.data.data;
+			});
+		},
+		deleteEvent: function() {
+			window.axios.delete('/api/events/' + this.event.id).then(function (response) {
+				messages.$emit('success', 'Event Deleted');
 			});
 		},
 		load: function() {

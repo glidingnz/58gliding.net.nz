@@ -393,9 +393,6 @@ export default {
 			Vue.set(this.event, 'organiser_member_id', member.id);
 			//this.event.organiser_member_id = member.id;
 		},
-		addClass: function() {
-			console.log('adding class');
-		},
 		loadSelectedClasses: function() {
 			var that = this;
 			that.selectedClasses = [];
