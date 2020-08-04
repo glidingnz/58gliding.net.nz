@@ -85,7 +85,7 @@
 
 			<li v-if="entry.entry_type=='helper'">
 				<div class="form-group col-md-6">
-					<label for="role">Event Role</label> 
+					<label for="role">Event Role e.g Grid Marshall, Contest Director</label> 
 					<input type="text" v-model="entry.role" class="form-control" id="role" name="role">
 				</div>
 			</li>

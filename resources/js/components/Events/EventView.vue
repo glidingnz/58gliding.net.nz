@@ -134,11 +134,11 @@
 					</div>
 
 					<div class="row mb-2" v-if="contestAdmin">
-						<div class="col-4 label">All Emails</div>
+						<div class="col-4 label">Emails for Bulk Email</div>
 						<input type="text" class="col-8 form-control" name="allEmails" :value="allEmails">
 					</div>
 					<div class="row mb-2" v-if="contestAdmin">
-						<div class="col-4 label">All Mobiles</div>
+						<div class="col-4 label">Mobile Numbers for Bulk Text</div>
 						<input type="text" class="col-8 form-control" name="allMobiles" :value="allMobiles">
 					</div>
 				</div>
@@ -256,6 +256,7 @@
 						<table class="table collapsable">
 							<tr>
 								<th>Name</th>
+								<th>Mobile</th>
 								<th>Role</th>
 								<th>Type</th>
 								<th>Status</th>
@@ -265,6 +266,9 @@
 								<td>
 									<h3 class="d-md-none mt-4">{{entry.first_name}} {{entry.last_name}}</h3>
 									<span class="d-none d-md-block">{{entry.first_name}} {{entry.last_name}}</span>
+								</td>
+								<td>
+									{{entry.mobile}}
 								</td>
 								<td>
 									{{entry.role}}
