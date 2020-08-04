@@ -35,13 +35,16 @@ class EntriesApiController extends ApiController
 
 		if ($entries = $query->paginate($request->input('per-page', 50)))
 		{
+			
 			foreach ($entries AS $entry) {
 				if ($entry->canEdit()) {
+					$entry->editDetails();
+				}
+				if ($entry->canView()) {
 					$entry->showDetails();
 				}
-
-
 			}
+
 			return $this->success($entries, TRUE);
 		}
 		return $this->error();

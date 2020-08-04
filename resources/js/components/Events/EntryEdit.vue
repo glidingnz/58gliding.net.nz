@@ -169,7 +169,7 @@
 
 			</li> 
 
-			<li>
+			<li v-if="entry.event.catering_breakfasts || entry.event.catering_lunches || entry.event.catering_dinners || entry.event.catering_final_dinner">
 				<div v-show="entry.event.catering_breakfasts">
 					Breakfasts?
 

@@ -131,6 +131,16 @@
 						</div>
 					</div>
 
+					<div class="row mb-2" v-if="catering">
+						<div class="col-4 label">Catering Available</div>
+						<div class="col-8">
+							<span class="mr-2" v-show="event.catering_breakfasts">Breakfasts</span>
+							<span class="mr-2" v-show="event.catering_lunches">Lunches</span>
+							<span class="mr-2" v-show="event.catering_dinners">Dinners</span>
+							<span class="mr-2" v-show="event.catering_final_dinner">Final Dinner</span>
+						</div>
+					</div>
+
 				</div>
 			</div>
 		</div>
@@ -157,7 +167,8 @@
 					<table class="table collapsable">
 						<tr>
 							<th>Name</th>
-							<th>Class</th>
+							<th>Mobile</th>
+							<th v-if="selectedClasses.length>0">Class</th>
 							<th>Glider</th>
 							<th>Model</th>
 							<th>Wingspan</th>
@@ -170,13 +181,14 @@
 								<h3 class="d-md-none mt-4">{{entry.first_name}} {{entry.last_name}}</h3>
 								<span class="d-none d-md-block">{{entry.first_name}} {{entry.last_name}}</span>
 							</td>
-							<td>
+								<td>
+									{{entry.mobile}}
+								</td>
+							<td v-if="selectedClasses.length>0">
 								<span v-if="entry.contest_class">{{entry.contest_class.name}}</span>
-								<span v-if="!entry.contest_class">Unkonwn</span>
 							</td>
 							<td>
 								<span v-if="entry.aircraft">{{entry.aircraft.rego}}</span>
-								<span v-if="!entry.aircraft">Unkonwn</span>
 							</td> 
 							<td>
 								<span v-if="entry.aircraft">{{entry.aircraft.model}}</span>
@@ -192,83 +204,91 @@
 						</tr>
 					</table>
 
-					<h3>Second Pilots</h3>
 
-					
-					<table class="table collapsable">
-						<tr>
-							<th>Name</th>
-							<th>Class</th>
-							<th>Glider</th>
-							<th>Model</th>
-							<th>Status</th>
-							<th></th>
-						</tr>
-						<tr v-for="entry in secondPilotEntries">
-							<td>
-								<h3 class="d-md-none mt-4">{{entry.first_name}} {{entry.last_name}}</h3>
-								<span class="d-none d-md-block">{{entry.first_name}} {{entry.last_name}}</span>
-							</td>
-							<td>
-								<span v-if="entry.contest_class">{{entry.contest_class.name}}</span>
-								<span v-if="!entry.contest_class">Unkonwn</span>
-							</td>
-							<td>
-								<span v-if="entry.aircraft">{{entry.aircraft.rego}}</span>
-								<span v-if="!entry.aircraft">Unkonwn</span>
-							</td> 
-							<td>
-								<span v-if="entry.aircraft">{{entry.aircraft.model}}</span>
-							</td> 
-							<td>
-								{{entry.entry_status}}
-							</td>
-							<td>
-								<a v-if="entry.editcode" class="fa fa-edit" :href="'/entries/' + entry.editcode"></a>
-							</td>
-						</tr>
-					</table>
+					<div v-if="secondPilotEntries.length>0">
+						<h3>Second Pilots</h3>
 
-					<h3>Helpers</h3>
+						<table class="table collapsable">
+							<tr>
+								<th>Name</th>
+								<th>Mobile</th>
+								<th>Class</th>
+								<th>Glider</th>
+								<th>Model</th>
+								<th>Status</th>
+								<th></th>
+							</tr>
+							<tr v-for="entry in secondPilotEntries">
+								<td>
+									<h3 class="d-md-none mt-4">{{entry.first_name}} {{entry.last_name}}</h3>
+									<span class="d-none d-md-block">{{entry.first_name}} {{entry.last_name}}</span>
+								</td>
+								<td>
+									{{entry.mobile}}
+								</td>
+								<td>
+									<span v-if="entry.contest_class">{{entry.contest_class.name}}</span>
+									<span v-if="!entry.contest_class">Unkonwn</span>
+								</td>
+								<td>
+									<span v-if="entry.aircraft">{{entry.aircraft.rego}}</span>
+									<span v-if="!entry.aircraft">Unkonwn</span>
+								</td> 
+								<td>
+									<span v-if="entry.aircraft">{{entry.aircraft.model}}</span>
+								</td> 
+								<td>
+									{{entry.entry_status}}
+									<span v-if="!signed"></span>
+								</td>
+								<td>
+									<a v-if="entry.editcode" class="fa fa-edit" :href="'/entries/' + entry.editcode"></a>
+								</td>
+							</tr>
+						</table>
+					</div>
 
-					
-					<table class="table collapsable">
-						<tr>
-							<th>Name</th>
-							<th>Type</th>
-							<th>Status</th>
-							<th></th>
-						</tr>
-						<tr v-for="entry in helperEntries">
-							<td>
-								<h3 class="d-md-none mt-4">{{entry.first_name}} {{entry.last_name}}</h3>
-								<span class="d-none d-md-block">{{entry.first_name}} {{entry.last_name}}</span>
-							</td>
-							<td>
-								{{entry.entry_type}}
-							</td>
-							<td>
-								{{entry.entry_status}}
-							</td>
-							<td>
-								<a v-if="entry.editcode" class="fa fa-edit" :href="'/entries/' + entry.editcode"></a>
-							</td>
-						</tr>
-					</table>
 
+					<div v-if="helperEntries.length>0">
+						<h3>Helpers</h3>
+
+						<table class="table collapsable">
+							<tr>
+								<th>Name</th>
+								<th>Type</th>
+								<th>Status</th>
+								<th></th>
+							</tr>
+							<tr v-for="entry in helperEntries">
+								<td>
+									<h3 class="d-md-none mt-4">{{entry.first_name}} {{entry.last_name}}</h3>
+									<span class="d-none d-md-block">{{entry.first_name}} {{entry.last_name}}</span>
+								</td>
+								<td>
+									{{entry.entry_type}}
+								</td>
+								<td>
+									{{entry.entry_status}}
+								</td>
+								<td>
+									<a v-if="entry.editcode" class="fa fa-edit" :href="'/entries/' + entry.editcode"></a>
+								</td>
+							</tr>
+						</table>
+					</div>
 					
 
 				</div>
 			</div>
 
 
-			<div class="card event-details mt-4">
+			<div class="card event-details mt-4" v-if="catering">
 				<div class="card-header">
 					<div class="float-right">
-						<span class="ml-2"><span class="text-muted">Breakfasts all: </span>{{breakfastsAllCount}} <span class="text-muted">some:</span> {{breakfastsSomeCount}}</span>
-						<span class="ml-2"><span class="text-muted">Lunches all: </span>{{lunchesAllCount}} <span class="text-muted">some:</span> {{lunchesSomeCount}}</span>
-						<span class="ml-2"><span class="text-muted">Dinners all: </span>{{dinnersAllCount}} <span class="text-muted">some:</span> {{dinnersSomeCount}}</span>
-						<span class="ml-2"><span class="text-muted">Final Dinner: </span>{{finalDinnerCount}}</span>
+						<span class="ml-2" v-if="event.catering_breakfasts"><span class="text-muted">Breakfasts all: </span>{{breakfastsAllCount}} <span class="text-muted">some:</span> {{breakfastsSomeCount}}</span>
+						<span class="ml-2" v-if="event.catering_lunches"><span class="text-muted">Lunches all: </span>{{lunchesAllCount}} <span class="text-muted">some:</span> {{lunchesSomeCount}}</span>
+						<span class="ml-2" v-if="event.catering_dinners"><span class="text-muted">Dinners all: </span>{{dinnersAllCount}} <span class="text-muted">some:</span> {{dinnersSomeCount}}</span>
+						<span class="ml-2" v-if="event.catering_final_dinner"><span class="text-muted">Final Dinner: </span>{{finalDinnerCount}}</span>
 					</div>
 					<h4>Catering</h4>
 				</div>
@@ -277,26 +297,26 @@
 					<table class="table collapsable">
 						<tr>
 							<th>Name</th>
-							<th>Brkfsts</th>
-							<th>Lunches</th>
-							<th>Dinners</th>
-							<th>Final Dinner</th>
+							<th v-if="event.catering_breakfasts">Brkfsts</th>
+							<th v-if="event.catering_lunches">Lunches</th>
+							<th v-if="event.catering_dinners">Dinners</th>
+							<th v-if="event.catering_final_dinner">Final Dinner</th>
 						</tr>
 						<tr v-for="entry in entries">
 							<td>
 								<h3 class="d-md-none mt-4">{{entry.first_name}} {{entry.last_name}}</h3>
 								<span class="d-none d-md-block">{{entry.first_name}} {{entry.last_name}}</span>
 							</td>
-							<td>
+							<td v-if="event.catering_breakfasts">
 								<span class="d-md-none text-muted">Breakfasts: </span><span class="fa" :class="showMeal(entry.catering_breakfasts)"></span> {{entry.catering_breakfasts}}
 							</td>
-							<td>
+							<td v-if="event.catering_lunches">
 								<span class="d-md-none text-muted">Lunches: </span><span class="fa" :class="showMeal(entry.catering_lunches)"></span> {{entry.catering_lunches}}
 							</td>
-							<td>
+							<td v-if="event.catering_dinners">
 								<span class="d-md-none text-muted">Dinners: </span><span class="fa" :class="showMeal(entry.catering_dinners)"></span> {{entry.catering_dinners}}
 							</td>
-							<td>
+							<td v-if="event.catering_final_dinner">
 								<span class="d-md-none text-muted">Final Dinner: </span>{{entry.catering_final_dinner}}
 							</td>
 						</tr>
@@ -339,6 +359,9 @@ export default {
 		this.calendar = this.$refs.calendar;
 	},
 	computed: {
+		catering: function() {
+			return this.event.catering_breakfasts || this.event.catering_lunches || this.event.catering_dinners || this.event.catering_final_dinner;
+		},
 		compiledMarkdown: function () {
 			return marked(this.event.details, { sanitize: true })
 		},

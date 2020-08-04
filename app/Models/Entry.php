@@ -66,8 +66,11 @@ class Entry extends Model
 		return false;
 	}
 
-
-
+	// only GNZ members can view details
+	public function canView()
+	{
+		if (Gate::allows('gnz-member')) return true;
+	}
 
 	public function showDetails()
 	{
@@ -82,9 +85,15 @@ class Entry extends Model
 			'car_plate',
 			'car_details',
 			'crew_name',
-			'editcode',
 			'mobile',
 			'email']
+		);
+	}
+
+	public function editDetails()
+	{
+		$this->makeVisible(
+			['editcode']
 		);
 	}
 

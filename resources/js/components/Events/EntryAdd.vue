@@ -37,7 +37,9 @@
 				</div>
 			</li>
 			<li>
-				<button class="btn btn-primary" v-on:click="createEntry()">Next...</button>
+				<button class="btn btn-primary" v-on:click="createEntry()" :disabled="submitting">Next... </button>
+				<br>
+				<span v-show="submitting"><i  class="fas fa-cog fa-spin"></i> Please Wait</span>
 			</li>
 
 		</ol>
@@ -54,6 +56,7 @@ export default {
 	props: ['eventId'],
 	data: function() {
 		return {
+			submitting: false,
 			event: null,
 			entry: {
 				eventId: null,
@@ -78,12 +81,21 @@ export default {
 			});
 		},
 		createEntry: function() {
+			this.submitting = true;
+			var that = this;
+
 			window.axios.post('/api/v1/entries', this.entry).then(function (response) {
 				var entry = response.data.data;
+				that.submitting = false;
 				if (entry.editcode) {
 					window.location.href = "/entries/" + entry.editcode;
 				}
-			}).catch(function (error) {
+			})
+			.then(response => { 
+				console.log(response)
+			})
+			.catch(function (error) {
+				that.submitting = false;
 				messages.$emit('error', error.response.data.error);
 			});
 		}
