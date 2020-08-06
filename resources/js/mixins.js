@@ -50,6 +50,9 @@ module.exports = {
 		formatDate: function(date) {
 			return Vue.prototype.$moment(date).format('ddd Do MMM YYYY');
 		},
+		formatDateMonth: function(date) {
+			return Vue.prototype.$moment(date).format('MMM YYYY');
+		},
 		formatTime: function(time) {
 			return Vue.prototype.$moment(time, Vue.prototype.$moment.HTML5_FMT.TIME_SECONDS).format('h:mma');
 		},
@@ -178,6 +181,10 @@ module.exports = {
 		},
 		numberWithCommas: function(x) {
 			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		},
+		validateEmail: function(email) {
+			const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+			return re.test(String(email).toLowerCase());
 		}
 	}
 }

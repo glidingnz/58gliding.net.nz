@@ -67,6 +67,8 @@ Vue.component('waypoints', require('./components/Waypoints.vue').default);
 Vue.component('roster-edit-item', require('./components/calendar/RosterEditItem.vue').default);
 Vue.component('roster-add-item', require('./components/calendar/RosterAddItem.vue').default);
 Vue.component('calendar-nav', require('./components/calendar/CalendarNav.vue').default);
+Vue.component('entry-add', require('./components/events/EntryAdd.vue').default);
+Vue.component('entry-edit', require('./components/events/EntryEdit.vue').default);
 Vue.component('edit-event', require('./components/events/EventEdit.vue').default);
 Vue.component('view-event', require('./components/events/EventView.vue').default);
 Vue.component('events', require('./components/events/Events.vue').default);
@@ -82,6 +84,7 @@ Vue.component('edit-member-types', require('./components/admin/MemberTypes.vue')
 Vue.component('autosize-textarea', require('./components/widgets/AutosizeTextarea.vue').default);
 Vue.component('org-selector', require('./components/widgets/OrgSelector.vue').default);
 Vue.component('member-selector', require('./components/widgets/MemberSelector.vue').default);
+Vue.component('aircraft-selector', require('./components/widgets/AircraftSelector.vue').default);
 
 Vue.component(
 	'passport-clients',

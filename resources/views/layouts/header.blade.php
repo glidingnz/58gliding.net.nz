@@ -41,10 +41,13 @@
 				'APP_DOMAIN' => env('APP_DOMAIN'),
 				'BASE_URL' => URL::to('/'),
 				'messages' => $messages,
+				'loggedIn' => (Auth::user()!=null) ? true : false,
 				'admin' => (Auth::user()!=null && Auth::user()->can('admin')) ? true : false,
+				'contestAdmin' => (Auth::user()!=null && Auth::user()->can('contest-admin')) ? true : false,
 				'clubAdmin' => (Auth::user()!=null && Auth::user()->can('club-admin')) ? true : false,
 				'clubMember' => (Auth::user()!=null && Auth::user()->can('club-member')) ? true : false,
 				'editAwards' => (Auth::user()!=null && Auth::user()->can('edit-awards')) ? true : false,
+				'gnzMember' => (Auth::user()!=null && Auth::user()->can('gnz-member')) ? true : false,
 				'viewMembership' => (Auth::user()!=null && Auth::user()->can('view-membership')) ? true : false,
 				'apple_auth' =>  env('APPLE_MAPS_AUTHORISATION_CALLBACK'),
 			]); ?>
@@ -68,7 +71,6 @@
 					<li class="nav-item"><a class="nav-link" href="{{ url('/members')}}">Members</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/tracking')}}">Tracking</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/cups')}}">Waypoints</a></li>
-					<li class="nav-item"><a class="nav-link" href="{{ url('/contests')}}">Contests</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/events')}}">Events</a></li>
 
 					<?php if (isset($org) && $org->slug!='gnz') { ?>
@@ -120,7 +122,7 @@
 
 			@yield('content')
 
-			<div class="footer">
+			<div class="footer pb-4">
 				<hr class="ml-4 mr-4 mt-4">
 
 				&copy; <?php echo date('Y'); ?>  <a href="http://gliding.co.nz/">Gliding New Zealand</a>

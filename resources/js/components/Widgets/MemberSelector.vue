@@ -1,15 +1,16 @@
 <template>
 	<div class="selectMember">
+		<input v-model="memberSearch" v-if="!selectedMember || edit" @keydown="memberSearchType" class="form-control" placeholder="Member Search..." >
 
-			<input v-if="selectedMember && !edit" class="form-control" placeholder="" :value="selectedMember.first_name + ' ' + selectedMember.last_name" v-on:click="edit=true" v-bind:class="{'is-valid': selectedMember, 'is-invalid': noResults}">
-			<input v-model="memberSearch" v-if="!selectedMember || edit" @keydown="memberSearchType" class="form-control" placeholder="Member Search..." v-bind:class="{'is-valid': selectedMember, 'is-invalid': noResults}">
+		<button class="btn btn-success" v-if="selectedMember && !edit" v-on:click="edit=true">
+			{{selectedMember.first_name}} {{selectedMember.last_name}}  &nbsp; {{selectedMember.nzga_number}} <div class="badge badge-light badge-pill ml-2">Change</div>
+		</button>
 
-
-			<span class="error" v-show="noResults">Member not found</span>
-			<select v-if="!selectedMember || edit" v-model="selectedMember" v-show="searchResults.length>0"  class="form-control" @change="selectMember()">
-				<option :value="null">{{searchResults.length}} result{{searchResults.length==1?'':'s'}}</option>
-				<option :value="member" v-for="member in searchResults">{{member.first_name}} {{member.last_name}} {{member.city}}</option>
-			</select>
+		<span class="error" v-show="noResults">Member not found</span>
+		<select v-if="!selectedMember || edit" v-model="selectedMember" v-show="searchResults.length>0"  class="form-control" @change="selectMember()">
+			<option :value="null">{{searchResults.length}} result{{searchResults.length==1?'':'s'}}</option>
+			<option :value="member" v-for="member in searchResults">{{member.first_name}} {{member.last_name}} {{member.city}} {{member.nzga_number}}</option>
+		</select>
 	</div>
 </template>
 
@@ -19,21 +20,29 @@
 
 	export default {
 		mixins: [common],
-		props: ['orgId', 'memberId', 'searchAll'],
+		props: ['value', 'searchAll'],
 		data() {
 			return {
 				selectedMember: null,
 				memberSearch: '',
 				searchResults: [],
 				edit: false,
-				noResults: false
+				noResults: false,
+				memberId: null
 			}
 		},
 		created: function () {
-			if (this.memberId) {
-				this.loadMember(this.memberId);
+			if (this.value) {
+				this.loadMember(this.value);
 			}
 			this.debouncedSave = _.debounce(this.searchMembers, 500);
+		},
+		watch: {
+			value: function(newVal) {
+				if (newVal!='' && newVal!=null) {
+					this.loadMember(newVal);
+				}
+			}
 		},
 		methods: {
 			memberSearchType: function(a, b) { 
@@ -42,13 +51,14 @@
 			},
 			selectMember: function() {
 				this.$emit('selected', this.selectedMember);
+				if (this.selectedMember) this.$emit('input', this.selectedMember.id);
 				this.edit = false;
-				//this.memberSearch = this.selectedMember.first_name + ' ' + this.selectedMember.last_name;
 			},
 			searchMembers: function() {
 				var that = this;
 				if (this.memberSearch=='') {
 					that.searchResults = [];
+					this.$emit('input', null);
 					return;
 				}
 

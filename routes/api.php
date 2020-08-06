@@ -109,6 +109,17 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 	// get settings
 	Route::get('/orgs/{id}/settings',  'SettingsApiController@org'); // for an org
 
+	Route::post('/entries/{editcode}',  'EntriesApiController@update');
+	Route::get('/entries/code/{editcode}',  'EntriesApiController@showCode');
+	Route::resource('/entries', 'EntriesApiController', ['only' => [
+		'index', 'create', 'store', 'show'
+	]]);
+	Route::get('/classes',  'ClassesApiController@index');
+
+	// list, link or unlink a class to an event
+	Route::get('/events/{id}/classes',  'ClassesApiController@event');
+	Route::post('/classes/{id}/link',  'ClassesApiController@link');
+	Route::post('/classes/{id}/unlink',  'ClassesApiController@unlink');
 
 	Route::get('/membertypes', 'MembertypeApiController@index');
 

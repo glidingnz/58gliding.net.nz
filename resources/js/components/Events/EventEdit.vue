@@ -228,7 +228,7 @@
 		<div class="row" v-if="flyingEvent">
 
 			<div class="form-group col-md-6">
-				<label for="terms" class="col-xs-6 col-form-label">Terms &amp; Conditions (Markdown available)</label>
+				<label for="terms" class="col-xs-6 col-form-label">Terms &amp; Conditions for Entry Form (Markdown available)</label>
 				<div class="col-xs-6">
 					<autosize-textarea>
 						<textarea type="text" class="form-control" id="terms" v-model="event.terms" rows="3"></textarea>
@@ -270,6 +270,33 @@
 		</div>
 
 
+		<div class="row">
+
+			<div class="form-group col-md-6">
+				<label class="col-xs-6 col-form-label">Catering Available</label><br>
+				
+				<label for="breakfasts" class="mr-2"><input type="checkbox" id="breakfasts" :value="true" v-model="event.catering_breakfasts"> Breakfasts</label>
+				<label for="lunches" class="mr-2"><input type="checkbox" id="lunches" :value="true" v-model="event.catering_lunches"> Lunches</label>
+				<label for="dinners" class="mr-2"><input type="checkbox" id="dinners" :value="true" v-model="event.catering_dinners"> Dinners</label>
+				<label for="final_dinner" class="mr-2"><input type="checkbox" id="final_dinner" :value="true" v-model="event.catering_final_dinner"> Final Dinner</label>
+
+			</div>
+
+
+			<div class="form-group col-md-6" v-if="flyingEvent">
+				<label class="col-xs-6 col-form-label">Classes for this Event</label><br>
+
+				<span v-for="availableClass in availableClasses" class="mr-4">
+					<label :for="'available_class'+availableClass.id">
+						<input type="checkbox" :id="'available_class'+availableClass.id" @change="toggleClass(availableClass.id)" :value="true" :checked="selectedClass(availableClass.id)">&nbsp;{{availableClass.name}}
+					</label>
+				</span>
+			</div>
+
+
+		</div>
+
+
 	</form>
 
 
@@ -286,12 +313,16 @@ export default {
 			event: [],
 			newDutyName: '',
 			hasEndDate: false,
-			returnOnSave: false
+			returnOnSave: false,
+			selectedClasses: [],
+			availableClasses: [],
 		}
 	},
 	props: ['orgId', 'eventId'],
 	created: function() {
-		this.load();
+		this.loadEvent();
+		this.loadAvailableClasses();
+		this.loadSelectedClasses();
 	},
 	computed: {
 		compiledMarkdown: function () {
@@ -304,7 +335,9 @@ export default {
 			switch (this.event.type)
 			{
 				case 'competition':
-				case 'xcountry': 
+				case 'camp': 
+				case 'training': 
+				case 'course': 
 					return true;
 					break;
 			}
@@ -312,7 +345,7 @@ export default {
 		}
 	},
 	methods: {
-		load: function() {
+		loadEvent: function() {
 			var that = this;
 			window.axios.get('/api/events/' + this.eventId).then(function (response) {
 				that.event = response.data.data;
@@ -359,6 +392,54 @@ export default {
 		{
 			Vue.set(this.event, 'organiser_member_id', member.id);
 			//this.event.organiser_member_id = member.id;
+		},
+		loadSelectedClasses: function() {
+			var that = this;
+			that.selectedClasses = [];
+			window.axios.get('/api/v1/events/' + this.eventId + '/classes').then(function (response) {
+				var selectedClasses = response.data.data;
+				// just get the IDs into the array
+				for (var i=0; i<selectedClasses.length; i++) {
+					that.selectedClasses.push(selectedClasses[i].class_id);
+				}
+			});
+		},
+		loadAvailableClasses: function() {
+			var that = this;
+			window.axios.get('/api/v1/classes').then(function (response) {
+				that.availableClasses = response.data.data;
+			});
+		},
+		selectedClass: function(class_id)
+		{
+			return this.selectedClasses.includes(class_id);
+		},
+		toggleClass: function(class_id)
+		{
+			if (this.selectedClass(class_id)) {
+				// remove it
+				this.unlinkClass(class_id);
+				const index = this.selectedClasses.indexOf(class_id);
+				if (index > -1) {
+					this.selectedClasses.splice(index, 1);
+				}
+			} else {
+				// add it
+				this.linkClass(class_id);
+				this.selectedClasses.push(class_id);
+			}
+		},
+		linkClass: function(class_id)
+		{
+			window.axios.post('/api/v1/classes/' + class_id + '/link', this.event).then(function (response) {
+				
+			});
+		},
+		unlinkClass: function(class_id)
+		{
+			window.axios.post('/api/v1/classes/' + class_id + '/unlink', this.event).then(function (response) {
+				
+			});
 		}
 	}
 }

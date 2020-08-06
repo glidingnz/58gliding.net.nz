@@ -56,6 +56,8 @@ Route::get('/tracking-old', 'Apps\TrackingController@index');
 Route::get('/tracking-old/{year}-{month}-{day}', 'Apps\TrackingController@day');
 Route::get('/tracking-old/{year}-{month}-{day}/{rego}', 'Apps\TrackingController@track');
 
+Route::get('/embed-cal', 'Apps\CalendarController@embedCal');
+
 Route::get('/ratings-report', 'Apps\MembersController@ratingsReport');
 
 Route::POST('/overland', 'Api\v1\TrackingApiController@overland'); // special route for overland cell phone tracking app. Easier to type than API URL.
@@ -71,10 +73,16 @@ Route::get('/flying-days', 'Apps\CalendarController@index');
 Route::get('/events/', 'Apps\EventsController@index');
 Route::get('/events/{slug}', 'Apps\EventsController@viewEvent');
 
+Route::get('/events/{slug}/enter', 'Apps\EventsController@enterEvent');
+Route::get('/entries/{editcode}', 'Apps\EventsController@editEntry');
+
+
+
 Route::get('/members', 'Apps\MembersController@index');
 Route::get('/members/join', 'Apps\MembersController@join');
 
 Route::group(['middleware' => ['auth']], function () {
+
 	Route::resource('/contestentries', 'Apps\ContestEntriesController');
 	Route::get('/user/account', 'UserController@view_account');
 	Route::post('/update-account', 'UserController@update_account');
