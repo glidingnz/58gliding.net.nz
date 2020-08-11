@@ -36,6 +36,7 @@
 
 		<!-- Scripts -->
 		<script>
+			// Global data made available to all page's javascript 
 			window.Laravel = <?php echo json_encode([
 				'csrfToken' => csrf_token(),
 				'APP_DOMAIN' => env('APP_DOMAIN'),
@@ -50,6 +51,7 @@
 				'gnzMember' => (Auth::user()!=null && Auth::user()->can('gnz-member')) ? true : false,
 				'viewMembership' => (Auth::user()!=null && Auth::user()->can('view-membership')) ? true : false,
 				'apple_auth' =>  env('APPLE_MAPS_AUTHORISATION_CALLBACK'),
+				'org' => $org,
 			]); ?>
 		</script>
 	</head>

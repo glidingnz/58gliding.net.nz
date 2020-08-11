@@ -22,7 +22,6 @@ use Gate;
 
 class MembersApiController extends ApiController
 {
-	
 	// create a new member
 	public function store(Request $request)
 	{

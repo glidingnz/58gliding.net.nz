@@ -16,9 +16,6 @@ class SettingsApiController extends ApiController
 {
 	public function index()
 	{
-		// get the current user
-		$user = Auth::user();
-
 		// get all settings
 		if ($settings = Setting::where('protected', false)->whereIsNull('org_id')->get())
 		{

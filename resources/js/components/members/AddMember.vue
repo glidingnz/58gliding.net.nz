@@ -1,6 +1,6 @@
 <template><div>
 
-	<h1><a href="/members">Members</a> &raquo; Add Member</h1>
+	<h1><a href="/members">Members</a> &raquo; Add Member to <span v-if="org">{{org.name}}</span></h1>
 
 
 	<div class="form-group col-md-12">
@@ -15,7 +15,7 @@
 			<span class="text-muted ml-3">DOB</span> {{selectedMember.date_of_birth}}
 		</div>
 
-		<button v-if="selectedMember" class="btn btn-primary" v-on:click="addExistingMember()">Add {{selectedMember.first_name}} {{selectedMember.last_name}} to {{orgName}}</button>
+		<button v-if="selectedMember" class="btn btn-primary" v-on:click="addExistingMember()">Add {{selectedMember.first_name}} {{selectedMember.last_name}}</button>
 
 	</div>
 
@@ -44,9 +44,10 @@
 
 	export default {
 		mixins: [common],
-		props: ['orgId', 'orgName'],
+		props: [],
 		data() {
 			return {
+				org: null,
 				existingMemberId: null,
 				selectedMember: null,
 				first_name: null,
@@ -54,6 +55,7 @@
 			}
 		},
 		mounted() {
+			this.org = window.Laravel.org;
 		},
 		methods: {
 			addNewMember: function()

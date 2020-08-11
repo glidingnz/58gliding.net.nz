@@ -16,9 +16,9 @@ class OrgApiController extends ApiController
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
-		if ($orgs = Org::all())
+		if ($orgs = Org::all()->where('active', true))
 		{
 			return $this->success($orgs);
 		}
