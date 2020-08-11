@@ -18,9 +18,14 @@ class MembersController extends Controller
 		return view('members/members-list');
 	}
 
-	public function join()
+	public function add()
 	{
-		return view('members/join');
+
+		// check if the current logged in user is an admin of the club
+		if (!Gate::allows('club-admin')) {
+			abort(403);
+		}
+		return view('members/add');
 	}
 
 

@@ -20,7 +20,7 @@
 
 	export default {
 		mixins: [common],
-		props: ['value', 'searchAll'],
+		props: ['value', 'resigned'],
 		data() {
 			return {
 				selectedMember: null,
@@ -59,10 +59,11 @@
 				if (this.memberSearch=='') {
 					that.searchResults = [];
 					this.$emit('input', null);
+					this.$emit('selected', null);
 					return;
 				}
 
-				window.axios.get('/api/v1/members', {params: {"search":this.memberSearch}}).then(function (response) {
+				window.axios.get('/api/v1/members', {params: {"search":this.memberSearch, 'resigned':this.resigned}}).then(function (response) {
 					that.searchResults = response.data.data;
 
 					if (response.data.data.length==0) {

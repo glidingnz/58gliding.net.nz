@@ -25,12 +25,12 @@ class AffiliatesApiController extends ApiController
 	public function update(Request $request, $id)
 	{
 
-		if (!$affiliate = Affiliate::find($id))
+		if (!$affiliate = Affiliate::where('id', $id)->with('org')->first())
 		{
 			return $this->not_found();
 		}
 
-		if (Gate::denies('club-admin', $affiliate->org_id)) 
+		if (Gate::denies('club-admin', $affiliate->org)) 
 		{
 			return $this->denied("Sorry you aren't admin for this organisation");
 		}

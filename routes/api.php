@@ -160,9 +160,10 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 		Route::delete('/members/{member_id}/ratings/{rating_id}',  'RatingMemberApiController@destroy');
 
 
+		Route::post('/addmembers',  'MembersApiController@store');
 
 		Route::resource('/members', 'MembersApiController', ['only' => [
-			'index', 'show', 'update'
+			'index', 'show', 'update', 'store'
 		]]);
 		Route::post('/members/email',  'MembersApiController@email'); // ability to send emails to the membership
 

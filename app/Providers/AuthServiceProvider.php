@@ -91,6 +91,7 @@ class AuthServiceProvider extends ServiceProvider
 				$org = $current_org;
 			}
 			if (!$org) return false;
+			if (!isset($org->id)) return false;
 
 			$variable_name = 'is_club_admin_' . $org->id;
 

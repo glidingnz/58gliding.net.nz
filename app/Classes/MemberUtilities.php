@@ -56,7 +56,7 @@ class MemberUtilities {
 				LEAST(IF(r_instructor_a.id>0, 'a', 'z'), IF(r_instructor_b.id>0, 'b', 'z'), IF(r_instructor_c.id>0, 'c', 'z'), IF(r_instructor_d.id>0, 'd', 'z'))<>'z'
 				, LEAST(IF(r_instructor_a.id>0, 'a', 'z'), IF(r_instructor_b.id>0, 'b', 'z'), IF(r_instructor_c.id>0, 'c', 'z'), IF(r_instructor_d.id>0, 'd', 'z'))
 				,null)) AS rating_instructor_level, 
-			GROUP_CONCAT(organisations.org_id) AS orgs
+			GROUP_CONCAT(organisations.org_id) AS org_ids
 			";
 		if (isset($org)) $select_string .= '';
 
@@ -76,7 +76,7 @@ class MemberUtilities {
 		if (!$request->input('resigned'))
 		{
 			$resigned = true;
-			//$query->where('membership_type', '<>', 'Resigned');
+			$query->where('membership_type', '<>', 'Resigned');
 		}
 
 		$query->leftJoin('affiliates AS organisations', function ($join) use ($resigned) {

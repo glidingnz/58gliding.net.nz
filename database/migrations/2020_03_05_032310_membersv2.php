@@ -24,7 +24,7 @@ class Membersv2 extends Migration
 			$table->boolean('active')->default(true);
 			$table->string('twitter')->nullable();
 			$table->string('facebook')->nullable();
-			$table->integer('waypoint')->nullable();
+			$table->integer('waypoint_id')->nullable();
 			$table->text('description')->nullable();
 		});
 
@@ -507,7 +507,7 @@ class Membersv2 extends Migration
 			$table->dropColumn('active');
 			$table->dropColumn('twitter');
 			$table->dropColumn('facebook');
-			$table->dropColumn('waypoint');
+			$table->dropColumn('waypoint_id');
 			$table->dropColumn('description');
 		});
 

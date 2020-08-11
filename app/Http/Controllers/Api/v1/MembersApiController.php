@@ -22,6 +22,32 @@ use Gate;
 
 class MembersApiController extends ApiController
 {
+	
+	// create a new member
+	public function store(Request $request)
+	{
+		$this->validate($request, [
+			'first_name' => 'required|max:64',
+			'last_name' => 'required|max:64'
+		]);
+
+		$member = new Member();
+		$member->first_name = $request->input('first_name');
+		$member->last_name = $request->input('last_name');
+		$member->password = '';
+		$member->salt = '';
+		$member->access_level = 'NORMAL';
+		$member->non_member = 1;
+		$member->middle_name = '';
+		$member->email = '';
+		$member->pending_approval = 0;
+		if ($member->save())
+		{
+			return $this->success($member);
+		}
+
+		return $this->error('Member not created');
+	}
 
 	/**
 	 * Display the specified resource.
@@ -253,7 +279,6 @@ class MembersApiController extends ApiController
 		return  (new MembersExport($request))->download('members.' . $extension);
 
 	}
-
 
 
 	/**

@@ -79,7 +79,7 @@ Route::get('/entries/{editcode}', 'Apps\EventsController@editEntry');
 
 
 Route::get('/members', 'Apps\MembersController@index');
-Route::get('/members/join', 'Apps\MembersController@join');
+Route::get('/members/add', 'Apps\MembersController@add');
 
 Route::group(['middleware' => ['auth']], function () {
 

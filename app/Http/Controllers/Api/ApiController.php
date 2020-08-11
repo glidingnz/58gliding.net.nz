@@ -66,7 +66,15 @@ class ApiController extends Controller
 
 	public function error($message="An Unknown Error Occured")
 	{
-		$this->data['error']=$message;
+		if (is_array($message))
+		{
+			$this->data['error']=implode($message, ', ');
+		}
+		else
+		{
+			$this->data['error']=$message;
+		}
+		
 		$this->data['success']=false;
 		$this->data['http_code']=500;
 		$this->_get_db_queries();
