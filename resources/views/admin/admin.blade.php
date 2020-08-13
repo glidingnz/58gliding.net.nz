@@ -2,8 +2,36 @@
 
 @section('content')
 
-<div class="container">
+<div class="page">
+
+
+
+	<div class="sidebar-page">
+
+		<div class="sidebar">
+			<admin-menu></admin-menu>
+		</div>
+
+		<?php if (isset($page)) { ?>
+			<div class="sidebar-content">
+				<?php echo '<' . $page . '></' . $page . '>'; ?>
+			</div>
+		<?php } ?>
+
+	</div>
+
+
+	<?php /*
+
+
+	<br>
+	<br>
+	<br>
+	<br>
+
 	<h1>Admin</h1>
+
+
 
 	<div class="list-group">
 		@can('admin') <a class="list-group-item" href="/admin/users">Users</a> @endcan
@@ -51,6 +79,9 @@
 			<input type="submit" class="btn btn-outline-dark" value="Email Address Changes">
 		</form>
 	@endcan
+
+	*/ ?>
+
 </div>
 
 

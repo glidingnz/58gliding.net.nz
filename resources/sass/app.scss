@@ -128,3 +128,17 @@ only screen and (max-width: 760px),
 		display: none !important;
 	}
 }
+
+.sidebar-page {
+	display: flex;
+	margin-left: 20px;
+}
+.sidebar {
+	width: 15em;
+}
+
+.sidebar-content {
+	flex-grow: 1;
+	margin-left: 20px;
+	margin-right: 20px;
+}

@@ -98,6 +98,8 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('/admin/sync-qgps', 'AdminController@sync_qgps');
 	Route::post('/admin/import-aircraft-from-caa', 'AdminController@import_aircraft_from_caa');
 	Route::post('/admin/email-address-changes', 'AdminController@email_address_changes');
+	Route::get('/admin/{page}', 'AdminController@index'); // any other admin pages with side menu. Page determines the appropriate Vue object to load.
+
 
 	Route::get('/members/{id}', 'Apps\MembersController@view');
 	Route::get('/members/{id}/achievements', 'Apps\MembersController@achievements');

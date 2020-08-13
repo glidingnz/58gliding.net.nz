@@ -20,11 +20,28 @@ use Gate;
 
 class AdminController extends Controller
 {
-	public function index()
+	/**
+	 * Main controller for all Admin pages. The page maps to a specific vue controller to load from the URL.
+	 * All admin pages have the same side menu.
+	 *
+	 *  Main admin
+	 *  	Import Buttons
+	 *  	Manage Users
+	 *  	OAuth Clients
+	 */
+	public function index(Request $request, $page=null)
 	{
-		if (Gate::denies('admin')) return abort(403);
-		return view('admin/admin');
+		//if (Gate::denies('admin')) return abort(403);
+		switch ($page) {
+			case 'club-admin': $tag='club-admin'; break;
+			case 'users': $tag='users'; break;
+			default: $tag='test'; break;
+		}
+
+		return view('admin/admin', Array('page'=>$page, 'tag'=>$tag));
 	}
+
+
 
 	public function club_admin()
 	{
