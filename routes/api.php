@@ -125,6 +125,11 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 
 	Route::group(['middleware' => ['auth:api']], function () {
 
+
+		Route::post('/admin/import-flarm', 'AdminApiController@import_flarm');
+		Route::post('/admin/import-aircraft-from-caa', 'AdminApiController@import_aircraft_from_caa');
+		Route::post('/admin/email-address-changes', 'AdminApiController@email_address_changes');
+
 		Route::post('/orgs/{id}/settings',  'SettingsApiController@insert');
 		Route::resource('/affiliates', 'AffiliatesApiController', ['only' => [
 			'update'

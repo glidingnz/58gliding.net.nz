@@ -1,7 +1,7 @@
 <template>
 <div>
 	
-	<h1>{{orgName}} Member Types</h1>
+	<h1 v-if="org">{{org.name}} Member Types</h1>
 	<table class="table table-striped">
 		<tr>
 			<td>
@@ -33,18 +33,24 @@
 export default {
 	data: function() {
 		return {
+			org: null,
+			admin: false,
+			clubAdmin: false,
 			membertypes: [],
 			newMembertype: '',
 		}
 	},
-	props: ['orgId', 'orgName'],
+	props: [],
 	created: function() {
+		this.org = window.Laravel.org;
+		this.admin = window.Laravel.admin;
+		this.clubAdmin = window.Laravel.clubAdmin;
 		this.load();
 	},
 	methods: {
 		load: function() {
 			var that = this;
-			window.axios.get('/api/v1/membertypes/?org_id=' + this.orgId).then(function (response) {
+			window.axios.get('/api/v1/membertypes/?org_id=' + that.org.id).then(function (response) {
 				that.membertypes = response.data.data;
 			});
 		},
@@ -52,7 +58,7 @@ export default {
 			var that = this;
 
 			var data = {
-				org_id: this.orgId,
+				org_id: this.org.id,
 				name: this.newMembertype 
 			};
 
