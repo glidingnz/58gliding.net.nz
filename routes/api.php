@@ -107,7 +107,8 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 	Route::post('/fleets/{fleet_id}/remove',  'FleetsApiController@remove');
 
 	// get settings
-	Route::get('/orgs/{id}/settings',  'SettingsApiController@org'); // for an org
+	Route::get('/settings/{orgId}',  'SettingsApiController@getOrg'); // load settings for an org
+	Route::get('/settings',  'SettingsApiController@get'); // load global settings
 
 	Route::post('/entries/{editcode}',  'EntriesApiController@update');
 	Route::get('/entries/code/{editcode}',  'EntriesApiController@showCode');
@@ -125,12 +126,14 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 
 	Route::group(['middleware' => ['auth:api']], function () {
 
+		Route::post('/settings/{orgId}',  'SettingsApiController@insertOrg');
+		Route::post('/settings',  'SettingsApiController@insert');
 
 		Route::post('/admin/import-flarm', 'AdminApiController@import_flarm');
 		Route::post('/admin/import-aircraft-from-caa', 'AdminApiController@import_aircraft_from_caa');
 		Route::post('/admin/email-address-changes', 'AdminApiController@email_address_changes');
 
-		Route::post('/orgs/{id}/settings',  'SettingsApiController@insert');
+
 		Route::resource('/affiliates', 'AffiliatesApiController', ['only' => [
 			'update'
 		]]);

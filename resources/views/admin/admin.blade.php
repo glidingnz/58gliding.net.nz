@@ -9,7 +9,7 @@
 	<div class="sidebar-page">
 
 		<div class="sidebar">
-			<admin-menu></admin-menu>
+			<admin-menu page="{{$page}}"></admin-menu>
 		</div>
 
 		<?php if (isset($page)) { ?>

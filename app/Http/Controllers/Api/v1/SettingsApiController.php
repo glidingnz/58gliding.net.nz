@@ -16,7 +16,7 @@ class SettingsApiController extends ApiController
 {
 	public function index()
 	{
-		// get all settings
+		// get all public settings
 		if ($settings = Setting::where('protected', false)->whereIsNull('org_id')->get())
 		{
 			return $this->success($roles);
@@ -25,18 +25,42 @@ class SettingsApiController extends ApiController
 	}
 
 
-	public function org($org_id)
+	/**
+	 * Get non org settings
+	 */
+	public function get()
+	{
+		$this->getOrg(null);
+	}
+
+
+	/**
+	 * Get org settings
+	 */
+	public function getOrg($org_id)
 	{
 		// get the current user
 		$user = Auth::user();
 
-		if (!$org = Org::where('id', $org_id)->first()) {
-			return $this->error("Org does not exist"); 
+		$query = Setting::where('org_id', $org_id);
+
+		if ($org_id!=null)
+		{
+			// check the org exists
+			if (!$org = Org::where('id', $org_id)->first()) {
+				return $this->error("Org does not exist"); 
+			}
+			// club protection
+			if (Gate::denies('club-admin', $org)) {
+				$query->where('protected', false);
+			}
 		}
 
-		$query = Setting::where('org_id', $org_id);
-		if (Gate::denies('club-admin', $org)) {
-			$query->where('protected', false);
+		// global settings protection
+		if ($org_id==null) {
+			if (Gate::denies('admin')) {
+				$query->where('protected', false);
+			}
 		}
 
 		// get all settings
@@ -53,15 +77,33 @@ class SettingsApiController extends ApiController
 	}
 
 
-	public function insert(Request $request, $org_id)
+
+
+	public function insert(Request $request)
+	{
+		$this->insertOrg($request, null);
+	}
+
+
+	public function insertOrg(Request $request, $org_id)
 	{
 
-		// get org
-		if (!$org = Org::where('id', $org_id)->first()) {
-			return $this->error("Org does not exist"); 
+		if ($org_id!=null)
+		{
+			// get org
+			if (!$org = Org::where('id', $org_id)->first()) {
+				return $this->error("Org does not exist"); 
+			}
+			if (Gate::denies('club-admin', $org)) {
+				return $this->error("No permission to edit settings"); 
+			}
 		}
-		if (Gate::denies('club-admin', $org)) {
-			return $this->error("No permission to edit settings"); 
+
+		// global settings protection
+		if ($org_id==null) {
+			if (Gate::denies('admin')) {
+				$query->where('protected', false);
+			}
 		}
 
 		if (!$request->has('settings')) return $this->error('new settings are required'); 

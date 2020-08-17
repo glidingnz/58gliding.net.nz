@@ -1,4 +1,9 @@
 <style>
+.messages-div {
+	margin: 0;
+	padding: 0;
+	position: absolute;
+}
 .messages-panel {
 	position: fixed;
 	max-width: 20em;
@@ -31,7 +36,7 @@ a.old-messages { color: #444; }
 </style>
 
 <template>
-	<div v-show="panelOpen">
+	<div v-show="panelOpen" class="messages-div">
 		<a class="fa fa-bell-o no-messages" v-bind:class="{ 'no-messages': areNoMessages, 'new-messages': areNewMessages , 'old-messages': areOldMessages }" href="javascript:void(null)" v-on:click="togglePanel()"></a>
 		<div class="messages-panel" v-show="panelOpen">
 
