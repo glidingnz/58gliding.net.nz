@@ -30,7 +30,7 @@ class SettingsApiController extends ApiController
 	 */
 	public function get()
 	{
-		$this->getOrg(null);
+		return $this->getOrg(null);
 	}
 
 
@@ -81,13 +81,12 @@ class SettingsApiController extends ApiController
 
 	public function insert(Request $request)
 	{
-		$this->insertOrg($request, null);
+		return $this->insertOrg($request, null);
 	}
 
 
 	public function insertOrg(Request $request, $org_id)
 	{
-
 		if ($org_id!=null)
 		{
 			// get org
@@ -108,11 +107,13 @@ class SettingsApiController extends ApiController
 
 		if (!$request->has('settings')) return $this->error('new settings are required'); 
 
+
+
 		foreach ($request->input('settings') AS $key=>$value)
 		{
 			$setting = Setting::updateOrCreate(
-				['name' => $key],
-				['name' => $key, 'value'=>$value['value'], 'protected'=>$value['protected'], 'org_id' => $org->id] 
+				['name' => $key, 'org_id' => $org_id],
+				['name' => $key, 'value'=>$value['value'], 'protected'=>$value['protected'], 'org_id' => $org_id] 
 			);
 			$setting->save();
 		}

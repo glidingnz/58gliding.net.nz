@@ -46,6 +46,7 @@
 					{page: 'users', label: 'Users', url: '/admin/users'},
 					{page: 'oauth', label: 'OAuth', url: '/oauth'},
 					{page: 'admin-imports', label: 'Admin Imports', url: '/admin/admin-imports'},
+					{page: 'global-settings', label: 'Global Settings', url: '/admin/global-settings'},
 				],
 				clubMenu: [
 					{page: 'member-types', label: 'Club Member Types', url: '/admin/member-types'},
