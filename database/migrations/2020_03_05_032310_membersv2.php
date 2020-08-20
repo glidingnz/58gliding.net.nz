@@ -17,6 +17,23 @@ class Membersv2 extends Migration
 	 */
 	public function up()
 	{
+		// remove the ENUM that doesn't work with Laravel very well
+		DB::statement("SET SQL_MODE='ALLOW_INVALID_DATES'");
+		DB::statement('ALTER TABLE gnz_member DROP COLUMN access_level');
+		DB::statement('ALTER TABLE gnz_member MODIFY gender VARCHAR(1)');
+
+		// upgrade the members table
+		Schema::table('gnz_member', function (Blueprint $table) {
+			$table->string('password', 40)->nullable()->change();
+			$table->string('salt', 40)->nullable()->change();
+			$table->string('email', 64)->nullable()->change();
+			$table->string('first_name', 64)->nullable()->change();
+			$table->string('last_name', 64)->nullable()->change();
+		});
+
+
+
+
 
 		// Add ability to identify defunct organisations
 		
@@ -481,6 +498,9 @@ class Membersv2 extends Migration
 	 */
 	public function down()
 	{
+		DB::statement("SET SQL_MODE='ALLOW_INVALID_DATES'");
+		DB::statement("ALTER TABLE gnz_member ADD COLUMN access_level VARCHAR(16)");
+
 		Schema::drop('affiliates');
 		Schema::drop('membertypes');
 		Schema::drop('member_membertype');
