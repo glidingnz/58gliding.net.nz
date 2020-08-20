@@ -14,7 +14,6 @@
 
 		<div v-show="status!='loaded'"><span class=" fas fa-sync fa-spin"></span> Loading...</div>
 
-
 	</div>
 </template>
 

@@ -10,7 +10,10 @@ use App\Http\Controllers\Api\ApiController;
 use App\Models\Member;
 use App\Models\MemberChangeLog;
 use App\Models\Org;
+use App\Models\Affiliate;
 use App\Exports\MembersExport;
+use Carbon\Carbon;
+use Carbon\CarbonTimeZone;
 use DB;
 use DateTime;
 use Excel;
@@ -22,9 +25,18 @@ use Gate;
 
 class MembersApiController extends ApiController
 {
+
 	// create a new member
 	public function store(Request $request)
 	{
+		// check we have permission to create a new member
+		if (Gate::denies('club-admin')) {
+			return $this->denied();
+		}
+
+		// get current org
+		$org = \Request::get('_ORG');
+
 		$this->validate($request, [
 			'first_name' => 'required|max:64',
 			'last_name' => 'required|max:64'
@@ -42,6 +54,16 @@ class MembersApiController extends ApiController
 		$member->pending_approval = 0;
 		if ($member->save())
 		{
+			// create the affiliate link
+			if (isset($org->id))
+			{
+				$affiliate = new Affiliate();
+				$affiliate->member_id = $member->id;
+				$affiliate->org_id = $org->id;
+				$affiliate->join_date = Carbon::now(new CarbonTimeZone('Pacific/Auckland'));
+				$affiliate->save();
+			}
+
 			return $this->success($member);
 		}
 
