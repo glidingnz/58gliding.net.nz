@@ -14,6 +14,8 @@ use App\Models\Member;
 use App\Models\Affiliate;
 
 use Auth;
+use Carbon\Carbon;
+use Carbon\CarbonTimeZone;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -263,6 +265,18 @@ class AuthServiceProvider extends ServiceProvider
 			if (Gate::allows('admin')) return true;
 			if (Gate::allows('edit-self', $member)) return true;
 			if (Gate::allows('edit-awards', $member)) return true;
+
+			// load all the affiliates that we are still a member of
+			// or have been in the past
+			if ($affiliates = Affiliate::where('member_id', $member->id)->with('org')->get())
+			{
+				foreach ($affiliates AS $affiliate)
+				{
+					if (Gate::allows('club-admin', $affiliate->org)) {
+						return true;
+					}
+				}
+			}
 
 			// load the club of the member we're trying to edit.
 			$org = Org::where('gnz_code', $member->club)->first();
