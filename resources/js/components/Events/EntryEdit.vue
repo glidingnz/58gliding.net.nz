@@ -47,6 +47,7 @@
 					GNZ Number<br>
 					<div class="form-group col-md-6">
 						<input type="text" v-model="entry.gnz_number" class="form-control" id="gnz_number" name="gnz_number">
+						Tip: <a href="/login">Login</a> or <a href="/register">Create an account</a> to save knowing what your GNZ number is! Check your email to get back to this form afterwards.
 					</div>
 				</div>
 				
