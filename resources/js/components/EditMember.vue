@@ -178,7 +178,7 @@
 					<td class="table-label col-xs-6">Modified</td>
 					<td>{{member.modified}}</td>
 				</tr>
-				<tr>
+				<tr v-if="showAdmin">
 					<td class="table-label col-xs-6">Comments</td>
 					<td><textarea class="form-control" cols="30" rows="5" v-model="member.comments"></textarea></td>
 				</tr>

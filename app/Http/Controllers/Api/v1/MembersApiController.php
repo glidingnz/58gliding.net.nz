@@ -47,7 +47,6 @@ class MembersApiController extends ApiController
 		$member->last_name = $request->input('last_name');
 		$member->password = '';
 		$member->salt = '';
-		$member->access_level = 'NORMAL';
 		$member->non_member = 1;
 		$member->middle_name = '';
 		$member->email = '';
@@ -182,7 +181,6 @@ class MembersApiController extends ApiController
 			$form['nzga_number'] = $request->get('nzga_number');
 			$form['comments'] = $request->get('comments');
 			$form['pending_approval'] = $request->get('pending_approval');
-			$form['access_level'] = $request->get('access_level');
 			$form['non_member'] = $request->get('non_member');
 			$form['membership_type'] = $request->get('membership_type');
 			$form['club'] = $request->get('club');
