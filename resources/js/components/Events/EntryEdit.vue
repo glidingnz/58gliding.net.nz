@@ -63,14 +63,14 @@
 				</div>
 
 				<div class="form-group col-md-6">
-					<label for="email">Email (K	ept private)</label> 
+					<label for="email">Email (Kept private)</label> 
 					<input type="text" v-model="entry.email" class="form-control" id="email" name="email">
 				</div>
 
 			</li>
 			<li>
 				<div class="form-group col-md-6">
-					<label for="mobile">Mobile (Shown on event page)</label> 
+					<label for="mobile">Mobile (Viewable by other logged in GNZ members)</label> 
 					<input type="text" v-model="entry.mobile" class="form-control" id="mobile" name="mobile">
 				</div>
 			</li>

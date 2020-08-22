@@ -129,12 +129,13 @@ class EntriesApiController extends ApiController
 
 		// check if we are given a member ID, if so then get the GNZ number from that.
 		if ($request->filled('member_id')) {
-			echo 'has member_id ';
 			$entry->member_id = $input['member_id'];
 			if ($member = Member::where('id', $input['member_id'])->first())
 			{
 				// use that ID instead of whatever was provided, as we shouldn't have got one from someone not logged in
 				$entry->gnz_number = $member->nzga_number;
+				$entry->first_name = $member->first_name;
+				$entry->last_name = $member->last_name;
 			}
 		}
 
@@ -153,13 +154,14 @@ class EntriesApiController extends ApiController
 
 		// if given a GNZ number, get the member ID from it
 		if ($request->filled('gnz_number')) {
-			echo 'has gnz numnber';
 
 			$entry->gnz_number =$input['gnz_number'];
 			if ($member = Member::where('nzga_number', $input['gnz_number'])->first())
 			{
 				// use that ID instead of whatever was provided, as we shouldn't have got one from someone not logged in
 				$entry->member_id = $member->id;
+				$entry->first_name = $member->first_name;
+				$entry->last_name = $member->last_name;
 			}
 			else
 			{
