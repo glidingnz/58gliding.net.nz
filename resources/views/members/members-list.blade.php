@@ -6,7 +6,7 @@
 <div class="container-fluid" id="members">
 
 	@can('gnz-member')
-		<members org-code="{{$org['gnz_code']}}"></members>
+		<members></members>
 	@else
 		<p class="error">Sorry, you must be a validated GNZ member to see the membership list.</p>
 

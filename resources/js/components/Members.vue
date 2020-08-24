@@ -27,14 +27,14 @@
 
 		</div>
 
-		<h1 class="col-xs-6 results-title">Members</h1>
+		<h1 class="col-xs-6 results-title"><span v-if="current_org">{{current_org.name}}</span> Members</h1>
 	</div>
 
 	<div class="container-fluid clearfix">
 
-		<select name="org" v-model="state.org_id" class="col-xs-12 col-sm-4 form-control custom-select custom-select-sm float-right" style="width: auto; margin-bottom: 20px;">
+		<select name="org" v-model="current_org" class="col-xs-12 col-sm-4 form-control custom-select custom-select-sm float-right" style="width: auto; margin-bottom: 20px;">
 			<option v-bind:value="null">All Clubs</option>
-			<option v-for="org in orgs" v-bind:value="org.id">{{org.name}}</option>
+			<option v-for="org in orgs" v-bind:value="org">{{org.name}}</option>
 		</select>
 
 		<div class="filter-buttons nav nav-pills col-xs-12 col-sm-8" role="group">
@@ -51,12 +51,23 @@
 			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='coaches' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('coaches')">Coaches</button>
 			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='contest_pilots' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('contest_pilots')">Contest Pilots</button>
 		</div>
+		
+
 
 	</div>
 
 	<div class="container-fluid">
 
 		<div class="float-right">
+			
+			<div class="btn-group mr-2" role="group" v-if="org && clubAdmin">
+				<label for="ex_members"><input id="ex_members" type="checkbox" v-model="state.ex_members"> Ex Members</label>
+			</div>
+
+			<div class="btn-group mr-2" role="group" v-if="clubAdmin">
+				<label for="gnz_members"><input id="gnz_members" type="checkbox" v-model="state.gnz_members"> Only Current GNZ members</label>
+			</div>
+
 
 			<div class="btn-group mr-2" role="group">
 				<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="previous()">&lt;</button>
@@ -157,13 +168,13 @@
 	</div>
 
 	<div class="container-fluid">
-		<table class="table results-table table-striped">
+		<table class="table results-table table-striped collapsable">
 			<tr>
 				<th class="d-none d-lg-table-cell">GNZ ID</th>
 				<th>Firstname</th>
 				<th>Lastname</th>
 				<th>Club</th>
-				<th>Member Type</th>
+				<th>GNZ Type</th>
 				<th>City</th>
 				<th>Mobile</th>
 				<th>Email</th>
@@ -184,13 +195,20 @@
 				<td><span style="text-transform: uppercase;">{{ result.rating_instructor_level }}</span></td>
 				<td>
 					<a v-bind:href="'/members/' + result.id + '/achievements/'" class="btn btn-outline-dark btn-sm mr-1 mb-1"><i class="fa fa-trophy"></i></a>
-					<a v-if="showEdit" v-bind:href="'http://members.gliding.co.nz/index.php?r=member/update&id=' + result.id" class="btn mr-1 mb-1 btn-outline-dark btn-sm">Old Edit</a>
-					<a v-if="showEdit" v-bind:href="'/members/' + result.id + '/edit'" class="btn mr-1 mb-1 btn-outline-dark btn-sm">Edit</a>
-					<a v-if="showEdit" v-bind:href="'/members/' + result.id + '/ratings'" class="btn mb-1 btn-outline-dark btn-sm">Ratings</a>
+					<a v-if="clubAdmin" v-bind:href="'/members/' + result.id + '/edit'" class="btn mr-1 mb-1 btn-outline-dark btn-sm">Edit</a>
+					<a v-if="clubAdmin" v-bind:href="'/members/' + result.id + '/ratings'" class="btn mb-1 btn-outline-dark btn-sm">Ratings</a>
 				</td>
 
 			</tr>
 		</table>
+
+		
+		<div class="btn-group mr-2" role="group">
+			<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="previous()">&lt;</button>
+			<button type="button" class="btn btn-outline-dark btn-sm disabled">Page {{ state.page }} of {{ last_page }}</button>
+			<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="next()">Next &gt;</button>
+		</div>
+
 	</div>
 </div>
 </template>
@@ -204,33 +222,42 @@
 
 	export default {
 		mixins: [common],
-		props: ['orgCode'],
+		props: [],
 		data() {
 			return {
+				org: null, // the org's of the site we're on
+				current_org: null, // the currently displayed org
 				state: {
 					type: 'all',
 					page: 1,
 					search: '',
-					org: null,
-					org_id: null
+					org_id: null,
+					ex_members: false,
+					gnz_members: true,
 				},
 				last_page: 1,
 				total: 0,
 				results: [],
 				orgs: [],
 				dont_reload: false,
-				showEdit: false,
+				clubAdmin: false,
 				showEmail: false,
+				clubMember: false,
+				admin: false,
 				emailFrom: '',
 				emailSubject: '',
 				emailMessage: '',
 				emailSending: false,
-				tipsShowing: true
+				tipsShowing: true,
 			}
 		},
 		watch: {
 			'state': {
 				handler: 'stateChanged',
+				deep: true
+			},
+			'current_org': {
+				handler: 'orgChanged',
 				deep: true
 			}
 		},
@@ -241,19 +268,33 @@
 		},
 		mounted() {
 
-			if (this.orgCode && this.orgCode!='GNZ') {
-				this.state.org=this.orgCode;
-			}
-
 			this.loadOrgs();
 
-			if (window.Laravel.clubAdmin) this.showEdit=true;
+			if (window.Laravel.admin) this.admin=true;
+			if (window.Laravel.clubAdmin) this.clubAdmin=true;
+			if (window.Laravel.clubMember) this.clubMember=true;
+
+			// check if we are showing the GNZ level list, or a club list
+			if (window.Laravel.org) {
+				if (window.Laravel.org.short_name!='GNZ') {
+					this.org=window.Laravel.org;
+					this.current_org=window.Laravel.org;
+					this.state.org_id = this.current_org.id;
+				} else {
+					this.state.gnz_members = true; // if showing the GNZ list, only include GNZ members
+				}
+			}
 
 			if (this.get_url_param('search')) this.state.search = this.get_url_param('search');
 			if (this.get_url_param('page')) this.state.page = this.get_url_param('page');
 			if (this.get_url_param('type')) this.state.type = this.get_url_param('type');
 
+			if (this.get_url_param('gnz_members')) this.get_url_param('gnz_members')=='true' ? this.state.gnz_members = true : this.state.gnz_members = false;
+			if (this.get_url_param('ex_members')) this.get_url_param('ex_members')=='true' ? this.state.ex_members = true : this.state.ex_members = false;
+
 			var that = this;
+			History.replaceState(this.state, null, "?search=" + this.state.search + "&type=" + this.state.type + "&page=" + this.state.page + "&gnz_members=" + this.state.gnz_members + "&ex_members=" + this.state.ex_members);
+
 			History.Adapter.bind(window, 'statechange', function() {
 				var state = History.getState();
 				that.state = state.data;
@@ -263,10 +304,19 @@
 				that.dont_reload=false;
 			});
 
-			History.replaceState(this.state, null, "?search=" + this.state.search + "&type=" + this.state.type + "&page=" + this.state.page);
-			this.loadSelected();
+			// initiagte the first load
+			that.loadSelected();
 		},
 		methods: {
+			orgChanged: function() {
+				if (this.current_org) {
+					this.state.org_id = this.current_org.id;
+				} else {
+					this.state.org_id = null;
+				}
+				
+				this.loadSelected();
+			},
 			createExportUrl: function(format) {
 				var extras = { 'format': format };
 				return this.createUrl(this.state, extras);
@@ -310,7 +360,7 @@
 				this.state.page=1;
 			},
 			stateChanged: function() {
-				History.pushState(this.state, null, "?search=" + this.state.search + "&type=" + this.state.type + "&page=" + this.state.page);
+				History.pushState(this.state, null, "?search=" + this.state.search + "&type=" + this.state.type + "&page=" + this.state.page + "&gnz_members=" + this.state.gnz_members + "&ex_members=" + this.state.ex_members);
 			},
 			loadSelected: function() {
 				var that = this;

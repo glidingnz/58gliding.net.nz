@@ -71,23 +71,39 @@ class MemberUtilities {
 				$query->orWhere('nzga_number','like',$s);
 			});
 		}
-		
-		$resigned = false;
-		if (!$request->input('resigned'))
+
+
+		// Check if we are filtering to GNZ members only.
+		// Defaults to true if not given
+		if ($request->input('gnz_members', 'true')=='true')
 		{
-			$resigned = true;
 			$query->where('membership_type', '<>', 'Resigned');
 		}
 
-		$query->leftJoin('affiliates AS organisations', function ($join) use ($resigned) {
-			$join->on('gnz_member.id', '=', 'organisations.member_id')
-			     ->on('organisations.resigned', '=', DB::raw('0'));
-		});
+		// check if we are filtering to ex club members
+		$ex_members = true;
+		if ($request->input('ex_members', 'false')=='true')
+		{
+			$ex_members = false;
+		}
 
+		// filter to a specific organisation
 		if (isset($org)) {
 			$query->join('affiliates', 'affiliates.member_id', '=', 'gnz_member.id');
 			$query->where('affiliates.org_id', '=', DB::raw($org->id));
+			if ($ex_members) {
+				$query->where('affiliates.resigned', 0);
+			}
 		}
+
+
+
+		// join on a list of organisations each user belongs to. 
+		// Used with the GROUP_CONCAT in the select statement.
+		$query->leftJoin('affiliates AS organisations', function ($join) {
+			$join->on('gnz_member.id', '=', 'organisations.member_id')
+			     ->on('organisations.resigned', '=', DB::raw('0'));;
+		});
 
 
 		// join on the common ratings we need for sorting and display
@@ -148,60 +164,6 @@ class MemberUtilities {
 		}
 
 
-
-
-		// see if we are given an ORG ID e.g. 14
-		// if ($request->has('org_id'))
-		// {
-		// 	if ($org = Org::where('gnz_code', $request->input('org'))->first())
-		// 	{
-		// 		$org_id = $org->id;
-		// 	}
-		// $org_id = $request->input('org_id');
-		// }
-
-
-		// if (isset($org_id))
-		// {
-		// 	switch ($org_id)
-		// 	{
-		// 		case 26: // MSC Matamata Soaring Centre
-		// 			$query->whereIn('affiliates.org_id',[3,2,14,18,19,17]);
-		// 			break;
-		// 		case 28: // Greytown Soaring Centre
-		// 			$query->whereIn('affiliates.org_id',[22, 20]);
-		// 			break;
-		// 		case 27: // 'OSC' Omarama Soaring Centre
-		// 			$query->whereIn('affiliates.org_id',[10,20, 11, 4, 5, 16, 13, 23]);
-		// 			break;
-		// 		default:
-		// 			// for most normal clubs
-		// 			$query->where('affiliates.org_id','=',$org_id);
-		// 			break;
-		// 	}
-		// }
-
-
-		// process either of the two above
-		// if (isset($org_gnz_code))
-		// {
-		// 	switch ($org_gnz_code)
-		// 	{
-		// 		case 'MSC':
-		// 			$query->whereIn('club',['AKL','AAV','PKO','TPO','TGA','TRK']);
-		// 			break;
-		// 		case 'GSC':
-		// 			$query->whereIn('club',['GWR','WLN']);
-		// 			break;
-		// 		case 'OSC':
-		// 			$query->whereIn('club',['MLB','WLN', 'NLN', 'CTY', 'COT', 'SCY', 'OGC', 'CLV']);
-		// 			break;
-		// 		default:
-		// 			// for most normal clubs
-		// 			$query->where('club','=',$org_gnz_code);
-		// 			break;
-		// 	}
-		// }
 
 		switch ($request->input('type'))
 		{
