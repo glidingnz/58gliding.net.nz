@@ -16,9 +16,12 @@
 <template>
 <div>
 	<div class="container-fluid">
-		<div class="input-group ml-auto col-md-4 col-6 float-right" role="group">
+		<div class="input-group ml-auto col-md-4 col-12 float-right row" role="group">
 
 			<div class="input-group">
+
+				<a href="/members/add" v-if="clubAdmin" class="mr-2 btn btn-outline-dark">Add New</a>
+
 				<input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term" v-model="state.search">
 				<div class="input-group-append">
 					<button class="btn btn-outline-dark" type="submit" v-on:click="state.search=''"><i class="fa fa-times"></i></button>
@@ -51,7 +54,6 @@
 			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='coaches' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('coaches')">Coaches</button>
 			<button type="button" class="btn btn-sm mr-1" v-bind:class="[ state.type=='contest_pilots' ? 'btn-secondary': 'btn-outline-dark' ]" v-on:click="filterTo('contest_pilots')">Contest Pilots</button>
 		</div>
-		
 
 
 	</div>
@@ -60,14 +62,13 @@
 
 		<div class="float-right">
 			
-			<div class="btn-group mr-2" role="group" v-if="org && clubAdmin">
+			<div class="btn-group mr-2" role="group" v-if="(org && clubAdmin) || admin">
 				<label for="ex_members"><input id="ex_members" type="checkbox" v-model="state.ex_members"> Ex Members</label>
 			</div>
 
-			<div class="btn-group mr-2" role="group" v-if="clubAdmin">
+			<!-- <div class="btn-group mr-2" role="group" v-if="!org && admin">
 				<label for="gnz_members"><input id="gnz_members" type="checkbox" v-model="state.gnz_members"> Only Current GNZ members</label>
-			</div>
-
+			</div> -->
 
 			<div class="btn-group mr-2" role="group">
 				<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="previous()">&lt;</button>
@@ -88,7 +89,8 @@
 
 		</div>
 
-		<h2>{{ total }} Results</h2>
+		<h2 v-if="!loading">{{ total }} Results </h2>
+		<h2 v-if="loading"><span class="fa  fa-spin fa-sync"></span> Loading</h2>
 
 	</div>
 
@@ -174,7 +176,7 @@
 				<th>Firstname</th>
 				<th>Lastname</th>
 				<th>Club</th>
-				<th>GNZ Type</th>
+				<th>GNZ Status</th>
 				<th>City</th>
 				<th>Mobile</th>
 				<th>Email</th>
@@ -202,7 +204,7 @@
 			</tr>
 		</table>
 
-		
+
 		<div class="btn-group mr-2" role="group">
 			<button type="button" class="btn btn-outline-dark btn-sm" v-on:click="previous()">&lt;</button>
 			<button type="button" class="btn btn-outline-dark btn-sm disabled">Page {{ state.page }} of {{ last_page }}</button>
@@ -227,6 +229,7 @@
 			return {
 				org: null, // the org's of the site we're on
 				current_org: null, // the currently displayed org
+				loading: true,
 				state: {
 					type: 'all',
 					page: 1,
@@ -289,7 +292,6 @@
 			if (this.get_url_param('page')) this.state.page = this.get_url_param('page');
 			if (this.get_url_param('type')) this.state.type = this.get_url_param('type');
 
-			if (this.get_url_param('gnz_members')) this.get_url_param('gnz_members')=='true' ? this.state.gnz_members = true : this.state.gnz_members = false;
 			if (this.get_url_param('ex_members')) this.get_url_param('ex_members')=='true' ? this.state.ex_members = true : this.state.ex_members = false;
 
 			var that = this;
@@ -360,18 +362,21 @@
 				this.state.page=1;
 			},
 			stateChanged: function() {
-				History.pushState(this.state, null, "?search=" + this.state.search + "&type=" + this.state.type + "&page=" + this.state.page + "&gnz_members=" + this.state.gnz_members + "&ex_members=" + this.state.ex_members);
+				History.pushState(this.state, null, "?search=" + this.state.search + "&type=" + this.state.type + "&page=" + this.state.page + "&ex_members=" + this.state.ex_members);
 			},
 			loadSelected: function() {
-				var that = this;
-				window.axios.get('/api/v1/members', {params: this.state}).then(function (response) {
+				this.loading = true;
 
-					that.results = response.data.data;
-					that.last_page = response.data.last_page;
-					that.total = response.data.total;
+				//var that = this;
+				window.axios.get('/api/v1/members', {params: this.state}).then( (response) => {
 
-					if (that.state.page > that.last_page && that.last_page>0) {
-						that.state.page = 1;
+					this.loading = false;
+					this.results = response.data.data;
+					this.last_page = response.data.last_page;
+					this.total = response.data.total;
+
+					if (this.state.page > this.last_page && this.last_page>0) {
+						this.state.page = 1;
 					}
 				});
 			},
