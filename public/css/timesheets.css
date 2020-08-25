@@ -24,17 +24,38 @@ div#timesheets * p.bold{
     font-weight:bold;
 }
 
-div#timesheets * .flight{
-    margin:0.25em;
+div#timesheets * p.left{
+    text-align: left;
 }
 
-div#timesheets * .flight .card-body{
-    padding: 0.5em;
+div#timesheets * p.right{
+    text-align: right;
+}
+
+div#timesheets * .flight{
+    margin:0.25em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left:0.75em;
+    padding-right:0.75em;
     border: 2px solid rgba(0, 0, 0, 0.250);
     border-radius: 0.25em;
 }
 
+div#timesheets * .flight .card-body{
+    padding:0;
+    grid-template-rows: 1.35em 1.35em 1.35em 1.35em;
+    grid-gap: 0.25em 0em;
+
+    background-image: repeating-linear-gradient(
+        transparent 0, transparent 1.55em,
+        rgba(0, 0, 0, 0.250) 1.55em, rgba(0, 0, 0, 0.250) 1.6em
+        );
+    background-position: 0px -0em;
+}
+
 div#timesheets * .flight .card-grid{
     display: grid;
-    text-align: center;
+    text-align: left;
 }
+

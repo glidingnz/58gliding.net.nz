@@ -6,12 +6,25 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Models\Fleet;
-// use App\Classes\LoadAircraft;
+use Gate;
 
 class TimesheetsController extends Controller
 {
 	public function index()
 	{
-		return view('timesheets/timesheets');
+		if (Gate::allows('experimental-features'))
+		{
+			return view('timesheets/timesheets');
+		}
+		return redirect('/');
+	}
+
+	public function edit($id)
+	{
+		if (Gate::allows('experimental-features'))
+		{
+			return view('timesheets/timesheet-edit');
+		}
+		return redirect('/');
 	}
 }

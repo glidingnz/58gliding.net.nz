@@ -1,0 +1,8 @@
+div#timesheet-edit {
+    font-family:Consolas;
+    font-size:medium;
+}
+
+div#timesheet-edit * label{
+    font-size:small;
+}

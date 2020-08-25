@@ -49,7 +49,7 @@ Route::match(['post','patch'],'/contestentries/savedata', 'Apps\ContestEntriesCo
 Route::match(['post','get'],'/contestentries/loaddata', 'Apps\ContestEntriesController@loaddata')->name('contestentries.loaddata');
 Route::match(['post','patch'],'/contestentries/contestentries/savedata', 'Apps\ContestEntriesController@savedata')->name('contestentries.savedata');
 Route::match(['post','get'],'/contestentries/contestentries/loaddata', 'Apps\ContestEntriesController@loaddata')->name('contestentries.loaddata');
- 
+
 Route::get('/tracking', 'Apps\TrackingController@mapbox');
 Route::get('/tracking/{year}-{month}-{day}', 'Apps\TrackingController@mapboxDay');
 Route::get('/tracking-old', 'Apps\TrackingController@index');
@@ -77,6 +77,7 @@ Route::get('/events/{slug}/enter', 'Apps\EventsController@enterEvent');
 Route::get('/entries/{editcode}', 'Apps\EventsController@editEntry');
 
 Route::get('/timesheets/', 'Apps\TimesheetsController@index');
+Route::get('/timesheets/{id}/edit', 'Apps\TimesheetsController@edit');
 
 
 Route::get('/members', 'Apps\MembersController@index');
