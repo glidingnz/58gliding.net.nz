@@ -1,0 +1,61 @@
+div#timesheets {
+    font-family:Consolas;
+    font-size:large;
+    padding:0.5em;
+}
+
+div#timesheets .flights-grid{
+    display: grid;
+    background: white;
+    grid-template-columns: repeat(auto-fill, minmax(16em,1fr));
+}
+
+div#timesheets * p{
+    margin-bottom:0;
+}
+
+div#timesheets * p.long{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+div#timesheets * p.bold{
+    font-weight:bold;
+}
+
+div#timesheets * p.left{
+    text-align: left;
+}
+
+div#timesheets * p.right{
+    text-align: right;
+}
+
+div#timesheets * .flight{
+    margin:0.25em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left:0.75em;
+    padding-right:0.75em;
+    border: 2px solid rgba(0, 0, 0, 0.250);
+    border-radius: 0.25em;
+}
+
+div#timesheets * .flight .card-body{
+    padding:0;
+    grid-template-rows: 1.35em 1.35em 1.35em 1.35em;
+    grid-gap: 0.25em 0em;
+
+    background-image: repeating-linear-gradient(
+        transparent 0, transparent 1.55em,
+        rgba(0, 0, 0, 0.250) 1.55em, rgba(0, 0, 0, 0.250) 1.6em
+        );
+    background-position: 0px -0em;
+}
+
+div#timesheets * .flight .card-grid{
+    display: grid;
+    text-align: left;
+}
+
