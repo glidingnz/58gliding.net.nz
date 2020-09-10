@@ -51,6 +51,7 @@ class MembersApiController extends ApiController
 		$member->middle_name = '';
 		$member->email = '';
 		$member->pending_approval = 0;
+		$member->club = $org->gnz_code;
 		if ($member->save())
 		{
 			// create the affiliate link

@@ -74,12 +74,17 @@ class MemberUtilities {
 
 
 
+
+
 		// Check if we are filtering to GNZ members only.
 		// Defaults to true if not given
-		if ($request->input('ex_members')!='true')
-		{
-			$query->where('membership_type', '<>', 'Resigned');
+		if ($org==null) {
+			if ($request->input('ex_members')!='true')
+			{
+				$query->where('membership_type', '<>', 'Resigned');
+			}
 		}
+		
 
 		// check if we are filtering to ex club members
 		$ex_members = true;
