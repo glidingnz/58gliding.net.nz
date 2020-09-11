@@ -56,6 +56,8 @@
 			},
 			searchMembers: function() {
 				var that = this;
+				this.$emit('searching', this.memberSearch);
+				
 				if (this.memberSearch=='') {
 					that.searchResults = [];
 					this.$emit('input', null);
