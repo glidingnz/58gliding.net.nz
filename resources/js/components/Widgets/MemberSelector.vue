@@ -9,7 +9,7 @@
 		<span class="error" v-show="noResults">Member not found</span>
 		<select v-if="!selectedMember || edit" v-model="selectedMember" v-show="searchResults.length>0"  class="form-control" @change="selectMember()">
 			<option :value="null">{{searchResults.length}} result{{searchResults.length==1?'':'s'}}</option>
-			<option :value="member" v-for="member in searchResults">{{member.first_name}} {{member.last_name}} {{member.city}} {{member.nzga_number}}</option>
+			<option :value="member" v-for="member in searchResults">{{member.first_name}} {{member.last_name}} {{member.city}} {{member.nzga_number}} <span v-if="member.membership_type=='Resigned'">(resigned)</span></option>
 		</select>
 	</div>
 </template>
@@ -57,7 +57,7 @@
 			searchMembers: function() {
 				var that = this;
 				this.$emit('searching', this.memberSearch);
-				
+
 				if (this.memberSearch=='') {
 					that.searchResults = [];
 					this.$emit('input', null);
@@ -65,7 +65,7 @@
 					return;
 				}
 
-				window.axios.get('/api/v1/members', {params: {"search":this.memberSearch, 'resigned':this.resigned}}).then(function (response) {
+				window.axios.get('/api/v1/members', {params: {"search":this.memberSearch, 'ex_members':this.resigned, 'limit':100}}).then(function (response) {
 					that.searchResults = response.data.data;
 
 					if (response.data.data.length==0) {
