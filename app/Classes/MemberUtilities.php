@@ -75,7 +75,6 @@ class MemberUtilities {
 
 
 
-
 		// Check if we are filtering to GNZ members only.
 		// Defaults to true if not given
 		if ($org==null) {

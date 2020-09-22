@@ -24,7 +24,7 @@
 		</div>
 
 		<button v-if="selectedMember" class="btn btn-primary mr-2" v-on:click="showAddExisting=true; showAddNew=false;">
-			Yes, Add {{selectedMember.first_name}} to {{org.name}}
+			Yes, Add {{selectedMember.first_name}}
 		</button>
 
 		<button v-if="selectedMember" class="btn btn-primary" v-on:click="showAddExisting=false; showAddNew=true">
@@ -51,9 +51,11 @@
 			</select>
 		</div>
 
-		<button v-if="selectedMember" class="btn btn-primary mr-2" v-on:click="addExistingMember()">
-			Yes, Add {{selectedMember.first_name}} to {{org.name}}
-		</button>
+		<div class="form-group col-md-6">
+			<button v-if="selectedMember" class="btn btn-primary mr-2" v-on:click="addExistingMember()">
+				Yes, Add {{selectedMember.first_name}} to {{org.name}}
+			</button>
+		</div>
 	</div>
 
 
@@ -77,7 +79,7 @@
 
 		<div class="form-group col-md-6">
 			<label for="member_type">Member Type</label> 
-			<select name="member_type" id="member_type" v-if="memberTypes.length>0" class="form-control">
+			<select v-model="membertype_id" name="member_type" id="member_type" v-if="memberTypes.length>0" class="form-control">
 				<option v-for="memberType in memberTypes" :value="memberType.id">{{memberType.name}}</option>
 			</select>
 		</div>
@@ -105,8 +107,10 @@
 				selectedMember: null,
 				first_name: null,
 				last_name: null,
+				membertype_id: null,
 				memberTypes: [],
 				showAddNew: false,
+				showAddExisting: false,
 			}
 		},
 		mounted() {
@@ -116,8 +120,8 @@
 		methods: {
 			addNewMember: function()
 			{
-				window.axios.post('/api/v1/members', {org_id: this.org.id, first_name: this.first_name, last_name: this.last_name, member_type: this.member_type}).then(function (response) {
-					messages.$emit('success', 'Member has been added');
+				window.axios.post('/api/v1/members', {org_id: this.org.id, first_name: this.first_name, last_name: this.last_name, membertype_id: this.membertype_id}).then(function (response) {
+					messages.$emit('success', 'Member added');
 				}).catch(
 					function (error) {
 						var errors = Object.entries(error.response.data.errors);
@@ -136,7 +140,16 @@
 			},
 			addExistingMember: function()
 			{
-
+				window.axios.post('/api/v1/affiliates', {org_id: this.org.id, existingMemberId: this.existingMemberId}).then(function (response) {
+					messages.$emit('success', 'Member added');
+				}).catch(
+					function (error) {
+						var errors = Object.entries(error.response.data.errors);
+						for (const [name, error] of errors) {
+							messages.$emit('error', `${error}`);
+						}
+					}
+				);
 			},
 		}
 	}

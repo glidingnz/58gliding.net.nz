@@ -156,13 +156,10 @@
 						<select v-model="member.membership_type" class="form-control" v-if="showAdmin">
 							<option value="Resigned">Resigned</option>
 							<option value="Flying">Flying</option>
-							<option value="Mag Only">Mag Only</option>
-							<option value="Flying Family">Flying Family</option>
-							<option value="VFP 3 Mth">VFP 3 Mth</option>
-							<option value="VFP Bulk">VFP Bulk</option>
+							<option value="Mag Only">Communications</option>
+							<option value="VFP Bulk">Visiting Foreign Pilot Bulk</option>
+							<option value="VFP 3 Mth">Visiting Foreign Pilot 3 Mth</option>
 							<option value="Junior">Junior</option>
-							<option value="Junior Family">Junior Family</option>
-							<option value="VFP 3 Days">VFP 3 Days</option>
 							<option value="">None</option>
 						</select>
 

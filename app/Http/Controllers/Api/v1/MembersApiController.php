@@ -52,6 +52,8 @@ class MembersApiController extends ApiController
 		$member->email = '';
 		$member->pending_approval = 0;
 		$member->club = $org->gnz_code;
+
+
 		if ($member->save())
 		{
 			// create the affiliate link
@@ -61,6 +63,7 @@ class MembersApiController extends ApiController
 				$affiliate->member_id = $member->id;
 				$affiliate->org_id = $org->id;
 				$affiliate->join_date = Carbon::now(new CarbonTimeZone('Pacific/Auckland'));
+				$affiliate->membertype_id = $request->input('membertype_id', null);
 				$affiliate->save();
 			}
 
@@ -158,7 +161,7 @@ class MembersApiController extends ApiController
 		// get the user we're trying to edit's club
 		$org = Org::where('gnz_code', $member->club)->first();
 
-		if (($org && Gate::allows('club-admin', $org)) || gate::allows('admin')) 
+		if (($org && Gate::allows('club-admin', $org)) || gate::allows('admin'))
 		{
 			$form['date_of_birth'] = $request->get('date_of_birth');
 			$form['instructor'] = $request->get('instructor');
@@ -201,7 +204,7 @@ class MembersApiController extends ApiController
 			return $this->success();
 		}
 		return $this->error();
-		
+
 	}
 
 
@@ -263,7 +266,7 @@ class MembersApiController extends ApiController
 		{
 
 			Mailgun::send(['html' => 'emails.markdown-email', 'text' => 'emails.rawtext-email'], $data, function ($message) use ($request, $members) {
-				
+
 				foreach ($members AS $member)
 				{
 					$message->to($member->email, $member->first_name, ['lastname'=>$member->last_name]);
@@ -342,7 +345,7 @@ class MembersApiController extends ApiController
 			$memberUtilities->filter_view_results($members);
 			return $this->success($members, TRUE);
 		}
-		return $this->error(); 
+		return $this->error();
 	}
 
 

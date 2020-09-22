@@ -43,6 +43,7 @@ class AffiliatesApiController extends ApiController
 		if ($request->has('end_date'))
 		{
 			$affiliate->end_date = $request->get('end_date');
+			$affiliate->end_date!=null ? $affiliate->resigned=true : $affiliate->resigned=false;
 		}
 		if ($request->has('resigned_comment'))
 		{
@@ -57,6 +58,23 @@ class AffiliatesApiController extends ApiController
 			return $this->success('Updated');
 		}
 		return $this->success('No Changes');
+	}
+
+	public function insert(Request $request)
+	{
+
+		if ($request->has('org_id'))
+		{
+			$affiliate->org_id = $request->get('org_id');
+		}
+		if ($request->has('member_id'))
+		{
+			$affiliate->org_id = $request->get('org_id');
+		}
+		if ($request->has('member_type_id'))
+		{
+			$affiliate->member_type_id = $request->get('member_type_id');
+		}
 	}
 
 }
