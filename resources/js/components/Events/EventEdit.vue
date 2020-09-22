@@ -9,8 +9,14 @@
 			<div class="form-group col-md-6">
 				<label for="featured" class="float-right">
 					<input id="featured" type="checkbox" v-model="event.featured" :value="true">
-					Share to all other clubs (e.g. Competition or Talk)
+					Share to all other clubs
 				</label>
+				<label for="entryform_open" class="float-right mr-4">
+					<input class="" id="entryform_open" type="checkbox" v-model="event.entries_active" :value="true">
+					Entry Form Open
+				</label>
+
+				
 				<label for="name" class="col-xs-6 col-form-label">Name</label>
 				<div class="col-xs-6">
 					<input type="text" class="form-control" id="name" v-model.lazy="event.name">

@@ -102,6 +102,7 @@ class Event extends Model
 		'catering_dinners',
 		'catering_breakfasts',
 		'catering_final_dinner',
+		'entries_active'
 	];
 
 	/**
@@ -141,7 +142,8 @@ class Event extends Model
 		'catering_lunches'=>'boolean',
 		'catering_dinners'=>'boolean',
 		'catering_breakfasts'=>'boolean',
-		'catering_final_dinner'=>'boolean'
+		'catering_final_dinner'=>'boolean',
+		'entries_active'=>'boolean'
 	];
 
 	/**

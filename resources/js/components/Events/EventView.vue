@@ -3,7 +3,7 @@
 	
 	<div class="float-right">
 		<a class="btn btn-outline-dark mr-2" :href="'/events/' + event.slug + '/edit'" v-if="event.can_edit">Edit Event</a>
-		<a class="btn btn-outline-dark mr-2" :href="'/events/' + event.slug + '/enter'" >Entry Form</a>
+		<a class="btn btn-outline-dark mr-2" :href="'/events/' + event.slug + '/enter'" v-if="event.entries_active">Entry Form</a>
 		<a class="btn btn-outline-danger" href="#" v-on:click="deleteEvent()" v-if="event.can_edit">Delete Event</a>
 	</div>
 
@@ -132,12 +132,11 @@
 							<span class="mr-2" v-show="event.catering_final_dinner">Final Dinner</span>
 						</div>
 					</div>
-
-					<div class="row mb-2" v-if="contestAdmin">
+					<div class="row mb-2" v-if="contestAdmin && event.entries_active">
 						<div class="col-4 label">Emails for Bulk Email</div>
 						<input type="text" class="col-8 form-control" name="allEmails" :value="allEmails">
 					</div>
-					<div class="row mb-2" v-if="contestAdmin">
+					<div class="row mb-2" v-if="contestAdmin && event.entries_active">
 						<div class="col-4 label">Mobile Numbers for Bulk Text</div>
 						<input type="text" class="col-8 form-control" name="allMobiles" :value="allMobiles">
 					</div>
@@ -147,7 +146,7 @@
 	</div>
 
 
-	<div class="row" v-if="entries.length>0">
+	<div class="row" v-if="entries.length>0 && event.entries_active">
 		<div class="col-md-12">
 
 			<div class="card ">
@@ -292,7 +291,7 @@
 			</div>
 
 
-			<div class="card mt-4" v-if="catering">
+			<div class="card mt-4" v-if="catering && event.entries_active">
 				<div class="card-header">
 					<div class="float-right">
 						<span class="ml-2" v-if="event.catering_breakfasts"><span class="text-muted">Breakfasts all: </span>{{breakfastsAllCount}} <span class="text-muted">some:</span> {{breakfastsSomeCount}}</span>
