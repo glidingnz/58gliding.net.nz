@@ -670,6 +670,7 @@ html, body,
 		that.map.on('style.load', function () {
 			// Triggered when `setStyle` is called.
 			if (that.selectedTask) that.drawTask();
+			if (that.optionAirspace) that.drawAirspace();
 
 			if (that.selectedAircraft) that.createSelectedTrack();
 			if (that.aircraft) that.createTracks();
@@ -701,26 +702,6 @@ html, body,
 
 	},
 	methods: {
-		toggleAirspace: function() {
-
-			if (this.airspaceSource==null) {
-				this.airspaceSource = this.map.addSource('airspace', {
-					type: 'geojson',
-					data: '/airspace2.geojson'
-				});
-			}
-
-			if (this.optionAirspace==true) {
-				// remove airspace
-				this.map.removeLayer('airspace');
-			} else {
-				// add airspace
-				this.drawAirspace();
-			}
-
-			// swap variable
-			this.optionAirspace = !this.optionAirspace;
-		},
 		selectDay: function(day_date) {
 			this.flyingDay = day_date;
 			this.loadTracks();
@@ -1100,24 +1081,6 @@ html, body,
 					zoom: scale,
 			});
 		},
-		drawAirspace: function() {
-			
-			this.map.addLayer({
-				'id': 'airspace',
-				'type': 'line',
-				'source': 'airspace',
-				'layout': {
-					// make layer visible by default
-					'visibility': 'visible',
-					'line-join': 'round',
-					'line-cap': 'round'
-				},
-				'paint': {
-					'line-color': '#91918B',
-					'line-width': 1
-				}
-			});
-		},
 		drawTask: function() {
 			var that = this;
 			if (!this.selectedTaskData) return false;
@@ -1213,8 +1176,53 @@ html, body,
 			el2.style.backgroundColor = '#'+colour;
 			return el;
 		},
+		toggleAirspace: function() {
+
+			if (this.optionAirspace==true) {
+				// remove airspace
+				if (this.map.getLayer('airspace')) this.map.removeLayer('airspace');
+			} else {
+				// add airspace
+				this.drawAirspace();
+			}
+
+			// swap variable
+			this.optionAirspace = !this.optionAirspace;
+		},
+		drawAirspace: function() {
+			
+			if (!this.map.getSource('airspace')) {
+				this.airspaceSource = this.map.addSource('airspace', {
+					type: 'geojson',
+					data: '/airspace2.geojson'
+				});
+			}
+
+			if (!this.map.getLayer('airspace')) {
+				this.map.addLayer({
+					'id': 'airspace',
+					'type': 'line',
+					'source': 'airspace',
+					'layout': {
+						// make layer visible by default
+						'visibility': 'visible',
+						'line-join': 'round',
+						'line-cap': 'round'
+					},
+					'paint': {
+						'line-color': '#91918B',
+						'line-width': 1
+					}
+				});
+			}
+		},
 		changeStyle: function(style) {
 			this.clearCurrentTask();
+				
+			this.airspaceSource=null; // reset the airspace so it is reloaded
+			if (this.map.getLayer('airspace')) this.map.removeLayer('airspace');
+			if (this.map.getSource('airspace')) this.map.removeSource('airspace');
+
 			this.currentStyle = style;
 			this.map.setStyle(this.mapStyles[style]);
 		}
