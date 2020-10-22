@@ -1113,7 +1113,7 @@ html, body,
 					'line-cap': 'round'
 				},
 				'paint': {
-					'line-color': '#B6B8B2',
+					'line-color': '#767676',
 					'line-width': 1
 				}
 			});
