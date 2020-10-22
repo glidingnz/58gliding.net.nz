@@ -442,6 +442,7 @@ html, body,
 			<label for="zoomToSelected"><input name="zoomToSelected" id="zoomToSelected" type="checkbox" class="" v-model="optionZoomToSelected" :value="true"> Zoom To Selected</label>
 
 			<label for="live"><input name="live" id="live" type="checkbox" class="" v-model="optionLive" :value="true"> Live Updates</label>
+			<label for="airspace"><input name="airspace" id="airspace" type="checkbox" class="" v-model="optionAirspace" :value="true" v-on:click="toggleAirspace"> Airspace</label>
 
 		<hr>
 		<p class=""><a href="/">Exit Tracking</a></p>
@@ -469,6 +470,8 @@ html, body,
 		mixins: [common],
 		data: function() {
 			return {
+				airspaceSource: null,
+
 				loading: false,
 				showOptions: false,
 				showDaySelector: false,
@@ -483,6 +486,7 @@ html, body,
 				legendSortDirection: ['desc','asc'],
 
 				optionZoomToSelected: true,
+				optionAirspace: false,
 				optionLive: true,
 				optionFollow: false,
 				selectedAircraft: null,
@@ -694,8 +698,29 @@ html, body,
 			that.map.resize();
 		}, 100)
 
+
 	},
 	methods: {
+		toggleAirspace: function() {
+
+			if (this.airspaceSource==null) {
+				this.airspaceSource = this.map.addSource('airspace', {
+					type: 'geojson',
+					data: '/airspace2.geojson'
+				});
+			}
+
+			if (this.optionAirspace==true) {
+				// remove airspace
+				this.map.removeLayer('airspace');
+			} else {
+				// add airspace
+				this.drawAirspace();
+			}
+
+			// swap variable
+			this.optionAirspace = !this.optionAirspace;
+		},
 		selectDay: function(day_date) {
 			this.flyingDay = day_date;
 			this.loadTracks();
@@ -1073,6 +1098,24 @@ html, body,
 			this.map.flyTo({
 				center: [lng, lat],
 					zoom: scale,
+			});
+		},
+		drawAirspace: function() {
+			
+			this.map.addLayer({
+				'id': 'airspace',
+				'type': 'line',
+				'source': 'airspace',
+				'layout': {
+					// make layer visible by default
+					'visibility': 'visible',
+					'line-join': 'round',
+					'line-cap': 'round'
+				},
+				'paint': {
+					'line-color': '#B6B8B2',
+					'line-width': 1
+				}
 			});
 		},
 		drawTask: function() {
