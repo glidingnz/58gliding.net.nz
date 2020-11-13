@@ -701,7 +701,6 @@ html, body,
 			document.documentElement.style.setProperty('--vh', `${vh}px`);
 		});
 
-
 		// load the list of aircraft filters
 		this.loadFleets();
 
@@ -709,7 +708,6 @@ html, body,
 		window.onresize = _.debounce(() => {
 			that.map.resize();
 		}, 100)
-
 
 	},
 	methods: {
