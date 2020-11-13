@@ -10,8 +10,7 @@
 
 html, body, 
 .fullscreen,
-.fullscreen .tracking, 
-.fullscreen .flex-vertical {
+.fullscreen .tracking {
 	height: 100%;
 }
 
@@ -409,6 +408,7 @@ html, body,
 	<div class="options" v-show="showOptions">
 
 		<button class="btn btn-outline-dark btn-sm float-right" v-on:click="showOptions = !showOptions">Close</button>
+		<button class="btn btn-outline-dark btn-sm float-right mr-2" v-on:click="reload">Reload</button>
 
 		<h4>Filters</h4>
 
@@ -691,6 +691,17 @@ html, body,
 			document.documentElement.style.setProperty('--vh', `${vh}px`);
 		});
 
+		// Detect whether device supports orientationchange event, otherwise fall back to
+		// the resize event.
+		var supportsOrientationChange = "onorientationchange" in window,
+			orientationEvent = supportsOrientationChange ? "orientationchange" : "resize";
+		window.addEventListener('orientationEvent', () => {
+			//We execute the same script as before
+			let vh = window.innerHeight * 0.01;
+			document.documentElement.style.setProperty('--vh', `${vh}px`);
+		});
+
+
 		// load the list of aircraft filters
 		this.loadFleets();
 
@@ -702,6 +713,9 @@ html, body,
 
 	},
 	methods: {
+		reload: function() {
+			location.reload();
+		},
 		selectDay: function(day_date) {
 			this.flyingDay = day_date;
 			this.loadTracks();
