@@ -529,7 +529,6 @@ html, body,
 					satellite: 'mapbox://styles/ipearx/ck499vvka09bc1cn6bmofjh21',
 					contours: 'mapbox://styles/ipearx/ck32s9fvj2k6s1cp2zih1vfim'
 				},
-
 				fleets: [], // the list of fleets available to select
 				selectedFleet: null, // the currently selected fleet item in the select
 				fleet: {}, // the actual fleet we'll filter, includes the list of aircraft
@@ -555,6 +554,21 @@ html, body,
 			}
 		},
 		watch: {
+			currentStyle: function() {
+				localStorage.setItem('currentStyle', this.currentStyle);
+			},
+			optionLive: function() {
+				localStorage.setItem('optionLive', this.optionLive);
+			},
+			optionFollow: function() {
+				localStorage.setItem('optionFollow', this.optionFollow);
+			},
+			optionZoomToSelected: function() {
+				localStorage.setItem('optionZoomToSelected', this.optionZoomToSelected);
+			},
+			optionAirspace: function() {
+				localStorage.setItem('optionAirspace', this.optionAirspace);
+			},
 			filterIsland: function() {
 				this.loadTracks();
 			},
@@ -649,6 +663,30 @@ html, body,
 			
 		},
 	mounted: function() {
+
+		var optionZoomToSelected = localStorage.getItem('optionZoomToSelected');
+		if (optionZoomToSelected) { this.optionZoomToSelected = optionZoomToSelected=='false' ? false : true; }
+		var optionAirspace = localStorage.getItem('optionAirspace');
+		if (optionAirspace) { this.optionAirspace = optionAirspace=='false' ? false : true; }
+		var optionLive = localStorage.getItem('optionLive');
+		if (optionLive) { this.optionLive = optionLive=='false' ? false : true; }
+		var optionFollow = localStorage.getItem('optionFollow');
+		if (optionFollow) { this.optionFollow = optionFollow=='false' ? false : true; }
+		var currentStyle = localStorage.getItem('currentStyle');
+		if (currentStyle) { this.currentStyle = currentStyle }
+
+		this.mapLat = parseFloat(localStorage.getItem('mapLat'));
+		this.mapLong = parseFloat(localStorage.getItem('mapLong'));
+		this.mapZoom = parseInt(localStorage.getItem('mapZoom'));
+
+		if (!this.mapLat || !this.mapLong) {
+			this.mapLat=175.409;
+			this.mapLong=-40.97435;
+		}
+
+		if (!this.mapZoom) this.mapZoom=5;
+
+
 		var that = this;
 		mapboxgl.accessToken = 'pk.eyJ1IjoiaXBlYXJ4IiwiYSI6ImNqd2c1dnU3bjFoMmg0NHBzbG9vbmQwbGkifQ.HeNPRpXBkpmC_ljY7QQTRA';
 		this.map = new mapboxgl.Map({
@@ -656,8 +694,8 @@ html, body,
 			container: 'map',
 			style: that.mapStyles[that.currentStyle],
 			//style:  'http://maps.gliding.net.nz:8080/styles/positron/style.json',
-			center: [175.409, -40.97435],
-			zoom: 5
+			center: [that.mapLong, that.mapLat],
+			zoom: that.mapZoom
 		});
 		this.map.on('moveend', function(e){
 			// we've finished moving. Check if it was started by a fit bounds
@@ -666,7 +704,14 @@ html, body,
 				if (that.optionFollow && that.selectedAircraft) {
 					that.map.panTo([that.selectedAircraftTrack[0].lng, that.selectedAircraftTrack[0].lat]);
 				}
+			} else {
+				// save the current location
+				var mapCenter = that.map.getCenter();
+				localStorage.setItem('mapLat', mapCenter.lat);
+				localStorage.setItem('mapLong', mapCenter.lng);
+				localStorage.setItem('mapZoom', that.map.getZoom());
 			}
+
 		});
 		that.map.on('style.load', function () {
 			// Triggered when `setStyle` is called.
@@ -697,6 +742,7 @@ html, body,
 		var supportsOrientationChange = "onorientationchange" in window,
 			orientationEvent = supportsOrientationChange ? "orientationchange" : "resize";
 		window.addEventListener('orientationEvent', () => {
+			console.log('test');
 			//We execute the same script as before
 			let vh = window.innerHeight * 0.01;
 			document.documentElement.style.setProperty('--vh', `${vh}px`);
