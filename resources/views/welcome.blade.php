@@ -26,20 +26,11 @@
 
 	<div class="row">
 
-		<?php if (!isset($org->slug) || $org->slug=='gnz') { ?>
-			<div class="col-md-6">
-				<h2>New Zealand Clubs</h2>
-				<orgs-component></orgs-component>
-			</div>
-		<?php } else { ?>
-
-		<?php } ?>
-
 		<?php if ($org && isset($org->slug) && $org->slug!='gnz') { ?>
 			<div class="col-md-6">
 
 				<h2>Club Tools</h2>
-				<div class="list-group app-list mb-2">
+				<div class="list-group app-list">
 					<a class="list-group-item" href="/ratings-report"><span class="fa fa-clipboard-check"></span> BFRs, Medicals &amp; Ratings</a>
 					<a class="list-group-item" href="/members"><span class="fa fa-users"></span> Membership List</a>
 					<a class="list-group-item" href="/events"><span class="fa fa-calendar-day"></span>Events Calendar</a>
@@ -48,7 +39,7 @@
 			</div>
 		<?php } ?>
 
-		<div class="col-md-6">
+		<div class="col-md-6 mt-4">
 
 			<h2>Nationwide Tools</h2>
 
@@ -56,9 +47,17 @@
 				<a class="list-group-item" href="{{ url('aircraft')}}"><span class="fa fa-plane"></span> Aircraft Database</a>
 				<a class="list-group-item" href="{{ url('tracking')}}"><span class="fa fa-globe-asia"></span> Tracking</a>
 				<a class="list-group-item" href="{{ url('cups')}}"><span class="fa fa-map-marker-alt"></span> Waypoints</a>
+				<a class="list-group-item" href="{{ url('events')}}"><span class="fa fa-calendar-day"></span> Events Calendar</a>
 			</div>
 
 		</div>
+
+		<?php if (!isset($org->slug) || $org->slug=='gnz') { ?>
+			<div class="col-md-6 mt-4">
+				<h2>New Zealand Clubs</h2>
+				<orgs-component></orgs-component>
+			</div>
+		<?php } ?>
 
 
 	</div>
