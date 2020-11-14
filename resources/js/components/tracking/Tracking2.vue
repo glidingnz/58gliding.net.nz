@@ -652,6 +652,7 @@ html, body,
 		var that = this;
 		mapboxgl.accessToken = 'pk.eyJ1IjoiaXBlYXJ4IiwiYSI6ImNqd2c1dnU3bjFoMmg0NHBzbG9vbmQwbGkifQ.HeNPRpXBkpmC_ljY7QQTRA';
 		this.map = new mapboxgl.Map({
+			pitchWithRotate: false,
 			container: 'map',
 			style: that.mapStyles[that.currentStyle],
 			//style:  'http://maps.gliding.net.nz:8080/styles/positron/style.json',

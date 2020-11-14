@@ -27,14 +27,14 @@
 	<div class="row">
 
 		<?php if ($org && isset($org->slug) && $org->slug!='gnz') { ?>
-			<div class="col-md-6">
+			<div class="col-md-6 mt-4">
 
 				<h2>Club Tools</h2>
 				<div class="list-group app-list">
 					<a class="list-group-item" href="/ratings-report"><span class="fa fa-clipboard-check"></span> BFRs, Medicals &amp; Ratings</a>
 					<a class="list-group-item" href="/members"><span class="fa fa-users"></span> Membership List</a>
 					<a class="list-group-item" href="/events"><span class="fa fa-calendar-day"></span>Events Calendar</a>
-					<a class="list-group-item" href="/events"><span class="fa fa-calendar-alt"></span>Flying Calendar</a>
+					<a class="list-group-item" href="/flying-days"><span class="fa fa-calendar-alt"></span>Flying Days</a>
 				</div>
 			</div>
 		<?php } ?>
