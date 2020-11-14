@@ -675,9 +675,9 @@ html, body,
 		var currentStyle = localStorage.getItem('currentStyle');
 		if (currentStyle) { this.currentStyle = currentStyle }
 
-		this.mapLat = parseFloat(localStorage.getItem('mapLat'));
-		this.mapLong = parseFloat(localStorage.getItem('mapLong'));
-		this.mapZoom = parseInt(localStorage.getItem('mapZoom'));
+		// this.mapLat = parseFloat(localStorage.getItem('mapLat'));
+		// this.mapLong = parseFloat(localStorage.getItem('mapLong'));
+		// this.mapZoom = parseInt(localStorage.getItem('mapZoom'));
 
 		if (!this.mapLat || !this.mapLong) {
 			this.mapLat=175.409;
@@ -694,7 +694,7 @@ html, body,
 			container: 'map',
 			style: that.mapStyles[that.currentStyle],
 			//style:  'http://maps.gliding.net.nz:8080/styles/positron/style.json',
-			center: [that.mapLong, that.mapLat],
+			center: [175.409, -40.97435],
 			zoom: that.mapZoom
 		});
 		this.map.on('moveend', function(e){
