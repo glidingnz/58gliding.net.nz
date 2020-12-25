@@ -678,7 +678,6 @@ html, body,
 		this.mapLat = Number(localStorage.getItem('mapLat'));
 		this.mapLong = Number(localStorage.getItem('mapLong'));
 		this.mapZoom = parseInt(localStorage.getItem('mapZoom'));
-				console.log('loaded lat of ' + Number(localStorage.getItem('mapLat')));
 
 		if (localStorage.getItem('mapLat')==null || localStorage.getItem('mapLong')==null || (this.mapLat<-90 || this.mapLat>90)) {
 			this.mapLat=-40.97435;
@@ -709,7 +708,6 @@ html, body,
 				var mapCenter = that.map.getCenter();
 				localStorage.setItem('mapLat', mapCenter.lat);
 				localStorage.setItem('mapLong', mapCenter.lng);
-				console.log('setting lat ' + mapCenter.lat);
 				localStorage.setItem('mapZoom', that.map.getZoom());
 			}
 
@@ -743,7 +741,6 @@ html, body,
 		var supportsOrientationChange = "onorientationchange" in window,
 			orientationEvent = supportsOrientationChange ? "orientationchange" : "resize";
 		window.addEventListener('orientationEvent', () => {
-			console.log('test');
 			//We execute the same script as before
 			let vh = window.innerHeight * 0.01;
 			document.documentElement.style.setProperty('--vh', `${vh}px`);
