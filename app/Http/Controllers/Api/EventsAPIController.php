@@ -166,6 +166,10 @@ class EventsAPIController extends AppBaseController
 		}
 		$event->can_edit = $event->can_edit;
 
+		// if ($event->can_edit) {
+		// 	$event->setVisible(array('soaringspot_api_secret'));
+		// }
+
 		return $this->sendResponse($event->toArray(), 'Event retrieved successfully');
 	}
 

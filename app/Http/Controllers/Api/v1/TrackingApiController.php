@@ -44,7 +44,8 @@ class TrackingApiController extends ApiController
 	// dev local feed
 	//var $url="http://spots.dev/FEED_ID_HERE/feed.json";
 	var $url="https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/FEED_ID_HERE/message.json";
-	var $inreach_url="https://inreach.garmin.com/feed/Share/FEED_ID_HERE";
+	//var $inreach_url="https://inreach.garmin.com/feed/Share/FEED_ID_HERE";
+	var $inreach_url="https://share.garmin.com/Feed/Share/FEED_ID_HERE";
 	// var $inreach_url="http://58gliding.net.test/feed-4.kml"; // for testing
 
 

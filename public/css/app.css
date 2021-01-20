@@ -13441,6 +13441,19 @@ li.nav-messages {
   flex-wrap: wrap;
 }
 
+.nav-item {
+  font-weight: bold;
+}
+
+.nav-item a,
+.nav-item a:visited {
+  color: #EEE !important;
+}
+
+.nav-item a:hover {
+  color: #FFF !important;
+}
+
 .footer {
   text-align: center;
 }

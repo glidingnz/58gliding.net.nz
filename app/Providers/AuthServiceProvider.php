@@ -358,10 +358,32 @@ class AuthServiceProvider extends ServiceProvider
 					return true;
 				}
 			}
-			
+
 			$user->is_contest_admin==false;
 			return false;
 		});
 
+		Gate::define('experimental-features', function(&$user) {
+
+			// check if we've already approved this
+			if (isset($user->can_see_experimental_features)) return $user->can_see_experimental_features;
+
+			if (Gate::allows('admin')) return true; // check above first!
+
+			$role = Role::where('slug','experimental-features')->first();
+
+			if ($role)
+			{
+				$userRole = RoleUser::where('role_id', $role->id)->where('user_id', $user->id)->first();
+
+				if ($userRole) {
+					$user->can_see_experimental_features = true;
+					return true;
+				}
+			}
+
+			$user->can_see_experimental_features = false;
+			return false;
+		});
 	}
 }

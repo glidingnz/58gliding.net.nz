@@ -65,6 +65,13 @@ class Event extends Model
 		return false;
 	}
 
+	// public function getSoaringspot_api_secretAttribute()
+	// {
+	// 	if ($this->getCanEditAttribute()) {
+			
+	// 	}
+	// }
+
 	protected $dates = ['deleted_at','start_date','end_date','earlybird'];
 
 	protected $hidden = array('soaringspot_api_secret');
@@ -102,6 +109,7 @@ class Event extends Model
 		'catering_dinners',
 		'catering_breakfasts',
 		'catering_final_dinner',
+		'entries_active'
 	];
 
 	/**
@@ -141,7 +149,8 @@ class Event extends Model
 		'catering_lunches'=>'boolean',
 		'catering_dinners'=>'boolean',
 		'catering_breakfasts'=>'boolean',
-		'catering_final_dinner'=>'boolean'
+		'catering_final_dinner'=>'boolean',
+		'entries_active'=>'boolean'
 	];
 
 	/**

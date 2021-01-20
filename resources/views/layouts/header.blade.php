@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head> 
+	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -74,12 +74,15 @@
 					<li class="nav-item"><a class="nav-link" href="{{ url('/tracking')}}">Tracking</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/cups')}}">Waypoints</a></li>
 					<li class="nav-item"><a class="nav-link" href="{{ url('/events')}}">Events</a></li>
+					@can('experimental-features')
+						<li class="nav-item"><a class="nav-link" href="{{ url('/timesheets')}}">Time Sheets</a></li>
+					@endcan
 
 					<?php if (isset($org) && $org->slug!='gnz') { ?>
 						<li class="nav-item"><a class="nav-link" href="{{ url('/flying-days')}}">Flying Days</a></li>
 						<li class="nav-item"><a class="nav-link" href="{{ url('/ratings-report')}}">BFR &amp; Medicals</a></li>
 					<?php } ?>
-					
+
 					<li class="nav-messages"></li>
 				</ul>
 
