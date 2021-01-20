@@ -65,6 +65,13 @@ class Event extends Model
 		return false;
 	}
 
+	// public function getSoaringspot_api_secretAttribute()
+	// {
+	// 	if ($this->getCanEditAttribute()) {
+			
+	// 	}
+	// }
+
 	protected $dates = ['deleted_at','start_date','end_date','earlybird'];
 
 	protected $hidden = array('soaringspot_api_secret');
