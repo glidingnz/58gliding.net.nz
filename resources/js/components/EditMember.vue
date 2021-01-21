@@ -52,8 +52,11 @@
 				<tr>
 					<td class="table-label col-xs-6">Date of Birth</td>
 					<td>
-						<input v-if="showAdmin" type="text" v-model="member.date_of_birth" class="form-control">
-						<span v-if="!showAdmin">{{member.date_of_birth}}</span>
+						<!-- <input v-if="showAdmin" type="text" v-model="member.date_of_birth" class="form-control"> -->
+						<v-date-picker  v-if="showAdmin" id="start_date" v-model="member.date_of_birth" :locale="{ id: 'start_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
+						<span v-if="!showAdmin">
+							{{member.date_of_birth}}
+						</span>
 					</td>
 				</tr>
 				<tr>
@@ -187,27 +190,41 @@
 
 			<table class="table table-striped table-sm">
 				<tr>
-					<th colspan="3">Affiliations</th>
+					<th colspan="2">Club Memberships</th>
 				</tr>
 
 				<template v-for="affiliate in member.affiliates">
 					
 					<tr>
-						<td class="table-label col-xs-6">{{affiliate.org.name}}</td>
-						<td>Joined</td>
+						<th>{{affiliate.org.name}}</th>
+						<th>
+								<span v-if="!affiliate.resigned" class="success">Current</span>
+								<span v-if="affiliate.resigned" class="error">Resigned</span>
+
+						</th>
+					</tr>
+					<tr>
+						<td>Join Date</td>
 						<td>
-							<input type="text" v-model="affiliate.join_date" class="form-control">
+							<!-- <input type="text" v-model="affiliate.join_date" class="form-control"> -->
+							<v-date-picker id="join_date" v-model="affiliate.join_date" :locale="{ id: 'join_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
+							{{affiliate.join_date}}
 						</td>
 					</tr>
 					<tr>
-						<td></td>
-						<td>End Date <button v-if="!affiliate.end_date" class="btn btn-danger btn-sm" v-on:click="resignAffiliate(affiliate)">Resign Now</button></td>
+						<td>Resign Date </td>
 						<td>
-							<input type="text" v-model="affiliate.end_date" class="form-control">
+							<button v-if="!affiliate.resigned" class="btn btn-danger btn-sm " v-on:click="resignAffiliate(affiliate)">Resign Member</button>
+							<span  v-show="affiliate.resigned">
+								<label :for="'resigned'+affiliate.id"><input :id="'resigned'+affiliate.id" type="checkbox" :value="true" v-model="affiliate.resigned"> Resigned</label>
+								<!-- <input type="text" v-model="affiliate.end_date" class="form-control"> -->
+								<v-date-picker id="end_date" v-model="affiliate.end_date" :locale="{ id: 'end_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
+
+							</span>
+							{{affiliate.end_date}}
 						</td>
 					</tr>
-					<tr v-if="affiliate.end_date">
-						<td></td>
+					<tr v-if="affiliate.resigned">
 						<td>Resigned Comment</td>
 						<td>
 							<input type="text" v-model="affiliate.resigned_comment" class="form-control">
@@ -219,7 +236,6 @@
 				<span v-if="!showAdmin">{{member.membership_type}}</span>
 
 				<tr>
-					<td></td>
 					<td></td>
 					<td><button class="btn btn-primary btn-sm" v-on:click="saveMember()">Save Changes</button></td>
 				</tr>
@@ -283,6 +299,14 @@
 				var that = this;
 				window.axios.get('/api/v1/members/' + this.memberId, {params: this.state}).then(function (response) {
 					that.member = response.data.data;
+					that.member.date_of_birth = that.$moment(that.member.date_of_birth).toDate();
+					// convert dates to javascript for all affiliates
+					if (that.member.affiliates) {
+							that.member.affiliates.forEach(function(affiliate) {
+							if (affiliate.join_date) affiliate.join_date = that.$moment(affiliate.join_date).toDate();
+							if (affiliate.end_date) affiliate.end_date = that.$moment(affiliate.end_date).toDate();
+						});
+					}
 				});
 			},
 			loadOrgs: function() {
@@ -294,7 +318,10 @@
 			saveMember: function() {
 				var that=this;
 
-				window.axios.put('/api/v1/members/' + this.memberId, this.member).then(function (response) {
+				var member = _.clone(this.member);
+				member.date_of_birth = this.apiDateFormat(member.date_of_birth);
+
+				window.axios.put('/api/v1/members/' + this.memberId, member).then(function (response) {
 					for(var i=0; i<that.member.affiliates.length; i++)
 					{
 						that.updateAffiliate(that.member.affiliates[i])
@@ -303,12 +330,19 @@
 				});
 			},
 			updateAffiliate: function(affiliate) {
-				window.axios.put('/api/v1/affiliates/' + affiliate.id, affiliate).then(function (response) {
+				var affiliate_clone = _.clone(affiliate);
+				affiliate_clone.join_date = this.apiDateFormat(affiliate_clone.join_date);
+				affiliate_clone.end_date = this.apiDateFormat(affiliate_clone.end_date);
+
+				window.axios.put('/api/v1/affiliates/' + affiliate.id, affiliate_clone).then(function (response) {
 					messages.$emit('success', 'Affiliate Updated');
 				});
 			},
 			resignAffiliate: function(affiliate) {
-				affiliate.end_date = Vue.prototype.$moment().format('YYYY-MM-DD');
+				affiliate.end_date = Vue.prototype.$moment().toDate();;
+				//affiliate.end_date.set({hour:0,minute:0,second:0,millisecond:0}).toDate();
+				affiliate.resigned = true;
+				this.updateAffiliate(affiliate);
 			}
 		}
 	}

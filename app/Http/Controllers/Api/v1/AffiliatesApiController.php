@@ -45,6 +45,10 @@ class AffiliatesApiController extends ApiController
 			$affiliate->end_date = $request->get('end_date');
 			$affiliate->end_date!=null ? $affiliate->resigned=true : $affiliate->resigned=false;
 		}
+		if ($request->has('resigned'))
+		{
+			$affiliate->resigned=$request->get('resigned');
+		}
 		if ($request->has('resigned_comment'))
 		{
 			$affiliate->resigned_comment = $request->get('resigned_comment');
