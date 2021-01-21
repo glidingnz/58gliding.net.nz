@@ -208,7 +208,6 @@
 						<td>
 							<!-- <input type="text" v-model="affiliate.join_date" class="form-control"> -->
 							<v-date-picker id="join_date" v-model="affiliate.join_date" :locale="{ id: 'join_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
-							{{affiliate.join_date}}
 						</td>
 					</tr>
 					<tr>
@@ -221,7 +220,6 @@
 								<v-date-picker id="end_date" v-model="affiliate.end_date" :locale="{ id: 'end_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
 
 							</span>
-							{{affiliate.end_date}}
 						</td>
 					</tr>
 					<tr v-if="affiliate.resigned">
