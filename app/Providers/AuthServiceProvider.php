@@ -14,11 +14,18 @@ use App\Models\Member;
 use App\Models\Affiliate;
 
 use Auth;
+use stdClass;
 use Carbon\Carbon;
 use Carbon\CarbonTimeZone;
 
 class AuthServiceProvider extends ServiceProvider
 {
+
+	protected $is_root; 
+	protected $is_admin;
+	protected $is_gnz_member;
+	protected $is_club_admin = Array();
+
 	/**
 	* The policy mappings for the application.
 	*
@@ -47,16 +54,15 @@ class AuthServiceProvider extends ServiceProvider
 
 
 		Gate::define('root', function ($user) {
-
 			// check if we've already approved this
-			if (isset($user->is_root)) return $user->is_root;
+			if (isset($this->is_root)) return $this->is_root;
 
 			if ($role = Role::where('slug','root')->first())
 			{
 				$userRole = RoleUser::where('role_id', $role->id)->where('user_id', $user->id)->first();
 
 				if ($userRole) {
-					$user->is_root = true;
+					$this->is_root = true;
 					return true;
 				}
 			}
@@ -68,24 +74,37 @@ class AuthServiceProvider extends ServiceProvider
 
 		Gate::define('admin', function ($user) {
 
-			if (isset($user->is_admin)) return $user->is_admin;
+			if (isset($this->is_admin)) return $this->is_admin;
 
-			if (Gate::allows('root')) return true; // check above first!
+			if (Gate::allows('root')) {  // check above first!
+				$this->is_admin = true;
+				return true;
+			}
 
 			if ($role = Role::where('slug','admin')->first())
 			{
 				$userRole = RoleUser::where('role_id', $role->id)->where('user_id', $user->id)->first();
 				if ($userRole) {
-					$user->is_admin = true;
+					echo ' setting true ';
+					$this->is_admin = true;
 					return true;
 				}
 			}
-			$user->is_admin = false;
+			$this->is_admin = false;
 			return false;
 		});
 
+
 		// optionally pass in a specific organisation object. Otherwise it uses the currently viewed organisation.
 		Gate::define('club-admin', function ($user, $org=NULL) {
+
+			// check if the given org is an ID or an object
+			if (is_integer($org)) {
+				// then just use that, not load the org from the DB again
+				$org_id = $org;
+				$org = new stdClass(); // create an empty org
+				$org->id = $org_id; // give it ONLY the ID attribute, as that's all we use below...
+			}
 
 			// check if we are current in an org
 			if ($org==NULL && $current_org = Request::get('_ORG'))
@@ -131,10 +150,8 @@ class AuthServiceProvider extends ServiceProvider
 			}
 			if (!$org) return false;
 
-			$variable_name = 'is_club_member_' . $org->id;
-
 			// check if we've already approved this
-			if (isset($user->$variable_name)) return $user->$variable_name;
+			if (isset($this->club_member[$org->id])) return $this->club_member[$org->id];
 
 			if (Gate::allows('club-admin', $org)) return true; // check above first!
 
@@ -147,7 +164,7 @@ class AuthServiceProvider extends ServiceProvider
 				$userRole = RoleUser::where('role_id', $role->id)->where('user_id', $user->id)->where('org_id', $org->id)->first();
 
 				if ($userRole) {
-					$user->$variable_name = true;
+					$this->club_member[$org->id] = true;
 					return true;
 				}
 
@@ -165,7 +182,7 @@ class AuthServiceProvider extends ServiceProvider
 				}
 			}
 
-			$user->$variable_name=false;
+			$this->club_member[$org->id]=false;
 			return false;
 		});
 
@@ -174,7 +191,7 @@ class AuthServiceProvider extends ServiceProvider
 		Gate::define('gnz-member', function (&$user) {
 
 			// check if we've already approved this
-			if (isset($user->is_gnz_member)) return $user->is_gnz_member;
+			if (isset($this->is_gnz_member)) return $this->is_gnz_member;
 
 			if (Gate::allows('admin')) return true; // always allow admin access
 
@@ -183,12 +200,12 @@ class AuthServiceProvider extends ServiceProvider
 				$member = Member::where('nzga_number', $user->gnz_id)->first();
 				if ($member)
 				{
-					$user->is_gnz_member=true;
+					$this->is_gnz_member=true;
 					return true;
 				}
 			}
 
-			$user->is_gnz_member=false;
+			$this->is_gnz_member=false;
 			return false;
 		});
 

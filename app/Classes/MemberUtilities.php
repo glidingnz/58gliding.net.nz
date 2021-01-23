@@ -101,8 +101,6 @@ class MemberUtilities {
 			}
 		}
 
-
-
 		// join on a list of organisations each user belongs to. 
 		// Used with the GROUP_CONCAT in the select statement.
 		$query->leftJoin('affiliates AS organisations', function ($join) {
@@ -257,16 +255,18 @@ class MemberUtilities {
 
 	public function filter_view_result(&$member)
 	{
+		return true;
 		// if you can edit this (i.e. yourself or you're the members club admin) allow viewing
-		if (Gate::allows('edit-member', $member)) {
-			return true;
-		}
+		// if (Gate::allows('edit-member', $member)) {
+		// 	return true;
+		// }
 
-		if (Gate::allows('membership-view')) {
-			return true;
-		}
+		// if (Gate::allows('membership-view')) {
+		// 	return true;
+		// }
 
-		if (Gate::denies('club-admin')) {
+		//if (Gate::denies('club-admin')) {
+		if (!$member->canEdit) {
 			$member->date_of_birth=null;
 			$member->access_level=null;
 			$member->comments=null;

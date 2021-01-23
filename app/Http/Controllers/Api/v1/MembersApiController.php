@@ -342,7 +342,7 @@ class MembersApiController extends ApiController
 		// otherwise paginate the results
 		if ($members = $query->paginate($request->input('per-page', 50)))
 		{
-			$memberUtilities->filter_view_results($members);
+			//$memberUtilities->filter_view_results($members);
 			return $this->success($members, TRUE);
 		}
 		return $this->error();

@@ -193,7 +193,7 @@
 					<th colspan="2">Club Memberships</th>
 				</tr>
 
-				<template v-for="affiliate in member.affiliates">
+				<template v-for="affiliate in orderedAffiliates">
 					
 					<tr>
 						<th>{{affiliate.org.name}}</th>
@@ -291,6 +291,11 @@
 			this.loadMember();
 			if (window.Laravel.admin==true) this.showAdmin=true;
 			if (window.Laravel.editAwards==true) this.showAdmin=true;
+		},
+		computed: {
+			orderedAffiliates: function () {
+				return _.orderBy(this.member.affiliates, 'join_date')
+			}
 		},
 		methods: {
 			loadMember: function() {

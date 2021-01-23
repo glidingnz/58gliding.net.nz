@@ -197,8 +197,8 @@
 				<td><span style="text-transform: uppercase;">{{ result.rating_instructor_level }}</span></td>
 				<td>
 					<a v-bind:href="'/members/' + result.id + '/achievements/'" class="btn btn-outline-dark btn-sm mr-1 mb-1"><i class="fa fa-trophy"></i></a>
-					<a v-if="clubAdmin" v-bind:href="'/members/' + result.id + '/edit'" class="btn mr-1 mb-1 btn-outline-dark btn-sm">Edit</a>
-					<a v-if="clubAdmin" v-bind:href="'/members/' + result.id + '/ratings'" class="btn mb-1 btn-outline-dark btn-sm">Ratings</a>
+					<a v-if="result.can_edit" v-bind:href="'/members/' + result.id + '/edit'" class="btn mr-1 mb-1 btn-outline-dark btn-sm">Edit</a>
+					<a v-if="result.can_edit" v-bind:href="'/members/' + result.id + '/ratings'" class="btn mb-1 btn-outline-dark btn-sm">Ratings</a>
 				</td>
 
 			</tr>
