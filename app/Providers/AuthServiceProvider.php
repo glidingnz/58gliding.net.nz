@@ -25,6 +25,10 @@ class AuthServiceProvider extends ServiceProvider
 	protected $is_admin;
 	protected $is_gnz_member;
 	protected $is_club_admin = Array();
+	protected $can_see_experimental_features;
+	protected $is_contest_admin;
+	protected $is_waypoint_admin;
+	protected $can_view_membership;
 
 	/**
 	* The policy mappings for the application.
@@ -188,7 +192,7 @@ class AuthServiceProvider extends ServiceProvider
 
 
 		/* only confirmed GNZ members can do certain things e.g. view other member phone numbers */
-		Gate::define('gnz-member', function (&$user) {
+		Gate::define('gnz-member', function ($user) {
 
 			// check if we've already approved this
 			if (isset($this->is_gnz_member)) return $this->is_gnz_member;
@@ -237,7 +241,7 @@ class AuthServiceProvider extends ServiceProvider
 		// Admins, GNZ members that are coaches and club admins are allowed to edit non FAI achievements
 		// User is the current user
 		// Member is the user we want to edit achievements of
-		Gate::define('edit-achievements', function(&$user, $member) {
+		Gate::define('edit-achievements', function($user, $member) {
 			if (isset($user->can_edit_achievements)) return $user->can_edit_achievements;
 
 			if (Gate::allows('admin')) return true; // check if admin first!
@@ -322,15 +326,15 @@ class AuthServiceProvider extends ServiceProvider
 
 
 		// can see all GNZ membership details, but not edit
-		Gate::define('membership-view', function(&$user) {
-			if (isset($user->can_view_membership) && $user->can_view_membership==true) return true;
+		Gate::define('membership-view', function($user) {
+			if (isset($this->can_view_membership) && $this->can_view_membership==true) return true;
 
 			if ($role = Role::where('slug','view-membership')->first())
 			{
 				$userRole = RoleUser::where('role_id', $role->id)->where('user_id', $user->id)->first();
 
 				if ($userRole) {
-					$user->can_view_membership = true;
+					$this->can_view_membership = true;
 					return true;
 				}
 			}
@@ -338,10 +342,10 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 
-		Gate::define('waypoint-admin', function(&$user) {
+		Gate::define('waypoint-admin', function($user) {
 
 			// check if we've already approved this
-			if (isset($user->is_waypoint_admin)) return $user->is_waypoint_admin;
+			if (isset($this->is_waypoint_admin)) return $this->is_waypoint_admin;
 
 			if (Gate::allows('admin')) return true; // check above first!
 
@@ -350,19 +354,19 @@ class AuthServiceProvider extends ServiceProvider
 				$userRole = RoleUser::where('role_id', $role->id)->where('user_id', $user->id)->first();
 
 				if ($userRole) {
-					$user->is_waypoint_admin==true;
+					$this->is_waypoint_admin==true;
 					return true;
 				}
 			}
 
-			$user->is_waypoint_admin==false;
+			$this->is_waypoint_admin==false;
 			return false;
 		});
 
-		Gate::define('contest-admin', function(&$user) {
+		Gate::define('contest-admin', function($user) {
 
 			// check if we've already approved this
-			if (isset($user->is_contest_admin)) return $user->is_contest_admin;
+			if (isset($this->is_contest_admin)) return $this->is_contest_admin;
 
 			if (Gate::allows('admin')) return true; // check above first!
 
@@ -371,19 +375,19 @@ class AuthServiceProvider extends ServiceProvider
 				$userRole = RoleUser::where('role_id', $role->id)->where('user_id', $user->id)->first();
 
 				if ($userRole) {
-					$user->is_contest_admin==true;
+					$this->is_contest_admin==true;
 					return true;
 				}
 			}
 
-			$user->is_contest_admin==false;
+			$this->is_contest_admin==false;
 			return false;
 		});
 
-		Gate::define('experimental-features', function(&$user) {
+		Gate::define('experimental-features', function($user) {
 
 			// check if we've already approved this
-			if (isset($user->can_see_experimental_features)) return $user->can_see_experimental_features;
+			if (isset($this->can_see_experimental_features)) return $this->can_see_experimental_features;
 
 			if (Gate::allows('admin')) return true; // check above first!
 
@@ -394,12 +398,12 @@ class AuthServiceProvider extends ServiceProvider
 				$userRole = RoleUser::where('role_id', $role->id)->where('user_id', $user->id)->first();
 
 				if ($userRole) {
-					$user->can_see_experimental_features = true;
+					$this->can_see_experimental_features = true;
 					return true;
 				}
 			}
 
-			$user->can_see_experimental_features = false;
+			$this->can_see_experimental_features = false;
 			return false;
 		});
 	}
