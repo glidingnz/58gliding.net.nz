@@ -1110,7 +1110,7 @@ html, body,
 				this.loadTracks();
 				if (this.selectedAircraft) this.selectAircraft(this.selectedAircraft);
 			}
-			this.timeoutTimer = setTimeout(this.timerLoop, 15000); // thirty seconds
+			this.timeoutTimer = setTimeout(this.timerLoop, 30000); // thirty seconds
 		},
 		follow: function() {
 			var that = this;
