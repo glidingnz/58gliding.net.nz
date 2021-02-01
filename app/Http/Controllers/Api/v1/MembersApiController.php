@@ -52,7 +52,9 @@ class MembersApiController extends ApiController
 		$member->email = '';
 		$member->pending_approval = 0;
 		$member->club = $org->gnz_code;
+		$member->created = Carbon::now(new CarbonTimeZone('Pacific/Auckland'));
 
+		$this->log_new_member($member);
 
 		if ($member->save())
 		{
@@ -217,6 +219,25 @@ class MembersApiController extends ApiController
 				$this->log_member_change($member, 'Update', $key, $member->$key, $form[$key]);
 			}
 		}
+	}
+
+
+	public function log_new_member($member)
+	{
+		$user = Auth::user();
+		$now = DB::raw('NOW()');
+
+		$changeLog = new MemberChangeLog;
+		$changeLog->description = "[gliding.net.nz] User {$user->first_name} {$user->last_name} {$user->email}  (ID: {$user->id}) Created Member: {$member->first_name} {$member->last_name} for club {$member->club}.";
+		$changeLog->action = 'Create';
+		$changeLog->field = null;
+		$changeLog->oldval = null;
+		$changeLog->newval = $member->id;
+		$changeLog->created = $now;
+		$changeLog->id_member = $member->id;
+		$changeLog->id_user = $user->id;
+
+		$changeLog->save();
 	}
 
 

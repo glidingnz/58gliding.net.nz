@@ -4,7 +4,7 @@
 
 
 	<div class="form-group col-md-12">
-		<p>First check they're not already in the GNZ database.</p>
+		<p>First check they're not already in the GNZ database (e.g. in another club or a previous member):</p>
 		<h3>Surname search:</h3>
 		<div class="col-md-6">
 			<member-selector v-model="existingMemberId" 
@@ -24,18 +24,18 @@
 		</div>
 
 		<button v-if="selectedMember" class="btn btn-primary mr-2" v-on:click="showAddExisting=true; showAddNew=false;">
-			Yes, Add {{selectedMember.first_name}}
+			Yes, Add {{selectedMember.first_name}}...
 		</button>
 
 		<button v-if="selectedMember" class="btn btn-primary" v-on:click="showAddExisting=false; showAddNew=true">
-			No, add a new person
+			No, add a new person...
 		</button>
 
 	</div>
 
 	<div v-if="last_name && selectedMember==null" class="form-group col-md-6">
 		<button class="btn btn-primary" v-on:click="showAddExisting=false; showAddNew=true">
-			I can't find them, add a new person
+			I can't find them, add a new person...
 		</button>
 	</div>
 
@@ -45,15 +45,15 @@
 	<div v-if="showAddExisting">
 
 		<div class="form-group col-md-6">
-			<label for="member_type">Member Type</label> 
-			<select name="member_type" id="member_type" v-if="memberTypes.length>0" class="form-control">
+			<label for="member_type">Type of Member To Add As</label> 
+			<select v-model="membertype_id" name="member_type" id="member_type" v-if="memberTypes.length>0" class="form-control">
 				<option v-for="memberType in memberTypes" :value="memberType.id">{{memberType.name}}</option>
 			</select>
 		</div>
 
 		<div class="form-group col-md-6">
 			<button v-if="selectedMember" class="btn btn-primary mr-2" v-on:click="addExistingMember()">
-				Yes, Add {{selectedMember.first_name}} to {{org.name}}
+				Add {{selectedMember.first_name}} to {{org.name}}
 			</button>
 		</div>
 	</div>
@@ -78,7 +78,7 @@
 		</div>
 
 		<div class="form-group col-md-6">
-			<label for="member_type">Member Type</label> 
+			<label for="member_type">Type of Member To Add As</label> 
 			<select v-model="membertype_id" name="member_type" id="member_type" v-if="memberTypes.length>0" class="form-control">
 				<option v-for="memberType in memberTypes" :value="memberType.id">{{memberType.name}}</option>
 			</select>
@@ -140,7 +140,14 @@
 			},
 			addExistingMember: function()
 			{
-				window.axios.post('/api/v1/affiliates', {org_id: this.org.id, existingMemberId: this.existingMemberId}).then(function (response) {
+				// create the current date
+				var thedate = that.$moment().toDate();
+				window.axios.post('/api/v1/affiliates', {
+					org_id: this.org.id, 
+					member_id: this.existingMemberId, 
+					membertype_id:this.membertype_id,
+					join_date: thedate
+				}).then(function (response) {
 					messages.$emit('success', 'Member added');
 				}).catch(
 					function (error) {

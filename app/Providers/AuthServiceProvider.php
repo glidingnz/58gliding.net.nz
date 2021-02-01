@@ -89,7 +89,6 @@ class AuthServiceProvider extends ServiceProvider
 			{
 				$userRole = RoleUser::where('role_id', $role->id)->where('user_id', $user->id)->first();
 				if ($userRole) {
-					echo ' setting true ';
 					$this->is_admin = true;
 					return true;
 				}

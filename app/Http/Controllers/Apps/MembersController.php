@@ -58,6 +58,17 @@ class MembersController extends Controller
 		return view('members/member-edit', Array('member_id'=>$id, 'member'=>$member));
 	}
 
+	public function edit_affiliates($id)
+	{
+		$member = Member::findOrFail($id);
+
+		if (Gate::denies('edit-member', $member)) {
+			abort(403);
+		}
+
+		return view('members/member-edit-affiliates', Array('member_id'=>$id, 'member'=>$member));
+	}
+
 	public function achievements($id)
 	{
 		$data['member_id']=$id;

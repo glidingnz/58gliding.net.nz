@@ -53,8 +53,8 @@
 					<td class="table-label col-xs-6">Date of Birth</td>
 					<td>
 						<!-- <input v-if="showAdmin" type="text" v-model="member.date_of_birth" class="form-control"> -->
-						<v-date-picker  v-if="showAdmin" id="start_date" v-model="member.date_of_birth" :locale="{ id: 'start_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
-						<span v-if="!showAdmin">
+						<v-date-picker  v-if="member.can_edit" id="start_date" v-model="member.date_of_birth" :locale="{ id: 'start_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
+						<span v-if="!member.can_edit">
 							{{member.date_of_birth}}
 						</span>
 					</td>
@@ -190,74 +190,27 @@
 
 			<table class="table table-striped table-sm">
 				<tr>
-					<th colspan="2">Club Memberships</th>
+					<th colspan="2">Membership History <a :href="'/members/' + member.id + '/edit-affiliates'" class="btn btn-primary btn-sm float-right">Edit History</a></th>
 				</tr>
 
 				<template v-for="affiliate in orderedAffiliates">
 					
 					<tr>
-						<th>{{affiliate.org.name}}</th>
-						<th>
-								<span v-if="!affiliate.resigned" class="success">Current</span>
-								<span v-if="affiliate.resigned" class="error">Resigned</span>
+						<td>{{affiliate.org.name}}</td>
+						<td>
+								<span v-if="getMemberType(affiliate.membertype_id)">{{getMemberType(affiliate.membertype_id).name}}</span>
+								
+								<span v-if="!affiliate.resigned" class="success">Active</span>
+								<span v-if="affiliate.resigned" class="error">Ended/Resigned</span>
 
-						</th>
-					</tr>
-					<tr>
-						<td>Join Date</td>
-						<td>
-							<!-- <input type="text" v-model="affiliate.join_date" class="form-control"> -->
-							<v-date-picker id="join_date" v-model="affiliate.join_date" :locale="{ id: 'join_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
-						</td>
-					</tr>
-					<tr>
-						<td>Resign Date </td>
-						<td>
-							<button v-if="!affiliate.resigned" class="btn btn-danger btn-sm " v-on:click="resignAffiliate(affiliate)">Resign Member</button>
-							<span  v-show="affiliate.resigned">
-								<label :for="'resigned'+affiliate.id"><input :id="'resigned'+affiliate.id" type="checkbox" :value="true" v-model="affiliate.resigned"> Resigned</label>
-								<!-- <input type="text" v-model="affiliate.end_date" class="form-control"> -->
-								<v-date-picker id="end_date" v-model="affiliate.end_date" :locale="{ id: 'end_date', firstDayOfWeek: 2, masks: { weekdays: 'WW', L: 'DD/MM/YYYY' } }" :popover="{ visibility: 'click' }"></v-date-picker>
-
-							</span>
-						</td>
-					</tr>
-					<tr v-if="affiliate.resigned">
-						<td>Resigned Comment</td>
-						<td>
-							<input type="text" v-model="affiliate.resigned_comment" class="form-control">
+								<br>
+								{{formatDate(affiliate.join_date)}} <span v-if="affiliate.end_date">to {{formatDate(affiliate.end_date)}}</span>
 						</td>
 					</tr>
 				</template>
 				
 				
 				<span v-if="!showAdmin">{{member.membership_type}}</span>
-
-				<tr>
-					<td></td>
-					<td><button class="btn btn-primary btn-sm" v-on:click="saveMember()">Save Changes</button></td>
-				</tr>
-				<!-- 
-				<tr  v-if="showAdmin" >
-					<td class="table-label col-xs-6">Date Joined / Rejoined Club</td>
-					<td><input type="text" v-model="member.date_joined" class="form-control"></td>
-				</tr>
-				<tr  v-if="showAdmin" >
-					<td class="table-label col-xs-6">Previous Clubs</td>
-					<td><input type="text" v-model="member.previous_clubs" class="form-control"></td>
-				</tr>
-				<tr  v-if="showAdmin" >
-					<td class="table-label col-xs-6">GNZ number of Family Member</td>
-					<td><input type="text" v-model="member.gnz_family_member_number" class="form-control"></td>
-				</tr>
-				<tr  v-if="showAdmin" >
-					<td class="table-label col-xs-6">Resigned</td>
-					<td><input type="text" v-model="member.resigned" class="form-control"></td>
-				</tr>
-				<tr  v-if="showAdmin" >
-					<td class="table-label col-xs-6">Resigned Comments</td>
-					<td><input type="text" v-model="member.resigned_comment" class="form-control"></td>
-				</tr> -->
 
 			</table>
 
@@ -280,6 +233,8 @@
 		props: ['memberId'],
 		data() {
 			return {
+				org: null,
+				memberTypes: [],
 				member: [],
 				orgs: [],
 				showEdit: false,
@@ -287,7 +242,9 @@
 			}
 		},
 		mounted() {
+			this.org = window.Laravel.org;
 			this.loadOrgs();
+			this.loadMemberTypes();
 			this.loadMember();
 			if (window.Laravel.admin==true) this.showAdmin=true;
 			if (window.Laravel.editAwards==true) this.showAdmin=true;
@@ -298,6 +255,9 @@
 			}
 		},
 		methods: {
+			getMemberType(membertypeId) {
+				return this.memberTypes.find( ({ id }) => id === membertypeId);
+			},
 			loadMember: function() {
 				var that = this;
 				window.axios.get('/api/v1/members/' + this.memberId, {params: this.state}).then(function (response) {
@@ -316,6 +276,13 @@
 				var that = this;
 				window.axios.get('/api/v1/orgs/').then(function (response) {
 					that.orgs = response.data.data;
+				});
+			},
+			loadMemberTypes: function()
+			{
+				var that=this;
+				window.axios.get('/api/v1/membertypes').then(function (response) {
+					that.memberTypes = response.data.data;
 				});
 			},
 			saveMember: function() {

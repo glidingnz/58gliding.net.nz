@@ -32,7 +32,7 @@ class AffiliatesApiController extends ApiController
 
 		if (Gate::denies('club-admin', $affiliate->org)) 
 		{
-			return $this->denied("Sorry you aren't admin for this organisation");
+			return $this->denied("Sorry you aren't admin for " . $affiliate->org->name);
 		}
 
 
@@ -53,9 +53,9 @@ class AffiliatesApiController extends ApiController
 		{
 			$affiliate->resigned_comment = $request->get('resigned_comment');
 		}
-		if ($request->has('member_type_id'))
+		if ($request->has('membertype_id'))
 		{
-			$affiliate->member_type_id = $request->get('member_type_id');
+			$affiliate->membertype_id = $request->get('membertype_id');
 		}
 		if ($affiliate->isDirty()) {
 			$affiliate->save();
@@ -64,21 +64,57 @@ class AffiliatesApiController extends ApiController
 		return $this->success('No Changes');
 	}
 
-	public function insert(Request $request)
+	
+
+	public function store(Request $request)
 	{
+
+		$affiliate = new Affiliate();
 
 		if ($request->has('org_id'))
 		{
 			$affiliate->org_id = $request->get('org_id');
+		} else {
+			return $this->error("An org_id is required");
 		}
+
+		if (Gate::denies('club-admin', $affiliate->org)) 
+		{
+			return $this->denied("Sorry you don't have permission to add a member to this organisation");
+		}
+
 		if ($request->has('member_id'))
 		{
-			$affiliate->org_id = $request->get('org_id');
+			$affiliate->member_id = $request->get('member_id');
+		} else {
+			return $this->error("A member_id is required");
 		}
-		if ($request->has('member_type_id'))
+
+		// member type not required. Can be blank
+		if ($request->has('membertype_id'))
 		{
-			$affiliate->member_type_id = $request->get('member_type_id');
+			$affiliate->membertype_id = $request->get('membertype_id');
 		}
+
+		if ($request->has('join_date'))
+		{
+			$affiliate->join_date = $request->get('join_date');
+		}
+
+		if ($affiliate->save())
+		{
+			return $this->success('Affiliate Created');
+		}
+
+
+
+		return $this->error('Something went wrong, affiliate not created');
+	}
+
+
+	public function delete(Request $request, $id)
+	{
+
 	}
 
 }
