@@ -222,7 +222,7 @@ class Tracking2ApiController extends ApiController
 
 		// strip out the array keys for javascript
 		//return $this->success($unique_aircraft);
-		Cache::put($aircraft_with_points_key, $unique_aircraft, 14);
+		Cache::put($aircraft_with_points_key, $unique_aircraft, 29);
 		return $this->success(array_values($unique_aircraft));
 	}
 
