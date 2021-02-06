@@ -74,7 +74,7 @@ class TrackingApiController extends ApiController
 			$data = $request;
 		}
 
-		Log::info($data);
+		//Log::info($data);
 
 		// find the aircraft specified
 		$queryAircraft = Aircraft::query();
@@ -151,7 +151,7 @@ Example string:
 	public function mt600(Request $request)
 	{
 		$request_data = $request->json()->all();
-		Log::info($request_data);
+		//Log::info($request_data);
 
 		$data = explode(',', $request_data['data']);
 		if (!isset($data[0])) return false;
@@ -242,7 +242,7 @@ Example string:
 			$request_data = $request;
 		}
 
-		Log::info($request_data);
+		//Log::info($request_data);
 
 		// get aircraft details
 		$queryAircraft = Aircraft::query();
@@ -311,7 +311,7 @@ Example string:
 		{
 
 			$xml = simplexml_load_string($request->getContent());
-			Log::info(print_r($xml, 1));
+			//Log::info(print_r($xml, 1));
 			
 			if (!isset($xml->devId)) {
 				Log::info("Couldn't find devId on btraced XML");
@@ -409,7 +409,7 @@ Example string:
 	// SPOTNZ = type 5
 	public function spotnz(Request $request)
 	{
-		Log::info($request->getContent());
+		//Log::info($request->getContent());
 
 		$data['messageId'] = 0;
 		$data['response'] = 'OK';
@@ -496,7 +496,7 @@ Example string:
 	public function overland(Request $request)
 	{
 		//Log::info($request);
-		Log::info($request->getContent());
+		//Log::info($request->getContent());
 
 		$obj = json_decode($request->getContent());
 
@@ -738,8 +738,8 @@ Example string:
 				if ($json = file_get_contents($aircraft_url))
 				{
 					$obj = json_decode($json);
-					Log::info('SPOT JSON:');
-					Log::info($json);
+					//Log::info('SPOT JSON:');
+					//Log::info($json);
 
 					// check if we have messages for this ID
 					if (isset($obj->response->feedMessageResponse))
