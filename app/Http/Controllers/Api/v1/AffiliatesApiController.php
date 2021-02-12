@@ -112,9 +112,23 @@ class AffiliatesApiController extends ApiController
 	}
 
 
-	public function delete(Request $request, $id)
+	public function destroy(Request $request, $id)
 	{
 
+		if (!$affiliate = Affiliate::where('id', $id)->with('org')->first())
+		{
+			return $this->not_found();
+		}
+
+		if (Gate::denies('club-admin', $affiliate->org)) 
+		{
+			return $this->denied("Sorry you aren't admin for " . $affiliate->org->name);
+		}
+
+		if ($affiliate->delete())
+		{
+			return $this->success('Affiliate Deleted');
+		}
 	}
 
 }

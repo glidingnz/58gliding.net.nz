@@ -140,8 +140,9 @@
 			},
 			addExistingMember: function()
 			{
+				var that=this;
 				// create the current date
-				var thedate = that.$moment().toDate();
+				var thedate = that.$moment().format("YYYY-MM-DD");
 				window.axios.post('/api/v1/affiliates', {
 					org_id: this.org.id, 
 					member_id: this.existingMemberId, 

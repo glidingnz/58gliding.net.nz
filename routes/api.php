@@ -135,7 +135,7 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 
 
 		Route::resource('/affiliates', 'AffiliatesApiController', ['only' => [
-			'update', 'create', 'store'
+			'update', 'create', 'store', 'delete', 'destroy'
 		]]);
 
 		Route::resource('/membertypes', 'MembertypeApiController', ['only' => [
