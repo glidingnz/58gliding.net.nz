@@ -209,9 +209,6 @@ class MembersApiController extends ApiController
 
 		$query = $memberUtilities->get_filtered_members($request);
 
-		// only get the few fields we need
-		$query->select('email', 'first_name', 'last_name');
-
 		$data['text']=$request->input('message');
 
 		if ($members = $query->get())
