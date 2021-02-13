@@ -160,6 +160,7 @@ Route::group(['prefix'=>'v1', 'namespace' => 'Api\v1'], function()
 			'index', 'store', 'create'
 		]]);
 		Route::post('/members/{member_id}/ratings/upload',  'RolesApiController@upload');
+		Route::get('/members/{member_id}/log',  'MembersApiController@log');
 
 
 		Route::get('/members/{member_id}/ratings/{rating_member_id}',  'RatingMemberApiController@get');

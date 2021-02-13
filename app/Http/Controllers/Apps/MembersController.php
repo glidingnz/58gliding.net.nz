@@ -47,6 +47,17 @@ class MembersController extends Controller
 		return view('members/member-view', $data);
 	}
 
+	public function log($id)
+	{
+		$data = Array('member_id'=>$id);
+		$member = Member::findOrFail($id);
+		if (Gate::allows('edit-member', $member)) {
+			$data['allows_edit']=true;
+		}
+
+		return view('members/log', $data);
+	}
+
 	public function edit($id)
 	{
 		$member = Member::findOrFail($id);

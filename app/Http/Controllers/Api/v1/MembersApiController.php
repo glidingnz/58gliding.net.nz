@@ -411,4 +411,22 @@ class MembersApiController extends ApiController
 		return $this->error();
 	}
 
+	/*
+	Load the entire log history for this user
+	 */
+	public function log(Request $request, $id)
+	{
+		// first load the member
+		if ($member = Member::find($id))
+		{
+			// if loaded, get the logs for that user
+			if ($logs = MemberChangeLog::where('id_member', '=', $member->id)->orderBy('created', 'DESC')->get())
+			{
+				return $this->success($logs);
+			}
+		}
+		return $this->error();
+	}
+
+
 }

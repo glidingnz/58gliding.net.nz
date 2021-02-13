@@ -104,6 +104,7 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/members/{id}/edit', 'Apps\MembersController@edit');
 	Route::get('/members/{id}/edit-affiliates', 'Apps\MembersController@edit_affiliates');
 	Route::get('/members/{id}/ratings', 'Apps\MembersController@ratings');
+	Route::get('/members/{id}/log', 'Apps\MembersController@log');
 	Route::get('/members/{member_id}/ratings/{rating_member_id}', 'Apps\MembersController@rating');
 	Route::get('/members/download/{key}', 'Apps\MembersController@download');
 
