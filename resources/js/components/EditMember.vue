@@ -251,7 +251,7 @@
 		},
 		computed: {
 			orderedAffiliates: function () {
-				return _.orderBy(this.member.affiliates, 'join_date', 'desc')
+				return _.orderBy(this.member.affiliates, ['join_date', 'resigned'], 'desc')
 			}
 		},
 		methods: {
