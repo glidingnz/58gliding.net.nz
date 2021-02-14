@@ -2,7 +2,8 @@
 <div>
 	<a class="btn btn-primary" v-if="showEdit" style="float:right; margin-left: 10px;" v-bind:href="'/members/' + results.id + '/edit'"><span class="fa fa-edit"></span> Edit Member</a>
 	<a class="btn btn-outline-dark float-right ml-2" v-bind:href="'/members/' + results.id + '/ratings'"><span class="fa fa-clipboard-check"></span> Ratings</a>
-	<a class="btn btn-outline-dark float-right" v-bind:href="'/members/' + results.id + '/achievements'"><span class="fa fa-trophy"></span> Achievements</a>
+	<a class="btn btn-outline-dark float-right ml-2" v-bind:href="'/members/' + results.id + '/achievements'"><span class="fa fa-trophy"></span> Achievements</a>
+	<a class="btn btn-outline-dark float-right" v-bind:href="'/members/' + results.id + '/log'"><span class="fa fa-clipboard"></span> Change Log</a>
 
 	<h1 class="results-title"><a href="/members">Members</a> &raquo; {{results.first_name}} {{results.last_name}}</h1>
 

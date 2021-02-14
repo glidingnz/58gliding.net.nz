@@ -419,8 +419,15 @@ class MembersApiController extends ApiController
 		// first load the member
 		if ($member = Member::find($id))
 		{
+			$query = MemberChangeLog::where('id_member', '=', $member->id)->orderBy('created', 'DESC');
+
+			if ($request->has('limit')) 
+			{
+				$query->limit($request->input('limit'));
+			}
+
 			// if loaded, get the logs for that user
-			if ($logs = MemberChangeLog::where('id_member', '=', $member->id)->orderBy('created', 'DESC')->get())
+			if ($logs = $query->get())
 			{
 				return $this->success($logs);
 			}
