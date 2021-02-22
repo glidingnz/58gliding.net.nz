@@ -854,7 +854,7 @@ html, body,
 		loadTracks: function() {
 			this.loading=true;
 
-			var pings = 5;
+			var pings = 1;
 			//if (this.showTrails==false) pings=3;
 			var that = this;
 
@@ -876,6 +876,15 @@ html, body,
 			var that = this;
 			var from = 0;
 
+			// cancel all other requests
+			for (var i=0; i<this.aircraft.length; i++) {
+				if (this.aircraft[i].hasOwnProperty('request')) {
+					this.aircraft[i].request.cancel();
+				}
+			}
+
+			aircraft.request = axios.CancelToken.source();
+
 			this.selectedAircraft = aircraft;
 
 			// check if we already have some data
@@ -893,7 +902,7 @@ html, body,
 			this.loading=true;
 
 			// load the data
-			window.axios.get('/api/v2/tracking/' + that.flyingDay + '/aircraft/' + aircraft.key + '?from=' + from).then(function (response) {
+			window.axios.get('/api/v2/tracking/' + that.flyingDay + '/aircraft/' + aircraft.key + '?from=' + from, { cancelToken: aircraft.request.token }).then(function (response) {
 
 				that.loading=false;
 				var newData = response.data.data.points;
